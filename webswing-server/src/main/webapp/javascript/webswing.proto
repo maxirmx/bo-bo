@@ -16,6 +16,7 @@ message AppFrameMsgOutProto{
 	optional JsResultMsgProto javaResponse = 11;
 	optional PlaybackInfoMsgProto playback = 12;
 	optional string sessionId = 13;
+	optional FocusEventMsgProto focusEvent = 14;
 }
 
 message ApplicationInfoMsgProto{

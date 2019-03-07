@@ -1,6 +1,7 @@
 define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
     "use strict";
 
+    var prepos;
     return function InputModule() {
         var module = this;
         var api;
@@ -11,7 +12,7 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
             getCanvas : 'canvas.get',
             cut : 'clipboard.cut',
             copy : 'clipboard.copy',
-            paste : 'clipboard.paste',
+            paste : 'clipboard.paste'
         };
         module.provides = {
             register : register,
@@ -22,11 +23,13 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
         module.ready = function() {
         };
 
+        var registered = false;
         var latestMouseMoveEvent = null;
         var latestMouseWheelEvent = null;
         var latestWindowResizeEvent = null;
         var mouseDown = 0;
         var inputEvtQueue = [];
+        var compositionInput = false;
 
         function sendInput(message) {
             enqueueInputEvent();
@@ -73,12 +76,17 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
         }
 
         function dispose() {
+            registered = false;
+            resetInput();
             document.removeEventListener('mousedown', mouseDownEventHandler);
             document.removeEventListener('mouseout', mouseOutEventHandler);
             document.removeEventListener('mouseup', mouseUpEventHandler);
         }
 
         function register() {
+            if (registered) {
+                return;
+            }
             var canvas = api.getCanvas();
             var input = api.getInput();
             resetInput();
@@ -101,6 +109,11 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
             }, false);
             util.bindEvent(canvas, 'mousemove', function(evt) {
                 var mousePos = getMousePos(canvas, evt, 'mousemove');
+                if (prepos && prepos.mouse.x == mousePos.mouse.x && prepos.mouse.y == mousePos.mouse.y) {
+                    return false;
+                }
+
+                prepos = mousePos;
                 mousePos.mouse.button = mouseDown;
                 latestMouseMoveEvent = mousePos;
                 return false;
@@ -138,6 +151,18 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 event.stopPropagation();
                 return false;
             });
+            function isCharatersPress(kc){
+                return (kc>=97&&kc<=122)||(kc>=65&&kc<=90);
+
+            }
+            function isHotKeyBehavoir(keyevt){
+                return isCharatersPress(keyevt.key.keycode)&&keyevt.key.alt&&keyevt.key.shift&&keyevt.key.ctrl;
+
+            }
+            function convertHotKey(keyevt){
+                keyevt.key.shift = false;
+                keyevt.key.ctrl = false;
+            }
 
             util.bindEvent(input, 'keydown', function(event) {
                 var functionKeys=[9/*tab*/, 12/*Numpad5*/, 16/*Shift*/, 17/*ctrl*/, 18/*alt*/, 19/*pause*/, 20/*CapsLock*/, 27/*esc*/, 
@@ -148,6 +173,10 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                                   132/*F21*/, 133/*F22*/, 134/*F23*/, 135/*F24*/]; 
             	
             	var kc = event.keyCode;
+                //mute F1 help
+            	if(kc === 112) {
+                    return false;
+                }
                 if (functionKeys.indexOf(kc)!=-1) {
                     if(!api.cfg.virtualKB){
                         event.preventDefault();
@@ -161,6 +190,9 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                     if (keyevt.key.ctrl && !keyevt.key.alt && !keyevt.key.altgr) {
                         event.preventDefault();
                     }
+                    if(isHotKeyBehavoir(keyevt)){
+                        convertHotKey(keyevt);
+                    }
                     enqueueInputEvent(keyevt);
                 }
                 return false;
@@ -171,6 +203,9 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                         || keyevt.key.character == 118 || keyevt.key.character == 22))) { // cut copy paste handled separately
                     event.preventDefault();
                     event.stopPropagation();
+                    if(isHotKeyBehavoir(keyevt)){
+                        convertHotKey(keyevt);
+                    }
                     enqueueInputEvent(keyevt);
                 }
                 return false;
@@ -180,10 +215,64 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 if (!(keyevt.key.ctrl && (keyevt.key.character == 88 || keyevt.key.character == 67 || keyevt.key.character == 86))) { // cut copy
                     event.preventDefault();
                     event.stopPropagation();
+                      if(isHotKeyBehavoir(keyevt)){
+                        convertHotKey(keyevt);
+                    }
                     enqueueInputEvent(keyevt);
                     sendInput();
                 }
                 return false;
+            }, false);
+
+            var DEFAULT_FONT = '14px sans-serif';
+            // 中文输入法（如搜狗，智能ABC）等最终可见字符需要一连串键盘输入才能形成的，当用户开始输入字符的时候，
+            // 需要将承载用户输入的input设置成可见（Z-INDEX不为-1等），以便input能回显一连串输入过程中的文字
+            util.bindEvent(input, 'compositionstart', function(event) {
+                compositionInput = true;
+                var input=api.getInput();
+                $(input).addClass('input-ime');
+                $(input).removeClass('input-hidden');
+                input.style.font = DEFAULT_FONT;
+            }, false);
+            // 中文输入法（如搜狗，智能ABC）等最终可见字符需要一连串键盘输入才能形成的，通过compositionend来获取一连串输入之后的最终可见字符
+            util.bindEvent(input, 'compositionend', function (event) {
+                var input = api.getInput();
+                $(input).addClass('input-hidden');
+                $(input).removeClass('input-ime');
+                input.style.width = '1px';
+                // IE 11以下版本不能从event.data里获取输入的值，需要从input控件里获取用户输入的值
+                var isIE = api.cfg.ieVersion && api.cfg.ieVersion <= 11;
+                sentWordsUsingKeypressEvent(isIE ? event.target.value : event.data);
+                compositionInput = false;
+                focusInput(input);
+            }, false);
+            // 对于IE,CHROME标点符号不能显示问题修复
+            // IE,CHROME标点符号输入不会触发compositionStart compositionEnd事件，导致这些浏览器标点符号输入无法被webswing捕获到
+            util.bindEvent(input, 'input', function(event) {
+                var input = api.getInput();
+                // 中文输入法输入汉字的时候夹带标点符号也会触发本事件，但由compositionEnd来完成用户文本录入，
+                // 通过设置compositionInput 为true，将将该过程中触发的事件忽略掉
+                // input的值为空的时候（比如汉字输入为了兼容所有浏览器，统一使用compositionend事件来处理，compositionend事件处理调用了focusInput导致input为空）不需要向后台发送
+                if(compositionInput || !input.value){
+                    return;
+                }
+                // chrome
+                if (((!event.isComposing && event.inputType =='insertText' && event.data!=null)
+                        // IE
+                    || (api.cfg.ieVersion && event.type ==="input"))
+                        // IE focusInput新增空格并选中会触发input事件并走到这个分支，无效输入要过滤
+                    && input.value != " "
+                ) {
+                    sentWordsUsingKeypressEvent(input.value)
+                    focusInput(input);
+                }
+            }, false);
+
+            // 用户输入过程中的回显用input承载，需要用及时调整宽度
+            util.bindEvent(input, 'compositionupdate', function(event) {
+                var input=api.getInput();
+                var text = event.data;
+                input.style.width = getTextWidth(text, DEFAULT_FONT)+'px';
             }, false);
 
             util.bindEvent(input, 'cut', function(event) {
@@ -207,6 +296,19 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
             util.bindEvent(document, 'mousedown', mouseDownEventHandler);
             util.bindEvent(document, 'mouseout', mouseOutEventHandler);
             util.bindEvent(document, 'mouseup', mouseUpEventHandler);
+
+            registered = true;
+        }
+
+        // 获取文本宽度
+	   function getTextWidth(text, font) {
+            var canvas = api.getCanvas();
+            var ctx = canvas.getContext("2d");
+            ctx.save();
+            ctx.font = font;
+            var metrics = ctx.measureText(text);
+            ctx.restore();
+            return Math.ceil(metrics.width)+5;
         }
 
         function mouseDownEventHandler(evt) {
@@ -216,6 +318,19 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
         }
 
         function mouseOutEventHandler(evt) {
+            // canvas会铺满整个界面
+            // 当鼠标移除document范围后，鼠标松开的事件需要监听在document之上。
+            // 中文输入的时候，承载中文输入的input空间也会触发本事件，需忽略
+            if (api.cfg.hasControl && api.cfg.canPaint && !api.cfg.mirrorMode && !compositionInput) {
+                var mousePos = getMousePos(api.getCanvas(), evt, 'mouseup');
+                //when an new web page pops after user click, mouseup will send twice
+                mousePos.mouse.x = -1;
+                mousePos.mouse.y = -1;
+                latestMouseMoveEvent = null;
+                enqueueInputEvent(mousePos);
+                focusInput(api.getInput());
+                sendInput();
+            }
             mouseDown = 0;
         }
 
@@ -227,9 +342,26 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
 
         function focusInput(input) {
             // In order to ensure that the browser will fire clipboard events, we always need to have something selected
+            var sx = window.scrollX, sy = window.scrollY;
             input.value = ' ';
-            input.focus();
+            //IE will force scrolling to focused input, setActive will not
+            $(input).focus({preventScroll:true});
             input.select();
+            window.scrollTo(sx,sy);
+        }
+
+        // 当快速输入多个中文标点的时候，一个标点发送一次拷贝事件，但是webswing里应用程序EDT处理时因为只有一个剪切板，而粘贴处理是先将内容放到剪切板里，
+        // 然后出发拷贝事件，如果事件没有及时处理，导致后输入的标点在剪切板里将前面的标点给覆盖掉，所以需要用keypress事件来发送文本
+        function sentWordsUsingKeypressEvent(data) {
+            for (var i = 0, length = data.length; i < length ;i++) {
+                inputEvtQueue.push({
+                    key : {
+                        type : 'keypress',
+                        character : data.charCodeAt(i),
+                        keycode : 0,
+                    }
+                });
+            }
         }
 
         function getMousePos(canvas, evt, type) {

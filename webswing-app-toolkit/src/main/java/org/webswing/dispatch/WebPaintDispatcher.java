@@ -34,6 +34,7 @@ import org.webswing.model.s2c.CopyEventMsg;
 import org.webswing.model.s2c.CursorChangeEventMsg;
 import org.webswing.model.s2c.FileDialogEventMsg;
 import org.webswing.model.s2c.FileDialogEventMsg.FileDialogEventType;
+import org.webswing.model.s2c.FocusEventMsg;
 import org.webswing.model.s2c.LinkActionMsg;
 import org.webswing.model.s2c.LinkActionMsg.LinkActionType;
 import org.webswing.model.s2c.WindowMoveActionMsg;
@@ -54,6 +55,7 @@ public class WebPaintDispatcher {
 	private volatile Map<String, Set<Rectangle>> areasToUpdate = new HashMap<String, Set<Rectangle>>();
 	private volatile WindowMoveActionMsg moveAction;
 	private volatile boolean clientReadyToReceive = true;
+	private volatile FocusEventMsg focusEvent;
 	private long lastReadyStateTime;
 	private JFileChooser fileChooserDialog;
 
@@ -104,6 +106,10 @@ public class WebPaintDispatcher {
 							if (moveAction != null) {
 								json.setMoveAction(moveAction);
 								moveAction = null;
+							}
+							if (focusEvent!= null) {
+								json.setFocusEvent(focusEvent);
+								focusEvent = null;
 							}
 							clientReadyToReceive = false;
 						}
@@ -448,6 +454,10 @@ public class WebPaintDispatcher {
 		f.setWaitForExit(Integer.getInteger(Constants.SWING_START_SYS_PROP_WAIT_FOR_EXIT,30000));
 		Services.getConnectionService().sendObject(f);
 		contentSender.shutdownNow();
+	}
+	
+	public void notifyFocusEvent(FocusEventMsg msg) {
+		focusEvent=msg;
 	}
 
 }

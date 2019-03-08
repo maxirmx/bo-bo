@@ -53,6 +53,8 @@ public class WebPaintDispatcher {
 	public static final Object webPaintLock = new Object();
 
 	private volatile Map<String, Set<Rectangle>> areasToUpdate = new HashMap<String, Set<Rectangle>>();
+	
+	private volatile Map<String, Boolean> windowRendered = new HashMap<String, Boolean>();
 	private volatile WindowMoveActionMsg moveAction;
 	private volatile boolean clientReadyToReceive = true;
 	private volatile FocusEventMsg focusEvent;
@@ -90,7 +92,7 @@ public class WebPaintDispatcher {
 								return;
 							}
 							currentAreasToUpdate = areasToUpdate;
-							areasToUpdate = Util.postponeNonShowingAreas(currentAreasToUpdate);
+							areasToUpdate = Util.postponeNonShowingAreas(currentAreasToUpdate,windowRendered);
 							if (currentAreasToUpdate.size() == 0 && moveAction == null) {
 								return;
 							}
@@ -458,6 +460,18 @@ public class WebPaintDispatcher {
 	
 	public void notifyFocusEvent(FocusEventMsg msg) {
 		focusEvent=msg;
+	}
+	
+	public void notifyWindowReset(String guid) {
+		windowRendered.put(guid,false);
+	}
+
+	public void notifyWindowDisposed(String guid) {
+		windowRendered.remove(guid);
+	}
+
+	public void notifyWindowRendered(String guid) {
+		windowRendered.put(guid,true);
 	}
 
 }

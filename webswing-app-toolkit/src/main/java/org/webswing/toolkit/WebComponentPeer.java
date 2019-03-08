@@ -124,7 +124,9 @@ public class WebComponentPeer implements ComponentPeer {
 				} else {
 					w = image.getWidth();
 					h = image.getHeight();
-					windowDecorationImage = new BufferedImage(w, h, BufferedImage.TYPE_4BYTE_ABGR);
+					if (windowDecorationImage == null || windowDecorationImage.getWidth(null) != w || windowDecorationImage.getHeight(null) != h) {
+						windowDecorationImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+					}
 				}
 				Graphics g = windowDecorationImage.getGraphics();
 				Services.getImageService().getWindowDecorationTheme().paintWindowDecoration(g, target, w, h);
@@ -302,6 +304,7 @@ public class WebComponentPeer implements ComponentPeer {
 						localSurfaceData.invalidate();
 					}
 				}
+				Util.getWebToolkit().getPaintDispatcher().notifyWindowReset(getGuid());
 				updateWindowDecorationImage();
 				repaintPeerTarget();
 			}
@@ -593,6 +596,9 @@ public class WebComponentPeer implements ComponentPeer {
 	}
 
 	public void notifyWindowAreaRepainted(Rectangle r) {
+		if (r == null) {
+			r = getBounds();
+		}
 		Util.getWebToolkit().getPaintDispatcher().notifyWindowAreaRepainted(getGuid(), r);
 	}
 

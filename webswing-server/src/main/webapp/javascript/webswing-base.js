@@ -284,22 +284,50 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
         }
 
         function renderWindow(win, context) {
-            if (win.directDraw != null) {
-                return renderDirectDrawWindow(win, context);
-            } else {
-                return renderPngDrawWindow(win, context);
-            }
+            return new Promise(function(resolved, rejected) {
+                var rPromise;
+                if (win.directDraw != null) {
+                    rPromise =  renderDirectDrawWindow(win, windowImageHolders[win.id]);
+                } else {
+                    rPromise =  renderPngDrawWindow(win, windowImageHolders[win.id]);
+                }
+                rPromise.then(function(resultImage) {
+                    windowImageHolders[win.id] = resultImage;
+                    for ( var x in win.content) {
+                        var winContent = win.content[x];
+                        var winContentPositionX = winContent.positionX < 0 ? 0 : winContent.positionX;
+                        var winContentPositionY = winContent.positionY < 0 ? 0 : winContent.positionY;
+                        var newWinContentPositionX = win.posX + winContent.positionX < 0 ? 0 : win.posX + winContent.positionX;
+                        var newWinContentPositionY = win.posY + winContent.positionY < 0 ? 0 : win.posY + winContent.positionY;
+                        if (winContent != null) {
+                            context.drawImage(resultImage, winContentPositionX , winContentPositionY, winContent.width, winContent.height,
+                                newWinContentPositionX, newWinContentPositionY, winContent.width, winContent.height);
+                        }
+                    }
+                    resolved();
+                }, function(error) {
+                    rejected(error);
+                });
+            });
         }
 
-        function renderPngDrawWindow(win, context) {
+        function renderPngDrawWindow(win, canvas) {
+            if (canvas == null) {
+                canvas = document.createElement("canvas");
+            }
+            if (canvas.width != win.width || canvas.height != win.height) {
+                canvas.width = win.width;
+                canvas.height = win.height;
+            }
+            var context = canvas.getContext("2d");
             return win.content.reduce(function(sequence, winContent) {
                 return sequence.then(function() {
                     return new Promise(function(resolved, rejected) {
                         if (winContent != null) {
                             var imageObj = new Image();
                             var onloadFunction = function() {
-                                context.drawImage(imageObj, win.posX + winContent.positionX, win.posY + winContent.positionY);
-                                resolved();
+                                context.drawImage(imageObj, winContent.positionX, winContent.positionY);
+                                resolved(canvas);
                                 imageObj.onload = null;
                                 imageObj.src = '';
                                 if (imageObj.clearAttributes != null) {
@@ -323,28 +351,12 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             }, Promise.resolve());
         }
 
-        function renderDirectDrawWindow(win, context) {
-            return new Promise(function(resolved, rejected) {
-                var ddPromise;
-                if (typeof win.directDraw === 'string') {
-                    ddPromise = directDraw.draw64(win.directDraw, windowImageHolders[win.id]);
-                } else {
-                    ddPromise = directDraw.drawBin(win.directDraw, windowImageHolders[win.id]);
-                }
-                ddPromise.then(function(resultImage) {
-                    windowImageHolders[win.id] = resultImage;
-                    for ( var x in win.content) {
-                        var winContent = win.content[x];
-                        if (winContent != null) {
-                            context.drawImage(resultImage, winContent.positionX, winContent.positionY, winContent.width, winContent.height, win.posX
-                                    + winContent.positionX, win.posY + winContent.positionY, winContent.width, winContent.height);
-                        }
-                    }
-                    resolved();
-                }, function(error) {
-                    rejected(error);
-                });
-            });
+        function renderDirectDrawWindow(win, canvas) {
+            if (typeof win.directDraw === 'string') {
+                return directDraw.draw64(win.directDraw, canvas);
+            } else {
+                return directDraw.drawBin(win.directDraw, canvas);
+            }
         }
 
         function adjustCanvasSize(canvas, width, height) {

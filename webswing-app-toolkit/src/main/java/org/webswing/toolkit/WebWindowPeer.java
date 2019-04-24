@@ -77,6 +77,7 @@ public class WebWindowPeer extends WebContainerPeer implements WindowPeer {
 			Util.getWebToolkit().getPaintDispatcher().notifyFileDialogHidden(this);
 		}
 		Util.getWebToolkit().getWindowManager().removeWindow((Window) target);
+		notifyWindowClosed();
 	}
 
 	public void setTitle(String title) {

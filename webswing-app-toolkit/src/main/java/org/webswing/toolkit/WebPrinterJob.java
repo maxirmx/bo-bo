@@ -1,5 +1,22 @@
 package org.webswing.toolkit;
 
+import org.webswing.Constants;
+import org.webswing.model.internal.PrinterJobResultMsgInternal;
+import org.webswing.toolkit.util.DummyGraphics2D;
+import org.webswing.toolkit.util.Logger;
+import org.webswing.toolkit.util.Services;
+import org.webswing.toolkit.util.Util;
+import org.webswing.toolkit.util.WebPrintDialog;
+
+import javax.print.PrintService;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.Media;
+import javax.print.attribute.standard.MediaPrintableArea;
+import javax.print.attribute.standard.MediaSize;
+import javax.print.attribute.standard.MediaSizeName;
+import javax.print.attribute.standard.OrientationRequested;
+import javax.print.attribute.standard.PageRanges;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 import java.awt.print.PageFormat;
@@ -13,24 +30,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URI;
 import java.util.UUID;
-
-import javax.print.PrintService;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.Media;
-import javax.print.attribute.standard.MediaPrintableArea;
-import javax.print.attribute.standard.MediaSize;
-import javax.print.attribute.standard.MediaSizeName;
-import javax.print.attribute.standard.OrientationRequested;
-import javax.print.attribute.standard.PageRanges;
-
-import org.webswing.Constants;
-import org.webswing.model.internal.PrinterJobResultMsgInternal;
-import org.webswing.toolkit.util.DummyGraphics2D;
-import org.webswing.toolkit.util.Logger;
-import org.webswing.toolkit.util.Services;
-import org.webswing.toolkit.util.Util;
-import org.webswing.toolkit.util.WebPrintDialog;
 
 public class WebPrinterJob extends PrinterJob {
 	private static final int DPI = 72;

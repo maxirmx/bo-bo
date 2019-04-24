@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.text.StrSubstitutor;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +34,12 @@ import org.webswing.server.util.ServerUtil;
 import org.webswing.server.util.StatUtils;
 import org.webswing.server.util.exec.SwingProcess;
 import org.webswing.toolkit.WebToolkit;
-import org.webswing.toolkit.WebToolkit6;
-import org.webswing.toolkit.WebToolkit7;
+//TODO: to uncomment this after Webtoolkit 6 and 7 can compile
+//import org.webswing.toolkit.WebToolkit6;
+//import org.webswing.toolkit.WebToolkit7;
 import org.webswing.toolkit.WebToolkit8;
-import org.webswing.toolkit.ge.WebGraphicsEnvironment6;
-import org.webswing.toolkit.ge.WebGraphicsEnvironment7;
+//import org.webswing.toolkit.ge.WebGraphicsEnvironment6;
+//import org.webswing.toolkit.ge.WebGraphicsEnvironment7;
 import org.webswing.toolkit.ge.WebGraphicsEnvironment8;
 
 import main.Main;
@@ -137,11 +138,14 @@ public class SwingInstance implements WebSessionListener {
 		if (sessionRecorder != null) {
 			sessionRecorder.saveFrame(serialized.getProtoMessage());
 		}
-		if (resource != null) {
+		if (resource != null && serialized != null) {
 			synchronized (resource) {
 				ServerUtil.broadcastMessage(resource, serialized);
-				int length = resource.forceBinaryWrite() ? serialized.getProtoMessage().length : serialized.getJsonMessage().getBytes().length;
-				StatUtils.logOutboundData(this, length);
+				if(resource.forceBinaryWrite()) {
+					StatUtils.logOutboundData(this, serialized.getProtoMessage() == null ? 0 : serialized.getProtoMessage().length);
+				} else {
+					StatUtils.logOutboundData(this, serialized.getJsonMessage() == null ? 0 : serialized.getJsonMessage().getBytes().length);
+				}
 			}
 		}
 		if (mirroredResource != null) {
@@ -208,6 +212,7 @@ public class SwingInstance implements WebSessionListener {
 
 	public void kill(int delayMs) {
 		if (app != null) {
+			log.info("SwingInstance kill()" + delayMs);
 			app.destroy(delayMs);
 		}
 	}
@@ -230,7 +235,8 @@ public class SwingInstance implements WebSessionListener {
 			String webToolkitClass;
 			String webGraphicsEnvClass;
 			String javaVersion = subs.replace(appConfig.getJavaVersion());
-			if (javaVersion.startsWith("1.6")) {
+			//TODO: to uncomment this after Webtoolkit 6 and 7 can compile
+			/*if (javaVersion.startsWith("1.6")) {
 				webSwingToolkitJarPathSpecific = getClassPathForClass(WebToolkit6.class);
 				webToolkitClass = WebToolkit6.class.getCanonicalName();
 				webGraphicsEnvClass = WebGraphicsEnvironment6.class.getCanonicalName();
@@ -238,7 +244,8 @@ public class SwingInstance implements WebSessionListener {
 				webSwingToolkitJarPathSpecific = getClassPathForClass(WebToolkit7.class);
 				webToolkitClass = WebToolkit7.class.getCanonicalName();
 				webGraphicsEnvClass = WebGraphicsEnvironment7.class.getCanonicalName();
-			} else if (javaVersion.startsWith("1.8")) {
+			} else*/
+			if (javaVersion.startsWith("1.8")) {
 				webSwingToolkitJarPathSpecific = getClassPathForClass(WebToolkit8.class);
 				webToolkitClass = WebToolkit8.class.getCanonicalName();
 				webGraphicsEnvClass = WebGraphicsEnvironment8.class.getCanonicalName();
@@ -274,8 +281,8 @@ public class SwingInstance implements WebSessionListener {
 			swing.addProperty(Constants.SWING_SESSION_TIMEOUT_SEC, appConfig.getSwingSessionTimeout());
 			swing.addProperty("awt.toolkit", webToolkitClass);
 			swing.addProperty("java.awt.headless", "false");
-			swing.addProperty("java.awt.graphicsenv", webGraphicsEnvClass);
-			swing.addProperty("java.awt.printerjob", "org.webswing.toolkit.WebPrinterJob");
+			swing.addProperty("java.awt.graphicsenv", webGraphicsEnvClass);			
+			swing.addProperty("java.awt.printerjob", "org.webswing.toolkit.WebPrinterJob");			
 			swing.addProperty("sun.awt.fontconfig", ServerUtil.createFontConfiguration(appConfig, subs));
 			swing.addProperty(Constants.SWING_SCREEN_WIDTH, ((screenWidth == null) ? Constants.SWING_SCREEN_WIDTH_MIN : screenWidth));
 			swing.addProperty(Constants.SWING_SCREEN_HEIGHT, ((screenHeight == null) ? Constants.SWING_SCREEN_HEIGHT_MIN : screenHeight));
@@ -302,10 +309,13 @@ public class SwingInstance implements WebSessionListener {
 
 				@Override
 				public void onClose() {
+					log.info("SwingInstance start() CloseListener");
 					connection.close();
 				}
 			});
-		} catch (Exception e1) {
+		}
+		catch (Exception e1) {
+			log.error("SwingInstance start() exception");
 			connection.close();
 			throw new Exception(e1);
 		}

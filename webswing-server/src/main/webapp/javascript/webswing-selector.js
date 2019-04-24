@@ -1,4 +1,4 @@
-define(['jquery','webswing-util'], function amdFactory($, util) {
+define(['jquery', 'webswing-util'], function amdFactory($, Util) {
     "use strict";
     return function SelectorModule() {
         var module = this;
@@ -66,20 +66,20 @@ define(['jquery','webswing-util'], function amdFactory($, util) {
                     var app = apps[i];
                     if (app.name === 'adminConsoleApplicationName') {
                         content += '<div class="col-xs-4 col-sm-3 col-md-2"><div class="thumbnail" style="max-width: 155px" onclick="window.location.href = \''
-                                + api.cfg.connectionUrl
-                                + 'admin\';"><img src="'
-                                + api.cfg.connectionUrl
-                                + 'admin/img/admin.png" class="img-thumbnail"/><div class="caption">Admin console</div></div></div>';
+                            + api.cfg.connectionUrl
+                            + 'admin\';"><img src="'
+                            + api.cfg.connectionUrl
+                            + 'admin/img/admin.png" class="img-thumbnail"/><div class="caption">Admin console</div></div></div>';
                     } else {
                         content += '<div class="col-xs-4 col-sm-3 col-md-2"><div class="thumbnail" style="max-width: 155px" data-id="application" data-name="'
-                                + app.name
-                                + '" data-applet="'
-                                + app.applet
-                                + '" data-always-restart="'
-                                + app.alwaysRestart
-                                + '"><img src="'
-                                + util.getImageString(app.base64Icon)
-                                + '" class="img-thumbnail"/><div class="caption">' + app.name + '</div></div></div>';
+                            + app.name
+                            + '" data-applet="'
+                            + app.applet
+                            + '" data-always-restart="'
+                            + app.alwaysRestart
+                            + '"><img src="'
+                            + Util.getImageString(app.base64Icon)
+                            + '" class="img-thumbnail"/><div class="caption">' + app.name + '</div></div></div>';
                     }
                 }
                 content += '</div>';

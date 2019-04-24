@@ -19,6 +19,7 @@ public class ConnectionHandshakeMsgIn implements MsgIn {
 	private boolean applet;
 	private boolean mirrored;
 	private boolean directDrawSupported;
+	private boolean continueSession;
 	private List<ParamMsg> params;
 
 	public String getClientId() {
@@ -116,5 +117,12 @@ public class ConnectionHandshakeMsgIn implements MsgIn {
 	public void setViewId(String viewId) {
 		this.viewId = viewId;
 	}
-	
+
+	public boolean isContinueSession() {
+		return continueSession;
+	}
+
+	public void setContinueSession(boolean continueSession) {
+		this.continueSession = continueSession;
+	}
 }

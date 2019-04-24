@@ -68,6 +68,7 @@ define([ 'jquery', 'text!templates/playback.html', 'text!templates/playback.css'
                 }
             });
         }
-
     };
+
+
 });

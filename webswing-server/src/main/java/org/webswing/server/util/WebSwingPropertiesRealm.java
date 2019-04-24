@@ -2,6 +2,8 @@ package org.webswing.server.util;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.shiro.realm.text.PropertiesRealm;
 import org.slf4j.Logger;
@@ -16,7 +18,13 @@ public class WebSwingPropertiesRealm extends PropertiesRealm implements Configur
     public WebSwingPropertiesRealm() {
         super();
         String userFile = ServerUtil.getUserPropsFileName();
-        File f = new File(URI.create(userFile));
+        File f = null;
+        try {
+            f = new File(URI.create(userFile));
+        } catch(IllegalArgumentException e) {
+            f = new File(userFile);
+        }
+       
         if (f.exists()) {
             setResourcePath(f.getAbsolutePath());
             ConfigurationManager.getInstance().registerListener(this);

@@ -14,8 +14,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.jms.IllegalStateException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,6 +146,17 @@ public class SwingProcess {
 			process.destroy();
 			forceKilled = true;
 		}
+	}
+
+
+
+	public boolean isAlive() {
+		if (process != null) {
+			boolean alive = process.isAlive();
+			log.error(name + " isAlive : " + alive);
+			return alive;
+		}
+		return false;
 	}
 
 	public boolean isRunning() {
@@ -340,7 +349,7 @@ public class SwingProcess {
 	public String getJvmArgs() {
 		return jvmArgs;
 	}
-
+	
 	public void setJvmArgs(String jvmArgs) {
 		this.jvmArgs = jvmArgs;
 	}

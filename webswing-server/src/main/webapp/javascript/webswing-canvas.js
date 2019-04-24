@@ -1,5 +1,6 @@
-define(['jquery'], function amdFactory() {
+define(['webswing-util'], function amdFactory(util) {
     "use strict";
+
     return function CanvasModule() {
         var module = this;
         var api;
@@ -19,19 +20,30 @@ define(['jquery'], function amdFactory() {
 
         function create() {
             if (canvas == null) {
-                api.cfg.rootElement.append('<canvas data-id="canvas" style="display:block" width="' + width() + '" height="' + height() + '" tabindex="-1"/>');
+                var dpr = util.dpr();
+                api.cfg.rootElement.append('<canvas data-id="canvas" style="display:block; width:' + width() + 'px;height:' + height() + 'px;" width="' + width() * dpr + '" height="' + height() * dpr + '" tabindex="-1"/>');
                 api.cfg.rootElement.append('<input data-id="input-handler" class="input-hidden" type="text" value="" />');
                 canvas = api.cfg.rootElement.find('canvas[data-id="canvas"]');
                 inputHandler = api.cfg.rootElement.find('input[data-id="input-handler"]');
             }
             if (resizeCheck == null) {
                 resizeCheck = setInterval(function () {
-                    if (!api.cfg.mirror && (canvas.width() !== width() || canvas.height() !== height())) {
-                        var snapshot = get().getContext("2d").getImageData(0, 0, get().width, get().height);
-                        get().width = width();
-                        get().height = height();
-                        get().getContext("2d").putImageData(snapshot, 0, 0);
+                	dpr = util.dpr();
+                    // 只有当当前页是激活态且非mirror模式下，才发送handshake告知尺寸变化，否则会导致非激活态的tab页变成激活态，而激活态的tab变成stolen
+                    if (api.cfg.canPaint && !api.cfg.mirror && (canvas.width() !== width() || canvas.height() !== height())) {
+                        var theCanvas = canvas[0];
+                        var snapshot = theCanvas.getContext("2d").getImageData(0, 0, theCanvas.width, theCanvas.height);
+                        var widthTmp = width();
+                        var heightTmp = height();
+                        theCanvas.width = widthTmp * dpr;
+                        theCanvas.height = heightTmp * dpr;
+                        theCanvas.style.width = widthTmp + 'px';
+                        theCanvas.style.height = heightTmp + 'px';
+                        theCanvas.getContext("2d").putImageData(snapshot, 0, 0);
                         api.sendHandshake();
+                        if (typeof(CollectGarbage) == "function") {
+                            CollectGarbage();
+                        }
                     }
                 }, 500);
             }

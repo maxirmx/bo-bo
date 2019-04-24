@@ -47,14 +47,23 @@ public class GraphicsWrapper extends Graphics2D {
 	}
 
 	private void addDirtyClipArea() {
-		Rectangle r = new Rectangle(getClipBounds());
-		addDirtyRectangleArea(r);
+		addDirtyRectangleArea(getClipBounds());
 	}
 
 	private void addDirtyRectangleArea(Rectangle r) {
-		r.translate((int) getTransform().getTranslateX(), (int) getTransform().getTranslateY());
-		r.translate(offset.x, offset.y);
-		rootPaintComponent.notifyWindowAreaRepainted(r);
+		if(r==null){
+			rootPaintComponent.notifyWindowAreaRepainted(null);
+		}else{
+			Rectangle clip = getClipBounds();
+			if(clip!=null) {
+				r = clip.intersection(r);
+			}
+			if (r.width > 0 && r.height > 0) {
+				Rectangle dirtyArea = getTransform().createTransformedShape(r).getBounds();
+				dirtyArea.translate(offset.x, offset.y);
+				rootPaintComponent.notifyWindowAreaRepainted(dirtyArea);
+			}
+		}
 	}
 
 	public WebComponentPeer getRootPaintComponent() {
@@ -153,8 +162,8 @@ public class GraphicsWrapper extends Graphics2D {
 	public void drawLine(int x1, int y1, int x2, int y2) {
 		synchronized (WebPaintDispatcher.webPaintLock) {
 			original.drawLine(x1, y1, x2, y2);
-			Rectangle r = new Rectangle(x1, y1, x2, y2);
-			addDirtyRectangleArea(r);
+			// 添加脏区域，以便图片的修改能及时发送到前台
+			addDirtyClipArea();
 		}
 	}
 

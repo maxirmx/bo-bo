@@ -1,13 +1,6 @@
 package org.webswing.directdraw.util;
 
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Shape;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -19,6 +12,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.webswing.directdraw.model.DrawConstant;
 import org.webswing.directdraw.model.DrawInstruction;
 import org.webswing.directdraw.model.GlyphListConst.StringConstValue;
 
@@ -30,14 +24,34 @@ public class RenderUtil {
 		return result;
 	}
 
-	public static BufferedImage render(BufferedImage result, List<DrawInstruction> instructions) {
-		Map<Integer, Graphics2D> map = new HashMap<Integer, Graphics2D>();
+	public static RenderContext createRenderContext(BufferedImage result) {
+		return new RenderContext(result);
 
-		Graphics2D currentGraphics = null;
-		for (DrawInstruction di : instructions) {
+	}
+
+	public static RenderContext createRenderContext(BufferedImage fallbackImage, RenderingHints hints) {
+		return new RenderContext(fallbackImage, hints);
+	}
+
+	public static class RenderContext {
+		private final RenderingHints hints;
+		private Map<Integer, Graphics2D> map = new HashMap<Integer, Graphics2D>();
+		private Graphics2D currentGraphics = null;
+		private BufferedImage result;
+
+		RenderContext(BufferedImage image) {
+			this(image, null);
+		}
+
+		public RenderContext(BufferedImage image, RenderingHints hints) {
+			this.result = image;
+			this.hints = hints;
+		}
+
+		public void interpret(DrawInstruction di) {
 			switch (di.getInstruction()) {
 			case GRAPHICS_CREATE:
-				currentGraphics = iprtGraphicsCreate(result, di, map);
+				currentGraphics = iprtGraphicsCreate(result, di, map, hints);
 				break;
 			case GRAPHICS_DISPOSE: {
 				Graphics2D graphics = map.remove(getValue(0, di, Integer.class));
@@ -90,10 +104,23 @@ public class RenderUtil {
 			}
 		}
 
-		for (Graphics2D g2d : map.values()) {
-			g2d.dispose();
+		public void interpret(List<DrawInstruction> instructions) {
+			for (DrawInstruction di : instructions) {
+				interpret(di);
+			}
 		}
 
+		public void dispose() {
+			for (Graphics2D g2d : map.values()) {
+				g2d.dispose();
+			}
+		}
+	}
+
+	public static BufferedImage render(BufferedImage result, List<DrawInstruction> instructions) {
+		RenderContext ctx = new RenderContext(result);
+		ctx.interpret(instructions);
+		ctx.dispose();
 		return result;
 	}
 
@@ -163,8 +190,12 @@ public class RenderUtil {
 	}
 
 	private static void iprtDraw(Graphics2D g, DrawInstruction di) {
-		g.setClip(getShape(1, di));
-		g.draw(getShape(0, di));
+		if(di.getArg(1)!= DrawConstant.nullConst){
+			g.setClip(getShape(1, di));
+		}
+		if(di.getArg(0)!=DrawConstant.nullConst) {
+			g.draw(getShape(0, di));
+		}
 	}
 
 	private static void iprtFill(Graphics2D g, DrawInstruction di) {
@@ -173,7 +204,12 @@ public class RenderUtil {
 	}
 
 	private static void iprtSetComposite(Graphics2D currentg, DrawInstruction di) {
-		currentg.setComposite(getValue(0, di, Composite.class));
+		Composite composite = getValue(0, di, Composite.class);
+		if (composite instanceof AlphaComposite) {
+			currentg.setComposite(composite);
+		} else if (composite instanceof XorModeComposite) {
+			currentg.setXORMode(((XorModeComposite) composite).getXorColor());
+		}
 	}
 
 	private static void iprtSetFont(Graphics2D currentg, DrawInstruction di) {
@@ -192,13 +228,16 @@ public class RenderUtil {
 		currentg.setPaint(getPaint(0, di));
 	}
 
-	private static Graphics2D iprtGraphicsCreate(BufferedImage result, DrawInstruction di, Map<Integer, Graphics2D> gmap) {
+	private static Graphics2D iprtGraphicsCreate(BufferedImage result, DrawInstruction di, Map<Integer, Graphics2D> gmap, RenderingHints hints) {
 		AffineTransform transform = getValue(1, di);
 		Stroke stroke = getValue(2, di);
 		Composite composite = getValue(3, di);
 		Paint paint = getPaint(4, di);
 		Font font = getValue(5, di);
 		Graphics2D g = result.createGraphics();
+		if (hints != null) {
+			g.setRenderingHints(hints);
+		}
 		if (transform != null) {
 			g.setTransform(transform);
 		}
@@ -232,7 +271,7 @@ public class RenderUtil {
 		return getValue(index, instruction);
 	}
 
-	public static Shape getShape(int index, DrawInstruction instruction) {
+	private static Shape getShape(int index, DrawInstruction instruction) {
 		return getValue(index, instruction);
 	}
 

@@ -56,7 +56,13 @@ public class WebFramePeer extends WebWindowPeer implements FramePeer {
 	public Rectangle getBoundsPrivate() {
 		return null;
 	}
-	
+
+	@Override
+	public void emulateActivation(boolean activate)
+	{
+		
+	}
+
 	@Override
 	public void show() {
 		super.show();

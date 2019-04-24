@@ -1,13 +1,17 @@
 define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDraw, util) {
     "use strict";
+
     return function BaseModule() {
         var module = this;
         var api;
         module.injects = api = {
             cfg : 'webswing.config',
             disconnect : 'webswing.disconnect',
+            sendKeyboradEvent: 'webswing.sendKeyboradEvent',
+            fireCallBack : 'webswing.fireCallBack',
             getSocketId : 'socket.uuid',
             getCanvas : 'canvas.get',
+            getInput: 'canvas.getInput',
             registerInput : 'input.register',
             sendInput : 'input.sendInput',
             disposeInput : 'input.dispose',
@@ -51,12 +55,13 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
         var drawingQ = [];
 
         var windowImageHolders = {};
-        var directDraw = new WebswingDirectDraw({});
-
+        var directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: util.dpr});
+ 
         function startApplication(name, applet, alwaysReset) {
             if (alwaysReset===true){
                 api.disposeIdentity();
             }
+
             initialize(api.getUser() + api.getIdentity() + name, name, applet, false);
         }
 
@@ -79,7 +84,8 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             if (isMirror) {
                 repaint();
             }
-            api.showDialog(api.startingDialog);
+            //api.showDialog(api.startingDialog);
+            api.fireCallBack({type: 'webswingInitialied'});
         }
 
         function beforeUnloadEventHandler(evt) {
@@ -92,6 +98,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             handshake();
             repaint();
             ack();
+            api.fireCallBack({type: 'continueSession'});
         }
 
         function resetState() {
@@ -109,7 +116,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             timer3 = setInterval(servletHeartbeat, 100000);
             windowImageHolders = {};
             directDraw.dispose();
-            directDraw = new WebswingDirectDraw({});
+            directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: util.dpr});
         }
 
         function sendMessageEvent(message) {
@@ -125,8 +132,8 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
         }
 
         function servletHeartbeat() {
-        	//touch servlet session to avoid timeout
-        	api.login(function(){},function(){});
+            //touch servlet session to avoid timeout
+            api.login(function(){},function(){});
         }
 
         function repaint() {
@@ -138,34 +145,54 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
         }
 
         function kill() {
-        	if (api.cfg.hasControl) {
-        		sendMessageEvent('killSwing');
-        	}
+            if (api.cfg.hasControl) {
+                sendMessageEvent('killSwing');
+            }
         }
 
         function unload() {
-        	if(!api.cfg.mirrorMode){
-        		sendMessageEvent('unload');
-        	}
+            if(!api.cfg.mirrorMode){
+                sendMessageEvent('unload');
+            }
         }
 
-        function handshake() {
-            api.sendInput(getHandShake(api.getCanvas()));
+        function handshake(continueOldSession) {
+            api.sendInput(getHandShake(api.getCanvas(), continueOldSession));
         }
 
         function dispose() {
             clearInterval(timer1);
             clearInterval(timer2);
+            clearInterval(timer3);
             unload();
             api.sendInput();
-            resetState();
+            drawingQ.length = 0
+            drawingQ = null;
+            drawingLock = null;
+            api.cfg.clientId = null;
+            api.cfg.viewId = null;
+            api.cfg.appName = null;
+            api.cfg.hasControl = false;
+            api.cfg.mirrorMode = false;
+            api.cfg.canPaint = false;
+            for (var key in windowImageHolders) {
+                if (windowImageHolders.hasOwnProperty(key)) {
+                    windowImageHolders[key] = null;
+                }
+            }
+            windowImageHolders = null;
             api.disposeInput();
             api.disposeTouch();
             window.removeEventListener('beforeunload', beforeUnloadEventHandler);
             directDraw.dispose();
+            directDraw = null;
+            api.fireCallBack({type: 'webswingDispose'});
         }
 
         function processMessage(data) {
+            if(data.javaResponse && data.javaResponse.value && data.javaResponse.value.javaObject &&  data.javaResponse.value.javaObject.id != null){
+                api.fireCallBack({type: "deleteIdforTitle"});
+            }
             if (data.playback != null) {
                 api.playbackInfo(data);
             }
@@ -174,25 +201,33 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             }
             if (data.event != null && !api.cfg.recordingPlayback) {
                 if (data.event == "shutDownNotification") {
+                    api.fireCallBack({type: 'clientShutDown'});
                     api.showDialog(api.stoppedDialog);
                     api.disconnect();
                 } else if (data.event == "applicationAlreadyRunning") {
                     api.showDialog(api.applicationAlreadyRunning);
-                } else if (data.event == "tooManyClientsNotification") {
+                }
+                else if (data.event == "tooManyClientsNotification") {
                     api.showDialog(api.tooManyClientsNotification);
                 } else if (data.event == "continueOldSession") {
                     api.cfg.canPaint = false;
-                    api.showDialog(api.continueOldSessionDialog);
-                }else if (data.event == "continueOldSessionAutomatic") {
-                	continueSession();
-                }else if (data.event == "sessionStolenNotification") {
-                	api.cfg.canPaint = false;
-                	api.showDialog(api.sessionStolenNotification);
+                    //api.showDialog(api.continueOldSessionDialog);
+                    continueSession();
+                } else if (data.event == "continueOldSessionAutomatic") {
+                    api.fireCallBack({type: "deleteIdforTitle"});
+                    continueSession();
+                } else if (data.event == "sessionStolenNotification") {
+                    api.fireCallBack({type: 'stopSession'});
+                    api.cfg.canPaint = false;
+                    if (document.visibilityState === 'visible') {
+                        api.showDialog(api.sessionStolenNotification);
+                    }
                 }
                 return;
             }
             if (data.jsRequest != null && api.cfg.mirrorMode == false && !api.cfg.recordingPlayback) {
                 api.processJsLink(data.jsRequest);
+                return;
             }
             if (api.cfg.canPaint) {
                 queuePaintingRequest(data);
@@ -226,17 +261,28 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 if (data.linkAction.action == 'url') {
                     api.openLink(data.linkAction.src);
                 } else if (data.linkAction.action == 'print') {
-                    api.print(encodeURIComponent(location.pathname + 'file?id=' + data.linkAction.src));
+                    api.print(encodeURIComponent('file?id=' + data.linkAction.src));
                 } else if (data.linkAction.action == 'file') {
                     api.download('file?id=' + data.linkAction.src);
                 }
             }
             if (data.moveAction != null) {
-                copy(data.moveAction.sx, data.moveAction.sy, data.moveAction.dx, data.moveAction.dy, data.moveAction.width, data.moveAction.height,
-                        context);
+                copy(data.moveAction.sx, data.moveAction.sy, data.moveAction.dx, data.moveAction.dy, data.moveAction.width, data.moveAction.height, context);
+            }
+            if (data.focusEvent != null) {
+                var input=api.getInput();
+                if(data.focusEvent.type === 'focusWithCarretGained'){
+                    input.style.top = (data.focusEvent.y+data.focusEvent.caretY)+'px';
+                    input.style.left = (data.focusEvent.x+data.focusEvent.caretX)+'px';
+                    input.style.height = data.focusEvent.caretH+'px';
+                }else{
+                    input.style.top = null;
+                    input.style.left = null;
+                    input.style.height = null;
+                }
             }
             if (data.cursorChange != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {
-                canvas.style.cursor = data.cursorChange.cursor;
+                canvas.style.cursor = getCursorStyle(data.cursorChange);
             }
             if (data.copyEvent != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {
                 api.displayCopyBar(data.copyEvent);
@@ -249,6 +295,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 }
             }
             if (data.closedWindow != null) {
+                windowImageHolders[data.closedWindow] = null;
                 delete windowImageHolders[data.closedWindow];
             }
             // first is always the background
@@ -270,6 +317,8 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             }
             // regular windows (background removed)
             if (data.windows != null) {
+
+
                 data.windows.reduce(function(sequence, window) {
                     return sequence.then(function() {
                         return renderWindow(window, context);
@@ -287,23 +336,11 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             return new Promise(function(resolved, rejected) {
                 var rPromise;
                 if (win.directDraw != null) {
-                    rPromise =  renderDirectDrawWindow(win, windowImageHolders[win.id]);
+                    rPromise =  renderDirectDrawWindow(win, context);//windowImageHolders[win.id]);
                 } else {
-                    rPromise =  renderPngDrawWindow(win, windowImageHolders[win.id]);
+                    rPromise =  renderPngDrawWindow(win, context);
                 }
                 rPromise.then(function(resultImage) {
-                    windowImageHolders[win.id] = resultImage;
-                    for ( var x in win.content) {
-                        var winContent = win.content[x];
-                        var winContentPositionX = winContent.positionX < 0 ? 0 : winContent.positionX;
-                        var winContentPositionY = winContent.positionY < 0 ? 0 : winContent.positionY;
-                        var newWinContentPositionX = win.posX + winContent.positionX < 0 ? 0 : win.posX + winContent.positionX;
-                        var newWinContentPositionY = win.posY + winContent.positionY < 0 ? 0 : win.posY + winContent.positionY;
-                        if (winContent != null) {
-                            context.drawImage(resultImage, winContentPositionX , winContentPositionY, winContent.width, winContent.height,
-                                newWinContentPositionX, newWinContentPositionY, winContent.width, winContent.height);
-                        }
-                    }
                     resolved();
                 }, function(error) {
                     rejected(error);
@@ -311,35 +348,27 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             });
         }
 
-        function renderPngDrawWindow(win, canvas) {
-            if (canvas == null) {
-                canvas = document.createElement("canvas");
-            }
-            if (canvas.width != win.width || canvas.height != win.height) {
-                canvas.width = win.width;
-                canvas.height = win.height;
-            }
-            var context = canvas.getContext("2d");
+        function renderPngDrawWindow(win, context) {
+            var decodedImages = [];
             return win.content.reduce(function(sequence, winContent) {
-                return sequence.then(function() {
+                return sequence.then(function(decodedImages) {
                     return new Promise(function(resolved, rejected) {
                         if (winContent != null) {
                             var imageObj = new Image();
+                            var ieTimeoutId = null;
                             var onloadFunction = function() {
-                                context.drawImage(imageObj, winContent.positionX, winContent.positionY);
-                                resolved(canvas);
-                                imageObj.onload = null;
-                                imageObj.src = '';
-                                if (imageObj.clearAttributes != null) {
-                                    imageObj.clearAttributes();
+                                if (ieTimeoutId) {
+                                    window.clearTimeout(ieTimeoutId);
                                 }
-                                imageObj = null;
+                                decodedImages.push({image:imageObj,winContent:winContent})
+                                resolved(decodedImages);
+
                             };
                             imageObj.onload = function() {
                                 // fix for ie - onload is fired before the image is ready for rendering to canvas.
                                 // This is an ugly quickfix
                                 if (api.cfg.ieVersion && api.cfg.ieVersion <= 10) {
-                                    window.setTimeout(onloadFunction, 20);
+                                    ieTimeoutId = window.setTimeout(onloadFunction, 20);
                                 } else {
                                     onloadFunction();
                                 }
@@ -348,36 +377,110 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                         }
                     });
                 }, errorHandler);
-            }, Promise.resolve());
+            }, Promise.resolve(decodedImages)).then(function(decodedImages){
+                decodedImages.forEach(function(image, idx){
+                    var dpr = util.dpr();
+                    //for U2020 , sprites (splitted images) are not available in some swing pages like splash or create NE, add a list validation
+                    if(win.sprites && win.sprites.length != 0){
+                        //the server sends bigger chunks of size 6 each of which is 6px, so index to start is 36
+                        const IMAGE_START_INDEX = 36;
+                        for(var i = IMAGE_START_INDEX * idx; i < IMAGE_START_INDEX * (idx+1) && i < win.sprites.length; i++ ){
+                            var sprite = win.sprites[i];
+                            context.save()
+                            context.setTransform(dpr, 0, 0, dpr, 0, 0);
+                            context.drawImage(image.image, sprite.spriteX, sprite.spriteY, sprite.width, sprite.height, win.posX + sprite.positionX, win.posY + sprite.positionY, sprite.width, sprite.height);
+                            context.restore();
+                        }
+                    } else {
+                        context.save()
+                        context.setTransform(dpr, 0, 0, dpr, 0, 0);
+                        context.drawImage(image.image, win.posX + image.winContent.positionX, win.posY + image.winContent.positionY);
+                        context.restore();
+                    }
+                    image.image.onload = null;
+                    image.image.src = '';
+                    if (image.image.clearAttributes != null) {
+                        image.image.clearAttributes();
+                    }
+                })
+                //return canvas;
+            });
         }
+ 
+        function renderDirectDrawWindow(win, context) {
+            return new Promise(function(resolved, rejected) {
+                            var ddPromise;
+                            if (typeof win.directDraw === 'string') {
+                                ddPromise = directDraw.draw64(win.directDraw, windowImageHolders[win.id]);
+                            } else {
+                                ddPromise = directDraw.drawBin(win.directDraw, windowImageHolders[win.id]);
+                            }
+                            ddPromise.then(function(resultImage) {
+                                windowImageHolders[win.id] = resultImage;
+                                var dpr = util.dpr();
+                                for ( var x in win.content) {
+                                    var winContent = win.content[x];
+                                    if (winContent != null) {
+                                       var sx = Math.min(resultImage.width, Math.max(0, winContent.positionX * dpr));
+                                       var sy = Math.min(resultImage.height, Math.max(0, winContent.positionY * dpr));
+                                       var sw = Math.min(resultImage.width - sx, winContent.width * dpr - (sx - winContent.positionX * dpr));
+                                       var sh = Math.min(resultImage.height - sy, winContent.height * dpr - (sy - winContent.positionY * dpr));
 
-        function renderDirectDrawWindow(win, canvas) {
-            if (typeof win.directDraw === 'string') {
-                return directDraw.draw64(win.directDraw, canvas);
-            } else {
-                return directDraw.drawBin(win.directDraw, canvas);
-            }
+                                       var dx = win.posX * dpr + sx;
+                                       var dy = win.posY * dpr + sy;
+                                        var dw = sw;
+                                        var dh = sh;
+
+                                        if (dx <= context.canvas.width && dy <= context.canvas.height && dx + dw > 0 && dy + dh > 0) {
+                                            context.drawImage(resultImage, sx, sy, sw, sh, dx, dy, dw, dh);
+                                        }
+                                    }
+                                }
+                                resolved();
+                            }, function(error) {
+                                rejected(error);
+                            });
+                        });
         }
-
+ 
         function adjustCanvasSize(canvas, width, height) {
-            if (canvas.width != width || canvas.height != height) {
-                var snapshot = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height);
-                canvas.width = width;
-                canvas.height = height;
-                canvas.getContext("2d").putImageData(snapshot, 0, 0);
+        	var dpr = util.dpr();
+            if (canvas.width != width * dpr || canvas.height != height * dpr) {
+                var ctx = canvas.getContext("2d");
+                var snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                ctx.putImageData(snapshot, 0, 0);
+                if (typeof(CollectGarbage) == "function") {
+                    CollectGarbage();
+                }
+            }
+        }
+ 
+        function clear(x, y, w, h, context) {
+            var dpr = util.dpr();
+            context.clearRect(x * dpr, y * dpr, w * dpr, h * dpr);
+        }
+ 
+        function copy(sx, sy, dx, dy, w, h, context) {
+            var dpr = util.dpr();
+            var copy = context.getImageData(sx * dpr, sy * dpr, w * dpr, h * dpr);
+            context.putImageData(copy, dx * dpr, dy * dpr);
+            if (typeof(CollectGarbage) == "function") {
+                CollectGarbage();
             }
         }
 
-        function clear(x, y, w, h, context) {
-            context.clearRect(x, y, w, h);
+        function getCursorStyle(cursorMsg) {
+            if (cursorMsg.b64img == null) {
+                return cursorMsg.cursor;
+            } else {
+                var data = util.getImageString(cursorMsg.b64img);
+                return 'url(' + data + ') ' + cursorMsg.x + ' ' + cursorMsg.y + ' , auto';
+            }
         }
 
-        function copy(sx, sy, dx, dy, w, h, context) {
-            var copy = context.getImageData(sx, sy, w, h);
-            context.putImageData(copy, dx, dy);
-        }
-
-        function getHandShake(canvas) {
+        function getHandShake(canvas, continueOldSession) {
             var handshake = {
                 applicationName : api.cfg.appName,
                 clientId : api.cfg.clientId,
@@ -385,7 +488,8 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 sessionId : api.getSocketId(),
                 locale : api.getLocale(),
                 mirrored : api.cfg.mirrorMode,
-                directDrawSupported : api.cfg.typedArraysSupported
+                directDrawSupported : api.cfg.typedArraysSupported  && !(api.cfg.ieVersion && api.cfg.ieVersion <= 10),
+                continueSession : continueOldSession || false
             };
 
             if (!api.cfg.mirrorMode) {
@@ -405,4 +509,5 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             throw error;
         }
     };
+
 });

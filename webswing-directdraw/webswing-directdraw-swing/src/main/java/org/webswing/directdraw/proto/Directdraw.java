@@ -9757,45 +9757,45 @@ public final class Directdraw {
   public interface RectangleProtoOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required sint32 x = 1;
+    // required float x = 1;
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
     boolean hasX();
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
-    int getX();
+    float getX();
 
-    // required sint32 y = 2;
+    // required float y = 2;
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
     boolean hasY();
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
-    int getY();
+    float getY();
 
-    // required sint32 w = 3;
+    // required float w = 3;
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
     boolean hasW();
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
-    int getW();
+    float getW();
 
-    // required sint32 h = 4;
+    // required float h = 4;
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
     boolean hasH();
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
-    int getH();
+    float getH();
   }
   /**
    * Protobuf type {@code org.webswing.directdraw.proto.RectangleProto}
@@ -9848,24 +9848,24 @@ public final class Directdraw {
               }
               break;
             }
-            case 8: {
+            case 13: {
               bitField0_ |= 0x00000001;
-              x_ = input.readSInt32();
+              x_ = input.readFloat();
               break;
             }
-            case 16: {
+            case 21: {
               bitField0_ |= 0x00000002;
-              y_ = input.readSInt32();
+              y_ = input.readFloat();
               break;
             }
-            case 24: {
+            case 29: {
               bitField0_ |= 0x00000004;
-              w_ = input.readSInt32();
+              w_ = input.readFloat();
               break;
             }
-            case 32: {
+            case 37: {
               bitField0_ |= 0x00000008;
-              h_ = input.readSInt32();
+              h_ = input.readFloat();
               break;
             }
           }
@@ -9908,75 +9908,75 @@ public final class Directdraw {
     }
 
     private int bitField0_;
-    // required sint32 x = 1;
+    // required float x = 1;
     public static final int X_FIELD_NUMBER = 1;
-    private int x_;
+    private float x_;
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
     public boolean hasX() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
-    public int getX() {
+    public float getX() {
       return x_;
     }
 
-    // required sint32 y = 2;
+    // required float y = 2;
     public static final int Y_FIELD_NUMBER = 2;
-    private int y_;
+    private float y_;
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
     public boolean hasY() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
-    public int getY() {
+    public float getY() {
       return y_;
     }
 
-    // required sint32 w = 3;
+    // required float w = 3;
     public static final int W_FIELD_NUMBER = 3;
-    private int w_;
+    private float w_;
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
     public boolean hasW() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
-    public int getW() {
+    public float getW() {
       return w_;
     }
 
-    // required sint32 h = 4;
+    // required float h = 4;
     public static final int H_FIELD_NUMBER = 4;
-    private int h_;
+    private float h_;
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
     public boolean hasH() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
-    public int getH() {
+    public float getH() {
       return h_;
     }
 
     private void initFields() {
-      x_ = 0;
-      y_ = 0;
-      w_ = 0;
-      h_ = 0;
+      x_ = 0F;
+      y_ = 0F;
+      w_ = 0F;
+      h_ = 0F;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -10007,16 +10007,16 @@ public final class Directdraw {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeSInt32(1, x_);
+        output.writeFloat(1, x_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeSInt32(2, y_);
+        output.writeFloat(2, y_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeSInt32(3, w_);
+        output.writeFloat(3, w_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeSInt32(4, h_);
+        output.writeFloat(4, h_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -10029,19 +10029,19 @@ public final class Directdraw {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(1, x_);
+          .computeFloatSize(1, x_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(2, y_);
+          .computeFloatSize(2, y_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(3, w_);
+          .computeFloatSize(3, w_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(4, h_);
+          .computeFloatSize(4, h_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -10159,13 +10159,13 @@ public final class Directdraw {
 
       public Builder clear() {
         super.clear();
-        x_ = 0;
+        x_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000001);
-        y_ = 0;
+        y_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000002);
-        w_ = 0;
+        w_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000004);
-        h_ = 0;
+        h_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
@@ -10282,134 +10282,134 @@ public final class Directdraw {
       }
       private int bitField0_;
 
-      // required sint32 x = 1;
-      private int x_ ;
+      // required float x = 1;
+      private float x_ ;
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
       public boolean hasX() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
-      public int getX() {
+      public float getX() {
         return x_;
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
-      public Builder setX(int value) {
+      public Builder setX(float value) {
         bitField0_ |= 0x00000001;
         x_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
       public Builder clearX() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        x_ = 0;
+        x_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 y = 2;
-      private int y_ ;
+      // required float y = 2;
+      private float y_ ;
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
       public boolean hasY() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
-      public int getY() {
+      public float getY() {
         return y_;
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
-      public Builder setY(int value) {
+      public Builder setY(float value) {
         bitField0_ |= 0x00000002;
         y_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
       public Builder clearY() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        y_ = 0;
+        y_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 w = 3;
-      private int w_ ;
+      // required float w = 3;
+      private float w_ ;
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
       public boolean hasW() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
-      public int getW() {
+      public float getW() {
         return w_;
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
-      public Builder setW(int value) {
+      public Builder setW(float value) {
         bitField0_ |= 0x00000004;
         w_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
       public Builder clearW() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        w_ = 0;
+        w_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 h = 4;
-      private int h_ ;
+      // required float h = 4;
+      private float h_ ;
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
       public boolean hasH() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
-      public int getH() {
+      public float getH() {
         return h_;
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
-      public Builder setH(int value) {
+      public Builder setH(float value) {
         bitField0_ |= 0x00000008;
         h_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
       public Builder clearH() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        h_ = 0;
+        h_ = 0F;
         onChanged();
         return this;
       }
@@ -10428,45 +10428,45 @@ public final class Directdraw {
   public interface EllipseProtoOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required sint32 x = 1;
+    // required float x = 1;
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
     boolean hasX();
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
-    int getX();
+    float getX();
 
-    // required sint32 y = 2;
+    // required float y = 2;
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
     boolean hasY();
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
-    int getY();
+    float getY();
 
-    // required sint32 w = 3;
+    // required float w = 3;
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
     boolean hasW();
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
-    int getW();
+    float getW();
 
-    // required sint32 h = 4;
+    // required float h = 4;
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
     boolean hasH();
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
-    int getH();
+    float getH();
   }
   /**
    * Protobuf type {@code org.webswing.directdraw.proto.EllipseProto}
@@ -10519,24 +10519,24 @@ public final class Directdraw {
               }
               break;
             }
-            case 8: {
+            case 13: {
               bitField0_ |= 0x00000001;
-              x_ = input.readSInt32();
+              x_ = input.readFloat();
               break;
             }
-            case 16: {
+            case 21: {
               bitField0_ |= 0x00000002;
-              y_ = input.readSInt32();
+              y_ = input.readFloat();
               break;
             }
-            case 24: {
+            case 29: {
               bitField0_ |= 0x00000004;
-              w_ = input.readSInt32();
+              w_ = input.readFloat();
               break;
             }
-            case 32: {
+            case 37: {
               bitField0_ |= 0x00000008;
-              h_ = input.readSInt32();
+              h_ = input.readFloat();
               break;
             }
           }
@@ -10579,75 +10579,75 @@ public final class Directdraw {
     }
 
     private int bitField0_;
-    // required sint32 x = 1;
+    // required float x = 1;
     public static final int X_FIELD_NUMBER = 1;
-    private int x_;
+    private float x_;
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
     public boolean hasX() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
-    public int getX() {
+    public float getX() {
       return x_;
     }
 
-    // required sint32 y = 2;
+    // required float y = 2;
     public static final int Y_FIELD_NUMBER = 2;
-    private int y_;
+    private float y_;
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
     public boolean hasY() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
-    public int getY() {
+    public float getY() {
       return y_;
     }
 
-    // required sint32 w = 3;
+    // required float w = 3;
     public static final int W_FIELD_NUMBER = 3;
-    private int w_;
+    private float w_;
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
     public boolean hasW() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
-    public int getW() {
+    public float getW() {
       return w_;
     }
 
-    // required sint32 h = 4;
+    // required float h = 4;
     public static final int H_FIELD_NUMBER = 4;
-    private int h_;
+    private float h_;
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
     public boolean hasH() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
-    public int getH() {
+    public float getH() {
       return h_;
     }
 
     private void initFields() {
-      x_ = 0;
-      y_ = 0;
-      w_ = 0;
-      h_ = 0;
+      x_ = 0F;
+      y_ = 0F;
+      w_ = 0F;
+      h_ = 0F;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -10678,16 +10678,16 @@ public final class Directdraw {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeSInt32(1, x_);
+        output.writeFloat(1, x_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeSInt32(2, y_);
+        output.writeFloat(2, y_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeSInt32(3, w_);
+        output.writeFloat(3, w_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeSInt32(4, h_);
+        output.writeFloat(4, h_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -10700,19 +10700,19 @@ public final class Directdraw {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(1, x_);
+          .computeFloatSize(1, x_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(2, y_);
+          .computeFloatSize(2, y_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(3, w_);
+          .computeFloatSize(3, w_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(4, h_);
+          .computeFloatSize(4, h_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -10830,13 +10830,13 @@ public final class Directdraw {
 
       public Builder clear() {
         super.clear();
-        x_ = 0;
+        x_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000001);
-        y_ = 0;
+        y_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000002);
-        w_ = 0;
+        w_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000004);
-        h_ = 0;
+        h_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
@@ -10953,134 +10953,134 @@ public final class Directdraw {
       }
       private int bitField0_;
 
-      // required sint32 x = 1;
-      private int x_ ;
+      // required float x = 1;
+      private float x_ ;
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
       public boolean hasX() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
-      public int getX() {
+      public float getX() {
         return x_;
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
-      public Builder setX(int value) {
+      public Builder setX(float value) {
         bitField0_ |= 0x00000001;
         x_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
       public Builder clearX() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        x_ = 0;
+        x_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 y = 2;
-      private int y_ ;
+      // required float y = 2;
+      private float y_ ;
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
       public boolean hasY() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
-      public int getY() {
+      public float getY() {
         return y_;
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
-      public Builder setY(int value) {
+      public Builder setY(float value) {
         bitField0_ |= 0x00000002;
         y_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
       public Builder clearY() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        y_ = 0;
+        y_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 w = 3;
-      private int w_ ;
+      // required float w = 3;
+      private float w_ ;
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
       public boolean hasW() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
-      public int getW() {
+      public float getW() {
         return w_;
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
-      public Builder setW(int value) {
+      public Builder setW(float value) {
         bitField0_ |= 0x00000004;
         w_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
       public Builder clearW() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        w_ = 0;
+        w_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 h = 4;
-      private int h_ ;
+      // required float h = 4;
+      private float h_ ;
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
       public boolean hasH() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
-      public int getH() {
+      public float getH() {
         return h_;
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
-      public Builder setH(int value) {
+      public Builder setH(float value) {
         bitField0_ |= 0x00000008;
         h_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
       public Builder clearH() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        h_ = 0;
+        h_ = 0F;
         onChanged();
         return this;
       }
@@ -11099,65 +11099,65 @@ public final class Directdraw {
   public interface RoundRectangleProtoOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required sint32 x = 1;
+    // required float x = 1;
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
     boolean hasX();
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
-    int getX();
+    float getX();
 
-    // required sint32 y = 2;
+    // required float y = 2;
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
     boolean hasY();
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
-    int getY();
+    float getY();
 
-    // required sint32 w = 3;
+    // required float w = 3;
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
     boolean hasW();
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
-    int getW();
+    float getW();
 
-    // required sint32 h = 4;
+    // required float h = 4;
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
     boolean hasH();
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
-    int getH();
+    float getH();
 
-    // optional sint32 arcW = 5;
+    // optional float arcW = 5;
     /**
-     * <code>optional sint32 arcW = 5;</code>
+     * <code>optional float arcW = 5;</code>
      */
     boolean hasArcW();
     /**
-     * <code>optional sint32 arcW = 5;</code>
+     * <code>optional float arcW = 5;</code>
      */
-    int getArcW();
+    float getArcW();
 
-    // optional sint32 arcH = 6;
+    // optional float arcH = 6;
     /**
-     * <code>optional sint32 arcH = 6;</code>
+     * <code>optional float arcH = 6;</code>
      */
     boolean hasArcH();
     /**
-     * <code>optional sint32 arcH = 6;</code>
+     * <code>optional float arcH = 6;</code>
      */
-    int getArcH();
+    float getArcH();
   }
   /**
    * Protobuf type {@code org.webswing.directdraw.proto.RoundRectangleProto}
@@ -11210,34 +11210,34 @@ public final class Directdraw {
               }
               break;
             }
-            case 8: {
+            case 13: {
               bitField0_ |= 0x00000001;
-              x_ = input.readSInt32();
+              x_ = input.readFloat();
               break;
             }
-            case 16: {
+            case 21: {
               bitField0_ |= 0x00000002;
-              y_ = input.readSInt32();
+              y_ = input.readFloat();
               break;
             }
-            case 24: {
+            case 29: {
               bitField0_ |= 0x00000004;
-              w_ = input.readSInt32();
+              w_ = input.readFloat();
               break;
             }
-            case 32: {
+            case 37: {
               bitField0_ |= 0x00000008;
-              h_ = input.readSInt32();
+              h_ = input.readFloat();
               break;
             }
-            case 40: {
+            case 45: {
               bitField0_ |= 0x00000010;
-              arcW_ = input.readSInt32();
+              arcW_ = input.readFloat();
               break;
             }
-            case 48: {
+            case 53: {
               bitField0_ |= 0x00000020;
-              arcH_ = input.readSInt32();
+              arcH_ = input.readFloat();
               break;
             }
           }
@@ -11280,109 +11280,109 @@ public final class Directdraw {
     }
 
     private int bitField0_;
-    // required sint32 x = 1;
+    // required float x = 1;
     public static final int X_FIELD_NUMBER = 1;
-    private int x_;
+    private float x_;
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
     public boolean hasX() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
-    public int getX() {
+    public float getX() {
       return x_;
     }
 
-    // required sint32 y = 2;
+    // required float y = 2;
     public static final int Y_FIELD_NUMBER = 2;
-    private int y_;
+    private float y_;
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
     public boolean hasY() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
-    public int getY() {
+    public float getY() {
       return y_;
     }
 
-    // required sint32 w = 3;
+    // required float w = 3;
     public static final int W_FIELD_NUMBER = 3;
-    private int w_;
+    private float w_;
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
     public boolean hasW() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
-    public int getW() {
+    public float getW() {
       return w_;
     }
 
-    // required sint32 h = 4;
+    // required float h = 4;
     public static final int H_FIELD_NUMBER = 4;
-    private int h_;
+    private float h_;
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
     public boolean hasH() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
-    public int getH() {
+    public float getH() {
       return h_;
     }
 
-    // optional sint32 arcW = 5;
+    // optional float arcW = 5;
     public static final int ARCW_FIELD_NUMBER = 5;
-    private int arcW_;
+    private float arcW_;
     /**
-     * <code>optional sint32 arcW = 5;</code>
+     * <code>optional float arcW = 5;</code>
      */
     public boolean hasArcW() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional sint32 arcW = 5;</code>
+     * <code>optional float arcW = 5;</code>
      */
-    public int getArcW() {
+    public float getArcW() {
       return arcW_;
     }
 
-    // optional sint32 arcH = 6;
+    // optional float arcH = 6;
     public static final int ARCH_FIELD_NUMBER = 6;
-    private int arcH_;
+    private float arcH_;
     /**
-     * <code>optional sint32 arcH = 6;</code>
+     * <code>optional float arcH = 6;</code>
      */
     public boolean hasArcH() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>optional sint32 arcH = 6;</code>
+     * <code>optional float arcH = 6;</code>
      */
-    public int getArcH() {
+    public float getArcH() {
       return arcH_;
     }
 
     private void initFields() {
-      x_ = 0;
-      y_ = 0;
-      w_ = 0;
-      h_ = 0;
-      arcW_ = 0;
-      arcH_ = 0;
+      x_ = 0F;
+      y_ = 0F;
+      w_ = 0F;
+      h_ = 0F;
+      arcW_ = 0F;
+      arcH_ = 0F;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -11413,22 +11413,22 @@ public final class Directdraw {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeSInt32(1, x_);
+        output.writeFloat(1, x_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeSInt32(2, y_);
+        output.writeFloat(2, y_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeSInt32(3, w_);
+        output.writeFloat(3, w_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeSInt32(4, h_);
+        output.writeFloat(4, h_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeSInt32(5, arcW_);
+        output.writeFloat(5, arcW_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeSInt32(6, arcH_);
+        output.writeFloat(6, arcH_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -11441,27 +11441,27 @@ public final class Directdraw {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(1, x_);
+          .computeFloatSize(1, x_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(2, y_);
+          .computeFloatSize(2, y_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(3, w_);
+          .computeFloatSize(3, w_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(4, h_);
+          .computeFloatSize(4, h_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(5, arcW_);
+          .computeFloatSize(5, arcW_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(6, arcH_);
+          .computeFloatSize(6, arcH_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -11579,17 +11579,17 @@ public final class Directdraw {
 
       public Builder clear() {
         super.clear();
-        x_ = 0;
+        x_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000001);
-        y_ = 0;
+        y_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000002);
-        w_ = 0;
+        w_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000004);
-        h_ = 0;
+        h_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000008);
-        arcW_ = 0;
+        arcW_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000010);
-        arcH_ = 0;
+        arcH_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
@@ -11720,200 +11720,200 @@ public final class Directdraw {
       }
       private int bitField0_;
 
-      // required sint32 x = 1;
-      private int x_ ;
+      // required float x = 1;
+      private float x_ ;
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
       public boolean hasX() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
-      public int getX() {
+      public float getX() {
         return x_;
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
-      public Builder setX(int value) {
+      public Builder setX(float value) {
         bitField0_ |= 0x00000001;
         x_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
       public Builder clearX() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        x_ = 0;
+        x_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 y = 2;
-      private int y_ ;
+      // required float y = 2;
+      private float y_ ;
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
       public boolean hasY() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
-      public int getY() {
+      public float getY() {
         return y_;
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
-      public Builder setY(int value) {
+      public Builder setY(float value) {
         bitField0_ |= 0x00000002;
         y_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
       public Builder clearY() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        y_ = 0;
+        y_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 w = 3;
-      private int w_ ;
+      // required float w = 3;
+      private float w_ ;
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
       public boolean hasW() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
-      public int getW() {
+      public float getW() {
         return w_;
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
-      public Builder setW(int value) {
+      public Builder setW(float value) {
         bitField0_ |= 0x00000004;
         w_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
       public Builder clearW() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        w_ = 0;
+        w_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 h = 4;
-      private int h_ ;
+      // required float h = 4;
+      private float h_ ;
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
       public boolean hasH() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
-      public int getH() {
+      public float getH() {
         return h_;
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
-      public Builder setH(int value) {
+      public Builder setH(float value) {
         bitField0_ |= 0x00000008;
         h_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
       public Builder clearH() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        h_ = 0;
+        h_ = 0F;
         onChanged();
         return this;
       }
 
-      // optional sint32 arcW = 5;
-      private int arcW_ ;
+      // optional float arcW = 5;
+      private float arcW_ ;
       /**
-       * <code>optional sint32 arcW = 5;</code>
+       * <code>optional float arcW = 5;</code>
        */
       public boolean hasArcW() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional sint32 arcW = 5;</code>
+       * <code>optional float arcW = 5;</code>
        */
-      public int getArcW() {
+      public float getArcW() {
         return arcW_;
       }
       /**
-       * <code>optional sint32 arcW = 5;</code>
+       * <code>optional float arcW = 5;</code>
        */
-      public Builder setArcW(int value) {
+      public Builder setArcW(float value) {
         bitField0_ |= 0x00000010;
         arcW_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional sint32 arcW = 5;</code>
+       * <code>optional float arcW = 5;</code>
        */
       public Builder clearArcW() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        arcW_ = 0;
+        arcW_ = 0F;
         onChanged();
         return this;
       }
 
-      // optional sint32 arcH = 6;
-      private int arcH_ ;
+      // optional float arcH = 6;
+      private float arcH_ ;
       /**
-       * <code>optional sint32 arcH = 6;</code>
+       * <code>optional float arcH = 6;</code>
        */
       public boolean hasArcH() {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional sint32 arcH = 6;</code>
+       * <code>optional float arcH = 6;</code>
        */
-      public int getArcH() {
+      public float getArcH() {
         return arcH_;
       }
       /**
-       * <code>optional sint32 arcH = 6;</code>
+       * <code>optional float arcH = 6;</code>
        */
-      public Builder setArcH(int value) {
+      public Builder setArcH(float value) {
         bitField0_ |= 0x00000020;
         arcH_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional sint32 arcH = 6;</code>
+       * <code>optional float arcH = 6;</code>
        */
       public Builder clearArcH() {
         bitField0_ = (bitField0_ & ~0x00000020);
-        arcH_ = 0;
+        arcH_ = 0F;
         onChanged();
         return this;
       }
@@ -11932,65 +11932,65 @@ public final class Directdraw {
   public interface ArcProtoOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required sint32 x = 1;
+    // required float x = 1;
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
     boolean hasX();
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
-    int getX();
+    float getX();
 
-    // required sint32 y = 2;
+    // required float y = 2;
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
     boolean hasY();
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
-    int getY();
+    float getY();
 
-    // required sint32 w = 3;
+    // required float w = 3;
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
     boolean hasW();
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
-    int getW();
+    float getW();
 
-    // required sint32 h = 4;
+    // required float h = 4;
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
     boolean hasH();
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
-    int getH();
+    float getH();
 
-    // optional sint32 start = 5;
+    // optional float start = 5;
     /**
-     * <code>optional sint32 start = 5;</code>
+     * <code>optional float start = 5;</code>
      */
     boolean hasStart();
     /**
-     * <code>optional sint32 start = 5;</code>
+     * <code>optional float start = 5;</code>
      */
-    int getStart();
+    float getStart();
 
-    // optional sint32 extent = 6;
+    // optional float extent = 6;
     /**
-     * <code>optional sint32 extent = 6;</code>
+     * <code>optional float extent = 6;</code>
      */
     boolean hasExtent();
     /**
-     * <code>optional sint32 extent = 6;</code>
+     * <code>optional float extent = 6;</code>
      */
-    int getExtent();
+    float getExtent();
 
     // optional .org.webswing.directdraw.proto.ArcProto.ArcTypeProto type = 7;
     /**
@@ -12053,34 +12053,34 @@ public final class Directdraw {
               }
               break;
             }
-            case 8: {
+            case 13: {
               bitField0_ |= 0x00000001;
-              x_ = input.readSInt32();
+              x_ = input.readFloat();
               break;
             }
-            case 16: {
+            case 21: {
               bitField0_ |= 0x00000002;
-              y_ = input.readSInt32();
+              y_ = input.readFloat();
               break;
             }
-            case 24: {
+            case 29: {
               bitField0_ |= 0x00000004;
-              w_ = input.readSInt32();
+              w_ = input.readFloat();
               break;
             }
-            case 32: {
+            case 37: {
               bitField0_ |= 0x00000008;
-              h_ = input.readSInt32();
+              h_ = input.readFloat();
               break;
             }
-            case 40: {
+            case 45: {
               bitField0_ |= 0x00000010;
-              start_ = input.readSInt32();
+              start_ = input.readFloat();
               break;
             }
-            case 48: {
+            case 53: {
               bitField0_ |= 0x00000020;
-              extent_ = input.readSInt32();
+              extent_ = input.readFloat();
               break;
             }
             case 56: {
@@ -12225,99 +12225,99 @@ public final class Directdraw {
     }
 
     private int bitField0_;
-    // required sint32 x = 1;
+    // required float x = 1;
     public static final int X_FIELD_NUMBER = 1;
-    private int x_;
+    private float x_;
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
     public boolean hasX() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required sint32 x = 1;</code>
+     * <code>required float x = 1;</code>
      */
-    public int getX() {
+    public float getX() {
       return x_;
     }
 
-    // required sint32 y = 2;
+    // required float y = 2;
     public static final int Y_FIELD_NUMBER = 2;
-    private int y_;
+    private float y_;
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
     public boolean hasY() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required sint32 y = 2;</code>
+     * <code>required float y = 2;</code>
      */
-    public int getY() {
+    public float getY() {
       return y_;
     }
 
-    // required sint32 w = 3;
+    // required float w = 3;
     public static final int W_FIELD_NUMBER = 3;
-    private int w_;
+    private float w_;
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
     public boolean hasW() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required sint32 w = 3;</code>
+     * <code>required float w = 3;</code>
      */
-    public int getW() {
+    public float getW() {
       return w_;
     }
 
-    // required sint32 h = 4;
+    // required float h = 4;
     public static final int H_FIELD_NUMBER = 4;
-    private int h_;
+    private float h_;
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
     public boolean hasH() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required sint32 h = 4;</code>
+     * <code>required float h = 4;</code>
      */
-    public int getH() {
+    public float getH() {
       return h_;
     }
 
-    // optional sint32 start = 5;
+    // optional float start = 5;
     public static final int START_FIELD_NUMBER = 5;
-    private int start_;
+    private float start_;
     /**
-     * <code>optional sint32 start = 5;</code>
+     * <code>optional float start = 5;</code>
      */
     public boolean hasStart() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional sint32 start = 5;</code>
+     * <code>optional float start = 5;</code>
      */
-    public int getStart() {
+    public float getStart() {
       return start_;
     }
 
-    // optional sint32 extent = 6;
+    // optional float extent = 6;
     public static final int EXTENT_FIELD_NUMBER = 6;
-    private int extent_;
+    private float extent_;
     /**
-     * <code>optional sint32 extent = 6;</code>
+     * <code>optional float extent = 6;</code>
      */
     public boolean hasExtent() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>optional sint32 extent = 6;</code>
+     * <code>optional float extent = 6;</code>
      */
-    public int getExtent() {
+    public float getExtent() {
       return extent_;
     }
 
@@ -12338,12 +12338,12 @@ public final class Directdraw {
     }
 
     private void initFields() {
-      x_ = 0;
-      y_ = 0;
-      w_ = 0;
-      h_ = 0;
-      start_ = 0;
-      extent_ = 0;
+      x_ = 0F;
+      y_ = 0F;
+      w_ = 0F;
+      h_ = 0F;
+      start_ = 0F;
+      extent_ = 0F;
       type_ = org.webswing.directdraw.proto.Directdraw.ArcProto.ArcTypeProto.OPEN;
     }
     private byte memoizedIsInitialized = -1;
@@ -12375,22 +12375,22 @@ public final class Directdraw {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeSInt32(1, x_);
+        output.writeFloat(1, x_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeSInt32(2, y_);
+        output.writeFloat(2, y_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeSInt32(3, w_);
+        output.writeFloat(3, w_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeSInt32(4, h_);
+        output.writeFloat(4, h_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeSInt32(5, start_);
+        output.writeFloat(5, start_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeSInt32(6, extent_);
+        output.writeFloat(6, extent_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         output.writeEnum(7, type_.getNumber());
@@ -12406,27 +12406,27 @@ public final class Directdraw {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(1, x_);
+          .computeFloatSize(1, x_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(2, y_);
+          .computeFloatSize(2, y_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(3, w_);
+          .computeFloatSize(3, w_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(4, h_);
+          .computeFloatSize(4, h_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(5, start_);
+          .computeFloatSize(5, start_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(6, extent_);
+          .computeFloatSize(6, extent_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
@@ -12548,17 +12548,17 @@ public final class Directdraw {
 
       public Builder clear() {
         super.clear();
-        x_ = 0;
+        x_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000001);
-        y_ = 0;
+        y_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000002);
-        w_ = 0;
+        w_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000004);
-        h_ = 0;
+        h_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000008);
-        start_ = 0;
+        start_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000010);
-        extent_ = 0;
+        extent_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000020);
         type_ = org.webswing.directdraw.proto.Directdraw.ArcProto.ArcTypeProto.OPEN;
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -12698,200 +12698,200 @@ public final class Directdraw {
       }
       private int bitField0_;
 
-      // required sint32 x = 1;
-      private int x_ ;
+      // required float x = 1;
+      private float x_ ;
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
       public boolean hasX() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
-      public int getX() {
+      public float getX() {
         return x_;
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
-      public Builder setX(int value) {
+      public Builder setX(float value) {
         bitField0_ |= 0x00000001;
         x_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 x = 1;</code>
+       * <code>required float x = 1;</code>
        */
       public Builder clearX() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        x_ = 0;
+        x_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 y = 2;
-      private int y_ ;
+      // required float y = 2;
+      private float y_ ;
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
       public boolean hasY() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
-      public int getY() {
+      public float getY() {
         return y_;
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
-      public Builder setY(int value) {
+      public Builder setY(float value) {
         bitField0_ |= 0x00000002;
         y_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 y = 2;</code>
+       * <code>required float y = 2;</code>
        */
       public Builder clearY() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        y_ = 0;
+        y_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 w = 3;
-      private int w_ ;
+      // required float w = 3;
+      private float w_ ;
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
       public boolean hasW() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
-      public int getW() {
+      public float getW() {
         return w_;
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
-      public Builder setW(int value) {
+      public Builder setW(float value) {
         bitField0_ |= 0x00000004;
         w_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 w = 3;</code>
+       * <code>required float w = 3;</code>
        */
       public Builder clearW() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        w_ = 0;
+        w_ = 0F;
         onChanged();
         return this;
       }
 
-      // required sint32 h = 4;
-      private int h_ ;
+      // required float h = 4;
+      private float h_ ;
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
       public boolean hasH() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
-      public int getH() {
+      public float getH() {
         return h_;
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
-      public Builder setH(int value) {
+      public Builder setH(float value) {
         bitField0_ |= 0x00000008;
         h_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required sint32 h = 4;</code>
+       * <code>required float h = 4;</code>
        */
       public Builder clearH() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        h_ = 0;
+        h_ = 0F;
         onChanged();
         return this;
       }
 
-      // optional sint32 start = 5;
-      private int start_ ;
+      // optional float start = 5;
+      private float start_ ;
       /**
-       * <code>optional sint32 start = 5;</code>
+       * <code>optional float start = 5;</code>
        */
       public boolean hasStart() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional sint32 start = 5;</code>
+       * <code>optional float start = 5;</code>
        */
-      public int getStart() {
+      public float getStart() {
         return start_;
       }
       /**
-       * <code>optional sint32 start = 5;</code>
+       * <code>optional float start = 5;</code>
        */
-      public Builder setStart(int value) {
+      public Builder setStart(float value) {
         bitField0_ |= 0x00000010;
         start_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional sint32 start = 5;</code>
+       * <code>optional float start = 5;</code>
        */
       public Builder clearStart() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        start_ = 0;
+        start_ = 0F;
         onChanged();
         return this;
       }
 
-      // optional sint32 extent = 6;
-      private int extent_ ;
+      // optional float extent = 6;
+      private float extent_ ;
       /**
-       * <code>optional sint32 extent = 6;</code>
+       * <code>optional float extent = 6;</code>
        */
       public boolean hasExtent() {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional sint32 extent = 6;</code>
+       * <code>optional float extent = 6;</code>
        */
-      public int getExtent() {
+      public float getExtent() {
         return extent_;
       }
       /**
-       * <code>optional sint32 extent = 6;</code>
+       * <code>optional float extent = 6;</code>
        */
-      public Builder setExtent(int value) {
+      public Builder setExtent(float value) {
         bitField0_ |= 0x00000020;
         extent_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional sint32 extent = 6;</code>
+       * <code>optional float extent = 6;</code>
        */
       public Builder clearExtent() {
         bitField0_ = (bitField0_ & ~0x00000020);
-        extent_ = 0;
+        extent_ = 0F;
         onChanged();
         return this;
       }
@@ -12970,19 +12970,19 @@ public final class Directdraw {
      */
     org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto getType(int index);
 
-    // repeated sint32 points = 3;
+    // repeated float points = 3;
     /**
-     * <code>repeated sint32 points = 3;</code>
+     * <code>repeated float points = 3;</code>
      */
-    java.util.List<java.lang.Integer> getPointsList();
+    java.util.List<java.lang.Float> getPointsList();
     /**
-     * <code>repeated sint32 points = 3;</code>
+     * <code>repeated float points = 3;</code>
      */
     int getPointsCount();
     /**
-     * <code>repeated sint32 points = 3;</code>
+     * <code>repeated float points = 3;</code>
      */
-    int getPoints(int index);
+    float getPoints(int index);
   }
   /**
    * Protobuf type {@code org.webswing.directdraw.proto.PathProto}
@@ -13073,23 +13073,23 @@ public final class Directdraw {
               input.popLimit(oldLimit);
               break;
             }
-            case 24: {
+            case 29: {
               if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                points_ = new java.util.ArrayList<java.lang.Integer>();
+                points_ = new java.util.ArrayList<java.lang.Float>();
                 mutable_bitField0_ |= 0x00000004;
               }
-              points_.add(input.readSInt32());
+              points_.add(input.readFloat());
               break;
             }
             case 26: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
               if (!((mutable_bitField0_ & 0x00000004) == 0x00000004) && input.getBytesUntilLimit() > 0) {
-                points_ = new java.util.ArrayList<java.lang.Integer>();
+                points_ = new java.util.ArrayList<java.lang.Float>();
                 mutable_bitField0_ |= 0x00000004;
               }
               while (input.getBytesUntilLimit() > 0) {
-                points_.add(input.readSInt32());
+                points_.add(input.readFloat());
               }
               input.popLimit(limit);
               break;
@@ -13287,26 +13287,26 @@ public final class Directdraw {
       return type_.get(index);
     }
 
-    // repeated sint32 points = 3;
+    // repeated float points = 3;
     public static final int POINTS_FIELD_NUMBER = 3;
-    private java.util.List<java.lang.Integer> points_;
+    private java.util.List<java.lang.Float> points_;
     /**
-     * <code>repeated sint32 points = 3;</code>
+     * <code>repeated float points = 3;</code>
      */
-    public java.util.List<java.lang.Integer>
+    public java.util.List<java.lang.Float>
         getPointsList() {
       return points_;
     }
     /**
-     * <code>repeated sint32 points = 3;</code>
+     * <code>repeated float points = 3;</code>
      */
     public int getPointsCount() {
       return points_.size();
     }
     /**
-     * <code>repeated sint32 points = 3;</code>
+     * <code>repeated float points = 3;</code>
      */
-    public int getPoints(int index) {
+    public float getPoints(int index) {
       return points_.get(index);
     }
 
@@ -13338,7 +13338,7 @@ public final class Directdraw {
         output.writeEnum(2, type_.get(i).getNumber());
       }
       for (int i = 0; i < points_.size(); i++) {
-        output.writeSInt32(3, points_.get(i));
+        output.writeFloat(3, points_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -13364,10 +13364,7 @@ public final class Directdraw {
       }
       {
         int dataSize = 0;
-        for (int i = 0; i < points_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeSInt32SizeNoTag(points_.get(i));
-        }
+        dataSize = 4 * getPointsList().size();
         size += dataSize;
         size += 1 * getPointsList().size();
       }
@@ -13710,64 +13707,64 @@ public final class Directdraw {
         return this;
       }
 
-      // repeated sint32 points = 3;
-      private java.util.List<java.lang.Integer> points_ = java.util.Collections.emptyList();
+      // repeated float points = 3;
+      private java.util.List<java.lang.Float> points_ = java.util.Collections.emptyList();
       private void ensurePointsIsMutable() {
         if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-          points_ = new java.util.ArrayList<java.lang.Integer>(points_);
+          points_ = new java.util.ArrayList<java.lang.Float>(points_);
           bitField0_ |= 0x00000004;
          }
       }
       /**
-       * <code>repeated sint32 points = 3;</code>
+       * <code>repeated float points = 3;</code>
        */
-      public java.util.List<java.lang.Integer>
+      public java.util.List<java.lang.Float>
           getPointsList() {
         return java.util.Collections.unmodifiableList(points_);
       }
       /**
-       * <code>repeated sint32 points = 3;</code>
+       * <code>repeated float points = 3;</code>
        */
       public int getPointsCount() {
         return points_.size();
       }
       /**
-       * <code>repeated sint32 points = 3;</code>
+       * <code>repeated float points = 3;</code>
        */
-      public int getPoints(int index) {
+      public float getPoints(int index) {
         return points_.get(index);
       }
       /**
-       * <code>repeated sint32 points = 3;</code>
+       * <code>repeated float points = 3;</code>
        */
       public Builder setPoints(
-          int index, int value) {
+          int index, float value) {
         ensurePointsIsMutable();
         points_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated sint32 points = 3;</code>
+       * <code>repeated float points = 3;</code>
        */
-      public Builder addPoints(int value) {
+      public Builder addPoints(float value) {
         ensurePointsIsMutable();
         points_.add(value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated sint32 points = 3;</code>
+       * <code>repeated float points = 3;</code>
        */
       public Builder addAllPoints(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
+          java.lang.Iterable<? extends java.lang.Float> values) {
         ensurePointsIsMutable();
         super.addAll(values, points_);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated sint32 points = 3;</code>
+       * <code>repeated float points = 3;</code>
        */
       public Builder clearPoints() {
         points_ = java.util.Collections.emptyList();
@@ -18545,6 +18542,16 @@ public final class Directdraw {
      * <code>optional float alpha = 2 [default = 1];</code>
      */
     float getAlpha();
+
+    // optional fixed32 color = 3;
+    /**
+     * <code>optional fixed32 color = 3;</code>
+     */
+    boolean hasColor();
+    /**
+     * <code>optional fixed32 color = 3;</code>
+     */
+    int getColor();
   }
   /**
    * Protobuf type {@code org.webswing.directdraw.proto.CompositeProto}
@@ -18611,6 +18618,11 @@ public final class Directdraw {
             case 21: {
               bitField0_ |= 0x00000002;
               alpha_ = input.readFloat();
+              break;
+            }
+            case 29: {
+              bitField0_ |= 0x00000004;
+              color_ = input.readFixed32();
               break;
             }
           }
@@ -18705,6 +18717,10 @@ public final class Directdraw {
        * <code>XOR = 12;</code>
        */
       XOR(11, 12),
+      /**
+       * <code>XOR_MODE = 13;</code>
+       */
+      XOR_MODE(12, 13),
       ;
 
       /**
@@ -18755,6 +18771,10 @@ public final class Directdraw {
        * <code>XOR = 12;</code>
        */
       public static final int XOR_VALUE = 12;
+      /**
+       * <code>XOR_MODE = 13;</code>
+       */
+      public static final int XOR_MODE_VALUE = 13;
 
 
       public final int getNumber() { return value; }
@@ -18773,6 +18793,7 @@ public final class Directdraw {
           case 10: return SRC_ATOP;
           case 11: return DST_ATOP;
           case 12: return XOR;
+          case 13: return XOR_MODE;
           default: return null;
         }
       }
@@ -18857,9 +18878,26 @@ public final class Directdraw {
       return alpha_;
     }
 
+    // optional fixed32 color = 3;
+    public static final int COLOR_FIELD_NUMBER = 3;
+    private int color_;
+    /**
+     * <code>optional fixed32 color = 3;</code>
+     */
+    public boolean hasColor() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional fixed32 color = 3;</code>
+     */
+    public int getColor() {
+      return color_;
+    }
+
     private void initFields() {
       type_ = org.webswing.directdraw.proto.Directdraw.CompositeProto.CompositeTypeProto.CLEAR;
       alpha_ = 1F;
+      color_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -18883,6 +18921,9 @@ public final class Directdraw {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeFloat(2, alpha_);
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeFixed32(3, color_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -18899,6 +18940,10 @@ public final class Directdraw {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(2, alpha_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFixed32Size(3, color_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -19020,6 +19065,8 @@ public final class Directdraw {
         bitField0_ = (bitField0_ & ~0x00000001);
         alpha_ = 1F;
         bitField0_ = (bitField0_ & ~0x00000002);
+        color_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -19056,6 +19103,10 @@ public final class Directdraw {
           to_bitField0_ |= 0x00000002;
         }
         result.alpha_ = alpha_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.color_ = color_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -19077,6 +19128,9 @@ public final class Directdraw {
         }
         if (other.hasAlpha()) {
           setAlpha(other.getAlpha());
+        }
+        if (other.hasColor()) {
+          setColor(other.getColor());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -19174,6 +19228,39 @@ public final class Directdraw {
       public Builder clearAlpha() {
         bitField0_ = (bitField0_ & ~0x00000002);
         alpha_ = 1F;
+        onChanged();
+        return this;
+      }
+
+      // optional fixed32 color = 3;
+      private int color_ ;
+      /**
+       * <code>optional fixed32 color = 3;</code>
+       */
+      public boolean hasColor() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional fixed32 color = 3;</code>
+       */
+      public int getColor() {
+        return color_;
+      }
+      /**
+       * <code>optional fixed32 color = 3;</code>
+       */
+      public Builder setColor(int value) {
+        bitField0_ |= 0x00000004;
+        color_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional fixed32 color = 3;</code>
+       */
+      public Builder clearColor() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        color_ = 0;
         onChanged();
         return this;
       }
@@ -20087,20 +20174,20 @@ public final class Directdraw {
       "\013\n\003m01\030\003 \001(\002\022\016\n\003m11\030\004 \001(\002:\0011\022\013\n\003m02\030\005 \001(" +
       "\002\022\013\n\003m12\030\006 \001(\002\"\034\n\rCombinedProto\022\013\n\003ids\030\001" +
       " \003(\r\"\032\n\nGlyphProto\022\014\n\004data\030\001 \001(\014\"<\n\016Rect" +
-      "angleProto\022\t\n\001x\030\001 \002(\021\022\t\n\001y\030\002 \002(\021\022\t\n\001w\030\003 " +
-      "\002(\021\022\t\n\001h\030\004 \002(\021\":\n\014EllipseProto\022\t\n\001x\030\001 \002(" +
-      "\021\022\t\n\001y\030\002 \002(\021\022\t\n\001w\030\003 \002(\021\022\t\n\001h\030\004 \002(\021\"]\n\023Ro" +
-      "undRectangleProto\022\t\n\001x\030\001 \002(\021\022\t\n\001y\030\002 \002(\021\022" +
-      "\t\n\001w\030\003 \002(\021\022\t\n\001h\030\004 \002(\021\022\014\n\004arcW\030\005 \001(\021\022\014\n\004a" +
-      "rcH\030\006 \001(\021\"\307\001\n\010ArcProto\022\t\n\001x\030\001 \002(\021\022\t\n\001y\030\002" +
-      " \002(\021\022\t\n\001w\030\003 \002(\021\022\t\n\001h\030\004 \002(\021\022\r\n\005start\030\005 \001(",
-      "\021\022\016\n\006extent\030\006 \001(\021\022B\n\004type\030\007 \001(\01624.org.we" +
+      "angleProto\022\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002 \002(\002\022\t\n\001w\030\003 " +
+      "\002(\002\022\t\n\001h\030\004 \002(\002\":\n\014EllipseProto\022\t\n\001x\030\001 \002(" +
+      "\002\022\t\n\001y\030\002 \002(\002\022\t\n\001w\030\003 \002(\002\022\t\n\001h\030\004 \002(\002\"]\n\023Ro" +
+      "undRectangleProto\022\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002 \002(\002\022" +
+      "\t\n\001w\030\003 \002(\002\022\t\n\001h\030\004 \002(\002\022\014\n\004arcW\030\005 \001(\002\022\014\n\004a" +
+      "rcH\030\006 \001(\002\"\307\001\n\010ArcProto\022\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002" +
+      " \002(\002\022\t\n\001w\030\003 \002(\002\022\t\n\001h\030\004 \002(\002\022\r\n\005start\030\005 \001(",
+      "\002\022\016\n\006extent\030\006 \001(\002\022B\n\004type\030\007 \001(\01624.org.we" +
       "bswing.directdraw.proto.ArcProto.ArcType" +
       "Proto\",\n\014ArcTypeProto\022\010\n\004OPEN\020\000\022\t\n\005CHORD" +
       "\020\001\022\007\n\003PIE\020\002\"\300\001\n\tPathProto\022\022\n\nwindingOdd\030" +
       "\001 \002(\010\022G\n\004type\030\002 \003(\01629.org.webswing.direc" +
       "tdraw.proto.PathProto.SegmentTypeProto\022\016" +
-      "\n\006points\030\003 \003(\021\"F\n\020SegmentTypeProto\022\010\n\004MO" +
+      "\n\006points\030\003 \003(\002\"F\n\020SegmentTypeProto\022\010\n\004MO" +
       "VE\020\000\022\010\n\004LINE\020\001\022\010\n\004QUAD\020\002\022\t\n\005CUBIC\020\003\022\t\n\005C" +
       "LOSE\020\004\"\365\001\n\tFontProto\022\016\n\006family\030\001 \002(\t\022B\n\005" +
       "style\030\002 \001(\01623.org.webswing.directdraw.pr",
@@ -20127,19 +20214,20 @@ public final class Directdraw {
       "ocus\030\004 \002(\021\022\016\n\006radius\030\005 \002(\021\022\016\n\006colors\030\006 \003" +
       "(\007\022\021\n\tfractions\030\007 \003(\002\022@\n\006repeat\030\010 \002(\01620." +
       "org.webswing.directdraw.proto.CyclicMeth" +
-      "odProto\"\035\n\013PointsProto\022\016\n\006points\030\001 \003(\021\"\231" +
+      "odProto\"\035\n\013PointsProto\022\016\n\006points\030\001 \003(\021\"\266" +
       "\002\n\016CompositeProto\022N\n\004type\030\001 \002(\0162@.org.we" +
       "bswing.directdraw.proto.CompositeProto.C" +
-      "ompositeTypeProto\022\020\n\005alpha\030\002 \001(\002:\0011\"\244\001\n\022" +
-      "CompositeTypeProto\022\t\n\005CLEAR\020\001\022\007\n\003SRC\020\002\022\007" +
-      "\n\003DST\020\t\022\014\n\010SRC_OVER\020\003\022\014\n\010DST_OVER\020\004\022\n\n\006S" +
-      "RC_IN\020\005\022\n\n\006DST_IN\020\006\022\013\n\007SRC_OUT\020\007\022\013\n\007DST_",
-      "OUT\020\010\022\014\n\010SRC_ATOP\020\n\022\014\n\010DST_ATOP\020\013\022\007\n\003XOR" +
-      "\020\014\"\207\001\n\014TextureProto\0228\n\005image\030\001 \002(\0132).org" +
-      ".webswing.directdraw.proto.ImageProto\022=\n" +
-      "\006anchor\030\002 \002(\0132-.org.webswing.directdraw." +
-      "proto.RectangleProto*:\n\021CyclicMethodProt" +
-      "o\022\014\n\010NO_CYCLE\020\000\022\013\n\007REFLECT\020\001\022\n\n\006REPEAT\020\002"
+      "ompositeTypeProto\022\020\n\005alpha\030\002 \001(\002:\0011\022\r\n\005c" +
+      "olor\030\003 \001(\007\"\262\001\n\022CompositeTypeProto\022\t\n\005CLE" +
+      "AR\020\001\022\007\n\003SRC\020\002\022\007\n\003DST\020\t\022\014\n\010SRC_OVER\020\003\022\014\n\010" +
+      "DST_OVER\020\004\022\n\n\006SRC_IN\020\005\022\n\n\006DST_IN\020\006\022\013\n\007SR",
+      "C_OUT\020\007\022\013\n\007DST_OUT\020\010\022\014\n\010SRC_ATOP\020\n\022\014\n\010DS" +
+      "T_ATOP\020\013\022\007\n\003XOR\020\014\022\014\n\010XOR_MODE\020\r\"\207\001\n\014Text" +
+      "ureProto\0228\n\005image\030\001 \002(\0132).org.webswing.d" +
+      "irectdraw.proto.ImageProto\022=\n\006anchor\030\002 \002" +
+      "(\0132-.org.webswing.directdraw.proto.Recta" +
+      "ngleProto*:\n\021CyclicMethodProto\022\014\n\010NO_CYC" +
+      "LE\020\000\022\013\n\007REFLECT\020\001\022\n\n\006REPEAT\020\002"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -20265,7 +20353,7 @@ public final class Directdraw {
           internal_static_org_webswing_directdraw_proto_CompositeProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_webswing_directdraw_proto_CompositeProto_descriptor,
-              new java.lang.String[] { "Type", "Alpha", });
+              new java.lang.String[] { "Type", "Alpha", "Color", });
           internal_static_org_webswing_directdraw_proto_TextureProto_descriptor =
             getDescriptor().getMessageTypes().get(20);
           internal_static_org_webswing_directdraw_proto_TextureProto_fieldAccessorTable = new

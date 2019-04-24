@@ -20,22 +20,22 @@ public class TransformConst extends MutableDrawConstantHolder<AffineTransform, T
 	public TransformProto buildMessage(AffineTransform value) {
 		TransformProto.Builder model = TransformProto.newBuilder();
 		if (value.getScaleX() != 1) {
-			model.setM00((float) value.getScaleX());
+			model.setM00((float)value.getScaleX());
 		}
 		if (value.getShearY() != 0) {
-			model.setM10((float) value.getShearY());
+			model.setM10((float)value.getShearY());
 		}
 		if (value.getShearX() != 0) {
-			model.setM01((float) value.getShearX());
+			model.setM01((float)value.getShearX());
 		}
 		if (value.getScaleY() != 1) {
-			model.setM11((float) value.getScaleY());
+			model.setM11((float)value.getScaleY());
 		}
 		if (value.getTranslateX() != 0) {
-			model.setM02((float) value.getTranslateX());
+			model.setM02((float)value.getTranslateX());
 		}
 		if (value.getTranslateY() != 0) {
-			model.setM12((float) value.getTranslateY());
+			model.setM12((float)value.getTranslateY());
 		}
 		return model.build();
 	}

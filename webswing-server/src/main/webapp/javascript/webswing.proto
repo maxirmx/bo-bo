@@ -16,7 +16,24 @@ message AppFrameMsgOutProto{
 	optional JsResultMsgProto javaResponse = 11;
 	optional PlaybackInfoMsgProto playback = 12;
 	optional string sessionId = 13;
-	optional FocusEventMsgProto focusEvent = 14;
+        optional FocusEventMsgProto focusEvent = 14;
+}
+
+message FocusEventMsgProto {
+    required FocusEventTypeProto type = 1;
+    optional sint32 x = 2;
+    optional sint32 y = 3;
+    optional uint32 w = 4;
+    optional uint32 h = 5;
+    optional sint32 caretX = 6;
+    optional sint32 caretY = 7;
+    optional sint32 caretH = 8;
+
+    enum FocusEventTypeProto {
+        focusLost = 1;
+        focusGained = 2;
+        focusWithCarretGained = 3;
+    }
 }
 
 message ApplicationInfoMsgProto{
@@ -48,6 +65,9 @@ message WindowMoveActionMsgProto{
 
 message CursorChangeEventMsgProto{
 	required string cursor = 1;
+	optional bytes b64img = 2;
+	optional sint32 x = 3;
+	optional sint32 y = 4;
 }
 
 message CopyEventMsgProto{
@@ -75,12 +95,13 @@ message FileDialogEventMsgProto{
 message WindowMsgProto{
 	required string id = 1;
 	repeated WindowPartialContentMsgProto content = 2;
-	optional bytes directDraw = 3;
-	optional string title = 4;
-	optional sint32 posX = 5;
-	optional sint32 posY = 6;
-	optional uint32 width = 7;
-	optional uint32 height = 8;
+	repeated SpriteMsgProto sprites = 3;
+	optional bytes directDraw = 4;
+	optional string title = 5;
+	optional sint32 posX = 6;
+	optional sint32 posY = 7;
+	optional uint32 width = 8;
+	optional uint32 height = 9;
 }
 
 message WindowPartialContentMsgProto{
@@ -89,6 +110,15 @@ message WindowPartialContentMsgProto{
 	optional uint32 width = 3;
 	optional uint32 height = 4;
 	optional bytes base64Content = 5;
+}
+
+message SpriteMsgProto{
+	optional sint32 spriteX = 1;
+	optional sint32 spriteY = 2;
+	optional sint32 positionX = 3;
+	optional sint32 positionY = 4;
+	optional uint32 width = 5;
+	optional uint32 height = 6;
 }
 
 enum SimpleEventMsgOutProto{
@@ -181,6 +211,7 @@ message ConnectionHandshakeMsgInProto{
 	optional string documentBase = 10;
 	repeated ParamMsgProto params = 11;
 	optional string locale = 12;
+	optional bool continueSession = 13;
 }
 
 message ParamMsgProto{

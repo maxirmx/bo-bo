@@ -7,10 +7,12 @@ define([], function amdFactory() {
             cfg: 'webswing.config',
             external: 'external',
             send: 'socket.send',
-            awaitResponse: 'socket.awaitResponse'
+            awaitResponse: 'socket.awaitResponse',
+            fireCallBack : 'webswing.fireCallBack'
         };
         module.provides = {
-            process: process
+            process: process,
+            dispose: dispose
         };
         module.ready = function () {
             referenceCache['instanceObject'] = api.external;
@@ -19,22 +21,49 @@ define([], function amdFactory() {
         var idMemberName = '__webswing_jslink_id';
         var referenceCache = {};
 
+        function dispose() {
+            for (var key in referenceCache) {
+                if (referenceCache.hasOwnProperty(key)) {
+                    referenceCache[key] = null;
+                }
+            }
+            referenceCache = {};
+            referenceCache['instanceObject'] = api.external;
+            window['listener'] = null;
+            delete window['listener'];
+        }
+
         function process(jsRequest) {
             var response;
             try {
                 if (jsRequest.type === 'eval') {
-                    var indirectEval = eval;
-                    var result = indirectEval(jsRequest.evalString);
-                    response = buildResponse(result, jsRequest.correlationId);
+                    try {
+                        var indirectEval = eval;
+                        var result = indirectEval(jsRequest.evalString);
+                        response = buildResponse(result, jsRequest.correlationId);
+                    } catch(e) {
+                        api.fireCallBack({type: 'sendFromJavaClient', value: jsRequest.evalString});
+                        response = buildResponse(null, jsRequest.correlationId);
+                    }
                 } else if (jsRequest.type === 'call') {
                     var ref = jsRequest.thisObjectId != null ? referenceCache[jsRequest.thisObjectId] : window;
                     var args = decodeParams(jsRequest);
-                    var result = ref[jsRequest.evalString].apply(ref, args);
-                    response = buildResponse(result, jsRequest.correlationId);
+                    if(ref[jsRequest.evalString] === undefined || ref[jsRequest.evalString] === null)
+                    {
+                        response = buildResponse(null, jsRequest.correlationId);
+                    }
+                    else
+                    {
+                        var result = ref[jsRequest.evalString].apply(ref, args);
+                        response = buildResponse(result, jsRequest.correlationId);
+                    }
                 } else if (jsRequest.type === 'setMember' || jsRequest.type === 'setSlot') {
                     var ref = jsRequest.thisObjectId != null ? referenceCache[jsRequest.thisObjectId] : window;
                     var args = decodeParams(jsRequest);
                     ref[jsRequest.evalString] = args != null ? args[0] : null;
+                    if (jsRequest.evalString === 'listener' && ref[jsRequest.evalString] != null) {
+                        api.fireCallBack({type: 'javaClientObjectId', value: ref[jsRequest.evalString].id});
+                    }
                     response = buildResponse(null, jsRequest.correlationId);
                 } else if (jsRequest.type === 'getMember' || jsRequest.type === 'getSlot') {
                     var ref = jsRequest.thisObjectId != null ? referenceCache[jsRequest.thisObjectId] : window;

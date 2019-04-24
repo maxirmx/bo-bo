@@ -53,20 +53,20 @@ define(['jquery', 'text!templates/login.html'], function amdFactory($, html) {
                     }
                     user = data;
                     if(successCallback!=null){
-                    	successCallback();
+                        successCallback();
                     }
                 },
                 error: function (data) {
-                	if(errorCallback!=null){
-                		errorCallback();
-                	}else{
-                		if (!loginDialogVisible()) {
-                			api.showDialog(api.loginDialog);
-                		} else {
-                			var errorMsg = api.cfg.rootElement.find('*[data-id="loginErrorMsg"]');
-                			errorMsg.html('<div class="alert alert-danger">' + data.responseText + '</div>');
-                		}
-                	}
+                    if(errorCallback!=null){
+                        errorCallback();
+                    }else{
+                        if (!loginDialogVisible()) {
+                            api.showDialog(api.loginDialog);
+                        } else {
+                            var errorMsg = api.cfg.rootElement.find('*[data-id="loginErrorMsg"]');
+                            errorMsg.html('<div class="alert alert-danger">' + data.responseText + '</div>');
+                        }
+                    }
                 }
             });
         }

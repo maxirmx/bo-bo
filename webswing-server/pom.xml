@@ -3,44 +3,52 @@
 	<artifactId>webswing-server</artifactId>
 	<packaging>war</packaging>
 	<parent>
-		<artifactId>webswing</artifactId>
-		<groupId>org.webswing</groupId>
-		<version>2.4</version>
+		<artifactId>webswingcomponent</artifactId>
+		<groupId>xx.yy</groupId>
+		<version>6.0.7-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<dependencies>
 
-		<!-- war overlays -->
+		<!-- war overlays commented as webswing-dd.js is managed within this webapp now-->
 		<dependency>
-			<groupId>org.webswing</groupId>
+			<groupId>aa.bb.cc.dd</groupId>
 			<artifactId>webswing-directdraw-server</artifactId>
 			<version>${project.version}</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<groupId>org.webswing</groupId>
-			<artifactId>webswing-admin</artifactId>
-			<version>${project.version}</version>
-			<type>war</type>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-http</artifactId>
+			<version>${jetty.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.atmosphere.client</groupId>
 			<artifactId>javascript</artifactId>
-			<version>2.3.1</version>
+			<version>${atmosphere.js.version}</version>
 			<type>war</type>
 		</dependency>
-
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-util</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-io</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
 
 		<!-- include in WEB-INF/lib -->
 		<dependency>
-			<groupId>org.webswing</groupId>
+			<groupId>xx.yy</groupId>
 			<artifactId>webswing-app-launcher</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.atmosphere</groupId>
 			<artifactId>atmosphere-runtime</artifactId>
-			<version>2.3.6</version>
+			<version>${atmosphere.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
@@ -51,11 +59,12 @@
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson.mapper.asl}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-broker</artifactId>
-			<version>5.13.3</version>
+			<version>${activemq.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
@@ -66,36 +75,43 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.6</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+	
+		
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
+			
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
+		</dependency>		
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-web</artifactId>
-			<version>1.2.3</version>
+			<version>${shiro.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-collections</groupId>
+					<artifactId>commons-collections</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
-			<version>2.5.0</version>
+			<version>${protobuf.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
-			<version>2.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
@@ -115,30 +131,157 @@
 		<!-- TO BE EXCLUDED FROM WEB-INF/lib -->
 
 		<dependency>
-			<groupId>org.webswing</groupId>
+			<groupId>xx.yy</groupId>
 			<artifactId>webswing-server-launcher</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.webswing</groupId>
+			<groupId>xx.yy</groupId>
 			<artifactId>webswing-app-interface</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.webswing</groupId>
-			<artifactId>webswing-app-toolkit-java6</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webswing</groupId>
-			<artifactId>webswing-app-toolkit-java7</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webswing</groupId>
+			<groupId>xx.yy</groupId>
 			<artifactId>webswing-app-toolkit-java8</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>			
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>			
+		</dependency>		
+		<!-- Powermock for UT -->
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-support</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-classloading-base</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-core</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4-common</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4-legacy</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-reflect</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Adding transitive dependencies -->
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+    		<artifactId>javax.servlet-api</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+    		<artifactId>hk2-api</artifactId>
+    		<version>${glassfish.hk2.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+    		<artifactId>hk2-utils</artifactId>
+    		<version>${glassfish.hk2.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+    		 <artifactId>hk2-locator</artifactId>
+    		 <version>${glassfish.hk2.version}</version>
+		</dependency>
+		 
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+    		<version>${jersey.version}</version>
+		</dependency>
+		
+		
+		
+		<dependency> 
+        	<groupId>org.eclipse.jetty</groupId>
+        	<artifactId>jetty-client</artifactId>
+        	<version>${jetty.version}</version>
+        </dependency>
+       
+		<!-- log4j2.x start -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-1.2-api</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<!-- log4j2.x end -->
+		
+		<dependency>
+			<groupId>org.lz4</groupId>
+			<artifactId>lz4-java</artifactId>
+			<version>${lz4.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -147,11 +290,11 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<compilerArguments>
-						<bootclasspath>${basedir}/../lib/rt1.7.0_60.jar</bootclasspath>
-					</compilerArguments>
+					<source>1.8</source>
+					<target>1.8</target>
+					<!--<compilerArguments>-->
+						<!--<bootclasspath>${basedir}/../lib/rt1.8.0_25.jar</bootclasspath>-->
+					<!--</compilerArguments>-->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -173,32 +316,8 @@
 						<always>false</always>
 						<abbrev>7</abbrev>
 					</gitDescribe>
-				    <generateGitPropertiesFile>true</generateGitPropertiesFile>
-    				<generateGitPropertiesFilename>${project.basedir}/src/main/resources/git.properties</generateGitPropertiesFilename>
+				    <generateGitPropertiesFile>false</generateGitPropertiesFile>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.github.os72</groupId>
-				<artifactId>protoc-jar-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<addSources>main</addSources>
-							<outputDirectory>src/main/java</outputDirectory>
-							<cleanOutputFolder>false</cleanOutputFolder>
-							<includeDirectories>
-								<include>src/main/webapp/javascript</include>
-							</includeDirectories>
-							<inputDirectories>
-								<include>src/main/webapp/javascript</include>
-							</inputDirectories>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -238,8 +357,8 @@
 						WEB-INF/lib/webswing-server-launcher-*.jar,
 						WEB-INF/lib/slf4j-simple-*.jar,
 						WEB-INF/lib/freehep-*.jar,
-						WEB-INF/lib/webswing-directdraw-swing-*.jar,
-						WEB-INF/lib/lz4-*.jar
+						WEB-INF/lib/webswing-directdraw-swing-*.jar,						
+						WEB-INF/lib/websocket*jar
 					</packagingExcludes>
 					<archive>
 						<manifest>
@@ -254,10 +373,33 @@
 							<commitTime>${git.commit.time}</commitTime>
 							<buildTime>${git.build.time}</buildTime>
 						</manifestEntries>
+						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>com.github.os72</groupId>
+				<artifactId>protoc-jar-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<addSources>main</addSources>
+							<outputDirectory>src/main/java</outputDirectory>
+							<cleanOutputFolder>false</cleanOutputFolder>
+							<includeDirectories>
+								<include>src/main/webapp/javascript</include>
+							</includeDirectories>
+							<inputDirectories>
+								<include>src/main/webapp/javascript</include>
+							</inputDirectories>
+						</configuration>
+					</execution>
+				</executions>				
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -285,7 +427,7 @@
 						<configuration>
 							<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/server-lib</outputDirectory>
 							<includeArtifactIds>
-								webswing-app-toolkit,webswing-server-launcher,commons-cli,jetty-webapp,jetty-security,jetty-websocket,jetty-xml,jetty-servlet,jetty-server,jetty-continuation,jetty-http,jetty-io,jetty-util,javax.servlet,jetty-jmx
+								webswing-app-toolkit,webswing-server-launcher,commons-cli,jetty-webapp,jetty-security,jetty-servlets,jetty-websocket,jetty-xml,jetty-servlet,jetty-server,jetty-continuation,jetty-http,jetty-io,jetty-util,javax.servlet,jetty-jmx,baseutil
 							</includeArtifactIds>
 						</configuration>
 					</execution>
@@ -313,18 +455,6 @@
 			<properties>
 				<webswingRoot>${project.build.directory}/demo</webswingRoot>
 			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>org.webswing</groupId>
-					<artifactId>webswing-demo-swingset3</artifactId>
-					<version>${project.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>org.webswing</groupId>
-					<artifactId>webswing-demo-nbplatform</artifactId>
-					<version>${project.version}</version>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
@@ -346,18 +476,6 @@
 												<include name="**/*" />
 											</fileset>
 										</copy>
-										<copy todir="${project.build.directory}/demo/demo/SwingSet3">
-											<fileset dir="${project.basedir}/../webswing-demo/webswing-demo-swingset3/target">
-												<include name="lib/*.jar" />
-												<include name="SwingSet3.jar" />
-											</fileset>
-										</copy>
-										<copy todir="${project.build.directory}/demo/demo/nbmin">
-											<fileset dir="${project.basedir}/../webswing-demo/webswing-demo-nbplatform/target">
-												<include name="lib/*.jar" />
-												<include name="nbplatform.jar" />
-											</fileset>
-										</copy>
 										<copy todir="${project.basedir}/../webswing-app-toolkit/target">
 											<fileset dir="${project.basedir}/../lib">
 												<include name="rt-win-shell.jar" />
@@ -368,50 +486,6 @@
 								<goals>
 									<goal>run</goal>
 								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>jetty-maven-plugin</artifactId>
-						<version>8.1.14.v20131031</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<phase>package</phase>
-								<configuration>
-									<scanIntervalSeconds>5</scanIntervalSeconds>
-									<webApp>
-										<contextPath>/</contextPath>
-										<defaultsDescriptor>${project.basedir}/src/test/webapp/WEB-INF/jetty-maven-plugin-webdefault.xml</defaultsDescriptor>
-										<resourceBases>
-											<resourceBase>${project.basedir}/src/main/webapp</resourceBase>
-											<resourceBase>${project.basedir}/src/test/webapp</resourceBase>
-											<resourceBase>${project.basedir}/../webswing-admin/src/main/webapp</resourceBase>
-										</resourceBases>
-									</webApp>
-									<systemProperties>
-										<force>true</force>
-										<systemProperty>
-											<name>webswing.warLocation</name>
-											<value>${project.build.directory}/${project.build.finalName}</value>
-										</systemProperty>
-										<systemProperty>
-											<name>webswing.rootDir</name>
-											<value>${webswingRoot}</value>
-										</systemProperty>
-										<systemProperty>
-											<name>user.dir</name>
-											<value>${webswingRoot}</value>
-										</systemProperty>
-										<systemProperty>
-											<name>webswing.tempDirBase</name>
-											<value>${project.build.directory}/tmp</value>
-										</systemProperty>
-									</systemProperties>
-								</configuration>
 							</execution>
 						</executions>
 					</plugin>

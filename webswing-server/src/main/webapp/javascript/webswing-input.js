@@ -1,7 +1,7 @@
-define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
+define(['jquery', 'webswing-util'], function amdFactory($, Util) {
     "use strict";
-
     var prepos;
+
     return function InputModule() {
         var module = this;
         var api;
@@ -91,7 +91,8 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
             var input = api.getInput();
             resetInput();
             focusInput(input);
-            util.bindEvent(canvas, 'mousedown', function(evt) {
+
+            Util.bindEvent(canvas, 'mousedown', function(evt) {
                 var mousePos = getMousePos(canvas, evt, 'mousedown');
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);
@@ -99,7 +100,7 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 sendInput();
                 return false;
             }, false);
-            util.bindEvent(canvas, 'dblclick', function(evt) {
+            Util.bindEvent(canvas, 'dblclick', function(evt) {
                 var mousePos = getMousePos(canvas, evt, 'dblclick');
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);
@@ -107,7 +108,7 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 sendInput();
                 return false;
             }, false);
-            util.bindEvent(canvas, 'mousemove', function(evt) {
+            Util.bindEvent(canvas, 'mousemove', function(evt) {
                 var mousePos = getMousePos(canvas, evt, 'mousemove');
                 if (prepos && prepos.mouse.x == mousePos.mouse.x && prepos.mouse.y == mousePos.mouse.y) {
                     return false;
@@ -118,7 +119,8 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 latestMouseMoveEvent = mousePos;
                 return false;
             }, false);
-            util.bindEvent(canvas, 'mouseup', function(evt) {
+
+            Util.bindEvent(canvas, 'mouseup', function(evt) {
                 var mousePos = getMousePos(canvas, evt, 'mouseup');
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);
@@ -126,8 +128,9 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 sendInput();
                 return false;
             }, false);
+
             // IE9, Chrome, Safari, Opera
-            util.bindEvent(canvas, "mousewheel", function(evt) {
+            Util.bindEvent(canvas, "mousewheel", function(evt) {
                 var mousePos = getMousePos(canvas, evt, 'mousewheel');
                 latestMouseMoveEvent = null;
                 if (latestMouseWheelEvent != null) {
@@ -137,7 +140,7 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 return false;
             }, false);
             // firefox
-            util.bindEvent(canvas, "DOMMouseScroll", function(evt) {
+            Util.bindEvent(canvas, "DOMMouseScroll", function(evt) {
                 var mousePos = getMousePos(canvas, evt, 'mousewheel');
                 latestMouseMoveEvent = null;
                 if (latestMouseWheelEvent != null) {
@@ -146,7 +149,7 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 latestMouseWheelEvent = mousePos;
                 return false;
             }, false);
-            util.bindEvent(canvas, 'contextmenu', function(event) {
+            Util.bindEvent(canvas, 'contextmenu', function(event) {
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
@@ -164,17 +167,17 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 keyevt.key.ctrl = false;
             }
 
-            util.bindEvent(input, 'keydown', function(event) {
-                var functionKeys=[9/*tab*/, 12/*Numpad5*/, 16/*Shift*/, 17/*ctrl*/, 18/*alt*/, 19/*pause*/, 20/*CapsLock*/, 27/*esc*/, 
-                                  32/*space*/, 33/*pgup*/, 34/*pgdown*/, 35/*end*/, 36/*home*/, 37/*left*/, 38/*up*/, 39/*right*/, 40/*down*/, 44/*prtscr*/, 
-                                  45/*insert*/, 46/*Delete*/, 91/*OSLeft*/, 92/*OSRight*/, 93/*Context*/, 145/*scrlck*/, 225/*altGraph(Linux)*/,
-                                  112/*F1*/, 113/*F2*/, 114/*F3*/, 115/*F4*/, 116/*F5*/, 117/*F6*/, 118/*F7*/, 119/*F8*/, 120/*F9*/,
-                                  121/*F10*/, 122/*F11*/, 123/*F12*/, 124/*F13*/, 125/*F14*/, 126/*F15*/, 127/*F16*/, 128/*F17*/, 129/*F18*/, 130/*F19*/, 131/*F20*/,
-                                  132/*F21*/, 133/*F22*/, 134/*F23*/, 135/*F24*/]; 
-            	
-            	var kc = event.keyCode;
+            Util.bindEvent(input, 'keydown', function(event) {
+                var functionKeys=[9/*tab*/, 12/*Numpad5*/, 16/*Shift*/, 17/*ctrl*/, 18/*alt*/, 19/*pause*/, 20/*CapsLock*/, 27/*esc*/,
+                    32/*space*/, 33/*pgup*/, 34/*pgdown*/, 35/*end*/, 36/*home*/, 37/*left*/, 38/*up*/, 39/*right*/, 40/*down*/, 44/*prtscr*/,
+                    45/*insert*/, 46/*Delete*/, 91/*OSLeft*/, 92/*OSRight*/, 93/*Context*/, 145/*scrlck*/, 225/*altGraph(Linux)*/,
+                    112/*F1*/, 113/*F2*/, 114/*F3*/, 115/*F4*/, 116/*F5*/, 117/*F6*/, 118/*F7*/, 119/*F8*/, 120/*F9*/,
+                    121/*F10*/, 122/*F11*/, 123/*F12*/, 124/*F13*/, 125/*F14*/, 126/*F15*/, 127/*F16*/, 128/*F17*/, 129/*F18*/, 130/*F19*/, 131/*F20*/,
+                    132/*F21*/, 133/*F22*/, 134/*F23*/, 135/*F24*/];
+
+                var kc = event.keyCode;
                 //mute F1 help
-            	if(kc === 112) {
+                if(kc === 112) {
                     return false;
                 }
                 if (functionKeys.indexOf(kc)!=-1) {
@@ -197,10 +200,10 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 }
                 return false;
             }, false);
-            util.bindEvent(input, 'keypress', function(event) {
+            Util.bindEvent(input, 'keypress', function(event) {
                 var keyevt = getKBKey('keypress', canvas, event);
                 if (!(keyevt.key.ctrl && (keyevt.key.character == 120 || keyevt.key.character == 24 || keyevt.key.character == 99
-                        || keyevt.key.character == 118 || keyevt.key.character == 22))) { // cut copy paste handled separately
+                    || keyevt.key.character == 118 || keyevt.key.character == 22))) { // cut copy paste handled separately
                     event.preventDefault();
                     event.stopPropagation();
                     if(isHotKeyBehavoir(keyevt)){
@@ -210,12 +213,12 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 }
                 return false;
             }, false);
-            util.bindEvent(input, 'keyup', function(event) {
+            Util.bindEvent(input, 'keyup', function(event) {
                 var keyevt = getKBKey('keyup', canvas, event);
                 if (!(keyevt.key.ctrl && (keyevt.key.character == 88 || keyevt.key.character == 67 || keyevt.key.character == 86))) { // cut copy
                     event.preventDefault();
                     event.stopPropagation();
-                      if(isHotKeyBehavoir(keyevt)){
+                    if(isHotKeyBehavoir(keyevt)){
                         convertHotKey(keyevt);
                     }
                     enqueueInputEvent(keyevt);
@@ -227,7 +230,7 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
             var DEFAULT_FONT = '14px sans-serif';
             // 中文输入法（如搜狗，智能ABC）等最终可见字符需要一连串键盘输入才能形成的，当用户开始输入字符的时候，
             // 需要将承载用户输入的input设置成可见（Z-INDEX不为-1等），以便input能回显一连串输入过程中的文字
-            util.bindEvent(input, 'compositionstart', function(event) {
+            Util.bindEvent(input, 'compositionstart', function(event) {
                 compositionInput = true;
                 var input=api.getInput();
                 $(input).addClass('input-ime');
@@ -235,7 +238,7 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 input.style.font = DEFAULT_FONT;
             }, false);
             // 中文输入法（如搜狗，智能ABC）等最终可见字符需要一连串键盘输入才能形成的，通过compositionend来获取一连串输入之后的最终可见字符
-            util.bindEvent(input, 'compositionend', function (event) {
+            Util.bindEvent(input, 'compositionend', function (event) {
                 var input = api.getInput();
                 $(input).addClass('input-hidden');
                 $(input).removeClass('input-ime');
@@ -248,7 +251,7 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
             }, false);
             // 对于IE,CHROME标点符号不能显示问题修复
             // IE,CHROME标点符号输入不会触发compositionStart compositionEnd事件，导致这些浏览器标点符号输入无法被webswing捕获到
-            util.bindEvent(input, 'input', function(event) {
+            Util.bindEvent(input, 'input', function(event) {
                 var input = api.getInput();
                 // 中文输入法输入汉字的时候夹带标点符号也会触发本事件，但由compositionEnd来完成用户文本录入，
                 // 通过设置compositionInput 为true，将将该过程中触发的事件忽略掉
@@ -258,9 +261,9 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 }
                 // chrome
                 if (((!event.isComposing && event.inputType =='insertText' && event.data!=null)
-                        // IE
+                    // IE
                     || (api.cfg.ieVersion && event.type ==="input"))
-                        // IE focusInput新增空格并选中会触发input事件并走到这个分支，无效输入要过滤
+                    // IE focusInput新增空格并选中会触发input事件并走到这个分支，无效输入要过滤
                     && input.value != " "
                 ) {
                     sentWordsUsingKeypressEvent(input.value)
@@ -269,39 +272,39 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
             }, false);
 
             // 用户输入过程中的回显用input承载，需要用及时调整宽度
-            util.bindEvent(input, 'compositionupdate', function(event) {
+            Util.bindEvent(input, 'compositionupdate', function(event) {
                 var input=api.getInput();
                 var text = event.data;
                 input.style.width = getTextWidth(text, DEFAULT_FONT)+'px';
             }, false);
 
-            util.bindEvent(input, 'cut', function(event) {
+            Util.bindEvent(input, 'cut', function(event) {
                 event.preventDefault();
                 event.stopPropagation();
                 api.cut(event);
                 return false;
             }, false);
-            util.bindEvent(input, 'copy', function(event) {
+            Util.bindEvent(input, 'copy', function(event) {
                 event.preventDefault();
                 event.stopPropagation();
                 api.copy(event);
                 return false;
             }, false);
-            util.bindEvent(input, 'paste', function(event) {
+            Util.bindEvent(input, 'paste', function(event) {
                 event.preventDefault();
                 event.stopPropagation();
                 api.paste(event);
                 return false;
             }, false);
-            util.bindEvent(document, 'mousedown', mouseDownEventHandler);
-            util.bindEvent(document, 'mouseout', mouseOutEventHandler);
-            util.bindEvent(document, 'mouseup', mouseUpEventHandler);
+            Util.bindEvent(document, 'mousedown', mouseDownEventHandler);
+            Util.bindEvent(document, 'mouseout', mouseOutEventHandler);
+            Util.bindEvent(document, 'mouseup', mouseUpEventHandler);
 
             registered = true;
         }
 
         // 获取文本宽度
-	   function getTextWidth(text, font) {
+        function getTextWidth(text, font) {
             var canvas = api.getCanvas();
             var ctx = canvas.getContext("2d");
             ctx.save();
@@ -342,10 +345,13 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
 
         function focusInput(input) {
             // In order to ensure that the browser will fire clipboard events, we always need to have something selected
-            var sx = window.scrollX, sy = window.scrollY;
+            // scrollX , scrollY attributes on IE gives undefined, so changed to compatible pageXOffset,pageYOffset
+            var sx = window.pageXOffset, sy = window.pageYOffset;
             input.value = ' ';
-            //IE will force scrolling to focused input, setActive will not
-            $(input).focus({preventScroll:true});
+            // set the style attributes as the focus/select cannot work well in IE
+            input.style.top = sy +'px';
+            input.style.left = sx +'px';
+            $(input).focus(function(){preventScroll:true});
             input.select();
             window.scrollTo(sx,sy);
         }
@@ -366,9 +372,44 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
 
         function getMousePos(canvas, evt, type) {
             var rect = canvas.getBoundingClientRect();
+            var scaleX = 1;
+            var scaleY = 1;
+
+            //for lesser zoom %
+            if(window.innerWidth > canvas.width)
+            {
+                scaleX = (window.innerWidth-canvas.width)/canvas.width + 1;
+            }
+            if(window.innerHeight > Math.round(canvas.height + rect.top))
+            {
+                scaleY = (window.innerHeight-canvas.height - rect.top)/canvas.height + 1;
+            }
+            var mouseX = 0;
+            var mouseY = 0;
+            var translateX = (window.innerWidth-canvas.width)/2;
+            var translateY = (window.innerHeight-canvas.height - rect.top)/2;
+
             // return relative mouse position
-            var mouseX = Math.round(evt.clientX - rect.left);
-            var mouseY = Math.round(evt.clientY - rect.top);
+            if(scaleX > 1 && scaleY > 1)
+            {
+                mouseX = Math.round(window.innerWidth/2 - translateX - rect.left - (window.innerWidth/2 - evt.clientX)/scaleX);
+                mouseY = Math.round((window.innerHeight - rect.top)/2 - translateY - ((window.innerHeight + rect.top)/2 - evt.clientY)/scaleY);
+            }
+            else if(scaleX > 1)
+            {
+                mouseX = Math.round(window.innerWidth/2 - translateX - rect.left - (window.innerWidth/2 - evt.clientX)/scaleX);
+                mouseY = Math.round(evt.clientY - rect.top);
+            }
+            else if(scaleY > 1)
+            {
+                mouseX = Math.round(evt.clientX - rect.left);
+                mouseY = Math.round((window.innerHeight - rect.top)/2 - translateY - ((window.innerHeight + rect.top)/2 - evt.clientY)/scaleY);
+            }
+            else
+            {
+                mouseX = Math.round(evt.clientX - rect.left);
+                mouseY = Math.round(evt.clientY - rect.top);
+            }
             var delta = 0;
             if (type == 'mousewheel') {
                 delta = -Math.max(-1, Math.min(1, (evt.wheelDelta || -evt.detail)));
@@ -409,7 +450,5 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 }
             };
         }
-
     };
-
 });

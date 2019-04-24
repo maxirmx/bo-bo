@@ -153,7 +153,6 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 
 	protected BufferedImage readImage(String key) throws IOException {
 		ClassLoader classLoader = DefaultWindowDecoratorTheme.class.getClassLoader();
-
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice gs = ge.getDefaultScreenDevice();
 		GraphicsConfiguration gc = gs.getDefaultConfiguration();
@@ -197,14 +196,17 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 	}
 
 	@Override
-	public void paintWindowDecoration(Graphics g, Object window, int w, int h) {
-		Graphics2D g2 = (Graphics2D) g;
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
-		ImageSet is = (window != null && window.equals(WindowManager.getInstance().getActiveWindow())) ? active : inactive;
+	public void paintWindowDecoration(Graphics g, Object window, int w, int h, boolean ... forceInactive) {
+	    // 将强制修改g设定的移除，使用系统默认设定，Viktor也不知道是谁提交的修改合入
+//		Graphics2D g2 = (Graphics2D) g;
+//		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//		g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+//		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		
+        boolean isForceInactive = forceInactive.length > 0 ? forceInactive[0] : false;
+        ImageSet is = (isForceInactive || window == null
+                || !window.equals(WindowManager.getInstance().getActiveWindow())) ? inactive : active;
 
 		int xOffset = 0;
 		int yOffset = 0;
@@ -229,18 +231,28 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 		y = yOffset;
 		g.drawImage(is.TOP_LEFT, x, y, null);
 		g.drawImage(is.TOP_RIGHT, xOffset + w - is.TOP_RIGHT.getWidth(), y, null);
-
-		x += is.TOP_LEFT.getWidth() + BUTTON_SPACING;
-		g.drawImage(is.MENU, x, y + (is.TITLE.getHeight() - is.MENU.getHeight()) / 2, null);
-		Rectangle menuRect = new Rectangle(x, y + (is.TITLE.getHeight() - is.MENU.getHeight()) / 2, is.MENU.getWidth(), is.MENU.getHeight());
-		g.drawImage(getIcon(window), menuRect.x, menuRect.y, menuRect.width, menuRect.height, null);
+//		fixed by linjing
+//		for window, no need draw menu in Jdialog left postion	
+		x += is.TOP_LEFT.getWidth();
+//		g.drawImage(is.MENU, x, y + (is.TITLE.getHeight() - is.MENU.getHeight()) / 2, null);
+//		Rectangle menuRect = new Rectangle(x, y + (is.TITLE.getHeight() - is.MENU.getHeight()) / 2, is.MENU.getWidth(), is.MENU.getHeight());
+		
 
 		String title = getTitle(window)==null?"":getTitle(window);
 		g.setFont(UIManager.getFont("TitledBorder.font"));
 		float lineMetricsHeight = g.getFontMetrics().getLineMetrics(title, g).getHeight();
 
-		x += is.MENU.getWidth() + BUTTON_SPACING;
-		g.setColor(is.TEXT_COLOR);
+		Image icon = getIcon(window);
+		g.drawImage(getIcon(window), x, y + (is.TITLE.getHeight() - (int) lineMetricsHeight) / 2, null);
+
+		// icon x position calc
+		if (icon != null)
+		{
+			x = x + icon.getWidth(null) + BUTTON_SPACING;
+		}
+
+//		font color set black color	
+		g.setColor(java.awt.Color.BLACK);
 		g.drawString(title, x, y + (is.TITLE.getHeight() - (int) lineMetricsHeight) / 2 + (int) lineMetricsHeight);
 
 		x = xOffset + w - BUTTON_SPACING;
@@ -297,6 +309,11 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 			return ((Frame) o).getIconImage();
 		} else if (o instanceof Dialog) {
 			List<Image> images = ((Dialog) o).getIconImages();
+			if (images.size()==0){
+				if(((Dialog) o).getParent() instanceof Frame){
+					images = ((Frame)(((Dialog) o).getParent())).getIconImages();
+				}		
+			}
 			if (images.size() > 0) {
 				return images.get(0);
 			}
@@ -310,7 +327,7 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 		Insets i = w.getInsets();
 
 		// Dialogs can be RESIZABLE too, at least on Linux/Unix
-		if ((w instanceof Dialog && ((Dialog) w).isResizable()) || (w instanceof Frame) && ((Frame) w).isResizable()) {
+		if ((w instanceof Frame) && ((Frame) w).isResizable()) {
 			if (SwingUtilities.isRectangleContainingRectangle(getHideRect(w), eventPoint)) {
 				return WindowActionType.minimize;
 			}

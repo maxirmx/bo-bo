@@ -1,4 +1,4 @@
-define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'text!templates/bootstrap.css'], function amdFactory($, html, css, cssBootstrap) {
+define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'text!templates/bootstrap.css', 'webswing-i18n'], function amdFactory($, html, css, cssBootstrap, i18n) {
     "use strict";
     var style = $("<style></style>", {
         type: "text/css"
@@ -20,6 +20,7 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
             kill: 'base.kill',
             newSession: 'webswing.newSession',
             reTrySession: 'webswing.reTrySession',
+            fireCallBack: 'webswing.fireCallBack',
             logout: 'login.logout',
         };
         module.provides = {
@@ -35,25 +36,26 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
         function configuration() {
             return {
                 readyDialog: {
-                    content: '<p>Webswing ready...</p>'
+                    content: '<p>' + i18n.get('ready') + '</p>'
                 },
                 initializingDialog: {
-                    content: '<p>Initializing...</p>'
+                    content: '<p>' + i18n.get('initializing') + '</p>'
                 },
                 startingDialog: {
-                    content: '<p>Starting app...</p>'
+                    content: '<p>' + i18n.get('startApp') + '</p>'
                 },
                 connectingDialog: {
-                    content: '<p>Connecting...</p>'
+                    content: '<p>' + i18n.get('connecting') + '</p>'
                 },
-                applicationAlreadyRunning: retryMessageDialog('Application is already running in other browser window...'),
-                sessionStolenNotification: retryMessageDialog('Application was opened in other browser window. Session disconnected...'),
-                disconnectedDialog: retryMessageDialog('Disconnected...'),
-                connectionErrorDialog: retryMessageDialog('Connection error...'),
-                tooManyClientsNotification: retryMessageDialog('Too many connections. Please try again later...'),
-                stoppedDialog: finalMessageDialog('Application stopped...'),
+                applicationAlreadyRunning: activeCurrentDialog(i18n.get('runningInOtherBrowser')),
+                sessionStolenNotification: activeCurrentDialog(i18n.get('sessionDisconnected')),
+                disconnectedDialog: retryAfterCheckService(i18n.get('disconnected')),
+                connectionErrorDialog: retryAfterCheckService(i18n.get('connectionError')),
+                tooManyClientsNotification: activeCurrentDialog(i18n.get('toManyConnections')),
+                stoppedDialog: retryMessageDialog(i18n.get('stopped')),
                 continueOldSessionDialog: {
-                    content: '<p>Continue existing session?</p><button data-id="continue" class="btn btn-primary">Yes,	continue.</button><span> </span><button data-id="newsession" class="btn btn-default" >No, start new session.</button>',
+                    content: '<p>' + i18n.get('keepSession') + '</p>'
+                        + '<button data-id="continue" class="btn btn-primary">' + i18n.get('continue') + '</button><span> </span><button data-id="newsession" class="btn btn-default" >' + i18n.get('noStartNewSession') + '</button>',
                     events: {
                         continue_click: function () {
                             api.continueSession();
@@ -69,15 +71,24 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
 
         function finalMessageDialog(msg) {
             return {
-                content: '<p>'
-                        + msg
-                        + '</p><button data-id="newsession" class="btn btn-primary">Start new session.</button> <span> </span><button data-id="logout" class="btn btn-default">Logout.</button>',
+                content: '<p>' + msg + '</p>'
+                    + '<button data-id="newsession" class="btn btn-primary">' + i18n.get('startNewSession') + '</button> <span> </span>',
                 events: {
                     newsession_click: function () {
-                        api.newSession();
-                    },
-                    logout_click: function () {
-                        api.logout();
+                        api.fireCallBack({type: 'reloadSession'});
+                        location.reload();
+                    }
+                }
+            };
+        }
+
+        function activeCurrentDialog(msg) {
+            return {
+                content: '<p>' + msg + '</p>'
+                    + '<button data-id="retrysession" class="btn btn-primary">' + i18n.get('active') + '</button> <span> </span>',
+                events: {
+                    retrysession_click: function () {
+                        api.continueSession();
                     }
                 }
             };
@@ -85,15 +96,24 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
         
         function retryMessageDialog(msg) {
             return {
-                content: '<p>'
-                        + msg
-                        + '</p><button data-id="retrysession" class="btn btn-primary">Try again.</button> <span> </span><button data-id="logout" class="btn btn-default">Logout.</button>',
+                content: '<p>' + msg + '</p>'
+                    + '<button data-id="retrysession" class="btn btn-primary">' + i18n.get('tryAgain') + '</button>',
                 events: {
                     retrysession_click: function () {
                         api.reTrySession();
-                    },
-                    logout_click: function () {
-                        api.logout();
+                    }
+                }
+            };
+        }
+
+        function retryAfterCheckService(msg) {
+            return {
+                content: '<p>' + msg + '</p>' + '<p>' + i18n.get('retryAfterCheckService') + '</p>'
+                    + '<button data-id="retrysession" class="btn btn-primary">' + i18n.get('tryAgain') + '</button> <span> </span>',
+                events: {
+                    retrysession_click: function () {
+                        api.fireCallBack({type: 'reloadSession'});
+                        location.reload();
                     }
                 }
             };

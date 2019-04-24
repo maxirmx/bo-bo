@@ -4,6 +4,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.broker.region.policy.AbortSlowAckConsumerStrategy;
 import org.apache.activemq.broker.region.policy.ConstantPendingMessageLimitStrategy;
 import org.apache.activemq.broker.region.policy.PolicyEntry;
 import org.apache.activemq.broker.region.policy.PolicyMap;
@@ -27,6 +28,7 @@ public class JmsService implements ServletContextListener {
 			broker = startService();
 		} catch (Exception e) {
 			log.error("Failed to start JMS service.", e);
+			System.exit(1);
 		}
 	}
 
@@ -42,7 +44,7 @@ public class JmsService implements ServletContextListener {
 		// BrokerService broker= BrokerFactory.createBroker("xbean:mq.xml");
 		System.setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES",Constants.JMS_SERIALIZABLE_PACKAGES);
 		BrokerService broker = new BrokerService();
-		broker.setUseJmx(true);
+		broker.setUseJmx(false);
 		broker.setPersistent(false);
 
 		PolicyMap policyMap = new PolicyMap();
@@ -53,6 +55,16 @@ public class JmsService implements ServletContextListener {
 		defaultEntry.setPendingMessageLimitStrategy(pendingMessageLimitStrategy);
 		defaultEntry.setMemoryLimit(5 * 1024 * 1024);
 		defaultEntry.setMemoryLimit(getDestinationMemoryLimit());
+
+		// Viktor fix oom 2018-11-27 , 增加对无响应的session剔除策略
+		AbortSlowAckConsumerStrategy slowStrategy = new AbortSlowAckConsumerStrategy();
+		slowStrategy.setAbortConnection(true);
+		slowStrategy.setMaxSlowCount(1);
+		slowStrategy.setCheckPeriod(30000);
+		slowStrategy.setMaxSlowDuration(30000);
+		slowStrategy.setIgnoreNetworkConsumers(false);
+		defaultEntry.setSlowConsumerStrategy(slowStrategy);
+		defaultEntry.setQueuePrefetch(1);
 
 		policyMap.setDefaultEntry(defaultEntry);
 		broker.setDestinationPolicy(policyMap);

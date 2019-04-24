@@ -2,8 +2,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>webswing-directdraw</artifactId>
-		<groupId>org.webswing</groupId>
-		<version>2.4</version>
+		<groupId>xx.yy</groupId>
+		<version>6.0.7-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>webswing-directdraw-swing</artifactId>
@@ -13,41 +13,14 @@
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
-			<version>2.5.0</version>
+			<version>${protobuf.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.7</version>
+			<version>${apache.common.codec.version}</version>
 		</dependency>
 
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>com.github.os72</groupId>
-				<artifactId>protoc-jar-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<addSources>main</addSources>
-							<outputDirectory>src/main/java</outputDirectory>
-							<cleanOutputFolder>false</cleanOutputFolder>
-							<includeDirectories>
-								<include>../src/proto/javascript</include>
-							</includeDirectories>
-							<inputDirectories>
-								<include>../src/proto/javascript</include>
-							</inputDirectories>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 </project>

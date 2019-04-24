@@ -132,14 +132,15 @@ define(['jquery', 'text!templates/upload.html', 'text!templates/upload.css', 'jq
             jqUpload.bind("fileuploadprogressall", function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
                 uploadProgress.css('width', progress + '%');
-                if (progress === 100) {
-                    setTimeout(function () {
-                        filesUploaded(doneFileList);
-                        doneFileList = [];
-                    }, 1000);
-                    setProgressBarVisible(false);
-                    jqXHR_fileupload = [];
-                }
+
+            });
+            jqUpload.bind("fileuploaddone", function (e, data) {
+                setTimeout(function () {
+                    filesUploaded(doneFileList);
+                    doneFileList = [];
+                }, 1000);
+                setProgressBarVisible(false);
+                jqXHR_fileupload = [];
             });
 
             cancelBtn.click(function () {
@@ -182,10 +183,10 @@ define(['jquery', 'text!templates/upload.html', 'text!templates/upload.css', 'jq
         function sendMessageEvent(message) {
             api.send({
                 events: [{
-                        event: {
-                            type: message
-                        }
-                    }]
+                    event: {
+                        type: message
+                    }
+                }]
             });
         }
 

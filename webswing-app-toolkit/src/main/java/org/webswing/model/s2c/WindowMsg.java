@@ -9,6 +9,7 @@ public class WindowMsg implements Msg {
 	private static final long serialVersionUID = -523823816533325842L;
 	private String id;
 	private List<WindowPartialContentMsg> content;
+	private List<SpriteMsg> sprites;
 	private byte[] directDraw;
 	private String title;
 	private Integer posX;
@@ -78,6 +79,14 @@ public class WindowMsg implements Msg {
 
 	public void setHeight(Integer height) {
 		this.height = height;
+	}
+
+	public List<SpriteMsg> getSprites() {
+		return sprites;
+	}
+
+	public void setSprites(List<SpriteMsg> sprites) {
+		this.sprites = sprites;
 	}
 
 }

@@ -2,64 +2,70 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>webswing-app-interface</artifactId>
 	<parent>
-		<artifactId>webswing</artifactId>
-		<groupId>org.webswing</groupId>
-		<version>2.4</version>
+		<artifactId>webswingcomponent</artifactId>
+		<groupId>com.xx.yy</groupId>
+		<version>6.0.7-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
+	
 	<dependencies>
 		<dependency>
-			<groupId>org.webswing</groupId>
+			<groupId>xx.yy</groupId>
 			<artifactId>webswing-app-launcher</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.webswing</groupId>
+			<groupId>xx.yy</groupId>
 			<artifactId>webswing-directdraw-swing</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-client</artifactId>
-			<version>5.13.3</version>
-		</dependency>
+			<version>${activemq.version}</version>
+		</dependency>	
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
+			<groupId>com.fasterxml.jackson.core</groupId>
+  			<artifactId>jackson-databind</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.bcel</groupId>
 			<artifactId>bcel</artifactId>
-			<version>6.0</version>
+			<version>${apache.bcel.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>jakarta-regexp</groupId>
+					<artifactId>jakarta-regexp</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>12.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.objectplanet.image</groupId>
 			<artifactId>pngencoder</artifactId>
-			<version>1</version>
+			<version>${pngencoder.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.6.6</version>
+			<!--inherit from platfrom-->
+			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.freehep</groupId>
 			<artifactId>freehep-graphicsio-pdf</artifactId>
-			<version>2.3</version>
+			<version>${freehep.vectorgraphics.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>junit</artifactId>
@@ -72,9 +78,9 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>net.jpountz.lz4</groupId>
-			<artifactId>lz4</artifactId>
-			<version>1.3.0</version>
+			<groupId>org.lz4</groupId>
+			<artifactId>lz4-java</artifactId>
+			<version>${lz4.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

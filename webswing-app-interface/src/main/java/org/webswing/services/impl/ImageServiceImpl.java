@@ -6,13 +6,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 import javax.imageio.ImageIO;
 import javax.imageio.spi.IIORegistry;
@@ -121,13 +119,6 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	public WindowDecoratorTheme getWindowDecorationTheme() {
-	    String curTheme = System.getProperty(Constants.SWING_START_SYS_PROP_THEME, DEFAULT_THEME);
-	    if (!curTheme.equals(theme))
-	    {
-	        windowDecorationTheme = null;
-	        theme = curTheme;
-	    }
-	    
 		if (windowDecorationTheme == null) {
 			String implClassName = System.getProperty(WindowDecoratorTheme.DECORATION_THEME_IMPL_PROP, WindowDecoratorTheme.DECORATION_THEME_IMPL_DEFAULT);
 			Class<?> implclass = null;

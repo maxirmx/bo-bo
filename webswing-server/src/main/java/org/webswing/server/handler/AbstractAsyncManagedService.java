@@ -74,7 +74,7 @@ abstract public class AbstractAsyncManagedService implements AtmosphereHandler {
 				decodedMessage = ServerUtil.decodeJson((String) message);
 			} else if (message instanceof byte[]) {
 				length = ((byte[]) message).length;
-				decodedMessage = ServerUtil.decodeProto((byte[]) message);
+					decodedMessage = ServerUtil.decodeProto((byte[]) message);
 			}
 			if (decodedMessage != null && decodedMessage instanceof InputEventsFrameMsgIn) {
 				InputEventsFrameMsgIn frame = (InputEventsFrameMsgIn) decodedMessage;
@@ -113,7 +113,7 @@ abstract public class AbstractAsyncManagedService implements AtmosphereHandler {
 				log.error("Unable to decode message: " + message);
 			}
 			StatUtils.logInboundData(SwingInstanceManager.getInstance().findInstance(instanceIdMap.get(r.uuid())), length);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			log.error("Exception while processing websocket message.", e);
 		}
 	}

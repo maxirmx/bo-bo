@@ -1,31 +1,5 @@
 package org.webswing.dispatch;
 
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Window;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
-
 import org.webswing.Constants;
 import org.webswing.model.internal.ExitMsgInternal;
 import org.webswing.model.internal.OpenFileResultMsgInternal;
@@ -39,21 +13,51 @@ import org.webswing.model.s2c.LinkActionMsg;
 import org.webswing.model.s2c.LinkActionMsg.LinkActionType;
 import org.webswing.model.s2c.WindowMoveActionMsg;
 import org.webswing.model.s2c.WindowMsg;
+import org.webswing.toolkit.WebCursor;
 import org.webswing.toolkit.WebToolkit;
 import org.webswing.toolkit.WebWindowPeer;
 import org.webswing.toolkit.extra.WebRepaintManager;
 import org.webswing.toolkit.extra.WindowManager;
 import org.webswing.toolkit.util.DeamonThreadFactory;
+import org.webswing.toolkit.util.ImageComparator;
 import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Services;
+import org.webswing.toolkit.util.SubImage;
 import org.webswing.toolkit.util.Util;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.RepaintManager;
+import javax.swing.SwingUtilities;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Window;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class WebPaintDispatcher {
 
 	public static final Object webPaintLock = new Object();
 
 	private volatile Map<String, Set<Rectangle>> areasToUpdate = new HashMap<String, Set<Rectangle>>();
-	
+
 	private volatile Map<String, Boolean> windowRendered = new HashMap<String, Boolean>();
 	private volatile WindowMoveActionMsg moveAction;
 	private volatile boolean clientReadyToReceive = true;
@@ -62,6 +66,8 @@ public class WebPaintDispatcher {
 	private JFileChooser fileChooserDialog;
 
 	private ScheduledExecutorService contentSender = Executors.newScheduledThreadPool(1,DeamonThreadFactory.getInstance());
+
+	private Map<String, BufferedImage> previousWindowImages = new HashMap<String, BufferedImage>();
 
 	public WebPaintDispatcher() {
 		Runnable sendUpdate = new Runnable() {
@@ -73,6 +79,7 @@ public class WebPaintDispatcher {
 					Map<String, Image> windowWebImages = null;
 					Map<String, List<Rectangle>> windowNonVisibleAreas;
 					Map<String, Set<Rectangle>> currentAreasToUpdate = null;
+					long start= new Date().getTime();
 					synchronized (Util.getWebToolkit().getTreeLock()) {
 						synchronized (webPaintLock) {
 							if (clientReadyToReceive) {
@@ -116,21 +123,25 @@ public class WebPaintDispatcher {
 							clientReadyToReceive = false;
 						}
 					}
-					Logger.trace("contentSender:paintJson", json);
 					if (Util.isDD()) {
-						Logger.trace("contentSender:pngWebImageEncodingStart", json.hashCode());
 						Util.encodeWindowWebImages(windowWebImages, json);
-						Logger.trace("contentSender:pngWebImageEncodingDone", json.hashCode());
 					} else {
-						Logger.trace("contentSender:pngEncodingStart", json.hashCode());
-						Util.encodeWindowImages(windowImages, json);
+						//Util.encodeWindowImages(windowImages, json);
+						Map<String, Set<SubImage>> partials = ImageComparator.updateWindowImages(windowImages, previousWindowImages, json);
+
 						Logger.trace("contentSender:pngEncodingDone", json.hashCode());
+						// draw partial changes to the buffer for next comaprision
+						ImageComparator.mergePartials(previousWindowImages, partials, json);
+
 					}
 					Services.getConnectionService().sendObject(json);
+					Logger.trace("frame processed "+ (new Date().getTime()-start)+"ms");
+
 				} catch (Exception e) {
-					Logger.error("contentSender:error", e);
+//					Logger.error("contentSender:error", e);
 				}
 			}
+
 		};
 		contentSender.scheduleWithFixedDelay(sendUpdate, 33, 33, TimeUnit.MILLISECONDS);
 	}
@@ -138,6 +149,7 @@ public class WebPaintDispatcher {
 	public void clientReadyToReceive() {
 		synchronized (webPaintLock) {
 			clientReadyToReceive = true;
+			Logger.trace("clientReadyToReceive after "+ (new Date().getTime()-lastReadyStateTime)+"ms");
 		}
 	}
 
@@ -146,6 +158,17 @@ public class WebPaintDispatcher {
 		Services.getConnectionService().sendObject(object);
 	}
 
+	public void notifyWindowAreaRepaintedForced(String guid, Rectangle r) {
+		BufferedImage previous = previousWindowImages.get(guid);
+		if(previous!=null) {
+			Graphics2D g = previous.createGraphics();
+			g.clearRect(r.x, r.y, r.width, r.height);
+			g.dispose();
+		}
+		notifyWindowAreaRepainted(guid, r);
+	}
+
+	
 	public void notifyWindowAreaRepainted(String guid, Rectangle repaintedArea) {
 		synchronized (webPaintLock) {
 			if (validBounds(repaintedArea)) {
@@ -191,18 +214,21 @@ public class WebPaintDispatcher {
 		synchronized (webPaintLock) {
 			areasToUpdate.remove(guid);
 		}
+		previousWindowImages.remove(guid);
 		AppFrameMsgOut f = new AppFrameMsgOut();
 		WindowMsg fdEvent = new WindowMsg();
 		fdEvent.setId(guid);
 		f.setClosedWindow(fdEvent);
 		Logger.info("WebPaintDispatcher:notifyWindowClosed", guid);
 		Services.getConnectionService().sendObject(f);
+
 	}
 
 	public void notifyWindowRepaint(Window w) {
 		Rectangle bounds = w.getBounds();
 		WebWindowPeer peer = (WebWindowPeer) WebToolkit.targetToPeer(w);
 		notifyWindowAreaRepainted(peer.getGuid(), new Rectangle(0, 0, bounds.width, bounds.height));
+		previousWindowImages.remove(peer.getGuid());
 	}
 
 	@SuppressWarnings("restriction")
@@ -304,6 +330,7 @@ public class WebPaintDispatcher {
 				r.setLocation(r.x - w.getX(), r.y - w.getY());
 				notifyWindowAreaRepainted(peer.getGuid(), r);
 			}
+			previousWindowImages.remove(peer.getGuid());
 		}
 	}
 
@@ -311,8 +338,9 @@ public class WebPaintDispatcher {
 		notifyCursorUpdate(cursor, null);
 	}
 
-	public void notifyCursorUpdate(Cursor cursor, String overridenCursorName) {
+	public void notifyCursorUpdate(Cursor cursor, Cursor overridenCursorName) {
 		String webcursorName = null;
+		Cursor webcursor = null;
 		if (overridenCursorName == null) {
 			switch (cursor.getType()) {
 			case Cursor.DEFAULT_CURSOR:
@@ -349,15 +377,27 @@ public class WebPaintDispatcher {
 			case Cursor.SW_RESIZE_CURSOR:
 				webcursorName = CursorChangeEventMsg.SLASH_RESIZE_CURSOR;
 				break;
+			case Cursor.CUSTOM_CURSOR:
+				webcursorName = cursor.getName();
+				break;
 			default:
 				webcursorName = CursorChangeEventMsg.DEFAULT_CURSOR;
 			}
+			webcursor = cursor;
 		} else {
-			webcursorName = overridenCursorName;
+			webcursor = overridenCursorName;
+			webcursorName = overridenCursorName.getName();
 		}
 		if (!WindowManager.getInstance().getCurrentCursor().equals(webcursorName)) {
 			AppFrameMsgOut f = new AppFrameMsgOut();
 			CursorChangeEventMsg cursorChange = new CursorChangeEventMsg(webcursorName);
+			if (webcursor instanceof WebCursor) {
+				WebCursor c = (WebCursor) webcursor;
+				BufferedImage img = c.getImage();
+				cursorChange.setB64img(Services.getImageService().getPngImage(img));
+				cursorChange.setX(c.getHotSpot() != null ? c.getHotSpot().x : 0);
+				cursorChange.setY(c.getHotSpot() != null ? c.getHotSpot().y : 0);
+			}
 			f.setCursorChange(cursorChange);
 			WindowManager.getInstance().setCurrentCursor(webcursorName);
 			Logger.debug("WebPaintDispatcher:notifyCursorUpdate", f);
@@ -385,6 +425,7 @@ public class WebPaintDispatcher {
 		fdEvent.setMultiSelection(fileChooserDialog.isMultiSelectionEnabled());
 		Services.getConnectionService().sendObject(f);
 	}
+
 
 	public void notifyFileDialogHidden(WebWindowPeer webWindowPeer) {
 		AppFrameMsgOut f = new AppFrameMsgOut();
@@ -450,18 +491,18 @@ public class WebPaintDispatcher {
 			fileChooserDialog.rescanCurrentDirectory();
 		}
 	}
-	
+
 	public void notifyApplicationExiting() {
 		ExitMsgInternal f=new ExitMsgInternal();
-		f.setWaitForExit(Integer.getInteger(Constants.SWING_START_SYS_PROP_WAIT_FOR_EXIT,30000));
+		f.setWaitForExit(Integer.getInteger(Constants.SWING_START_SYS_PROP_WAIT_FOR_EXIT,60000));
 		Services.getConnectionService().sendObject(f);
 		contentSender.shutdownNow();
 	}
-	
+
 	public void notifyFocusEvent(FocusEventMsg msg) {
 		focusEvent=msg;
 	}
-	
+
 	public void notifyWindowReset(String guid) {
 		windowRendered.put(guid,false);
 	}
@@ -473,5 +514,4 @@ public class WebPaintDispatcher {
 	public void notifyWindowRendered(String guid) {
 		windowRendered.put(guid,true);
 	}
-
 }

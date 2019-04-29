@@ -110,16 +110,10 @@ public class ServerConnectionServiceImpl implements MessageListener, ServerConne
 
 				@Override
 				public void onException(JMSException paramJMSException) {
-					Logger.warn("JMS clien connection error: " + paramJMSException.getMessage());
-					try {
-						producer.close();
-						consumer.close();
-						session.close();
-						connection.close();
-					} catch (JMSException e) {
-						// do nothing, will try to reinitialize.
-					}
-					ServerConnectionServiceImpl.this.initialize();
+                    Logger.warn("JMS clien connection error: " + paramJMSException.getMessage());
+                    Logger.error("Exiting swing application because could not connect to JMS:"
+                            + paramJMSException.getMessage(), paramJMSException);
+                    System.exit(1);
 				}
 			});
 		} catch (JMSException e) {

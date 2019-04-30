@@ -363,9 +363,44 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
 
         function getMousePos(canvas, evt, type) {
             var rect = canvas.getBoundingClientRect();
+            var scaleX = 1;
+            var scaleY = 1;
+
+            //for lesser zoom %
+            if(window.innerWidth > canvas.width)
+            {
+                scaleX = (window.innerWidth-canvas.width)/canvas.width + 1;
+            }
+            if(window.innerHeight > Math.round(canvas.height + rect.top))
+            {
+                scaleY = (window.innerHeight-canvas.height - rect.top)/canvas.height + 1;
+            }
+            var mouseX = 0;
+            var mouseY = 0;
+            var translateX = (window.innerWidth-canvas.width)/2;
+            var translateY = (window.innerHeight-canvas.height - rect.top)/2;
+
             // return relative mouse position
-            var mouseX = Math.round(evt.clientX - rect.left);
-            var mouseY = Math.round(evt.clientY - rect.top);
+            if(scaleX > 1 && scaleY > 1)
+            {
+                mouseX = Math.round(window.innerWidth/2 - translateX - rect.left - (window.innerWidth/2 - evt.clientX)/scaleX);
+                mouseY = Math.round((window.innerHeight - rect.top)/2 - translateY - ((window.innerHeight + rect.top)/2 - evt.clientY)/scaleY);
+            }
+            else if(scaleX > 1)
+            {
+                mouseX = Math.round(window.innerWidth/2 - translateX - rect.left - (window.innerWidth/2 - evt.clientX)/scaleX);
+                mouseY = Math.round(evt.clientY - rect.top);
+            }
+            else if(scaleY > 1)
+            {
+                mouseX = Math.round(evt.clientX - rect.left);
+                mouseY = Math.round((window.innerHeight - rect.top)/2 - translateY - ((window.innerHeight + rect.top)/2 - evt.clientY)/scaleY);
+            }
+            else
+            {
+                mouseX = Math.round(evt.clientX - rect.left);
+                mouseY = Math.round(evt.clientY - rect.top);
+            }
             var delta = 0;
             if (type == 'mousewheel') {
                 delta = -Math.max(-1, Math.min(1, (evt.wheelDelta || -evt.detail)));

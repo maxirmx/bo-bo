@@ -16,6 +16,24 @@ message AppFrameMsgOutProto{
 	optional JsResultMsgProto javaResponse = 11;
 	optional PlaybackInfoMsgProto playback = 12;
 	optional string sessionId = 13;
+	optional FocusEventMsgProto focusEvent = 14;
+}
+
+message FocusEventMsgProto {
+    required FocusEventTypeProto type = 1;
+    optional sint32 x = 2;
+    optional sint32 y = 3;
+    optional uint32 w = 4;
+    optional uint32 h = 5;
+    optional sint32 caretX = 6;
+    optional sint32 caretY = 7;
+    optional sint32 caretH = 8;
+
+    enum FocusEventTypeProto {
+        focusLost = 1;
+        focusGained = 2;
+        focusWithCarretGained = 3;
+    }
 }
 
 message ApplicationInfoMsgProto{

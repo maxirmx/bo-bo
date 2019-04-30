@@ -1,31 +1,5 @@
 package org.webswing.dispatch;
 
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Window;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
-
 import org.webswing.Constants;
 import org.webswing.model.internal.ExitMsgInternal;
 import org.webswing.model.internal.OpenFileResultMsgInternal;
@@ -34,6 +8,7 @@ import org.webswing.model.s2c.CopyEventMsg;
 import org.webswing.model.s2c.CursorChangeEventMsg;
 import org.webswing.model.s2c.FileDialogEventMsg;
 import org.webswing.model.s2c.FileDialogEventMsg.FileDialogEventType;
+import org.webswing.model.s2c.FocusEventMsg;
 import org.webswing.model.s2c.LinkActionMsg;
 import org.webswing.model.s2c.LinkActionMsg.LinkActionType;
 import org.webswing.model.s2c.WindowMoveActionMsg;
@@ -47,6 +22,33 @@ import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Services;
 import org.webswing.toolkit.util.Util;
 
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.RepaintManager;
+import javax.swing.SwingUtilities;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Window;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class WebPaintDispatcher {
 
 	public static final Object webPaintLock = new Object();
@@ -54,6 +56,7 @@ public class WebPaintDispatcher {
 	private volatile Map<String, Set<Rectangle>> areasToUpdate = new HashMap<String, Set<Rectangle>>();
 	private volatile WindowMoveActionMsg moveAction;
 	private volatile boolean clientReadyToReceive = true;
+	private volatile FocusEventMsg focusEvent;
 	private long lastReadyStateTime;
 	private JFileChooser fileChooserDialog;
 
@@ -69,6 +72,7 @@ public class WebPaintDispatcher {
 					Map<String, Image> windowWebImages = null;
 					Map<String, List<Rectangle>> windowNonVisibleAreas;
 					Map<String, Set<Rectangle>> currentAreasToUpdate = null;
+					long start= new Date().getTime();
 					synchronized (Util.getWebToolkit().getTreeLock()) {
 						synchronized (webPaintLock) {
 							if (clientReadyToReceive) {
@@ -105,20 +109,23 @@ public class WebPaintDispatcher {
 								json.setMoveAction(moveAction);
 								moveAction = null;
 							}
+							if (focusEvent!= null) {
+								json.setFocusEvent(focusEvent);
+								focusEvent = null;
+							}
 							clientReadyToReceive = false;
 						}
 					}
-					Logger.trace("contentSender:paintJson", json);
 					if (Util.isDD()) {
-						Logger.trace("contentSender:pngWebImageEncodingStart", json.hashCode());
 						Util.encodeWindowWebImages(windowWebImages, json);
-						Logger.trace("contentSender:pngWebImageEncodingDone", json.hashCode());
 					} else {
 						Logger.trace("contentSender:pngEncodingStart", json.hashCode());
 						Util.encodeWindowImages(windowImages, json);
 						Logger.trace("contentSender:pngEncodingDone", json.hashCode());
 					}
 					Services.getConnectionService().sendObject(json);
+					Logger.trace("frame processed "+ (new Date().getTime()-start)+"ms");
+
 				} catch (Exception e) {
 					Logger.error("contentSender:error", e);
 				}
@@ -130,6 +137,7 @@ public class WebPaintDispatcher {
 	public void clientReadyToReceive() {
 		synchronized (webPaintLock) {
 			clientReadyToReceive = true;
+			Logger.trace("clientReadyToReceive after "+ (new Date().getTime()-lastReadyStateTime)+"ms");
 		}
 	}
 
@@ -445,9 +453,13 @@ public class WebPaintDispatcher {
 	
 	public void notifyApplicationExiting() {
 		ExitMsgInternal f=new ExitMsgInternal();
-		f.setWaitForExit(Integer.getInteger(Constants.SWING_START_SYS_PROP_WAIT_FOR_EXIT,30000));
+		f.setWaitForExit(Integer.getInteger(Constants.SWING_START_SYS_PROP_WAIT_FOR_EXIT,60000));
 		Services.getConnectionService().sendObject(f);
 		contentSender.shutdownNow();
+	}
+
+	public void notifyFocusEvent(FocusEventMsg msg) {
+		focusEvent=msg;
 	}
 
 }

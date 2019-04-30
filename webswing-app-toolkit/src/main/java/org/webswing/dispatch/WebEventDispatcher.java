@@ -127,7 +127,7 @@ public class WebEventDispatcher {
 	}
 
 	private void dispatchMessage(SimpleEventMsgIn message) {
-		Logger.debug("WebEventDispatcher.dispatchMessage", message);
+		Logger.debug("WebEventDispatcher.dispatchMessage SimpleEventMsgIn type: ", message.getType());
 		switch (message.getType()) {
 		case killSwing:
 			Logger.info("Received kill signal. Swing application shutting down.");
@@ -198,6 +198,11 @@ public class WebEventDispatcher {
 		Component c = null;
 		if (WindowManager.getInstance().isLockedToWindowDecorationHandler()) {
 			c = WindowManager.getInstance().getLockedToWindow();
+			if(c != null && c.isShowing() == false)
+			{
+				WindowManager.getInstance().resetEventHandlerLock(false);
+				c = null;
+			}	
 		} else {
 			c = WindowManager.getInstance().getVisibleComponentOnPosition(event.getX(), event.getY());
 			if (lastMouseEvent != null && (lastMouseEvent.getID() == MouseEvent.MOUSE_DRAGGED || lastMouseEvent.getID() == MouseEvent.MOUSE_PRESSED) && ((event.getType() == MouseEventType.mousemove && event.getButton() == 1) || (event.getType() == MouseEventType.mouseup))) {

@@ -198,5 +198,9 @@ public class WindowManager {
 	public void setCurrentCursor(String currentCursor) {
 		this.currentCursor = currentCursor;
 	}
+	
+	public void resetEventHandlerLock(boolean lockToBeReset) {
+		eventhandler.setLockedToWindow(lockToBeReset);	
+	}	
 
 }

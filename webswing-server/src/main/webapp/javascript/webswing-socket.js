@@ -16,7 +16,8 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             stoppedDialog: 'dialog.content.stoppedDialog',
             disconnectedDialog: 'dialog.content.disconnectedDialog',
             connectionErrorDialog: 'dialog.content.connectionErrorDialog',
-            initializingDialog: 'dialog.content.initializingDialog'
+            initializingDialog: 'dialog.content.initializingDialog',
+            fireCallBack : 'webswing.fireCallBack'
         };
         module.provides = {
             connect: connect,
@@ -76,11 +77,14 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
                     binary = false;
                     dispose();
                     connect();
+                } else {
+                    api.fireCallBack({type: 'webswingWebSocketOpened'});
                 }
             };
 
             request.onReopen = function (response) {
                 api.hideDialog();
+                api.fireCallBack({type: 'webswingWebSocketReOpened'});
             };
 
             request.onMessage = function (response) {
@@ -108,10 +112,12 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             request.onClose = function (response) {
                 if (api.currentDialog() !== api.stoppedDialog) {
                     api.showDialog(api.disconnectedDialog);
+                    api.fireCallBack({type: 'webswingWebSocketOnClose'});
                 }
             };
 
             request.onError = function (response) {
+                api.fireCallBack({type: 'webswingWebSocketOnError'});
                 api.showDialog(api.connectionErrorDialog);
             };
 
@@ -194,5 +200,4 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             }
         }
     };
-
 });

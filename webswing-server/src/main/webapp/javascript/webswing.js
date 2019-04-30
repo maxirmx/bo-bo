@@ -82,6 +82,7 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
             function WebswingInstance(rootElement) {
                 var module = this;
                 var api;
+                var clientCallbackHandler = false;
                 module.injects = api = {
                     cfg : 'webswing.config',
                     start : 'webswing.start',
@@ -106,7 +107,9 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                     reTrySession : reTrySession,
                     disconnect : disconnect,
                     setControl : setControl,
-                    configure : configure
+                    configure : configure,
+                    setCallBack: setCallBack,
+                    fireCallBack: fireCallBack
                 };
                 module.ready = function() {
                     configure();
@@ -150,11 +153,23 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                    return rootElement.addClass('webswing-root');
                 }
 
+                function setCallBack(callback) {
+                    clientCallbackHandler = callback;
+                }
+
+                function fireCallBack(event) {
+                    if (clientCallbackHandler) {
+                        return clientCallbackHandler(event);
+                    } else {
+                        console.info('webswing callback is false, fire event is', event);
+                    }
+                }
+
                 function start() {
                     api.login(function() {
                         api.showDialog(api.initializingDialog);
                         api.connect();
-                    });
+                    }, clientCallbackHandler);
                 }
 
                 function newSession() {

@@ -227,9 +227,15 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
 
         function focusInput(input) {
             // In order to ensure that the browser will fire clipboard events, we always need to have something selected
+            // scrollX , scrollY attributes on IE gives undefined, so changed to compatible pageXOffset,pageYOffset
+            var sx = window.pageXOffset, sy = window.pageYOffset;
             input.value = ' ';
-            input.focus();
+            // set the style attributes as the focus/select cannot work well in IE
+            input.style.top = sy +'px';
+            input.style.left = sx +'px';
+            $(input).focus(function(){preventScroll:true});
             input.select();
+            window.scrollTo(sx,sy);
         }
 
         function getMousePos(canvas, evt, type) {

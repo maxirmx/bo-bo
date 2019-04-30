@@ -265,15 +265,10 @@ public class WebEventDispatcher {
 			case mousewheel:
 				id = MouseEvent.MOUSE_WHEEL;
 				buttons = 0;
-				modifiers = 0;
 				e = new MouseWheelEvent(c, id, when, modifiers, x, y, clickcount, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 3, event.getWheelDelta());
 				dispatchEventInSwing(c, e);
 				break;
 			case dblclick:
-				// e = new MouseEvent(w, MouseEvent.MOUSE_CLICKED, when,
-				// modifiers, x, y, event.x, event.y, 2, false, buttons);
-				// dispatchEventInSwing(w, e);
-				// break;
 			default:
 				break;
 			}

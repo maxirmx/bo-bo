@@ -83,7 +83,7 @@ public class Util {
 			result = MouseEvent.BUTTON2_DOWN_MASK;
 			break;
 		case 3:
-			result = MouseEvent.BUTTON3_DOWN_MASK | MouseEvent.META_DOWN_MASK;
+			result = MouseEvent.BUTTON3_DOWN_MASK;
 			break;
 		}
 		if (evt.isCtrl()) {

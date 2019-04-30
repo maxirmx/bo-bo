@@ -20,6 +20,7 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
             kill: 'base.kill',
             newSession: 'webswing.newSession',
             reTrySession: 'webswing.reTrySession',
+            fireCallBack: 'webswing.fireCallBack',
             logout: 'login.logout',
         };
         module.provides = {
@@ -74,6 +75,7 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
                         + '</p><button data-id="newsession" class="btn btn-primary">Start new session.</button> <span> </span><button data-id="logout" class="btn btn-default">Logout.</button>',
                 events: {
                     newsession_click: function () {
+                        api.fireCallBack({type: 'reloadSession'});
                         api.newSession();
                     },
                     logout_click: function () {

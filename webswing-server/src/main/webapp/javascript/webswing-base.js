@@ -6,6 +6,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
         module.injects = api = {
             cfg : 'webswing.config',
             disconnect : 'webswing.disconnect',
+            fireCallBack : 'webswing.fireCallBack',
             getSocketId : 'socket.uuid',
             getCanvas : 'canvas.get',
             registerInput : 'input.register',
@@ -79,7 +80,8 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             if (isMirror) {
                 repaint();
             }
-            api.showDialog(api.startingDialog);
+            //api.showDialog(api.startingDialog);
+            api.fireCallBack({type: 'webswingInitialied'});
         }
 
         function beforeUnloadEventHandler(evt) {
@@ -92,6 +94,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             handshake();
             repaint();
             ack();
+            api.fireCallBack({type: 'continueSession'});
         }
 
         function resetState() {
@@ -125,8 +128,8 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
         }
 
         function servletHeartbeat() {
-        	//touch servlet session to avoid timeout
-        	api.login(function(){},function(){});
+            //touch servlet session to avoid timeout
+            api.login(function(){},function(){});
         }
 
         function repaint() {
@@ -138,15 +141,15 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
         }
 
         function kill() {
-        	if (api.cfg.hasControl) {
-        		sendMessageEvent('killSwing');
-        	}
+            if (api.cfg.hasControl) {
+                sendMessageEvent('killSwing');
+            }
         }
 
         function unload() {
-        	if(!api.cfg.mirrorMode){
-        		sendMessageEvent('unload');
-        	}
+            if(!api.cfg.mirrorMode){
+                sendMessageEvent('unload');
+            }
         }
 
         function handshake() {
@@ -163,9 +166,13 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             api.disposeTouch();
             window.removeEventListener('beforeunload', beforeUnloadEventHandler);
             directDraw.dispose();
+            api.fireCallBack({type: 'webswingDispose'});
         }
 
         function processMessage(data) {
+            if(data.javaResponse && data.javaResponse.value && data.javaResponse.value.javaObject &&  data.javaResponse.value.javaObject.id != null){
+                api.fireCallBack({type: "deleteIdforTitle"});
+            }
             if (data.playback != null) {
                 api.playbackInfo(data);
             }
@@ -174,25 +181,30 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             }
             if (data.event != null && !api.cfg.recordingPlayback) {
                 if (data.event == "shutDownNotification") {
+                    api.fireCallBack({type: 'clientShutDown'});
                     api.showDialog(api.stoppedDialog);
                     api.disconnect();
                 } else if (data.event == "applicationAlreadyRunning") {
                     api.showDialog(api.applicationAlreadyRunning);
-                } else if (data.event == "tooManyClientsNotification") {
+                }
+                else if (data.event == "tooManyClientsNotification") {
                     api.showDialog(api.tooManyClientsNotification);
                 } else if (data.event == "continueOldSession") {
                     api.cfg.canPaint = false;
                     api.showDialog(api.continueOldSessionDialog);
-                }else if (data.event == "continueOldSessionAutomatic") {
-                	continueSession();
-                }else if (data.event == "sessionStolenNotification") {
-                	api.cfg.canPaint = false;
-                	api.showDialog(api.sessionStolenNotification);
+                } else if (data.event == "continueOldSessionAutomatic") {
+                    api.fireCallBack({type: "deleteIdforTitle"});
+                    continueSession();
+                } else if (data.event == "sessionStolenNotification") {
+                    api.fireCallBack({type: 'stopSession'});
+                    api.cfg.canPaint = false;
+                    api.showDialog(api.sessionStolenNotification);
                 }
                 return;
             }
             if (data.jsRequest != null && api.cfg.mirrorMode == false && !api.cfg.recordingPlayback) {
                 api.processJsLink(data.jsRequest);
+                return;
             }
             if (api.cfg.canPaint) {
                 queuePaintingRequest(data);
@@ -270,6 +282,8 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             }
             // regular windows (background removed)
             if (data.windows != null) {
+
+
                 data.windows.reduce(function(sequence, window) {
                     return sequence.then(function() {
                         return renderWindow(window, context);
@@ -393,4 +407,5 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             throw error;
         }
     };
+
 });

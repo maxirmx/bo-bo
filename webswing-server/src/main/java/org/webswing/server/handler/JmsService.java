@@ -4,6 +4,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.broker.region.policy.AbortSlowAckConsumerStrategy;
 import org.apache.activemq.broker.region.policy.ConstantPendingMessageLimitStrategy;
 import org.apache.activemq.broker.region.policy.PolicyEntry;
 import org.apache.activemq.broker.region.policy.PolicyMap;
@@ -54,6 +55,15 @@ public class JmsService implements ServletContextListener {
 		defaultEntry.setMemoryLimit(5 * 1024 * 1024);
 		defaultEntry.setMemoryLimit(getDestinationMemoryLimit());
 
+		AbortSlowAckConsumerStrategy slowStrategy = new AbortSlowAckConsumerStrategy();
+		slowStrategy.setAbortConnection(true);
+		slowStrategy.setMaxSlowCount(1);
+		slowStrategy.setCheckPeriod(30000);
+		slowStrategy.setMaxSlowDuration(30000);
+		slowStrategy.setIgnoreNetworkConsumers(false);
+		defaultEntry.setSlowConsumerStrategy(slowStrategy);
+		defaultEntry.setQueuePrefetch(1);
+		
 		policyMap.setDefaultEntry(defaultEntry);
 		broker.setDestinationPolicy(policyMap);
 

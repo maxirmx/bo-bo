@@ -1,6 +1,7 @@
 package org.webswing.toolkit.extra;
 
 import java.awt.AWTEvent;
+import java.awt.Cursor;
 import java.awt.Window;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
@@ -9,6 +10,10 @@ import java.awt.event.MouseEvent;
 import org.webswing.model.s2c.CursorChangeEventMsg;
 import org.webswing.toolkit.WebDragSourceContextPeer;
 import org.webswing.toolkit.WebDropTargetContextPeer;
+import org.webswing.toolkit.util.Logger;
+import org.webswing.toolkit.util.Util;
+
+import javax.swing.TransferHandler;
 
 @SuppressWarnings("restriction")
 public class DndEventHandler {
@@ -20,20 +25,23 @@ public class DndEventHandler {
     private int lastDropTargetAction = 0;
     private boolean dropped;
     private boolean finished=true;
-    private static String cursorName = CursorChangeEventMsg.MOVE_CURSOR;
+	private static Cursor cursor = Cursor.getDefaultCursor();
 
     public void processMouseEvent(Window w, AWTEvent e) {
         if (e instanceof MouseEvent) {
             MouseEvent me = (MouseEvent) e;
-            if (e.getID() == MouseEvent.MOUSE_RELEASED) {
                 int modifiers = (me.getModifiersEx() & (MouseEvent.CTRL_DOWN_MASK | MouseEvent.SHIFT_DOWN_MASK)) | MouseEvent.BUTTON1_DOWN_MASK;
                 int currentDropAction = WebDragSourceContextPeer.convertModifiersToDropAction(modifiers, sourceActions);
+				lastDropTargetAction = dropTarget.handleEnterMessage(w, me.getX(), me.getY(), currentDropAction, sourceActions, formats, 123123123);
+				if (e.getID() == MouseEvent.MOUSE_RELEASED) {
                 //dragSource.dragMouseMoved(currentDropAction, modifiers, me.getXOnScreen(), me.getYOnScreen());
                 //dragSource.dragEnter(currentDropAction, modifiers, me.getXOnScreen(), me.getYOnScreen());
                 //dragSource.dragMotion(currentDropAction, modifiers, me.getXOnScreen(), me.getYOnScreen());
-                lastDropTargetAction = dropTarget.handleEnterMessage(w, me.getX(), me.getY(), currentDropAction, sourceActions, formats, 123123123);
                 //lastDropTargetAction = dropTarget.handleMotionMessage(w, me.getX(), me.getY(), currentDropAction, sourceActions, formats, 123123123);
                 dragEnd(w, e, lastDropTargetAction != 0, lastDropTargetAction);
+			} else if (e.getID() == MouseEvent.MOUSE_DRAGGED) {
+				updateCursor();
+				Util.getWebToolkit().getPaintDispatcher().notifyCursorUpdate(cursor);
             }
         } else if (e instanceof KeyEvent) {
             if (e.getID() == KeyEvent.KEY_PRESSED && ((KeyEvent) e).getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -42,13 +50,28 @@ public class DndEventHandler {
         }
     }
 
-    //    private void updateCursor() {
-    //        if (lastDropTargetAction == 0) {
-    //            cursorName = JsonCursorChange.NOT_ALLOWED_CURSOR;
-    //        } else {
-    //            cursorName = JsonCursorChange.MOVE_CURSOR;
-    //        }
-    //    }
+	private void updateCursor() {
+		try {
+			switch (lastDropTargetAction) {
+			case TransferHandler.NONE:
+				cursor = Cursor.getSystemCustomCursor("Invalid.32x32");
+				break;
+			case TransferHandler.COPY:
+				cursor = Cursor.getSystemCustomCursor("CopyDrop.32x32");
+				break;
+			case TransferHandler.LINK:
+				cursor = Cursor.getSystemCustomCursor("LinkDrop.32x32");
+				break;
+			case TransferHandler.MOVE:
+			case TransferHandler.COPY_OR_MOVE:
+			default:
+				cursor = Cursor.getSystemCustomCursor("MoveDrop.32x32");
+				break;
+			}
+		} catch (Exception e) {
+			Logger.debug("Failed to load DnD cursor", e);
+		}
+	}
 
     public void dragStart(WebDragSourceContextPeer dragSource, Transferable transferable, int actions, long[] formats) {
         this.dragSource = dragSource;
@@ -61,6 +84,7 @@ public class DndEventHandler {
 
     private void dragEnd(Window w, AWTEvent e, boolean supported, int dropAction) {
         if (!finished) {
+			if (e instanceof MouseEvent) {
             MouseEvent me = ((MouseEvent) e);
             if (w != null) {
                 if (supported && !dropped) {
@@ -72,15 +96,19 @@ public class DndEventHandler {
                     dragSource.dragFinished(false, dropAction, me.getX(), me.getY());
                 }
             }
+			} else {
+				dropTarget.handleExitMessage(w, 123123123);
+				dragSource.dragFinished(false, dropAction, 0, 0);
+			}
             finished = true;
         }
         sourceActions = 0;
-        lastDropTargetAction = 0;
-        cursorName = CursorChangeEventMsg.MOVE_CURSOR;
+		lastDropTargetAction = TransferHandler.NONE;
+		cursor = Cursor.getDefaultCursor();
     }
 
-    public static String getCurrentDropTargetCursorName() {
-        return cursorName;
+	public static Cursor getCurrentDropTargetCursorName() {
+		return cursor;
     }
 
     public boolean isDndInProgress() {

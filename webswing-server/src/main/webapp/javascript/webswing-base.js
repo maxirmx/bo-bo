@@ -262,7 +262,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 }
             }
             if (data.cursorChange != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {
-                canvas.style.cursor = data.cursorChange.cursor;
+                canvas.style.cursor = getCursorStyle(data.cursorChange);
             }
             if (data.copyEvent != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {
                 api.displayCopyBar(data.copyEvent);
@@ -391,6 +391,15 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
         function copy(sx, sy, dx, dy, w, h, context) {
             var copy = context.getImageData(sx, sy, w, h);
             context.putImageData(copy, dx, dy);
+        }
+
+        function getCursorStyle(cursorMsg) {
+            if (cursorMsg.b64img == null) {
+                return cursorMsg.cursor;
+            } else {
+                var data = util.getImageString(cursorMsg.b64img);
+                return 'url(' + data + ') ' + cursorMsg.x + ' ' + cursorMsg.y + ' , auto';
+            }
         }
 
         function getHandShake(canvas, continueOldSession) {

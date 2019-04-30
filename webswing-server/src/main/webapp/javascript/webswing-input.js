@@ -11,7 +11,7 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
             getCanvas : 'canvas.get',
             cut : 'clipboard.cut',
             copy : 'clipboard.copy',
-            paste : 'clipboard.paste',
+            paste : 'clipboard.paste'
         };
         module.provides = {
             register : register,
@@ -144,6 +144,18 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 event.stopPropagation();
                 return false;
             });
+            function isCharatersPress(kc){
+                return (kc>=97&&kc<=122)||(kc>=65&&kc<=90);
+
+            }
+            function isHotKeyBehavoir(keyevt){
+                return isCharatersPress(keyevt.key.keycode)&&keyevt.key.alt&&keyevt.key.shift&&keyevt.key.ctrl;
+
+            }
+            function convertHotKey(keyevt){
+                keyevt.key.shift = false;
+                keyevt.key.ctrl = false;
+            }
 
             util.bindEvent(input, 'keydown', function(event) {
                 var functionKeys=[9/*tab*/, 12/*Numpad5*/, 16/*Shift*/, 17/*ctrl*/, 18/*alt*/, 19/*pause*/, 20/*CapsLock*/, 27/*esc*/, 
@@ -154,6 +166,10 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                                   132/*F21*/, 133/*F22*/, 134/*F23*/, 135/*F24*/]; 
             	
             	var kc = event.keyCode;
+                //mute F1 help
+                if(kc === 112) {
+                    return false;
+                }
                 if (functionKeys.indexOf(kc)!=-1) {
                     if(!api.cfg.virtualKB){
                         event.preventDefault();
@@ -167,6 +183,9 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                     if (keyevt.key.ctrl && !keyevt.key.alt && !keyevt.key.altgr) {
                         event.preventDefault();
                     }
+                    if(isHotKeyBehavoir(keyevt)){
+                        convertHotKey(keyevt);
+                    }
                     enqueueInputEvent(keyevt);
                 }
                 return false;
@@ -177,6 +196,9 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                         || keyevt.key.character == 118 || keyevt.key.character == 22))) { // cut copy paste handled separately
                     event.preventDefault();
                     event.stopPropagation();
+                    if(isHotKeyBehavoir(keyevt)){
+                        convertHotKey(keyevt);
+                    }
                     enqueueInputEvent(keyevt);
                 }
                 return false;
@@ -186,6 +208,9 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
                 if (!(keyevt.key.ctrl && (keyevt.key.character == 88 || keyevt.key.character == 67 || keyevt.key.character == 86))) { // cut copy
                     event.preventDefault();
                     event.stopPropagation();
+                    if(isHotKeyBehavoir(keyevt)){
+                        convertHotKey(keyevt);
+                    }
                     enqueueInputEvent(keyevt);
                     sendInput();
                 }

@@ -192,5 +192,10 @@ public class WindowEventHandler {
 	public Window getLockedToWindow() {
 		return window;
 	}
+	
+	public void setLockedToWindow(boolean lockToBeReset)
+	{
+		lockedOnEvent = lockToBeReset; 	
+	}
 
 }

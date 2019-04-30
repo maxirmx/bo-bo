@@ -27,6 +27,7 @@ public class JmsService implements ServletContextListener {
 			broker = startService();
 		} catch (Exception e) {
 			log.error("Failed to start JMS service.", e);
+			System.exit(1);
 		}
 	}
 

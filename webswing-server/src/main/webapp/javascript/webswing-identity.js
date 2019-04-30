@@ -11,11 +11,11 @@ define(['webswing-util'], function amdFactory(util) {
         var cookieName = 'webswingID';
         function get() {
             var id = readCookie(cookieName);
-            if (id != null) {
+                if (id != null && id != "") {
                 return id;
             } else {
                 id = util.GUID();
-                createCookie(cookieName, id, 1);
+                createCookie(cookieName, id);
                 return id;
             }
         }
@@ -49,8 +49,14 @@ define(['webswing-util'], function amdFactory(util) {
                 var c = ca[i];
                 while (c.charAt(0) === ' ')
                     c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) === 0)
-                    return unescape(c.substring(nameEQ.length, c.length));
+                    if (c.indexOf(nameEQ) === 0){
+                        var webswingCookie = unescape(c.substring(nameEQ.length, c.length));
+                        if(webswingCookie == null || webswingCookie.length == 0){
+                            console.log("find unexpect null webswingID");
+                            continue;
+                        }
+                        return webswingCookie;
+                    }
             }
             return null;
         }

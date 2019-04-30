@@ -180,6 +180,7 @@ message ConnectionHandshakeMsgInProto{
 	optional string documentBase = 10;
 	repeated ParamMsgProto params = 11;
 	optional string locale = 12;
+	optional bool continueSession = 13;
 }
 
 message ParamMsgProto{

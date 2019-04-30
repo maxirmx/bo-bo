@@ -17,6 +17,7 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             disconnectedDialog: 'dialog.content.disconnectedDialog',
             connectionErrorDialog: 'dialog.content.connectionErrorDialog',
             initializingDialog: 'dialog.content.initializingDialog',
+            continueSession: 'base.continueSession',
             fireCallBack : 'webswing.fireCallBack'
         };
         module.provides = {
@@ -28,7 +29,15 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
         };
         module.ready = function () {
             binary = api.cfg.typedArraysSupported && api.cfg.binarySocket;
+            document.addEventListener('visibilitychange', focusToActive);
         };
+
+        function focusToActive() {
+            if (document.visibilityState === 'visible' && !api.cfg.canPaint && !api.cfg.mirrorMode && api.currentDialog() !== api.stoppedDialog) {
+                api.continueSession();
+            }
+        }
+
 
         var socket, uuid, binary;
         var responseHandlers = {};
@@ -141,6 +150,7 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
 
         function dispose() {
             atmosphere.unsubscribe(socket);
+            document.removeEventListener('visibilitychange', focusToActive);
             socket = null;
             uuid = null;
         }

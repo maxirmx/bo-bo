@@ -152,8 +152,8 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             }
         }
 
-        function handshake() {
-            api.sendInput(getHandShake(api.getCanvas()));
+        function handshake(continueOldSession) {
+            api.sendInput(getHandShake(api.getCanvas(), continueOldSession));
         }
 
         function dispose() {
@@ -198,7 +198,9 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 } else if (data.event == "sessionStolenNotification") {
                     api.fireCallBack({type: 'stopSession'});
                     api.cfg.canPaint = false;
-                    api.showDialog(api.sessionStolenNotification);
+                    if (document.visibilityState === 'visible') {
+                        api.showDialog(api.sessionStolenNotification);
+                    }
                 }
                 return;
             }
@@ -244,8 +246,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 }
             }
             if (data.moveAction != null) {
-                copy(data.moveAction.sx, data.moveAction.sy, data.moveAction.dx, data.moveAction.dy, data.moveAction.width, data.moveAction.height,
-                        context);
+                copy(data.moveAction.sx, data.moveAction.sy, data.moveAction.dx, data.moveAction.dy, data.moveAction.width, data.moveAction.height,context);
             }
             if (data.cursorChange != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {
                 canvas.style.cursor = data.cursorChange.cursor;
@@ -379,7 +380,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             context.putImageData(copy, dx, dy);
         }
 
-        function getHandShake(canvas) {
+        function getHandShake(canvas, continueOldSession) {
             var handshake = {
                 applicationName : api.cfg.appName,
                 clientId : api.cfg.clientId,
@@ -387,7 +388,8 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 sessionId : api.getSocketId(),
                 locale : api.getLocale(),
                 mirrored : api.cfg.mirrorMode,
-                directDrawSupported : api.cfg.typedArraysSupported
+                directDrawSupported : api.cfg.typedArraysSupported  && !(api.cfg.ieVersion && api.cfg.ieVersion <= 10),
+                continueSession : continueOldSession || false
             };
 
             if (!api.cfg.mirrorMode) {

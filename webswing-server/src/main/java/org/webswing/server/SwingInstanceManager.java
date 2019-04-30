@@ -46,6 +46,11 @@ public class SwingInstanceManager {
 	public void connectSwingInstance(AtmosphereResource r, ConnectionHandshakeMsgIn h) {
 		SwingInstance swingInstance = findInstance(r, h);
 		if (swingInstance == null) {// start new swing app
+			if(h.isContinueSession()){
+				ServerUtil.broadcastMessage(r, SimpleEventMsgOut.shutDownNotification.buildMsgOut());
+				return;
+			}
+
 			SwingDescriptor app;
 			if (h.isApplet()) {
 				app = ConfigurationManager.getInstance().getApplet(h.getApplicationName());
@@ -90,8 +95,7 @@ public class SwingInstanceManager {
 				} else {
 					boolean result = swingInstance.connectPrimaryWebSession(r);
 					if (result) {
-						//ServerUtil.broadcastMessage(r, SimpleEventMsgOut.continueOldSessionAutomatic.buildMsgOut());
-						ServerUtil.broadcastMessage(r, SimpleEventMsgOut.continueOldSession.buildMsgOut());
+						ServerUtil.broadcastMessage(r, SimpleEventMsgOut.continueOldSessionAutomatic.buildMsgOut());
 						notifySwingInstanceChanged();
 					} else {
 						ServerUtil.broadcastMessage(r, SimpleEventMsgOut.applicationAlreadyRunning.buildMsgOut());

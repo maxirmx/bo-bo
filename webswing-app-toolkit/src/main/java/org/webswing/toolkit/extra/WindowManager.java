@@ -47,6 +47,9 @@ public class WindowManager {
 	public void bringToFront(Window w) {
 		synchronized (Util.getWebToolkit().getTreeLock()) {
 			synchronized (WebPaintDispatcher.webPaintLock) {
+				if (w != null && !w.isEnabled()) {
+					return;
+				}
 				if ((w == null || w.isFocusableWindow()) && activeWindow != w) {
 					Window oldActiveWindow = activeWindow;
 					activeWindow = w;

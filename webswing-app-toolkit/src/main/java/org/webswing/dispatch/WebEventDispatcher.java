@@ -127,7 +127,7 @@ public class WebEventDispatcher {
 	}
 
 	private void dispatchMessage(SimpleEventMsgIn message) {
-		Logger.debug("WebEventDispatcher.dispatchMessage", message);
+		Logger.debug("WebEventDispatcher.dispatchMessage SimpleEventMsgIn type: ", message.getType());
 		switch (message.getType()) {
 		case killSwing:
 			Logger.info("Received kill signal. Swing application shutting down.");

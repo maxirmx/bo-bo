@@ -1,23 +1,5 @@
 package org.webswing.toolkit.util;
 
-import org.webswing.Constants;
-import org.webswing.dispatch.WebPaintDispatcher;
-import org.webswing.model.c2s.KeyboardEventMsgIn;
-import org.webswing.model.c2s.KeyboardEventMsgIn.KeyEventType;
-import org.webswing.model.c2s.MouseEventMsgIn;
-import org.webswing.model.s2c.AppFrameMsgOut;
-import org.webswing.model.s2c.WindowMsg;
-import org.webswing.model.s2c.WindowPartialContentMsg;
-import org.webswing.toolkit.WebToolkit;
-import org.webswing.toolkit.WebWindowPeer;
-
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
 import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.Component;
@@ -61,21 +43,136 @@ import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.RepaintManager;
+import javax.swing.SwingUtilities;
+
+import org.webswing.Constants;
+import org.webswing.dispatch.WebPaintDispatcher;
+import org.webswing.model.c2s.KeyboardEventMsgIn;
+import org.webswing.model.c2s.KeyboardEventMsgIn.KeyEventType;
+import org.webswing.model.c2s.MouseEventMsgIn;
+import org.webswing.model.s2c.AppFrameMsgOut;
+import org.webswing.model.s2c.WindowMsg;
+import org.webswing.model.s2c.WindowPartialContentMsg;
+import org.webswing.toolkit.WebToolkit;
+import org.webswing.toolkit.WebWindowPeer;
+
 public class Util {
+
+    private static List<Integer> NO_CHAR_KEY_CODES = Arrays.asList(KeyEvent.VK_F1, KeyEvent.VK_F2, KeyEvent.VK_F3, KeyEvent.VK_F4, KeyEvent.VK_F5, KeyEvent.VK_F6, KeyEvent.VK_F7, KeyEvent.VK_F8, KeyEvent.VK_F9, KeyEvent.VK_F10, KeyEvent.VK_F11, KeyEvent.VK_F12, KeyEvent.VK_PRINTSCREEN, KeyEvent.VK_SCROLL_LOCK, KeyEvent.VK_PAUSE, KeyEvent.VK_INSERT,
+            KeyEvent.VK_HOME, KeyEvent.VK_PAGE_DOWN, KeyEvent.VK_END, KeyEvent.VK_PAGE_DOWN, KeyEvent.VK_CAPS_LOCK, KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_ALT, KeyEvent.VK_WINDOWS, KeyEvent.VK_ALT_GRAPH);
+
     public static final String HOST = "org.webswing.server.host";
     public static final String WARLOCATION = "webswing.warLocation";
     public static final String WINPREFIX = "file:/";
 
     private static final double MAX_SLICE_SIZE = Integer.getInteger("webswing.maxSliceSize", 550); /*optimal slice size will split he full screen to N parts, where N is the number of cpu cores. 550 is optimal for fullHD with 8cpu cores */
 
-    private static List<Integer> NO_CHAR_KEY_CODES = Arrays.asList(KeyEvent.VK_F1, KeyEvent.VK_F2,
-            KeyEvent.VK_F3, KeyEvent.VK_F4, KeyEvent.VK_F5, KeyEvent.VK_F6, KeyEvent.VK_F7,
-            KeyEvent.VK_F8, KeyEvent.VK_F9, KeyEvent.VK_F10, KeyEvent.VK_F11, KeyEvent.VK_F12,
-            KeyEvent.VK_PRINTSCREEN, KeyEvent.VK_SCROLL_LOCK, KeyEvent.VK_PAUSE, KeyEvent.VK_INSERT,
-            KeyEvent.VK_HOME, KeyEvent.VK_PAGE_DOWN, KeyEvent.VK_END, KeyEvent.VK_PAGE_DOWN,
-            KeyEvent.VK_CAPS_LOCK, KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN,
-            KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, KeyEvent.VK_CONTROL, KeyEvent.VK_ALT,
-            KeyEvent.VK_WINDOWS, KeyEvent.VK_ALT_GRAPH);
+    public static int getMouseButtonsAWTFlag(int button) {
+        switch (button) {
+        case 1:
+            return MouseEvent.BUTTON1;
+        case 2:
+            return MouseEvent.BUTTON2;
+        case 3:
+            return MouseEvent.BUTTON3;
+        case 0:
+            return MouseEvent.NOBUTTON;
+        }
+        return 0;
+    }
+
+    public static int getMouseModifiersAWTFlag(MouseEventMsgIn evt) {
+        int result = 0;
+        switch (evt.getButton()) {
+        case 1:
+            result = MouseEvent.BUTTON1_DOWN_MASK;
+            break;
+        case 2:
+            result = MouseEvent.BUTTON2_DOWN_MASK;
+            break;
+        case 3:
+            result = MouseEvent.BUTTON3_DOWN_MASK;
+            break;
+        }
+        if (evt.isCtrl()) {
+            result = result | MouseEvent.CTRL_DOWN_MASK;
+        }
+        if (evt.isAlt()) {
+            result = result | MouseEvent.ALT_DOWN_MASK;
+        }
+        if (evt.isShift()) {
+            result = result | MouseEvent.SHIFT_DOWN_MASK;
+        }
+        if (evt.isMeta()) {
+            result = result | MouseEvent.META_DOWN_MASK;
+        }
+        return result;
+    }
+
+    public static void savePngImage(BufferedImage imageContent, String name) {
+        try {
+            OutputStream os = new FileOutputStream(new File(name));
+            ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+            ImageIO.write(imageContent, "png", ios);
+            ios.close();
+            os.close();
+        } catch (IOException e) {
+            Logger.error("Util:savePngImage", e);
+        }
+    }
+
+    public static int getKeyModifiersAWTFlag(KeyboardEventMsgIn event) {
+        int modifiers = 0;
+        if (event.isAlt()) {
+            modifiers = modifiers | KeyEvent.ALT_MASK;
+        }
+        if (event.isCtrl()) {
+            modifiers = modifiers | KeyEvent.CTRL_MASK;
+        }
+        if (event.isShift()) {
+            modifiers = modifiers | KeyEvent.SHIFT_MASK;
+        }
+        if (event.isAltgr()) {
+            modifiers = modifiers | KeyEvent.ALT_GRAPH_MASK;
+        }
+        if (event.isMeta()) {
+            modifiers = modifiers | KeyEvent.META_MASK;
+        }
+        return modifiers;
+    }
+
+    public static int getKeyType(KeyEventType type) {
+        switch (type) {
+        case keydown:
+            return KeyEvent.KEY_PRESSED;
+        case keypress:
+            return KeyEvent.KEY_TYPED;
+        case keyup:
+            return KeyEvent.KEY_RELEASED;
+        }
+        return 0;
+    }
+
+    public static char getKeyCharacter(KeyboardEventMsgIn event) {
+        if (NO_CHAR_KEY_CODES.contains(event.getKeycode())) {
+            return KeyEvent.CHAR_UNDEFINED;
+        } else {
+            return (char) event.getCharacter();
+        }
+    }
+
+    public static BufferedImage deepCopy(BufferedImage bi) {
+        ColorModel cm = bi.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = bi.copyData(null);
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    }
 
     public static Rectangle[] concatRectangleArrays(Rectangle[] A, Rectangle[] B) {
         int aLen = A.length;
@@ -86,38 +183,61 @@ public class Util {
         return C;
     }
 
-    public static AWTEvent createKeyEvent(Component src, int type, long when, int modifiers,
-                                          int keycode, char character, int keyLocationStandard) {
-        KeyEvent e = new KeyEvent(src, type, when, modifiers, keycode, character,
-                KeyEvent.KEY_LOCATION_STANDARD);
-        try {
-            java.lang.reflect.Field f = KeyEvent.class.getDeclaredField("extendedKeyCode");
-            f.setAccessible(true);
-            f.set(e, keycode);
-        } catch (Exception e1) {
-            Logger.error("Failed to update extendedKeyCode of KeyEvent", e);
-        }
-        return e;
+    public static WebToolkit getWebToolkit() {
+        return ((WebToolkit) Toolkit.getDefaultToolkit());
     }
 
-    public static BufferedImage deepCopy(BufferedImage bi) {
-        ColorModel cm = bi.getColorModel();
-        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-        WritableRaster raster = bi.copyData(null);
-        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
-    }
+    public static WebWindowPeer findWindowPeerById(String id) {
+        for (Window w : Window.getWindows()) {
+            Object peer = WebToolkit.targetToPeer(w);
+            if (peer != null && peer instanceof WebWindowPeer) {
+                if (((WebWindowPeer) peer).getGuid().equals(id)) {
+                    return (WebWindowPeer) peer;
+                }
 
-    public static JFileChooser discoverFileChooser(WebWindowPeer windowPeer) {
-        return discoverFileChooser((Window) windowPeer.getTarget());
-    }
-    public static JFileChooser discoverFileChooser(Window w) {
-        if (w instanceof JDialog) {
-            Component[] coms = ((JDialog) w).getContentPane().getComponents();
-            if (coms != null && coms.length > 0 && coms[0] instanceof JFileChooser) {
-                return (JFileChooser) coms[0];
             }
         }
         return null;
+    }
+
+    public static Map<String, Map<Integer, BufferedImage>> extractWindowImages(AppFrameMsgOut json,
+            Map<String, Map<Integer, BufferedImage>> windowImages) {
+        for (WindowMsg window : json.getWindows()) {
+            WebWindowPeer w = findWindowPeerById(window.getId());
+            if (window.getId().equals(WebToolkit.BACKGROUND_WINDOW_ID)) {
+                windowImages.put(window.getId(),
+                        new HashMap<Integer, BufferedImage>());// background
+                // image
+                // is
+                // handled
+                // on
+                // client
+            } else {
+                Map<Integer, BufferedImage> imageMap = new HashMap<Integer, BufferedImage>();
+                for (int i = 0; i < window.getContent().size(); i++) {
+                    WindowPartialContentMsg wpc = window.getContent().get(i);
+                    Rectangle subRec = new Rectangle(wpc.getPositionX(), wpc.getPositionY(), wpc.getWidth(),
+                            wpc.getHeight());
+                    Rectangle parentRec = new Rectangle(window.getPosX(), window.getPosY(), window.getWidth(), window.getHeight());
+                    imageMap.put(i, w.extractBufferedImage(subRec, parentRec));
+                }
+                windowImages.put(window.getId(), imageMap);
+            }
+        }
+        return windowImages;
+    }
+
+    public static Map<String, Image> extractWindowWebImages(AppFrameMsgOut json,
+            Map<String, Image> webImages) {
+        for (Iterator<WindowMsg> i = json.getWindows().iterator(); i.hasNext(); ) {
+            WindowMsg window = i.next();
+            WebWindowPeer w = findWindowPeerById(window.getId());
+            if (!window.getId().equals(WebToolkit.BACKGROUND_WINDOW_ID)) {
+                Image webimageString = w.extractWebImage();
+                webImages.put(window.getId(), webimageString);
+            }
+        }
+        return webImages;
     }
 
     public static void encodeWindowImages(Map<String, Map<Integer, BufferedImage>> windowImages, AppFrameMsgOut json) {
@@ -160,56 +280,8 @@ public class Util {
         }
     }
 
-    public static boolean existsFilename(File currentDir, String fileName) {
-        if (currentDir != null && currentDir.exists() && currentDir.isDirectory()) {
-            for (File f : currentDir.listFiles()) {
-                if (f.getName().equals(fileName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
-    public static Map<String, Map<Integer, BufferedImage>> extractWindowImages(AppFrameMsgOut json,
-                                                                               Map<String, Map<Integer, BufferedImage>> windowImages) {
-        for (WindowMsg window : json.getWindows()) {
-            WebWindowPeer w = findWindowPeerById(window.getId());
-            if (window.getId().equals(WebToolkit.BACKGROUND_WINDOW_ID)) {
-                windowImages.put(window.getId(),
-                        new HashMap<Integer, BufferedImage>());// background
-                // image
-                // is
-                // handled
-                // on
-                // client
-            } else {
-                Map<Integer, BufferedImage> imageMap = new HashMap<Integer, BufferedImage>();
-                for (int i = 0; i < window.getContent().size(); i++) {
-                    WindowPartialContentMsg wpc = window.getContent().get(i);
-                    Rectangle subRec = new Rectangle(wpc.getPositionX(), wpc.getPositionY(), wpc.getWidth(),
-                            wpc.getHeight());
-                    Rectangle parentRec = new Rectangle(window.getPosX(), window.getPosY(), window.getWidth(), window.getHeight());
-                    imageMap.put(i, w.extractBufferedImage(subRec, parentRec));
-                }
-                windowImages.put(window.getId(), imageMap);
-            }
-        }
-        return windowImages;
-    }
 
-    public static Map<String, Image> extractWindowWebImages(AppFrameMsgOut json,
-                                                            Map<String, Image> webImages) {
-        for (Iterator<WindowMsg> i = json.getWindows().iterator(); i.hasNext(); ) {
-            WindowMsg window = i.next();
-            WebWindowPeer w = findWindowPeerById(window.getId());
-            if (!window.getId().equals(WebToolkit.BACKGROUND_WINDOW_ID)) {
-                Image webimageString = w.extractWebImage();
-                webImages.put(window.getId(), webimageString);
-            }
-        }
-        return webImages;
-    }
 
     @SuppressWarnings("restriction")
     public static AppFrameMsgOut fillJsonWithWindowsData(Map<String, Set<Rectangle>> currentAreasToUpdate, Map<String, List<Rectangle>> windowNonVisibleAreas) {
@@ -259,28 +331,58 @@ public class Util {
         return json;
     }
 
-    public static Panel findHwComponentParent(JComponent c) {
-        for (Container p = c.getParent(); p != null; p = p.getParent()) {
-            if (p instanceof Panel && !(p instanceof Applet)) {
-                return (Panel) p;
+    public static Map<String, Set<Rectangle>> postponeNonShowingAreas(Map<String, Set<Rectangle>> currentAreasToUpdate,
+            Map<String, Boolean> windowRendered) {
+        Map<String, Set<Rectangle>> forLaterProcessing = new HashMap<String, Set<Rectangle>>();
+        for (String windowId : currentAreasToUpdate.keySet()) {
+            if (WebToolkit.BACKGROUND_WINDOW_ID.equals(windowId)) {
+                continue;
             }
-        }
-        return null;
-    }
-
-    public static WebWindowPeer findWindowPeerById(String id) {
-        for (Window w : Window.getWindows()) {
-            Object peer = WebToolkit.targetToPeer(w);
-            if (peer != null && peer instanceof WebWindowPeer) {
-                if (((WebWindowPeer) peer).getGuid().equals(id)) {
-                    return (WebWindowPeer) peer;
+            if (Boolean.TRUE.equals(windowRendered.get(windowId))) {
+                WebWindowPeer ww = Util.findWindowPeerById(windowId);
+                if (ww != null) {
+                    if (!((Window) ww.getTarget()).isShowing()) {
+                        forLaterProcessing.put(windowId, currentAreasToUpdate.get(windowId));
+                    }
                 }
-
+            }
+            // 本窗体还没有被绘制，延迟等到窗体绘制完成之后再将图像数据生成图片发给前台
+            else {
+                forLaterProcessing.put(windowId, currentAreasToUpdate.get(windowId));
             }
         }
-        return null;
+        for (String later : forLaterProcessing.keySet()) {
+            currentAreasToUpdate.remove(later);
+        }
+        return forLaterProcessing;
     }
 
+
+    public static boolean isWindowDecorationEvent(Window w, AWTEvent e) {
+        if (e instanceof MouseEvent && MouseEvent.MOUSE_WHEEL != e.getID()) {
+            return isWindowDecorationPosition((Window) w,
+                    new Point(((MouseEvent) e).getXOnScreen(), ((MouseEvent) e).getYOnScreen()));
+        }
+        return false;
+    }
+
+    public static boolean isWindowDecorationPosition(Window w, Point locationOnScreen) {
+        if (w != null && locationOnScreen != null && !isWindowUndecorated(w)) {
+            Rectangle inner = w.getBounds();
+            Insets i = w.getInsets();
+            inner.x = i.left;
+            inner.y = i.top;
+            inner.width -= i.left + i.right;
+            inner.height -= i.top + i.bottom;
+            boolean isInInnerWindow = SwingUtilities.isRectangleContainingRectangle(inner,
+                    new Rectangle(locationOnScreen.x - w.getX(), locationOnScreen.y - w.getY(), 0, 0));
+            boolean isInWindow = SwingUtilities.isRectangleContainingRectangle(w.getBounds(),
+                    new Rectangle(locationOnScreen.x, locationOnScreen.y, 0, 0));
+            return !isInInnerWindow && isInWindow;
+        } else {
+            return false;
+        }
+    }
     public static Set<Rectangle> getGrid(List<Rectangle> dirtyAreas, List<Rectangle> topWindows) {
         Set<Rectangle> result = new HashSet<Rectangle>();
         Set<Integer> xLines = new TreeSet<Integer>();
@@ -332,99 +434,6 @@ public class Util {
         return result;
     }
 
-    public static char getKeyCharacter(KeyboardEventMsgIn event) {
-        if (NO_CHAR_KEY_CODES.contains(event.getKeycode())) {
-            return KeyEvent.CHAR_UNDEFINED;
-        } else {
-            return (char) event.getCharacter();
-        }
-    }
-
-    public static int getKeyModifiersAWTFlag(KeyboardEventMsgIn event) {
-        int modifiers = 0;
-        if (event.isAlt()) {
-            modifiers = modifiers | KeyEvent.ALT_MASK;
-        }
-        if (event.isCtrl()) {
-            modifiers = modifiers | KeyEvent.CTRL_MASK;
-        }
-        if (event.isShift()) {
-            modifiers = modifiers | KeyEvent.SHIFT_MASK;
-        }
-        if (event.isAltgr()) {
-            modifiers = modifiers | KeyEvent.ALT_GRAPH_MASK;
-        }
-        if (event.isMeta()) {
-            modifiers = modifiers | KeyEvent.META_MASK;
-        }
-        return modifiers;
-    }
-
-    public static int getKeyType(KeyEventType type) {
-        switch (type) {
-            case keydown:
-                return KeyEvent.KEY_PRESSED;
-            case keypress:
-                return KeyEvent.KEY_TYPED;
-            case keyup:
-                return KeyEvent.KEY_RELEASED;
-        }
-        return 0;
-    }
-
-    public static int getMouseButtonsAWTFlag(int button) {
-        switch (button) {
-            case 1:
-                return MouseEvent.BUTTON1;
-            case 2:
-                return MouseEvent.BUTTON2;
-            case 3:
-                return MouseEvent.BUTTON3;
-            case 0:
-                return MouseEvent.NOBUTTON;
-        }
-        return 0;
-    }
-
-    public static int getMouseModifiersAWTFlag(MouseEventMsgIn evt) {
-        int result = 0;
-        switch (evt.getButton()) {
-            case 1:
-                result = MouseEvent.BUTTON1_DOWN_MASK;
-                break;
-            case 2:
-                result = MouseEvent.BUTTON2_DOWN_MASK;
-                break;
-            case 3:
-                result = MouseEvent.BUTTON3_DOWN_MASK;
-                break;
-        }
-        if (evt.isCtrl()) {
-            result = result | MouseEvent.CTRL_DOWN_MASK;
-        }
-        if (evt.isAlt()) {
-            result = result | MouseEvent.ALT_DOWN_MASK;
-        }
-        if (evt.isShift()) {
-            result = result | MouseEvent.SHIFT_DOWN_MASK;
-        }
-        if (evt.isMeta()) {
-            result = result | MouseEvent.META_DOWN_MASK;
-        }
-        return result;
-    }
-
-    public static WebToolkit getWebToolkit() {
-        return ((WebToolkit) Toolkit.getDefaultToolkit());
-    }
-
-    public static boolean isDD() {
-        boolean startDD = Boolean.valueOf(
-                System.getProperty(Constants.SWING_START_SYS_PROP_DIRECTDRAW, "false"));
-        boolean supportedDD = Boolean.valueOf(
-                System.getProperty(Constants.SWING_START_SYS_PROP_DIRECTDRAW_SUPPORTED, "true"));
-        return startDD && supportedDD;
-    }
 
     public static boolean isRunningInClient() {
 
@@ -487,31 +496,7 @@ public class Util {
         return detectedOS;
     }
 
-    public static boolean isWindowDecorationEvent(Window w, AWTEvent e) {
-        if (e instanceof MouseEvent && MouseEvent.MOUSE_WHEEL != e.getID()) {
-            return isWindowDecorationPosition((Window) w,
-                    new Point(((MouseEvent) e).getXOnScreen(), ((MouseEvent) e).getYOnScreen()));
-        }
-        return false;
-    }
 
-    public static boolean isWindowDecorationPosition(Window w, Point locationOnScreen) {
-        if (w != null && locationOnScreen != null && !isWindowUndecorated(w)) {
-            Rectangle inner = w.getBounds();
-            Insets i = w.getInsets();
-            inner.x = i.left;
-            inner.y = i.top;
-            inner.width -= i.left + i.right;
-            inner.height -= i.top + i.bottom;
-            boolean isInInnerWindow = SwingUtilities.isRectangleContainingRectangle(inner,
-                    new Rectangle(locationOnScreen.x - w.getX(), locationOnScreen.y - w.getY(), 0, 0));
-            boolean isInWindow = SwingUtilities.isRectangleContainingRectangle(w.getBounds(),
-                    new Rectangle(locationOnScreen.x, locationOnScreen.y, 0, 0));
-            return !isInInnerWindow && isInWindow;
-        } else {
-            return false;
-        }
-    }
 
     private static boolean isWindowUndecorated(Window w) {
         if (w instanceof Frame) {
@@ -603,48 +588,6 @@ public class Util {
         return result;
     }
 
-    public static Map<String, Set<Rectangle>> postponeNonShowingAreas(Map<String, Set<Rectangle>> currentAreasToUpdate,
-                                                                      Map<String, Boolean> windowRendered) {
-        Map<String, Set<Rectangle>> forLaterProcessing = new HashMap<String, Set<Rectangle>>();
-        for (String windowId : currentAreasToUpdate.keySet()) {
-            if (WebToolkit.BACKGROUND_WINDOW_ID.equals(windowId)) {
-                continue;
-            }
-            if (Boolean.TRUE.equals(windowRendered.get(windowId))) {
-                WebWindowPeer ww = Util.findWindowPeerById(windowId);
-                if (ww != null) {
-                    if (!((Window) ww.getTarget()).isShowing()) {
-                        forLaterProcessing.put(windowId, currentAreasToUpdate.get(windowId));
-                    }
-                }
-            }
-            // 本窗体还没有被绘制，延迟等到窗体绘制完成之后再将图像数据生成图片发给前台
-            else {
-                forLaterProcessing.put(windowId, currentAreasToUpdate.get(windowId));
-            }
-        }
-        for (String later : forLaterProcessing.keySet()) {
-            currentAreasToUpdate.remove(later);
-        }
-        return forLaterProcessing;
-    }
-
-    public static void repaintAllWindow() {
-        synchronized (WebPaintDispatcher.webPaintLock) {
-            for (Window w : Window.getWindows()) {
-                if (w.isShowing()) {
-                    final Object peer = WebToolkit.targetToPeer(w);
-                    if (peer != null && peer instanceof WebWindowPeer) {
-                        ((WebWindowPeer) peer).updateWindowDecorationImage();
-                        Util.getWebToolkit().getPaintDispatcher().notifyWindowRepaint(w);
-                        RepaintManager.currentManager(null).addDirtyRegion(w, 0, 0, w.getWidth(),
-                                w.getHeight());
-                    }
-                }
-            }
-        }
-    }
-
     public static void resetWindowsGC(int width, int height) {
         for (Window w : Window.getWindows()) {
             try {
@@ -669,6 +612,17 @@ public class Util {
         }
     }
 
+    public static JFileChooser discoverFileChooser(Window w) {
+        if (w instanceof JDialog) {
+            Component[] coms = ((JDialog) w).getContentPane().getComponents();
+            if (coms != null && coms.length > 0 && coms[0] instanceof JFileChooser) {
+                return (JFileChooser) coms[0];
+            }
+        }
+        return null;
+    }
+
+
     public static String resolveFilename(File currentDir, String fileName) {
         if (!existsFilename(currentDir, fileName)) {
             return fileName;
@@ -687,18 +641,41 @@ public class Util {
         }
     }
 
-    // Save bufferimage to png
-    public static void savePngImage(BufferedImage imageContent, String name) {
-        try {
-            OutputStream os = new FileOutputStream(new File(name));
-            ImageOutputStream ios = ImageIO.createImageOutputStream(os);
-            ImageIO.write(imageContent, "png", ios);
-            ios.close();
-            os.close();
-        } catch (IOException e) {
-            Logger.error("Util:savePngImage", e);
+    public static boolean existsFilename(File currentDir, String fileName) {
+        if (currentDir != null && currentDir.exists() && currentDir.isDirectory()) {
+            for (File f : currentDir.listFiles()) {
+                if (f.getName().equals(fileName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isDD() {
+        boolean startDD = Boolean.valueOf(
+                System.getProperty(Constants.SWING_START_SYS_PROP_DIRECTDRAW, "false"));
+        boolean supportedDD = Boolean.valueOf(
+                System.getProperty(Constants.SWING_START_SYS_PROP_DIRECTDRAW_SUPPORTED, "true"));
+        return startDD && supportedDD;
+    }
+
+
+    public static void repaintAllWindow() {
+        synchronized (WebPaintDispatcher.webPaintLock) {
+            for (Window w : Window.getWindows()) {
+                if (w.isShowing()) {
+                    final Object peer = WebToolkit.targetToPeer(w);
+                    if (peer != null && peer instanceof WebWindowPeer) {
+                        ((WebWindowPeer) peer).updateWindowDecorationImage();
+                        Util.getWebToolkit().getPaintDispatcher().notifyWindowRepaint(w);
+                        RepaintManager.currentManager(null).addDirtyRegion(w, 0, 0, w.getWidth(), w.getHeight());
+                    }
+                }
+            }
         }
     }
+
 
 
     //用于打印VolatileImage图像
@@ -728,6 +705,15 @@ public class Util {
 
     }
 
+    public static Panel findHwComponentParent(JComponent c) {
+        for (Container p = c.getParent(); p != null; p = p.getParent()) {
+            if (p instanceof Panel && !(p instanceof Applet)) {
+                return (Panel) p;
+            }
+        }
+        return null;
+    }
+
     private static Properties readPropertyFile(String filename) {
         try {
             Properties prop = new Properties();
@@ -739,4 +725,25 @@ public class Util {
             return null;
         }
     }
+
+    public static AWTEvent createKeyEvent(Component src, int type, long when, int modifiers,
+            int keycode, char character, int keyLocationStandard) {
+        KeyEvent e = new KeyEvent(src, type, when, modifiers, keycode, character,
+                KeyEvent.KEY_LOCATION_STANDARD);
+        try {
+            java.lang.reflect.Field f = KeyEvent.class.getDeclaredField("extendedKeyCode");
+            f.setAccessible(true);
+            f.set(e, keycode);
+        } catch (Exception e1) {
+            Logger.error("Failed to update extendedKeyCode of KeyEvent", e);
+        }
+        return e;
+    }
+
+
+    public static JFileChooser discoverFileChooser(WebWindowPeer windowPeer) {
+        return discoverFileChooser((Window) windowPeer.getTarget());
+    }
+
+
 }

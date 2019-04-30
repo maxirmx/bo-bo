@@ -22,6 +22,7 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
         module.ready = function() {
         };
 
+        var registered = false;
         var latestMouseMoveEvent = null;
         var latestMouseWheelEvent = null;
         var latestWindowResizeEvent = null;
@@ -73,12 +74,17 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
         }
 
         function dispose() {
+            registered = false;
+            resetInput();
             document.removeEventListener('mousedown', mouseDownEventHandler);
             document.removeEventListener('mouseout', mouseOutEventHandler);
             document.removeEventListener('mouseup', mouseUpEventHandler);
         }
 
         function register() {
+            if (registered) {
+                return;
+            }
             var canvas = api.getCanvas();
             var input = api.getInput();
             resetInput();
@@ -207,6 +213,8 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
             util.bindEvent(document, 'mousedown', mouseDownEventHandler);
             util.bindEvent(document, 'mouseout', mouseOutEventHandler);
             util.bindEvent(document, 'mouseup', mouseUpEventHandler);
+
+            registered = true;
         }
 
         function mouseDownEventHandler(evt) {

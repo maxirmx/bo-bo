@@ -7,7 +7,13 @@ define([ 'jquery' ], function Util($) {
         bindEvent : bindEvent,
         detectIE : detectIE,
         preventGhosts : preventGhosts,
-        GUID : GUID
+        GUID : GUID,
+        dpr: reCalculateDpr
+    }
+
+    function reCalculateDpr() {
+    	var dpr = Math.ceil(window.devicePixelRatio) || 1;
+    	return dpr;
     }
 
     function isTouchDevice() {

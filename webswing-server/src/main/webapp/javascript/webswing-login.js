@@ -57,7 +57,7 @@ define(['jquery', 'text!templates/login.html'], function amdFactory($, html) {
                     }
                 },
                 error: function (data) {
-                	if(errorCallback!=null){
+                	if(errorCallback){
                 		errorCallback();
                 	}else{
                 		if (!loginDialogVisible()) {

@@ -5,8 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.atmosphere.cpr.AtmosphereResource;
@@ -61,6 +59,7 @@ public class SwingInstance implements WebSessionListener {
 	private Date endedAt = null;
 	private String customArgs = "";
 	private int debugPort = 0;
+	private SwingProcess swing = null;
 
 	public SwingInstance(String instanceId, ConnectionHandshakeMsgIn h, SwingDescriptor config, AtmosphereResource resource) throws Exception {
 		this.instanceId = instanceId;
@@ -137,11 +136,14 @@ public class SwingInstance implements WebSessionListener {
 		if (sessionRecorder != null) {
 			sessionRecorder.saveFrame(serialized.getProtoMessage());
 		}
-		if (resource != null) {
+		if (resource != null && serialized != null) {
 			synchronized (resource) {
 				ServerUtil.broadcastMessage(resource, serialized);
-				int length = resource.forceBinaryWrite() ? serialized.getProtoMessage().length : serialized.getJsonMessage().getBytes().length;
-				StatUtils.logOutboundData(this, length);
+				if(resource.forceBinaryWrite()) {
+					StatUtils.logOutboundData(this, serialized.getProtoMessage() == null ? 0 : serialized.getProtoMessage().length);
+				} else {
+					StatUtils.logOutboundData(this, serialized.getJsonMessage() == null ? 0 : serialized.getJsonMessage().getBytes().length);
+				}
 			}
 		}
 		if (mirroredResource != null) {
@@ -216,7 +218,6 @@ public class SwingInstance implements WebSessionListener {
 		final Integer screenWidth = handshake.getDesktopWidth();
 		final Integer screenHeight = handshake.getDesktopHeight();
 		final StrSubstitutor subs = ServerUtil.getConfigSubstitutor(user, clientId, clientIp, handshake.getLocale(), customArgs);
-		SwingProcess swing = null;
 		try {
 			swing = new SwingProcess(clientId);
 			File homeDir = getHomeDir(appConfig, subs);
@@ -412,6 +413,13 @@ public class SwingInstance implements WebSessionListener {
 				}
 			}
 		}
+	}
+	
+	public boolean isAlive() {
+		if (swing != null) {
+			return swing.isAlive();
+		}
+		return false;
 	}
 
 }

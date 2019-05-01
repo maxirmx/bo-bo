@@ -150,6 +150,15 @@ public class SwingProcess {
 		}
 	}
 
+	public boolean isAlive() {
+		if (process != null) {
+			boolean alive = process.isAlive();
+			log.debug(name + " isAlive: " + alive);
+			return alive;
+		}
+		return false;
+	}
+	
 	public boolean isRunning() {
 		if (process == null) {
 			return false;

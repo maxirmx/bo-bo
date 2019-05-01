@@ -107,12 +107,20 @@ public class SwingInstanceManager {
 
 	private SwingInstance findInstance(AtmosphereResource r, ConnectionHandshakeMsgIn h) {
 		synchronized (this) {
+			String deadInstanceId = null;
 			for (String instanceId : swingInstances.keySet()) {
 				SwingInstance si = swingInstances.get(instanceId);
 				String idForMode = resolveInstanceIdForMode(r, h, si.getAppConfig());
 				if (idForMode.equals(instanceId)) {
-					return si;
+					if(si.isAlive()) {
+						return si;
+					} else {
+						deadInstanceId = instanceId;
+					}
 				}
+			}
+			if (deadInstanceId != null) {
+				swingInstances.remove(deadInstanceId);
 			}
 		}
 		return null;

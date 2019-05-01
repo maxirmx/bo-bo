@@ -153,6 +153,15 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             document.removeEventListener('visibilitychange', focusToActive);
             socket = null;
             uuid = null;
+            if (awaitResponseTimeoutId) {
+                clearTimeout(awaitResponseTimeoutId);
+            }
+            for (var key in responseHandlers) {
+                if (responseHandlers.hasOwnProperty(key)) {
+                    responseHandlers[key] = null;
+                }
+            }
+            responseHandlers = null;
         }
 
         function send(message) {
@@ -170,10 +179,12 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             }
         }
 
+        var awaitResponseTimeoutId = null;
+
         function awaitResponse(callback, request, correlationId, timeout) {
             send(request);
             responseHandlers[correlationId] = callback;
-            setTimeout(function () {
+            awaitResponseTimeoutId = setTimeout(function () {
                 if (responseHandlers[correlationId] != null) {
                     delete responseHandlers[correlationId];
                     callback(new Error("Java call timed out after " + timeout + " ms."));

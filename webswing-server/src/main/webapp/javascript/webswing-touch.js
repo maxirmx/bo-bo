@@ -183,6 +183,10 @@ define([ 'jquery', 'text!templates/touch.html', 'text!templates/touch.css', 'web
 
         function dispose() {
             close();
+                if (hammer) {
+                    hammer.destroy();
+                    hammer = null;
         }
     }
+        };
 });

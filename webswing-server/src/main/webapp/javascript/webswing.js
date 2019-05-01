@@ -96,8 +96,11 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                     disposeBase : 'base.dispose',
                     disposeCanvas : 'canvas.dispose',
                     disposeSocket : 'socket.dispose',
+                    disposeInput : 'input.dispose',
+                    disposeTouch : 'touch.dispose',
                     disposeFileDialog : 'files.close',
                     disposeCopyBar : 'clipboard.dispose',
+                    disposeJslink: 'jslink.dispose',
                     showPlaybackControls : 'playback.showControls'
                 };
                 module.provides = {
@@ -186,9 +189,12 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                 function disconnect() {
                     api.disposeFileDialog();
                     api.disposeBase();
+            api.disposeInput();
+            api.disposeTouch();
                     api.disposeCanvas();
                     api.disposeSocket();
                     api.disposeCopyBar();
+            api.disposeJslink();
                 }
 
                 function configure(options, appletParams) {

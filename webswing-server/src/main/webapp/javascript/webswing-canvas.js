@@ -40,6 +40,9 @@ define(['webswing-util'], function amdFactory(util) {
                         theCanvas.style.height = heightTmp + 'px';
                         theCanvas.getContext("2d").putImageData(snapshot, 0, 0);
                         api.sendHandshake();
+                        if (typeof(CollectGarbage) == "function") {
+                            CollectGarbage();
+                        }
                     }
                 }, 500);
             }

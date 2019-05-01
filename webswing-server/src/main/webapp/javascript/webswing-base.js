@@ -160,9 +160,24 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
         function dispose() {
             clearInterval(timer1);
             clearInterval(timer2);
+            clearInterval(timer3);
             unload();
             api.sendInput();
-            resetState();
+            drawingQ.length = 0
+            drawingQ = null;
+            drawingLock = null;
+            api.cfg.clientId = null;
+            api.cfg.viewId = null;
+            api.cfg.appName = null;
+            api.cfg.hasControl = false;
+            api.cfg.mirrorMode = false;
+            api.cfg.canPaint = false;
+            for (var key in windowImageHolders) {
+                if (windowImageHolders.hasOwnProperty(key)) {
+                    windowImageHolders[key] = null;
+                }
+            }
+            windowImageHolders = null;
             api.disposeInput();
             api.disposeTouch();
             window.removeEventListener('beforeunload', beforeUnloadEventHandler);
@@ -405,7 +420,9 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 canvas.width = width * dpr;
                 canvas.height = height * dpr;
                 ctx.putImageData(snapshot, 0, 0);
-
+                if (typeof(CollectGarbage) == "function") {
+                    CollectGarbage();
+                }
             }
         }
 

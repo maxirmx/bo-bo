@@ -11,7 +11,8 @@ define([], function amdFactory() {
             fireCallBack : 'webswing.fireCallBack'
         };
         module.provides = {
-            process: process
+            process: process,
+            dispose: dispose
         };
         module.ready = function () {
             referenceCache['instanceObject'] = api.external;
@@ -19,6 +20,18 @@ define([], function amdFactory() {
 
         var idMemberName = '__webswing_jslink_id';
         var referenceCache = {};
+
+        function dispose() {
+            for (var key in referenceCache) {
+                if (referenceCache.hasOwnProperty(key)) {
+                    referenceCache[key] = null;
+                }
+            }
+            referenceCache = {};
+            referenceCache['instanceObject'] = api.external;
+            window['listener'] = null;
+            delete window['listener'];
+        }
 
         function process(jsRequest) {
             var response;

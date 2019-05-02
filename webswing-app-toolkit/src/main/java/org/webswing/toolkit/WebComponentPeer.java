@@ -3,6 +3,7 @@ package org.webswing.toolkit;
 import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.AWTException;
+import java.awt.AlphaComposite;
 import java.awt.BufferCapabilities;
 import java.awt.BufferCapabilities.FlipContents;
 import java.awt.Color;
@@ -68,32 +69,42 @@ import sun.java2d.pipe.Region;
 public class WebComponentPeer implements ComponentPeer {
 
 	private String guid = UUID.randomUUID().toString();
-
+	private BufferedImage safeImage = null;
+	
 	public String getGuid() {
 		return guid;
 	}
 
 	public BufferedImage extractBufferedImage(Rectangle sub) {
-		BufferedImage safeImage = new BufferedImage(sub.width, sub.height, BufferedImage.TYPE_4BYTE_ABGR);
+		if (safeImage == null || safeImage.getHeight() != image.getHeight() || safeImage.getWidth() != image.getWidth()) {
+			safeImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		}
+		int x1 = sub.x;
+		int y1 = sub.y;
+		int x2 = sub.x + sub.width;
+		int y2 = sub.y + sub.height;
 		if (isInitialized()) {
 			Graphics2D g = (Graphics2D) safeImage.getGraphics();
-			g.drawImage(image, 0, 0, sub.width, sub.height, sub.x, sub.y, sub.x + sub.width, sub.y + sub.height, null);
+			g.setBackground(new Color(0, 0, 0, 0));
+			g.setComposite(AlphaComposite.SrcOver);
+			g.clearRect(sub.x, sub.y, sub.width, sub.height);
+			g.drawImage(image, x1, y1, x2, y2, x1, y1, x2, y2, null);
 			for (WebComponentPeer wcp : hwLayers) {
 				Insets i = ((Window) this.getTarget()).getInsets();
 				Rectangle b = wcp.getBounds();
-				Rectangle bt = new Rectangle(b.x + i.left, b.y + i.top, b.width, b.height);
+				Rectangle bt = new Rectangle(b.x +i.left, b.y + i.top, b.width, b.height);
 				if (bt.intersects(sub)) {
 					Rectangle dst = sub.intersection(bt);
 					Rectangle src = new Rectangle(dst);
 					dst.translate(-sub.x, -sub.y);
 					src.translate(-bt.x, -bt.y);
-					g.drawImage(wcp.image, dst.x, dst.y, dst.width + dst.x, dst.height + dst.y, src.x, src.y, src.width + src.x, src.height + src.y, null);
+					g.drawImage(wcp.image, dst.x+x1, dst.y+y1, dst.width + dst.x+x1, dst.height + dst.y+y1, src.x, src.y, src.width + src.x, src.height + src.y, null);
 				}
 			}
-			g.drawImage(windowDecorationImage, 0, 0, sub.width, sub.height, sub.x, sub.y, sub.x + sub.width, sub.y + sub.height, null);
+			g.drawImage(windowDecorationImage, x1, y1, x2, y2, x1, y1, x2, y2, null);
 			g.dispose();
 		}
-		return safeImage;
+		return safeImage.getSubimage(x1, y1, sub.width, sub.height);
 	}
 
 	public Image extractWebImage() {

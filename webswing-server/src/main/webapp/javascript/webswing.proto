@@ -95,12 +95,13 @@ message FileDialogEventMsgProto{
 message WindowMsgProto{
 	required string id = 1;
 	repeated WindowPartialContentMsgProto content = 2;
-	optional bytes directDraw = 3;
-	optional string title = 4;
-	optional sint32 posX = 5;
-	optional sint32 posY = 6;
-	optional uint32 width = 7;
-	optional uint32 height = 8;
+	repeated SpriteMsgProto sprites = 3;
+	optional bytes directDraw = 4;
+	optional string title = 5;
+	optional sint32 posX = 6;
+	optional sint32 posY = 7;
+	optional uint32 width = 8;
+	optional uint32 height = 9;
 }
 
 message WindowPartialContentMsgProto{
@@ -109,6 +110,15 @@ message WindowPartialContentMsgProto{
 	optional uint32 width = 3;
 	optional uint32 height = 4;
 	optional bytes base64Content = 5;
+}
+
+message SpriteMsgProto{
+	optional sint32 spriteX = 1;
+	optional sint32 spriteY = 2;
+	optional sint32 positionX = 3;
+	optional sint32 positionY = 4;
+	optional uint32 width = 5;
+	optional uint32 height = 6;
 }
 
 enum SimpleEventMsgOutProto{

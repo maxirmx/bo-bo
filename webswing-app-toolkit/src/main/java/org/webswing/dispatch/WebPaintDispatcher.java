@@ -62,6 +62,8 @@ public class WebPaintDispatcher {
 	private JFileChooser fileChooserDialog;
 
 	private ScheduledExecutorService contentSender = Executors.newScheduledThreadPool(1,DeamonThreadFactory.getInstance());
+	
+	private Map<String, BufferedImage> previousWindowImages = new HashMap<String, BufferedImage>();
 
 	public WebPaintDispatcher() {
 		Runnable sendUpdate = new Runnable() {
@@ -131,6 +133,7 @@ public class WebPaintDispatcher {
 					Logger.error("contentSender:error", e);
 				}
 			}
+
 		};
 		contentSender.scheduleWithFixedDelay(sendUpdate, 33, 33, TimeUnit.MILLISECONDS);
 	}
@@ -147,6 +150,17 @@ public class WebPaintDispatcher {
 		Services.getConnectionService().sendObject(object);
 	}
 
+	public void notifyWindowAreaRepaintedForced(String guid, Rectangle r) {
+		BufferedImage previous = previousWindowImages.get(guid);
+		if(previous!=null) {
+			Graphics2D g = previous.createGraphics();
+			g.clearRect(r.x, r.y, r.width, r.height);
+			g.dispose();
+		}
+		notifyWindowAreaRepainted(guid, r);
+	}
+
+	
 	public void notifyWindowAreaRepainted(String guid, Rectangle repaintedArea) {
 		synchronized (webPaintLock) {
 			if (validBounds(repaintedArea)) {
@@ -192,18 +206,21 @@ public class WebPaintDispatcher {
 		synchronized (webPaintLock) {
 			areasToUpdate.remove(guid);
 		}
+		previousWindowImages.remove(guid);
 		AppFrameMsgOut f = new AppFrameMsgOut();
 		WindowMsg fdEvent = new WindowMsg();
 		fdEvent.setId(guid);
 		f.setClosedWindow(fdEvent);
 		Logger.info("WebPaintDispatcher:notifyWindowClosed", guid);
 		Services.getConnectionService().sendObject(f);
+		
 	}
 
 	public void notifyWindowRepaint(Window w) {
 		Rectangle bounds = w.getBounds();
 		WebWindowPeer peer = (WebWindowPeer) WebToolkit.targetToPeer(w);
 		notifyWindowAreaRepainted(peer.getGuid(), new Rectangle(0, 0, bounds.width, bounds.height));
+		previousWindowImages.remove(peer.getGuid());
 	}
 
 	@SuppressWarnings("restriction")
@@ -305,6 +322,7 @@ public class WebPaintDispatcher {
 				r.setLocation(r.x - w.getX(), r.y - w.getY());
 				notifyWindowAreaRepainted(peer.getGuid(), r);
 			}
+			previousWindowImages.remove(peer.getGuid());
 		}
 	}
 

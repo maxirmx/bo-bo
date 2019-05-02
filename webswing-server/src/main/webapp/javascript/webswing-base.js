@@ -108,7 +108,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             clearInterval(timer1);
             clearInterval(timer2);
             clearInterval(timer3);
-            timer1 = setInterval(api.sendInput, 100);
+            timer1 = setInterval(api.sendInput, 5);
             timer2 = setInterval(heartbeat, 10000);
             timer3 = setInterval(servletHeartbeat, 100000);
             windowImageHolders = {};
@@ -345,20 +345,17 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
         }
 
         function renderPngDrawWindow(win, context) {
+            var decodedImages = [];
             return win.content.reduce(function(sequence, winContent) {
-                return sequence.then(function() {
+                return sequence.then(function(decodedImages) {
                     return new Promise(function(resolved, rejected) {
                         if (winContent != null) {
                             var imageObj = new Image();
                             var onloadFunction = function() {
-                                context.drawImage(imageObj, win.posX + winContent.positionX, win.posY + winContent.positionY);
-                                resolved();
-                                imageObj.onload = null;
-                                imageObj.src = '';
-                                if (imageObj.clearAttributes != null) {
-                                    imageObj.clearAttributes();
-                                }
-                                imageObj = null;
+                                //context.drawImage(imageObj, win.posX + winContent.positionX, win.posY + winContent.positionY);
+                                decodedImages.push({image:imageObj,winContent:winContent})
+                                resolved(decodedImages);
+                                
                             };
                             imageObj.onload = function() {
                                 // fix for ie - onload is fired before the image is ready for rendering to canvas.
@@ -373,7 +370,24 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                         }
                     });
                 }, errorHandler);
-            }, Promise.resolve());
+            }, Promise.resolve(decodedImages)).then(function(decodedImages){
+                decodedImages.forEach(function(image, idx){
+
+                    if(win.sprites.length != 0){
+                        for(var i = 36 * idx; i < 36 * (idx+1) && i < win.sprites.length; i++ ){
+                            var sprite = win.sprites[i];
+                            context.drawImage(image.image, sprite.spriteX, sprite.spriteY, sprite.width, sprite.height, win.posX + sprite.positionX, win.posY + sprite.positionY, sprite.width, sprite.height);
+                        }
+                    } else {
+                        context.drawImage(image.image, win.posX + image.winContent.positionX, win.posY + image.winContent.positionY);
+                    }
+                    image.image.onload = null;
+                    image.image.src = '';
+                    if (image.image.clearAttributes != null) {
+                        image.image.clearAttributes();
+                    }
+                })
+            });
         }
 
         function renderDirectDrawWindow(win, context) {

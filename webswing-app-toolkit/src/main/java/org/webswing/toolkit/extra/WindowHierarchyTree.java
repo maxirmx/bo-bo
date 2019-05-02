@@ -274,7 +274,7 @@ public class WindowHierarchyTree {
 			Rectangle boundsCopy = new Rectangle(bounds);
 			SwingUtilities.computeIntersection(uBounds.x, uBounds.y, uBounds.width, uBounds.height, boundsCopy);
 			WebWindowPeer peer = (WebWindowPeer) WebToolkit.targetToPeer(underlying);
-			Util.getWebToolkit().getPaintDispatcher().notifyWindowAreaRepainted(peer.getGuid(), new Rectangle(boundsCopy.x - uBounds.x, boundsCopy.y - uBounds.y, boundsCopy.width, boundsCopy.height));
+			Util.getWebToolkit().getPaintDispatcher().notifyWindowAreaRepaintedForced(peer.getGuid(), new Rectangle(boundsCopy.x - uBounds.x, boundsCopy.y - uBounds.y, boundsCopy.width, boundsCopy.height));
 		}
 		Rectangle boundsCopy = new Rectangle(bounds);
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();

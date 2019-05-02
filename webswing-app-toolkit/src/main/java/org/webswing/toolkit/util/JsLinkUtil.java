@@ -18,6 +18,7 @@ import org.webswing.model.jslink.JsResultMsg;
 import org.webswing.model.s2c.AppFrameMsgOut;
 import org.webswing.toolkit.jslink.WebJSObject;
 
+
 public class JsLinkUtil {
 
 	public static AppFrameMsgOut generateEvalRequest(JSObjectMsg jsThis, String s) {

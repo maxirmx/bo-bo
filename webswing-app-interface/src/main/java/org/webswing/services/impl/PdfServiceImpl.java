@@ -174,6 +174,12 @@ public class PdfServiceImpl implements PdfService {
 			graphics.clipRect(0, 0, width, height);
 			return graphics;
 		}
+		
+		
+		public void translate(double toX, double toY)
+		{
+		    // DO NOTHING
+		}
 
 	};
 }

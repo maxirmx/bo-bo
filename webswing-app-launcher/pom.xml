@@ -2,16 +2,34 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>webswing-app-launcher</artifactId>
 	<parent>
-		<artifactId>webswing</artifactId>
-		<groupId>org.webswing</groupId>
-		<version>2.4</version>
+		<artifactId>webswingcomponent</artifactId>
+		<groupId>xx.yy</groupId>
+		<version>6.0.7-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<dependencies>
 		<dependency>
-			<groupId>org.webswing</groupId>
+			<groupId>xx.yy</groupId>
 			<artifactId>webswing-app-toolkit</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>xx.yy</groupId>
+			<artifactId>startuploader</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

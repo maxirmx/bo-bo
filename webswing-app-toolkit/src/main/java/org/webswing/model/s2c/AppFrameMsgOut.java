@@ -21,6 +21,7 @@ public class AppFrameMsgOut implements MsgOut {
 	private SimpleEventMsgOut event;
 	private JsEvalRequestMsgOut jsRequest;
 	private JsResultMsg javaResponse;
+	private FocusEventMsg focusEvent;
 	private PlaybackInfoMsg playback;
 	private String sessionId;
 
@@ -144,4 +145,11 @@ public class AppFrameMsgOut implements MsgOut {
 		this.playback = playback;
 	}
 
+	public FocusEventMsg getFocusEvent() {
+		return focusEvent;
+	}
+
+	public void setFocusEvent(FocusEventMsg focusEvent) {
+		this.focusEvent = focusEvent;
+	}
 }

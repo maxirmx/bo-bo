@@ -1,4 +1,4 @@
-define([ 'jquery' ], function Util($) {
+define(['jquery'], function Util($) {
     "use strict";
 
     return {
@@ -7,7 +7,13 @@ define([ 'jquery' ], function Util($) {
         bindEvent : bindEvent,
         detectIE : detectIE,
         preventGhosts : preventGhosts,
-        GUID : GUID
+        GUID : GUID,
+        dpr: reCalculateDpr
+    }
+    
+    function reCalculateDpr() {
+    	var dpr = Math.ceil(window.devicePixelRatio) || 1;
+    	return dpr;
     }
 
     function isTouchDevice() {
@@ -98,12 +104,11 @@ define([ 'jquery' ], function Util($) {
         attachEvents(mouseEvents, POINTER_TYPE.MOUSE);
         attachEvents(touchEvents, POINTER_TYPE.TOUCH);
     }
-    
+
     function GUID() {
         var S4 = function () {
-            return Math.floor(Math.random() * 0x10000).toString(16);
+            return Math.floor(Math.random() * 0x100000000).toString(16);
         };
-        return (S4() + S4() + S4());
+        return (S4() + S4() + S4() + S4());
     }
-
 });

@@ -1,5 +1,33 @@
 package org.webswing.dispatch;
 
+import netscape.javascript.JSObject;
+import org.webswing.Constants;
+import org.webswing.model.MsgIn;
+import org.webswing.model.c2s.ConnectionHandshakeMsgIn;
+import org.webswing.model.c2s.CopyEventMsgIn;
+import org.webswing.model.c2s.KeyboardEventMsgIn;
+import org.webswing.model.c2s.MouseEventMsgIn;
+import org.webswing.model.c2s.MouseEventMsgIn.MouseEventType;
+import org.webswing.model.c2s.PasteEventMsgIn;
+import org.webswing.model.c2s.SimpleEventMsgIn;
+import org.webswing.model.c2s.UploadEventMsgIn;
+import org.webswing.model.c2s.UploadedEventMsgIn;
+import org.webswing.model.internal.OpenFileResultMsgInternal;
+import org.webswing.model.jslink.JSObjectMsg;
+import org.webswing.toolkit.WebClipboard;
+import org.webswing.toolkit.WebClipboardTransferable;
+import org.webswing.toolkit.WebDragSourceContextPeer;
+import org.webswing.toolkit.extra.DndEventHandler;
+import org.webswing.toolkit.extra.WindowManager;
+import org.webswing.toolkit.jslink.WebJSObject;
+import org.webswing.toolkit.util.DeamonThreadFactory;
+import org.webswing.toolkit.util.Logger;
+import org.webswing.toolkit.util.Services;
+import org.webswing.toolkit.util.Util;
+import sun.awt.CausedFocusEvent;
+
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.Component;
@@ -20,50 +48,38 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
-
-import org.webswing.Constants;
-import org.webswing.model.MsgIn;
-import org.webswing.model.c2s.ConnectionHandshakeMsgIn;
-import org.webswing.model.c2s.CopyEventMsgIn;
-import org.webswing.model.c2s.KeyboardEventMsgIn;
-import org.webswing.model.c2s.KeyboardEventMsgIn.KeyEventType;
-import org.webswing.model.c2s.MouseEventMsgIn;
-import org.webswing.model.c2s.MouseEventMsgIn.MouseEventType;
-import org.webswing.model.c2s.PasteEventMsgIn;
-import org.webswing.model.c2s.SimpleEventMsgIn;
-import org.webswing.model.c2s.UploadEventMsgIn;
-import org.webswing.model.c2s.UploadedEventMsgIn;
-import org.webswing.model.internal.OpenFileResultMsgInternal;
-import org.webswing.model.jslink.JSObjectMsg;
-import org.webswing.toolkit.WebClipboard;
-import org.webswing.toolkit.WebClipboardTransferable;
-import org.webswing.toolkit.WebDragSourceContextPeer;
-import org.webswing.toolkit.extra.DndEventHandler;
-import org.webswing.toolkit.extra.WindowManager;
-import org.webswing.toolkit.jslink.WebJSObject;
-import org.webswing.toolkit.util.DeamonThreadFactory;
-import org.webswing.toolkit.util.Logger;
-import org.webswing.toolkit.util.Services;
-import org.webswing.toolkit.util.Util;
-
-import netscape.javascript.JSObject;
-import sun.awt.CausedFocusEvent;
 
 @SuppressWarnings("restriction")
 public class WebEventDispatcher {
 
 	private MouseEvent lastMouseEvent;
 	private MouseEvent lastMousePressEvent;
+	private long lastTime = 0;
+	private long intervalTime = 0;
 	private Point lastMousePosition = new Point();
 	private static final DndEventHandler dndHandler = new DndEventHandler();
 	private HashMap<String, String> uploadMap = new HashMap<String, String>();
 	private ExecutorService eventDispatcher = Executors.newSingleThreadExecutor(DeamonThreadFactory.getInstance());
 
+	private static final Map<Integer, Integer> convertedKeyCodes = new HashMap<Integer, Integer>();
+	static {
+		convertedKeyCodes.put(45, 155);//	Insert
+		convertedKeyCodes.put(46, 127);//	Delete
+		convertedKeyCodes.put(189, 45);//	Minus
+		convertedKeyCodes.put(187, 61);//	Equals
+		convertedKeyCodes.put(219, 91);//	Open Bracket
+		convertedKeyCodes.put(221, 93);//	Close Bracket
+		convertedKeyCodes.put(186, 59);//	Semicolon
+		convertedKeyCodes.put(220, 92);//	Back Slash
+		convertedKeyCodes.put(226, 92);//	Back Slash
+		convertedKeyCodes.put(188, 44);//	Comma
+		convertedKeyCodes.put(190, 46);//	Period
+		convertedKeyCodes.put(191, 47);//	Slash
+	}
+	
 	//these keycodes are assigned to different keys in browser  
 	private static final List<Integer> nonStandardKeyCodes = Arrays.asList(KeyEvent.VK_KP_DOWN, KeyEvent.VK_KP_UP, KeyEvent.VK_KP_RIGHT, KeyEvent.VK_KP_LEFT);
 
@@ -127,7 +143,7 @@ public class WebEventDispatcher {
 	}
 
 	private void dispatchMessage(SimpleEventMsgIn message) {
-		Logger.debug("WebEventDispatcher.dispatchMessage", message);
+		Logger.debug("WebEventDispatcher.dispatchMessage SimpleEventMsgIn type: ", message.getType());
 		switch (message.getType()) {
 		case killSwing:
 			Logger.info("Received kill signal. Swing application shutting down.");
@@ -171,12 +187,16 @@ public class WebEventDispatcher {
 			int type = Util.getKeyType(event.getType());
 			char character = Util.getKeyCharacter(event);
 			Component src = w.getFocusOwner() == null ? w : w.getFocusOwner();
+			// 此处为webswing的web转swing的特殊字符，整体上还缺很多，暂时规避对应关系如下:
+			// https://docs.oracle.com/javase/7/docs/api/constant-values.html#java.awt.event.KeyEvent.VK_DECIMAL
+			// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
 			if (event.getKeycode() == 13) {// enter keycode
 				event.setKeycode(10);
 				character = 10;
-			} else if (event.getKeycode() == 46 && type != KeyEvent.KEY_TYPED) {// delete keycode
-				event.setKeycode(127);
-				character = 127;
+			} else if (convertedKeyCodes.containsKey(event.getKeycode()) && type != KeyEvent.KEY_TYPED) {
+				int converted = convertedKeyCodes.get(event.getKeycode());
+				event.setKeycode(converted);
+				character = (char) converted;
 			} else if (nonStandardKeyCodes.contains(event.getKeycode())) {
 				event.setKeycode(0);
 			}
@@ -198,6 +218,11 @@ public class WebEventDispatcher {
 		Component c = null;
 		if (WindowManager.getInstance().isLockedToWindowDecorationHandler()) {
 			c = WindowManager.getInstance().getLockedToWindow();
+			if(c != null && c.isShowing() == false)
+			{
+				WindowManager.getInstance().resetEventHandlerLock(false);
+				c = null;
+			}			
 		} else {
 			c = WindowManager.getInstance().getVisibleComponentOnPosition(event.getX(), event.getY());
 			if (lastMouseEvent != null && (lastMouseEvent.getID() == MouseEvent.MOUSE_DRAGGED || lastMouseEvent.getID() == MouseEvent.MOUSE_PRESSED) && ((event.getType() == MouseEventType.mousemove && event.getButton() == 1) || (event.getType() == MouseEventType.mouseup))) {
@@ -224,6 +249,7 @@ public class WebEventDispatcher {
 			if (buttons != 0 && event.getType() == MouseEventType.mousedown) {
 				Window w = (Window) (c instanceof Window ? c : SwingUtilities.windowForComponent(c));
 				WindowManager.getInstance().activateWindow(w, null, x, y, false, true, CausedFocusEvent.Cause.MOUSE_EVENT);
+				WindowManager.getInstance().flashTopModalDialog(w);
 			}
 			switch (event.getType()) {
 			case mousemove:
@@ -233,6 +259,7 @@ public class WebEventDispatcher {
 				dispatchEventInSwing(c, e);
 				break;
 			case mouseup:
+				Logger.debug("webswing event : receive mouse up event");
 				id = MouseEvent.MOUSE_RELEASED;
 				boolean popupTrigger = (buttons == 3) ? true : false;
 				clickcount = computeClickCount(x, y, buttons, false);
@@ -250,6 +277,7 @@ public class WebEventDispatcher {
 				}
 				break;
 			case mousedown:
+				Logger.debug("webswing event : receive mouse down event");
 				id = MouseEvent.MOUSE_PRESSED;
 				clickcount = computeClickCount(x, y, buttons, true);
 				e = new MouseEvent(c, id, when, modifiers, x, y, event.getX(), event.getY(), clickcount, false, buttons);
@@ -260,7 +288,6 @@ public class WebEventDispatcher {
 			case mousewheel:
 				id = MouseEvent.MOUSE_WHEEL;
 				buttons = 0;
-				modifiers = 0;
 				e = new MouseWheelEvent(c, id, when, modifiers, x, y, clickcount, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 3, event.getWheelDelta());
 				dispatchEventInSwing(c, e);
 				break;
@@ -396,9 +423,19 @@ public class WebEventDispatcher {
 	public static void dispatchEventInSwing(final Component c, final AWTEvent e) {
 		Window w = (Window) (c instanceof Window ? c : SwingUtilities.windowForComponent(c));
 		if (e instanceof MouseEvent) {
+			//如果是顶层MDIFrame的鼠标移动事件，不修改鼠标状态
+//			if(c.getParent()==null && e.getID() == MouseEvent.MOUSE_MOVED){
+//				return;
+//			}
 			w.setCursor(w.getCursor());// force cursor update
 		}
 		if ((Util.isWindowDecorationEvent(w, e) || WindowManager.getInstance().isLockedToWindowDecorationHandler()) && e instanceof MouseEvent) {
+			//把客户端放到在webswing里面后，不处理顶层窗口(MDIFrame)的拖放事件，避免MDIFrame窗口被拖动到其他位置，但其他内部窗口的拖动则不受影响。
+			if ((w.getParent()==null) && e.getID()== MouseEvent.MOUSE_DRAGGED){
+
+				WindowManager.getInstance().resetEventHandlerLock(false);
+				return;
+			}
 			Logger.debug("WebEventDispatcher.dispatchEventInSwing:windowManagerHandle", e);
 			WindowManager.getInstance().handleWindowDecorationEvent(w, (MouseEvent) e);
 		} else if (dndHandler.isDndInProgress() && (e instanceof MouseEvent || e instanceof KeyEvent)) {
@@ -442,4 +479,5 @@ public class WebEventDispatcher {
 	public static boolean isDndInProgress() {
 		return dndHandler.isDndInProgress();
 	}
+
 }

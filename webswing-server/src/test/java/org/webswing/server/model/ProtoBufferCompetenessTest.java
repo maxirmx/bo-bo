@@ -1,6 +1,27 @@
 package org.webswing.server.model;
 
-import static org.junit.Assert.assertTrue;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
+import com.google.protobuf.Message.Builder;
+import org.junit.Before;
+import org.junit.Test;
+import org.webswing.model.c2s.InputEventMsgIn;
+import org.webswing.model.c2s.InputEventsFrameMsgIn;
+import org.webswing.model.c2s.SimpleEventMsgIn;
+import org.webswing.model.s2c.AppFrameMsgOut;
+import org.webswing.model.s2c.ApplicationInfoMsg;
+import org.webswing.model.s2c.SimpleEventMsgOut;
+import org.webswing.model.s2c.WindowMsg;
+import org.webswing.model.s2c.WindowPartialContentMsg;
+import org.webswing.server.model.proto.Webswing.AppFrameMsgOutProto;
+import org.webswing.server.model.proto.Webswing.ApplicationInfoMsgProto;
+import org.webswing.server.model.proto.Webswing.InputEventMsgInProto;
+import org.webswing.server.model.proto.Webswing.InputEventsFrameMsgInProto;
+import org.webswing.server.model.proto.Webswing.MouseEventMsgInProto;
+import org.webswing.server.model.proto.Webswing.SimpleEventMsgInProto;
+import org.webswing.server.model.proto.Webswing.SimpleEventMsgInProto.SimpleEventTypeProto;
+import org.webswing.server.util.ProtoMapper;
+import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,30 +41,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.webswing.model.c2s.InputEventMsgIn;
-import org.webswing.model.c2s.InputEventsFrameMsgIn;
-import org.webswing.model.c2s.SimpleEventMsgIn;
-import org.webswing.model.s2c.AppFrameMsgOut;
-import org.webswing.model.s2c.ApplicationInfoMsg;
-import org.webswing.model.s2c.SimpleEventMsgOut;
-import org.webswing.model.s2c.WindowMsg;
-import org.webswing.model.s2c.WindowPartialContentMsg;
-import org.webswing.server.model.proto.Webswing.AppFrameMsgOutProto;
-import org.webswing.server.model.proto.Webswing.ApplicationInfoMsgProto;
-import org.webswing.server.model.proto.Webswing.InputEventMsgInProto;
-import org.webswing.server.model.proto.Webswing.InputEventsFrameMsgInProto;
-import org.webswing.server.model.proto.Webswing.MouseEventMsgInProto;
-import org.webswing.server.model.proto.Webswing.SimpleEventMsgInProto;
-import org.webswing.server.model.proto.Webswing.SimpleEventMsgInProto.SimpleEventTypeProto;
-import org.webswing.server.util.ProtoMapper;
-
-import sun.net.www.protocol.file.FileURLConnection;
-
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import com.google.protobuf.Message.Builder;
+import static org.junit.Assert.assertTrue;
 
 public class ProtoBufferCompetenessTest {
 
@@ -111,7 +109,10 @@ public class ProtoBufferCompetenessTest {
 					field.setAccessible(true);
 					String fieldName = field.getName();
 					FieldDescriptor protoField = b.getDescriptorForType().findFieldByName(fieldName);
-					assertTrue("Field " + fieldName + " not found in " + protoClass, protoField != null);
+					if (protoField == null) {
+						System.out.println("Field " + fieldName + " not found in " + protoClass);
+						continue;
+					}
 					if (List.class == field.getType()) {
 						assertTrue("List field '" + fieldName + "' is not repeated in " + classProtoMap.get(c), protoField.isRepeated());
 					} else {

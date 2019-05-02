@@ -1,44 +1,99 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>webswing</artifactId>
-		<groupId>org.webswing</groupId>
-		<version>2.4</version>
+		<artifactId>webswingcomponent</artifactId>
+		<groupId>xx.yy</groupId>
+		<version>6.0.7-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>webswing-assembly</artifactId>
 	<packaging>pom</packaging>
 	<dependencies>
 		<dependency>
-			<groupId>org.webswing</groupId>
+			<groupId>xx.yy</groupId>
 			<artifactId>webswing-server</artifactId>
 			<version>${project.version}</version>
 			<type>war</type>
 		</dependency>
+		<dependency>
+			<groupId>xx.yy</groupId>
+			<version>${project.version}</version>
+			<artifactId>webswing-app-launcher</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>xx.yy</groupId>
+			<version>${project.version}</version>
+			<artifactId>webswing-log-collector</artifactId>
+			<type>jar</type>
+		</dependency>
 	</dependencies>
+	<properties>
+		<alarm.version>old</alarm.version>
+	</properties>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-2</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<finalName>webswing-${project.version}</finalName>
-					<outputDirectory>dist</outputDirectory>
-					<descriptor>src/main/assembly/dist.xml</descriptor>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<profiles>
+		<profile>
+		<id>build_old_alarm_Version</id>
+		<activation>
+			<property>
+				<name>alarm.version</name>
+				<value>old</value>
+			</property>
+			<activeByDefault>true</activeByDefault>
+		</activation>
+		<build>
+			<plugins>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.2-beta-2</version>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>single</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<finalName>webproxy</finalName>
+						<outputDirectory>dist</outputDirectory>
+						<descriptor>src/main/assembly/dist.xml</descriptor>
+					</configuration>
+				</plugin>
+			</plugins>
+		</build>
+		</profile>
+		<profile>
+			<id>build_new_alarm_Version</id>
+			<activation>
+				<property>
+					<name>alarm.version</name>
+					<value>new</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.2-beta-2</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<finalName>webproxy</finalName>
+							<outputDirectory>dist</outputDirectory>
+							<descriptor>src/main/assembly/dist_new.xml</descriptor>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>docker</id>
 			<build>

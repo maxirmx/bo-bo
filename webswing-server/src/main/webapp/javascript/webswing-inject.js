@@ -1,6 +1,5 @@
 define([], function amdFactory() {
     "use strict";
-
     return function Injector() {
         var api = this;
         api.module = module;

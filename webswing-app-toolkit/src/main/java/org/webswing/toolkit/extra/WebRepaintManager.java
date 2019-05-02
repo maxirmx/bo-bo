@@ -8,7 +8,6 @@ import java.awt.Image;
 import java.awt.Panel;
 import java.awt.Rectangle;
 import java.awt.Window;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,14 +15,15 @@ import javax.swing.JComponent;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
-import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Util;
 
 public class WebRepaintManager extends RepaintManager {
 
 	private RepaintManager delegate;
 	private Map<Container, Rectangle> dirty = new HashMap<Container, Rectangle>();
-
+	
+	//设置默认缓冲绘图区大小为5000,5000，保证比可更新区域大，防止分块绘制导致重影问题
+	private final static Dimension FIXED_SIZE_DIMENSION = new Dimension(5000,5000);
 	public WebRepaintManager(RepaintManager delegate) {
 		if (delegate != null) {
 			this.delegate = delegate;
@@ -37,7 +37,7 @@ public class WebRepaintManager extends RepaintManager {
 	}
 
 	@Override
-	public void addDirtyRegion(JComponent c, int x, int y, int w, int h) {
+	public void addDirtyRegion(final JComponent c, final int x, final int y, final int w, final int h) {
 		addDirtyRegionPrivate(c, x, y, w, h);
 	}
 
@@ -61,7 +61,7 @@ public class WebRepaintManager extends RepaintManager {
 			}
 		}
 	}
-
+	
 	@Override
 	public Rectangle getDirtyRegion(JComponent aComponent) {
 		Rectangle r;
@@ -83,26 +83,71 @@ public class WebRepaintManager extends RepaintManager {
 
 	public void process() {
 		synchronized (delegate) {
-			for (Container c : dirty.keySet()) {
-				Rectangle r = dirty.get(c);
-				if (c instanceof JComponent) {
-					Panel p = Util.findHwComponentParent((JComponent) c);
-					if (p != null) {
-						for (Component chld : p.getComponents()) {
-							delegate.addDirtyRegion((JComponent) chld, 0, 0, chld.getWidth(), chld.getHeight());
-						}
-					} else {
-						delegate.addDirtyRegion((JComponent) c, r.x, r.y, r.width, r.height);
-					}
-				} else if (c instanceof Window) {
-					delegate.addDirtyRegion((Window) c, r.x, r.y, r.width, r.height);
-				} else if (c instanceof Applet) {
-					delegate.addDirtyRegion((Applet) c, r.x, r.y, r.width, r.height);
-				}
-			}
-			dirty.clear();
+		    if(!dirty.isEmpty())
+		    {
+		        // 将当前积累的脏区域交由delegate进行合并,并启动绘制
+		        // 注意一定要将脏区域提交放到EDT里，因为一个事件（比如鼠标点击菜单并会触发菜单小时以及对话框弹出）会提交很多脏区域，而addDirtyRegion是在EDT里
+		        // 但是process方法是在33ms的另外一个线程，两个线程并发，如果提交到delegate脏区域只包含部分脏区域，导致多出一张图片的问题
+		        SwingUtilities.invokeLater(new Runnable()
+                {
+                    
+                    @Override
+                    public void run()
+                    {
+                        addDirtyRegionToDelegate();
+                    }
+                });
+		    }
 		}
 	}
+
+	private void addDirtyRegionToDelegate()
+    {
+        synchronized (delegate)
+        {
+            for (Container c : dirty.keySet())
+            {
+                Rectangle r = dirty.get(c);
+                if (r == null)
+                {
+                    r = new Rectangle(0, 0, 0, 0);
+                }
+                if (c instanceof JComponent)
+                {
+                    Panel p = Util.findHwComponentParent((JComponent) c);
+                    if (p != null)
+                    {
+                        for (Component chld : p.getComponents())
+                        {
+                            delegate.addDirtyRegion((JComponent) chld, 0, 0, chld.getWidth(), chld.getHeight());
+                        }
+                    }
+                    else
+                    {
+                        if (r != null)
+                        {
+                            delegate.addDirtyRegion((JComponent) c, r.x, r.y, r.width, r.height);
+                        }
+                    }
+                }
+                else if (c instanceof Window)
+                {
+                    if (r != null)
+                    {
+                        delegate.addDirtyRegion((Window) c, r.x, r.y, r.width, r.height);
+                    }
+                }
+                else if (c instanceof Applet)
+                {
+                    if (r != null)
+                    {
+                        delegate.addDirtyRegion((Applet) c, r.x, r.y, r.width, r.height);
+                    }
+                }
+            }
+            dirty.clear();
+        }
+    }
 
 	@Override
 	public void addInvalidComponent(JComponent invalidComponent) {
@@ -171,10 +216,10 @@ public class WebRepaintManager extends RepaintManager {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * 忽略外部设置的缓冲绘图区大小，防止由于待缓冲区比待更新区域小导致分块绘制，产生重影问题
 	 */
 	public void setDoubleBufferMaximumSize(Dimension d) {
-		delegate.setDoubleBufferMaximumSize(d);
+		delegate.setDoubleBufferMaximumSize(FIXED_SIZE_DIMENSION);
 	}
 
 	/**

@@ -24,6 +24,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 
+import org.webswing.directdraw.util.WaitingImageObserver;
+import org.webswing.directdraw.util.XorModeComposite;
+
 public class WebGraphics extends AbstractVectorGraphics {
 
 	WebImage thisImage;
@@ -52,9 +55,21 @@ public class WebGraphics extends AbstractVectorGraphics {
 			if (onDemandTexturePaint) {
 				thisImage.addInstruction(this, dif.setPaint(createTexture(s, getPaint())));
 			}
-			thisImage.addInstruction(this, dif.draw(s, getClip()));
+			if(thisImage.isFallbackActive()){
+				thisImage.addInstruction(this, dif.drawFallback(s));
+			}else {
+				thisImage.addInstruction(this, dif.draw(s, getClip()));
+			}
 		} else {
 			fill(getStroke().createStrokedShape(s));
+		}
+	}
+
+	@Override
+	protected void changeClip(Shape clip) {
+		super.changeClip(clip);
+		if(thisImage.isFallbackActive()){
+			thisImage.addInstruction(this, dif.clipFallback(getClip()));
 		}
 	}
 
@@ -125,6 +140,11 @@ public class WebGraphics extends AbstractVectorGraphics {
 		if (image instanceof BufferedImage) {
 			return new ImageConvertResult(true, (BufferedImage) image);
 		}
+		try {
+			new WaitingImageObserver(image).waitImageLoaded();//magic
+		} catch (Exception e) {
+			//ignore
+		}
 		BufferedImage bufferedImage = new BufferedImage(image.getWidth(observer), image.getHeight(observer), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = bufferedImage.createGraphics();
 		try {
@@ -173,6 +193,8 @@ public class WebGraphics extends AbstractVectorGraphics {
 		if (composite instanceof AlphaComposite) {
 			AlphaComposite ac = (AlphaComposite) composite;
 			thisImage.addInstruction(this, dif.setComposite(ac));
+		} else if (composite instanceof XorModeComposite) {
+			thisImage.addInstruction(this, dif.setXorMode(((XorModeComposite) composite).getXorColor()));
 		}
 	}
 
@@ -198,14 +220,12 @@ public class WebGraphics extends AbstractVectorGraphics {
 
 	@Override
 	public void setPaintMode() {
-		// TODO Auto-generated method stub
-
+		setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 	}
 
 	@Override
 	public void setXORMode(Color c1) {
-		// TODO Auto-generated method stub
-
+		setComposite(new XorModeComposite(c1));
 	}
 
 	@Override
@@ -219,9 +239,11 @@ public class WebGraphics extends AbstractVectorGraphics {
 
 	@Override
 	public void dispose() {
-		thisImage.addInstruction(this, dif.disposeGraphics(this));
-		thisImage.dispose(this);
-		disposed = true;
+		if (!disposed) {
+			thisImage.addInstruction(this, dif.disposeGraphics(this));
+			thisImage.dispose(this);
+			disposed = true;
+		}
 	}
 
 	public int getId() {

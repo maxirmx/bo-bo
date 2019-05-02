@@ -81,6 +81,7 @@ public class AdminConsoleRestServiceImpl implements AdminConsoleRestService {
 
 	@Override
 	public void shutdown(String id, String forceKill) {
+		log.info("AdminConsoleRestServiceImpl shutdown()" + forceKill);
 		checkAuthorization();
 		if(Boolean.parseBoolean(forceKill)){
 			SwingInstanceManager.getInstance().shutdown(id,true);

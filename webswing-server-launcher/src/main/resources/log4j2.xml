@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="baseDir">./</Property>
+        <!-- 滚动文件的大小-->
+        <Property name="rollingFileSize">50MB</Property>
+        <!-- 累计文件数目(只保留这几个文件，超过的则删除)-->
+        <Property name="accumulatedFileCount">30</Property>
+    </Properties>
+    <!--定义所有的appender -->
+    <appenders>
+        <!--这个输出控制台的配置 -->
+        <console name="Console" target="SYSTEM_OUT">
+            <!--输出日志的格式 -->
+            <PatternLayout pattern="%d %-5p [%t] (%F:%L) %m%n" />
+        </console>
+
+        <!-- 日志文件每次大小超过size，则这size大小的日志会自动存入按年份-月-日_时#分#秒#毫秒建立的文件夹下面并进行压缩，作为存档 -->
+        <RollingFile name="WebSwingRollingFile"
+                     fileName="${baseDir}//webswing.log"
+                     immediateFlush="true"
+                     filePattern="${baseDir}//webswing-%d{yyyy-MM-dd_HH#mm#ss#SSS}.log.gz">
+            <PatternLayout pattern="%d %-5p [%t] (%F:%L) %m%n" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="${rollingFileSize}" />
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${baseDir}" maxDepth="1">
+                    <IfFileName glob="webswing*.log.gz" />
+                    <IfAccumulatedFileCount exceeds="${accumulatedFileCount}"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+            <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件，这里设置了10 -->
+            <!--<DefaultRolloverStrategy max="5" fileIndex="max"/>-->
+        </RollingFile>
+
+    </appenders>
+
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效 -->
+    <loggers>
+
+        <root level="INFO">
+            <appender-ref ref="Console" />
+            <appender-ref ref="WebSwingRollingFile" />
+        </root>
+    </loggers>
+</configuration>

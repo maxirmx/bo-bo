@@ -16,7 +16,9 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             stoppedDialog: 'dialog.content.stoppedDialog',
             disconnectedDialog: 'dialog.content.disconnectedDialog',
             connectionErrorDialog: 'dialog.content.connectionErrorDialog',
-            initializingDialog: 'dialog.content.initializingDialog'
+            initializingDialog: 'dialog.content.initializingDialog',
+            continueSession: 'base.continueSession',
+            fireCallBack : 'webswing.fireCallBack'
         };
         module.provides = {
             connect: connect,
@@ -27,7 +29,15 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
         };
         module.ready = function () {
             binary = api.cfg.typedArraysSupported && api.cfg.binarySocket;
+            document.addEventListener('visibilitychange', focusToActive);
         };
+
+        function focusToActive() {
+            if (document.visibilityState === 'visible' && !api.cfg.canPaint && !api.cfg.mirrorMode && api.currentDialog() !== api.stoppedDialog) {
+                api.continueSession();
+            }
+        }
+
 
         var socket, uuid, binary;
         var responseHandlers = {};
@@ -76,11 +86,14 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
                     binary = false;
                     dispose();
                     connect();
+                } else {
+                    api.fireCallBack({type: 'webswingWebSocketOpened'});
                 }
             };
 
             request.onReopen = function (response) {
                 api.hideDialog();
+                api.fireCallBack({type: 'webswingWebSocketReOpened'});
             };
 
             request.onMessage = function (response) {
@@ -107,11 +120,18 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
 
             request.onClose = function (response) {
                 if (api.currentDialog() !== api.stoppedDialog) {
-                    api.showDialog(api.disconnectedDialog);
+                    // TODO 待后续websocket需求再审视
+                    // 窗口切换过程中webswing内部的socket会先close，随后再open
+                    // 而断链或其他异常场景使用其他异常提示信息，不需要显示disconnectedDialog
+                    // api.showDialog(api.disconnectedDialog);
+                    // 增加控制台日志输出帮助定位
+                    console.warn('Current Weswing dialog is not stoppedDialog, please check the message of websocket in webswing!');
+                    api.fireCallBack({type: 'webswingWebSocketOnClose'});
                 }
             };
 
             request.onError = function (response) {
+                api.fireCallBack({type: 'webswingWebSocketOnError'});
                 api.showDialog(api.connectionErrorDialog);
             };
 
@@ -125,7 +145,7 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
                 if (message.byteLength === 1) {
                     return {};// ignore atmosphere heartbeat
                 }
-                data = AppFrameMsgOutProto.decode(message);
+                data = SocketModule.AppFrameMsgOutProto.decode(message);
                 explodeEnumNames(data);
             } else {
                 data = atmosphere.util.parseJSON(message);
@@ -135,15 +155,25 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
 
         function dispose() {
             atmosphere.unsubscribe(socket);
+            document.removeEventListener('visibilitychange', focusToActive);
             socket = null;
             uuid = null;
+            if (awaitResponseTimeoutId) {
+                clearTimeout(awaitResponseTimeoutId);
+            }
+            for (var key in responseHandlers) {
+                if (responseHandlers.hasOwnProperty(key)) {
+                    responseHandlers[key] = null;
+                }
+            }
+            responseHandlers = null;
         }
 
         function send(message) {
             if (socket != null && socket.request.isOpen && !socket.request.closed) {
                 if (typeof message === "object") {
                     if (binary) {
-                        var msg = new InputEventsFrameMsgInProto(message);
+                        var msg = new SocketModule.InputEventsFrameMsgInProto(message);
                         socket.push(msg.encode().toArrayBuffer());
                     } else {
                         socket.push(atmosphere.util.stringifyJSON(message));
@@ -154,10 +184,12 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             }
         }
 
+        var awaitResponseTimeoutId = null;
+
         function awaitResponse(callback, request, correlationId, timeout) {
             send(request);
             responseHandlers[correlationId] = callback;
-            setTimeout(function () {
+            awaitResponseTimeoutId = setTimeout(function () {
                 if (responseHandlers[correlationId] != null) {
                     delete responseHandlers[correlationId];
                     callback(new Error("Java call timed out after " + timeout + " ms."));
@@ -194,5 +226,4 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             }
         }
     };
-
 });

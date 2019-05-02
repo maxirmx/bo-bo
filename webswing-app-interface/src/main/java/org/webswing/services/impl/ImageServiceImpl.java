@@ -6,16 +6,21 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 import javax.imageio.ImageIO;
 import javax.imageio.spi.IIORegistry;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.webswing.Constants;
 import org.webswing.common.WindowDecoratorTheme;
 import org.webswing.ext.services.ImageService;
+import org.webswing.toolkit.util.DeamonThreadFactory;
 import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Util;
 
@@ -24,9 +29,13 @@ import com.objectplanet.image.PngEncoder;
 public class ImageServiceImpl implements ImageService {
 
 	private static ImageServiceImpl impl;
-	private Map<Integer, PngEncoder> encoders;
+	private ThreadLocal<Map<Integer, PngEncoder>> encoders = new ThreadLocal<Map<Integer, PngEncoder>>();
 	private WindowDecoratorTheme windowDecorationTheme;
-
+	private ExecutorService encoderPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), DeamonThreadFactory.getInstance());
+	
+	private static final String DEFAULT_THEME = "Murrine";
+	private String theme = System.getProperty(Constants.SWING_START_SYS_PROP_THEME, DEFAULT_THEME);
+	
 	public static ImageServiceImpl getInstance() {
 		if (impl == null) {
 			impl = new ImageServiceImpl();
@@ -40,7 +49,6 @@ public class ImageServiceImpl implements ImageService {
 			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 			IIORegistry.getDefaultInstance().registerApplicationClasspathSpis();
 			Thread.currentThread().setContextClassLoader(currentContextClassLoader);
-			encoders = new HashMap<Integer, PngEncoder>();
 		} catch (Exception e) {
 			Logger.warn("ImageService:Library for fast image encoding not found. Download the library from http://objectplanet.com/pngencoder/");
 		}
@@ -48,43 +56,64 @@ public class ImageServiceImpl implements ImageService {
 
 	public byte[] getPngImage(BufferedImage image) {
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			PngEncoder encoder = getEncoder(image);
-			if (encoder != null) {
-				encoder.encode(image, baos);
-			} else {
-				ImageIO.write(image, "png", baos);
-			}
-			return baos.toByteArray();
-		} catch (IOException e) {
+			return getPngImageAsync(image).get();
+		} catch (InterruptedException e) {
 			Logger.error("ImageService:Writing image interrupted:" + e.getMessage(), e);
+		} catch (ExecutionException e) {
+			Logger.error("ImageService:Writing image failed:" + e.getMessage(), e);
 		}
 		return null;
 	}
-	
+
+	public Future<byte[]> getPngImageAsync(final BufferedImage image) {
+		return encoderPool.submit(new Callable<byte[]>() {
+			@Override public byte[] call() throws Exception {
+				try {
+					long start = System.currentTimeMillis();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					PngEncoder encoder = getEncoder(image);
+					if (encoder != null) {
+						encoder.encode(image, baos);
+					} else {
+						ImageIO.write(image, "png", baos);
+					}
+					Logger.trace("ImageService: " + image.getWidth() * image.getHeight() + "pixels encoded in " + (System.currentTimeMillis() - start) + "ms.");
+					return baos.toByteArray();
+				} catch (IOException e) {
+					Logger.error("ImageService:Writing image interrupted:" + e.getMessage(), e);
+				}
+				return null;
+			}
+		});
+	}
+
 	public PngEncoder getEncoder(BufferedImage image) {
 		int type;
 		switch (image.getType()) {
-			case BufferedImage.TYPE_BYTE_BINARY:
-			case BufferedImage.TYPE_BYTE_INDEXED:
-				type = image.getColorModel().hasAlpha() ? PngEncoder.COLOR_INDEXED_ALPHA : PngEncoder.COLOR_INDEXED;
-				break;
-			
-			case BufferedImage.TYPE_INT_RGB:
-			case BufferedImage.TYPE_INT_ARGB:
-			case BufferedImage.TYPE_INT_ARGB_PRE:
-			case BufferedImage.TYPE_3BYTE_BGR:
-			case BufferedImage.TYPE_4BYTE_ABGR:
-			case BufferedImage.TYPE_4BYTE_ABGR_PRE:
-				type = image.getColorModel().hasAlpha() ? PngEncoder.COLOR_TRUECOLOR_ALPHA : PngEncoder.COLOR_TRUECOLOR;
-				break;
-			
-			default:
-				return null;
+		case BufferedImage.TYPE_BYTE_BINARY:
+		case BufferedImage.TYPE_BYTE_INDEXED:
+			type = image.getColorModel().hasAlpha() ? PngEncoder.COLOR_INDEXED_ALPHA : PngEncoder.COLOR_INDEXED;
+			break;
+
+		case BufferedImage.TYPE_INT_RGB:
+		case BufferedImage.TYPE_INT_ARGB:
+		case BufferedImage.TYPE_INT_ARGB_PRE:
+		case BufferedImage.TYPE_3BYTE_BGR:
+		case BufferedImage.TYPE_4BYTE_ABGR:
+		case BufferedImage.TYPE_4BYTE_ABGR_PRE:
+			type = image.getColorModel().hasAlpha() ? PngEncoder.COLOR_TRUECOLOR_ALPHA : PngEncoder.COLOR_TRUECOLOR;
+			break;
+
+		default:
+			return null;
 		}
-		PngEncoder encoder = encoders.get(type);
+		if (encoders.get() == null) {
+			encoders.set(new HashMap<Integer, PngEncoder>());
+		}
+		Map<Integer, PngEncoder> encodersMap = encoders.get();
+		PngEncoder encoder = encodersMap.get(type);
 		if (encoder == null) {
-			encoders.put(type, encoder = new PngEncoder(type, PngEncoder.BEST_SPEED));
+			encodersMap.put(type, encoder = new PngEncoder(type, PngEncoder.BEST_SPEED));
 		}
 		return encoder;
 	}

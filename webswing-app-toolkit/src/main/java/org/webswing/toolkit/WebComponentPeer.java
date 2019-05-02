@@ -3,6 +3,7 @@ package org.webswing.toolkit;
 import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.AWTException;
+import java.awt.AlphaComposite;
 import java.awt.BufferCapabilities;
 import java.awt.BufferCapabilities.FlipContents;
 import java.awt.Color;
@@ -68,32 +69,118 @@ import sun.java2d.pipe.Region;
 public class WebComponentPeer implements ComponentPeer {
 
 	private String guid = UUID.randomUUID().toString();
+	private BufferedImage safeImage = null;
 
 	public String getGuid() {
 		return guid;
 	}
 
-	public BufferedImage extractBufferedImage(Rectangle sub) {
-		BufferedImage safeImage = new BufferedImage(sub.width, sub.height, BufferedImage.TYPE_4BYTE_ABGR);
+	public BufferedImage extractBufferedImage(Rectangle sub, Rectangle parent) {
+    	Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+    	int gw = (int) screensize.getWidth();
+    	int gh = (int) screensize.getHeight();
+    	int x1 = parent.x, y1 = parent.y, w1 = parent.width, h1 = parent.height;
+    	int x2 = sub.x, y2 = sub.y, w2 = sub.width, h2 = sub.height;
+    	int x = sub.x, y = sub.y, w = sub.width, h = sub.height;
+    	boolean cx1 = x1 >= 0;
+    	boolean cx2 = x1 + w1 <= gw;
+    	boolean cx3 = x1 + x2 >= 0;
+    	boolean cx4 = x1 + x2 + w2 <= gw;
+    	
+    	if (cx1) {
+    		if (!cx2) {
+    			if (cx3) {
+    				if (!cx4) {
+    					x = x2;
+    					w = gw - x1 - x2;
+    				}
+    			}
+    		}
+    	} else {
+    		if (cx2) {
+    			if (!cx3) {
+    				if (cx4) {
+    					x = -x1;
+    					w = x2 + w2 + x1;
+    				}
+    			}
+    		} else {
+    			if (!cx3) {
+    				if (cx4) {
+    					x = -x1;
+    					w = x2 + w2 + x1;
+    				} else {
+    					x = -x1;
+    					w = gw;
+    				}
+    			}
+    		}
+    	}
+    	
+    	boolean cy1 = y1 >= 0;
+    	boolean cy2 = y1 + h1 <= gh;
+    	boolean cy3 = y1 + y2 >= 0;
+    	boolean cy4 = y1 + y2 + h2 <= gh;
+    	
+    	if (cy1) {
+    		if (!cy2) {
+    			if (cy3) {
+    				if (!cy4) {
+    					y = y2;
+    					h = gh - y1 - y2;
+    				}
+    			}
+    		}
+    	} else {
+    		if (cy2) {
+    			if (!cy3) {
+    				if (cy4) {
+    					y = -y1;
+    					h = y2 + h2 + y1;
+    				}
+    			}
+    		} else {
+    			if (!cy3) {
+    				if (cy4) {
+    					y = -y1;
+    					h = y2 + h2 + y1;
+    				} else {
+    					y = -y1;
+    					h = gh;
+    				}
+    			}
+    		}
+    	}
+
+		if (safeImage == null || safeImage.getHeight() != image.getHeight() || safeImage.getWidth() != image.getWidth()) {
+			safeImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		}
+		x1 = x;
+		y1 = y;
+		x2 = x + w;
+		y2 = y + h;
 		if (isInitialized()) {
 			Graphics2D g = (Graphics2D) safeImage.getGraphics();
-			g.drawImage(image, 0, 0, sub.width, sub.height, sub.x, sub.y, sub.x + sub.width, sub.y + sub.height, null);
+			g.setBackground(new Color(0, 0, 0, 0));
+			g.setComposite(AlphaComposite.SrcOver);
+			g.clearRect(sub.x, sub.y, sub.width, sub.height);
+			g.drawImage(image, x1, y1, x2, y2, x1, y1, x2, y2, null);
 			for (WebComponentPeer wcp : hwLayers) {
 				Insets i = ((Window) this.getTarget()).getInsets();
 				Rectangle b = wcp.getBounds();
-				Rectangle bt = new Rectangle(b.x + i.left, b.y + i.top, b.width, b.height);
+				Rectangle bt = new Rectangle(b.x +i.left, b.y + i.top, b.width, b.height);
 				if (bt.intersects(sub)) {
 					Rectangle dst = sub.intersection(bt);
 					Rectangle src = new Rectangle(dst);
 					dst.translate(-sub.x, -sub.y);
 					src.translate(-bt.x, -bt.y);
-					g.drawImage(wcp.image, dst.x, dst.y, dst.width + dst.x, dst.height + dst.y, src.x, src.y, src.width + src.x, src.height + src.y, null);
+					g.drawImage(wcp.image, dst.x+x1, dst.y+y1, dst.width + dst.x+x1, dst.height + dst.y+y1, src.x, src.y, src.width + src.x, src.height + src.y, null);
 				}
 			}
-			g.drawImage(windowDecorationImage, 0, 0, sub.width, sub.height, sub.x, sub.y, sub.x + sub.width, sub.y + sub.height, null);
+			g.drawImage(windowDecorationImage, x1, y1, x2, y2, x1, y1, x2, y2, null);
 			g.dispose();
 		}
-		return safeImage;
+		return safeImage.getSubimage(x1, y1, sub.width, sub.height);
 	}
 
 	public Image extractWebImage() {
@@ -124,7 +211,9 @@ public class WebComponentPeer implements ComponentPeer {
 				} else {
 					w = image.getWidth();
 					h = image.getHeight();
-					windowDecorationImage = new BufferedImage(w, h, BufferedImage.TYPE_4BYTE_ABGR);
+					if (windowDecorationImage == null || windowDecorationImage.getWidth(null) != w || windowDecorationImage.getHeight(null) != h) {
+						windowDecorationImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+					}
 				}
 				Graphics g = windowDecorationImage.getGraphics();
 				Services.getImageService().getWindowDecorationTheme().paintWindowDecoration(g, target, w, h);
@@ -166,13 +255,14 @@ public class WebComponentPeer implements ComponentPeer {
 	private int oldX;
 	private int oldY;
 	private SurfaceData surfaceData;
-	OffScreenImage image;
-	private Image windowDecorationImage;
 	private LinkedList<WebComponentPeer> hwLayers = new LinkedList<WebComponentPeer>();
-	Image webImage; // directdraw
 	private Color background;
 	private Color foreground;
 	private Font font;
+	
+    protected OffScreenImage image;
+    protected Image webImage; // directdraw
+    protected Image windowDecorationImage;
 
 	public static WebComponentPeer getPeerForTarget(Object paramObject) {
 		WebComponentPeer localWObjectPeer = (WebComponentPeer) WebToolkit.targetToPeer(paramObject);
@@ -302,6 +392,7 @@ public class WebComponentPeer implements ComponentPeer {
 						localSurfaceData.invalidate();
 					}
 				}
+				Util.getWebToolkit().getPaintDispatcher().notifyWindowReset(getGuid());
 				updateWindowDecorationImage();
 				repaintPeerTarget();
 			}
@@ -413,6 +504,7 @@ public class WebComponentPeer implements ComponentPeer {
 				}
 			}
 			WebToolkit.targetDisposedPeer(this.target, this);
+			Util.getWebToolkit().getPaintDispatcher().notifyWindowDisposed(getGuid());
 		}
 	}
 
@@ -593,7 +685,11 @@ public class WebComponentPeer implements ComponentPeer {
 	}
 
 	public void notifyWindowAreaRepainted(Rectangle r) {
+		if (r == null) {
+			r = getBounds();
+		}
 		Util.getWebToolkit().getPaintDispatcher().notifyWindowAreaRepainted(getGuid(), r);
+		Util.getWebToolkit().getPaintDispatcher().notifyWindowRendered(getGuid());
 	}
 
 }

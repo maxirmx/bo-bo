@@ -108,7 +108,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             clearInterval(timer1);
             clearInterval(timer2);
             clearInterval(timer3);
-            timer1 = setInterval(api.sendInput, 5);
+            timer1 = setInterval(api.sendInput, 100);
             timer2 = setInterval(heartbeat, 10000);
             timer3 = setInterval(servletHeartbeat, 100000);
             windowImageHolders = {};
@@ -351,8 +351,11 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                     return new Promise(function(resolved, rejected) {
                         if (winContent != null) {
                             var imageObj = new Image();
+                            var ieTimeoutId = null;
                             var onloadFunction = function() {
-                                //context.drawImage(imageObj, win.posX + winContent.positionX, win.posY + winContent.positionY);
+                                if (ieTimeoutId) {
+                                    window.clearTimeout(ieTimeoutId);
+                                }
                                 decodedImages.push({image:imageObj,winContent:winContent})
                                 resolved(decodedImages);
                                 
@@ -361,7 +364,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                                 // fix for ie - onload is fired before the image is ready for rendering to canvas.
                                 // This is an ugly quickfix
                                 if (api.cfg.ieVersion && api.cfg.ieVersion <= 10) {
-                                    window.setTimeout(onloadFunction, 20);
+                                    ieTimeoutId = window.setTimeout(onloadFunction, 20);
                                 } else {
                                     onloadFunction();
                                 }
@@ -372,14 +375,23 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 }, errorHandler);
             }, Promise.resolve(decodedImages)).then(function(decodedImages){
                 decodedImages.forEach(function(image, idx){
-
-                    if(win.sprites.length != 0){
-                        for(var i = 36 * idx; i < 36 * (idx+1) && i < win.sprites.length; i++ ){
+                    var dpr = util.dpr();
+                    //for U2020 , sprites (splitted images) are not available in some swing pages like splash or create NE, add a list validation
+                    if(win.sprites && win.sprites.length != 0){
+                        //the server sends bigger chunks of size 6 each of which is 6px, so index to start is 36
+                        const IMAGE_START_INDEX = 36;
+                        for(var i = IMAGE_START_INDEX * idx; i < IMAGE_START_INDEX * (idx+1) && i < win.sprites.length; i++ ){
                             var sprite = win.sprites[i];
+                            context.save()
+                            context.setTransform(dpr, 0, 0, dpr, 0, 0);
                             context.drawImage(image.image, sprite.spriteX, sprite.spriteY, sprite.width, sprite.height, win.posX + sprite.positionX, win.posY + sprite.positionY, sprite.width, sprite.height);
+                            context.restore();
                         }
                     } else {
+                        context.save()
+                        context.setTransform(dpr, 0, 0, dpr, 0, 0);
                         context.drawImage(image.image, win.posX + image.winContent.positionX, win.posY + image.winContent.positionY);
+                        context.restore();
                     }
                     image.image.onload = null;
                     image.image.src = '';
@@ -387,6 +399,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                         image.image.clearAttributes();
                     }
                 })
+                //return canvas;
             });
         }
 

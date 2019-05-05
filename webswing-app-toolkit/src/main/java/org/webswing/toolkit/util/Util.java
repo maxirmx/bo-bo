@@ -311,14 +311,23 @@ public class Util {
 		return json;
 	}
 
-	public static Map<String, Set<Rectangle>> postponeNonShowingAreas(Map<String, Set<Rectangle>> currentAreasToUpdate) {
+	public static Map<String, Set<Rectangle>> postponeNonShowingAreas(Map<String, Set<Rectangle>> currentAreasToUpdate, Map<String, Boolean> windowRendered) {
 		Map<String, Set<Rectangle>> forLaterProcessing = new HashMap<String, Set<Rectangle>>();
 		for (String windowId : currentAreasToUpdate.keySet()) {
-			WebWindowPeer ww = Util.findWindowPeerById(windowId);
-			if (ww != null) {
-				if (!((Window) ww.getTarget()).isShowing()) {
-					forLaterProcessing.put(windowId, currentAreasToUpdate.get(windowId));
+			if (WebToolkit.BACKGROUND_WINDOW_ID.equals(windowId)) {
+				continue;
+			}
+			if (Boolean.TRUE.equals(windowRendered.get(windowId))) {
+				WebWindowPeer ww = Util.findWindowPeerById(windowId);
+				if (ww != null) {
+					if (!((Window) ww.getTarget()).isShowing()) {
+						forLaterProcessing.put(windowId, currentAreasToUpdate.get(windowId));
+					}
 				}
+			}
+			// 本窗体还没有被绘制，延迟等到窗体绘制完成之后再将图像数据生成图片发给前台
+			else {
+				forLaterProcessing.put(windowId, currentAreasToUpdate.get(windowId));
 			}
 		}
 		for (String later : forLaterProcessing.keySet()) {

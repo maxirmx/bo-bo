@@ -315,6 +315,7 @@ public class WebComponentPeer implements ComponentPeer {
 						localSurfaceData.invalidate();
 					}
 				}
+				Util.getWebToolkit().getPaintDispatcher().notifyWindowReset(getGuid());
 				updateWindowDecorationImage();
 				repaintPeerTarget();
 			}
@@ -426,6 +427,7 @@ public class WebComponentPeer implements ComponentPeer {
 				}
 			}
 			WebToolkit.targetDisposedPeer(this.target, this);
+			Util.getWebToolkit().getPaintDispatcher().notifyWindowDisposed(getGuid());
 		}
 	}
 
@@ -594,7 +596,11 @@ public class WebComponentPeer implements ComponentPeer {
 	}
 
 	public void notifyWindowAreaRepainted(Rectangle r) {
+		if (r == null) {
+			r = getBounds();
+		}
 		Util.getWebToolkit().getPaintDispatcher().notifyWindowAreaRepainted(getGuid(), r);
+		Util.getWebToolkit().getPaintDispatcher().notifyWindowRendered(getGuid());
 	}
 
 }

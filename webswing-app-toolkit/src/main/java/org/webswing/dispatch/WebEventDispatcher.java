@@ -229,6 +229,7 @@ public class WebEventDispatcher {
 			if (buttons != 0 && event.getType() == MouseEventType.mousedown) {
 				Window w = (Window) (c instanceof Window ? c : SwingUtilities.windowForComponent(c));
 				WindowManager.getInstance().activateWindow(w, null, x, y, false, true, CausedFocusEvent.Cause.MOUSE_EVENT);
+				WindowManager.getInstance().flashTopModalDialog(w);
 			}
 			switch (event.getType()) {
 			case mousemove:

@@ -1,5 +1,18 @@
 package org.webswing.toolkit.extra;
 
+import org.webswing.common.WindowActionType;
+import org.webswing.dispatch.WebEventDispatcher;
+import org.webswing.dispatch.WebPaintDispatcher;
+import org.webswing.model.s2c.CursorChangeEventMsg;
+import org.webswing.toolkit.WebComponentPeer;
+import org.webswing.toolkit.WebDialogPeer;
+import org.webswing.toolkit.WebKeyboardFocusManagerPeer;
+import org.webswing.toolkit.WebToolkit;
+import org.webswing.toolkit.util.Services;
+import org.webswing.toolkit.util.Util;
+import sun.awt.CausedFocusEvent;
+
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Point;
@@ -10,20 +23,6 @@ import java.awt.event.WindowEvent;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.SwingUtilities;
-
-import org.webswing.common.WindowActionType;
-import org.webswing.dispatch.WebEventDispatcher;
-import org.webswing.dispatch.WebPaintDispatcher;
-import org.webswing.model.s2c.CursorChangeEventMsg;
-import org.webswing.toolkit.WebComponentPeer;
-import org.webswing.toolkit.WebKeyboardFocusManagerPeer;
-import org.webswing.toolkit.WebToolkit;
-import org.webswing.toolkit.util.Services;
-import org.webswing.toolkit.util.Util;
-
-import sun.awt.CausedFocusEvent;
 
 @SuppressWarnings("restriction")
 public class WindowManager {
@@ -144,6 +143,27 @@ public class WindowManager {
 		}
 		return success;
 
+	}
+
+    /**
+     * 当点击非模态Dialog内的区域时，为Dialog窗体增加闪烁效果<br>
+     * @author liuwen 00207214
+     * @since  iManager U2000 MSO, 2018年1月12日
+     * @param curSelectedWindow 当前选中对话框
+     */
+	public void flashTopModalDialog(Window curSelectedWindow)
+	{
+        // 当前顶部激活窗体为选中（鼠标点中）的窗体，不需要做进一步处理
+	    if(activeWindow.equals(curSelectedWindow))
+	    {
+	       return;
+	    }
+
+	    Object activeWindowPeer = WebToolkit.targetToPeer(activeWindow);
+	    if(activeWindowPeer instanceof WebDialogPeer)
+	    {
+	        ((WebDialogPeer) activeWindowPeer).flashWindow();
+	    }
 	}
 
 	private boolean isModal(Window w) {

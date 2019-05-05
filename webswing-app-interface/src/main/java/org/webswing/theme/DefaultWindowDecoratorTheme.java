@@ -197,14 +197,11 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 	}
 
 	@Override
-	public void paintWindowDecoration(Graphics g, Object window, int w, int h) {
-		Graphics2D g2 = (Graphics2D) g;
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+	public void paintWindowDecoration(Graphics g, Object window, int w, int h, boolean ... forceInactive) {
 
-		ImageSet is = (window != null && window.equals(WindowManager.getInstance().getActiveWindow())) ? active : inactive;
+        boolean isForceInactive = forceInactive.length > 0 ? forceInactive[0] : false;
+        ImageSet is = (isForceInactive || window == null
+                || !window.equals(WindowManager.getInstance().getActiveWindow())) ? inactive : active;
 
 		int xOffset = 0;
 		int yOffset = 0;

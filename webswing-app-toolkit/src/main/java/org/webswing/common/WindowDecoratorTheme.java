@@ -13,7 +13,7 @@ public interface WindowDecoratorTheme {
 
     Insets getInsets();
 
-    void paintWindowDecoration(Graphics g, Object window, int w, int h);
+    void paintWindowDecoration(Graphics g, Object window, int w, int h, boolean ... forceInactive);
 
     WindowActionType getAction(Window w, Point e);
 

@@ -180,7 +180,7 @@ public class WebComponentPeer implements ComponentPeer {
 	private int oldY;
 	private SurfaceData surfaceData;
 	OffScreenImage image;
-	private Image windowDecorationImage;
+	protected Image windowDecorationImage;
 	private LinkedList<WebComponentPeer> hwLayers = new LinkedList<WebComponentPeer>();
 	Image webImage; // directdraw
 	private Color background;

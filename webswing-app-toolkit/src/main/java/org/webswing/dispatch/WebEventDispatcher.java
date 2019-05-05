@@ -57,6 +57,8 @@ public class WebEventDispatcher {
 
 	private MouseEvent lastMouseEvent;
 	private MouseEvent lastMousePressEvent;
+	private long lastTime = 0;
+	private long intervalTime = 0;
 	private Point lastMousePosition = new Point();
 	private static final DndEventHandler dndHandler = new DndEventHandler();
 	private HashMap<String, String> uploadMap = new HashMap<String, String>();
@@ -299,6 +301,13 @@ public class WebEventDispatcher {
 
 	private int computeClickCount(int x, int y, int buttons, boolean isPressed) {
 		if (isPressed) {
+			long currentTime = System.currentTimeMillis();
+			intervalTime = currentTime - lastTime;
+			if(intervalTime>500){
+				lastTime=currentTime;
+				return 1;
+			}
+			lastTime=currentTime;
 			if (lastMousePressEvent != null && lastMousePressEvent.getID() == MouseEvent.MOUSE_CLICKED && lastMousePressEvent.getButton() == buttons && lastMousePressEvent.getX() == x && lastMousePressEvent.getY() == y) {
 				return lastMousePressEvent.getClickCount() + 1;
 			}

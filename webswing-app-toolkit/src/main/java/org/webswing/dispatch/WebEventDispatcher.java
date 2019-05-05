@@ -1,5 +1,33 @@
 package org.webswing.dispatch;
 
+import netscape.javascript.JSObject;
+import org.webswing.Constants;
+import org.webswing.model.MsgIn;
+import org.webswing.model.c2s.ConnectionHandshakeMsgIn;
+import org.webswing.model.c2s.CopyEventMsgIn;
+import org.webswing.model.c2s.KeyboardEventMsgIn;
+import org.webswing.model.c2s.MouseEventMsgIn;
+import org.webswing.model.c2s.MouseEventMsgIn.MouseEventType;
+import org.webswing.model.c2s.PasteEventMsgIn;
+import org.webswing.model.c2s.SimpleEventMsgIn;
+import org.webswing.model.c2s.UploadEventMsgIn;
+import org.webswing.model.c2s.UploadedEventMsgIn;
+import org.webswing.model.internal.OpenFileResultMsgInternal;
+import org.webswing.model.jslink.JSObjectMsg;
+import org.webswing.toolkit.WebClipboard;
+import org.webswing.toolkit.WebClipboardTransferable;
+import org.webswing.toolkit.WebDragSourceContextPeer;
+import org.webswing.toolkit.extra.DndEventHandler;
+import org.webswing.toolkit.extra.WindowManager;
+import org.webswing.toolkit.jslink.WebJSObject;
+import org.webswing.toolkit.util.DeamonThreadFactory;
+import org.webswing.toolkit.util.Logger;
+import org.webswing.toolkit.util.Services;
+import org.webswing.toolkit.util.Util;
+import sun.awt.CausedFocusEvent;
+
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.Component;
@@ -20,39 +48,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
-
-import org.webswing.Constants;
-import org.webswing.model.MsgIn;
-import org.webswing.model.c2s.ConnectionHandshakeMsgIn;
-import org.webswing.model.c2s.CopyEventMsgIn;
-import org.webswing.model.c2s.KeyboardEventMsgIn;
-import org.webswing.model.c2s.KeyboardEventMsgIn.KeyEventType;
-import org.webswing.model.c2s.MouseEventMsgIn;
-import org.webswing.model.c2s.MouseEventMsgIn.MouseEventType;
-import org.webswing.model.c2s.PasteEventMsgIn;
-import org.webswing.model.c2s.SimpleEventMsgIn;
-import org.webswing.model.c2s.UploadEventMsgIn;
-import org.webswing.model.c2s.UploadedEventMsgIn;
-import org.webswing.model.internal.OpenFileResultMsgInternal;
-import org.webswing.model.jslink.JSObjectMsg;
-import org.webswing.toolkit.WebClipboard;
-import org.webswing.toolkit.WebClipboardTransferable;
-import org.webswing.toolkit.WebDragSourceContextPeer;
-import org.webswing.toolkit.extra.DndEventHandler;
-import org.webswing.toolkit.extra.WindowManager;
-import org.webswing.toolkit.jslink.WebJSObject;
-import org.webswing.toolkit.util.DeamonThreadFactory;
-import org.webswing.toolkit.util.Logger;
-import org.webswing.toolkit.util.Services;
-import org.webswing.toolkit.util.Util;
-
-import netscape.javascript.JSObject;
-import sun.awt.CausedFocusEvent;
 
 @SuppressWarnings("restriction")
 public class WebEventDispatcher {
@@ -64,7 +62,23 @@ public class WebEventDispatcher {
 	private HashMap<String, String> uploadMap = new HashMap<String, String>();
 	private ExecutorService eventDispatcher = Executors.newSingleThreadExecutor(DeamonThreadFactory.getInstance());
 
-	//these keycodes are assigned to different keys in browser  
+	private static final Map<Integer, Integer> convertedKeyCodes = new HashMap<Integer, Integer>();
+	static {
+		convertedKeyCodes.put(45, 155);//	Insert
+		convertedKeyCodes.put(46, 127);//	Delete
+		convertedKeyCodes.put(189, 45);//	Minus
+		convertedKeyCodes.put(187, 61);//	Equals
+		convertedKeyCodes.put(219, 91);//	Open Bracket
+		convertedKeyCodes.put(221, 93);//	Close Bracket
+		convertedKeyCodes.put(186, 59);//	Semicolon
+		convertedKeyCodes.put(220, 92);//	Back Slash
+		convertedKeyCodes.put(226, 92);//	Back Slash
+		convertedKeyCodes.put(188, 44);//	Comma
+		convertedKeyCodes.put(190, 46);//	Period
+		convertedKeyCodes.put(191, 47);//	Slash
+	}
+
+	//these keycodes are assigned to different keys in browser
 	private static final List<Integer> nonStandardKeyCodes = Arrays.asList(KeyEvent.VK_KP_DOWN, KeyEvent.VK_KP_UP, KeyEvent.VK_KP_RIGHT, KeyEvent.VK_KP_LEFT);
 
 	public void dispatchEvent(final MsgIn event) {
@@ -171,12 +185,16 @@ public class WebEventDispatcher {
 			int type = Util.getKeyType(event.getType());
 			char character = Util.getKeyCharacter(event);
 			Component src = w.getFocusOwner() == null ? w : w.getFocusOwner();
+			// 此处为webswing的web转swing的特殊字符，整体上还缺很多，暂时规避对应关系如下:
+			// https://docs.oracle.com/javase/7/docs/api/constant-values.html#java.awt.event.KeyEvent.VK_DECIMAL
+			// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
 			if (event.getKeycode() == 13) {// enter keycode
 				event.setKeycode(10);
 				character = 10;
-			} else if (event.getKeycode() == 46 && type != KeyEvent.KEY_TYPED) {// delete keycode
-				event.setKeycode(127);
-				character = 127;
+			} else if (convertedKeyCodes.containsKey(event.getKeycode()) && type != KeyEvent.KEY_TYPED) {
+				int converted = convertedKeyCodes.get(event.getKeycode());
+				event.setKeycode(converted);
+				character = (char) converted;
 			} else if (nonStandardKeyCodes.contains(event.getKeycode())) {
 				event.setKeycode(0);
 			}
@@ -202,7 +220,7 @@ public class WebEventDispatcher {
 			{
 				WindowManager.getInstance().resetEventHandlerLock(false);
 				c = null;
-			}	
+			}
 		} else {
 			c = WindowManager.getInstance().getVisibleComponentOnPosition(event.getX(), event.getY());
 			if (lastMouseEvent != null && (lastMouseEvent.getID() == MouseEvent.MOUSE_DRAGGED || lastMouseEvent.getID() == MouseEvent.MOUSE_PRESSED) && ((event.getType() == MouseEventType.mousemove && event.getButton() == 1) || (event.getType() == MouseEventType.mouseup))) {

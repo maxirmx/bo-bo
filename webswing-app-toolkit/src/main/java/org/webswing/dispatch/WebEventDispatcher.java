@@ -238,6 +238,7 @@ public class WebEventDispatcher {
 				dispatchEventInSwing(c, e);
 				break;
 			case mouseup:
+				Logger.debug("webswing event : receive mouse up event");
 				id = MouseEvent.MOUSE_RELEASED;
 				boolean popupTrigger = (buttons == 3) ? true : false;
 				clickcount = computeClickCount(x, y, buttons, false);
@@ -255,6 +256,7 @@ public class WebEventDispatcher {
 				}
 				break;
 			case mousedown:
+				Logger.debug("webswing event : receive mouse down event");
 				id = MouseEvent.MOUSE_PRESSED;
 				clickcount = computeClickCount(x, y, buttons, true);
 				e = new MouseEvent(c, id, when, modifiers, x, y, event.getX(), event.getY(), clickcount, false, buttons);

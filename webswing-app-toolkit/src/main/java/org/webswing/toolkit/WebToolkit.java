@@ -122,9 +122,10 @@ public abstract class WebToolkit extends SunToolkit {
 				initDisplayMethod.setAccessible(true);
 				initDisplayMethod.invoke(null, false);
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			Logger.error("Failed to init X11 display: ", e.getMessage());
 		}
+
 	}
 
 	public void initSize(final Integer desktopWidth, final Integer desktopHeight) {
@@ -133,14 +134,19 @@ public abstract class WebToolkit extends SunToolkit {
 
 				@Override
 				public void run() {
-					initSize(desktopWidth, desktopHeight);
+					initSize(Math.max(1, desktopWidth), Math.max(1, desktopHeight));
 				}
 			});
+			return;
+		}
+		if((desktopWidth == screenWidth) && (desktopHeight == screenHeight))
+		{
+			return;
 		}
 		int oldWidht = screenWidth;
 		int oldHeight = screenHeight;
-		screenWidth = desktopWidth;
-		screenHeight = desktopHeight;
+		screenWidth = Math.max(1, desktopWidth);
+		screenHeight = Math.max(1, desktopHeight);
 		displayChanged();
 		resetGC();
 		Util.resetWindowsGC(screenWidth, screenHeight);

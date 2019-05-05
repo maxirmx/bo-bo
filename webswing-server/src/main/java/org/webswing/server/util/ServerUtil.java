@@ -67,7 +67,7 @@ public class ServerUtil {
 	public static String encode2Json(MsgOut m) {
 		try {
 			return mapper.writeValueAsString(m);
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			log.error("Json encoding object failed: " + m, e);
 			return null;
 		}

@@ -150,10 +150,10 @@ public class WindowManager {
 		return (w instanceof Dialog) && ((Dialog) w).isModal();
 	}
 
-	public void activateWindow(Window w, int x, int y) {
-		Component newFocusOwner = w.getFocusTraversalPolicy().getInitialComponent(w);
-		activateWindow(w, newFocusOwner, x, y, false, true, CausedFocusEvent.Cause.NATIVE_SYSTEM);
-	}
+    public void activateWindow(final Window w, final int x, final int y)
+    {
+        activateWindow(w, null, x, y, false, true, CausedFocusEvent.Cause.NATIVE_SYSTEM);
+    }
 
 	public Window getVisibleWindowOnPosition(int x, int y) {
 		Window positionWin = zorder.getVisibleWindowOnPosition(x, y);

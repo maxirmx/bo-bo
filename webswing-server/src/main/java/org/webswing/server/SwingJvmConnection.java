@@ -136,6 +136,7 @@ public class SwingJvmConnection implements MessageListener {
 						latest.setHeapSize(s.getHeapSize());
 						latest.setHeapSizeUsed(s.getHeapSizeUsed());
 					} else if (o instanceof ExitMsgInternal) {
+						log.info("SwingJvmConnection:onMessage() ExitMsgInternal");
 						close();
 						ExitMsgInternal e = (ExitMsgInternal) o;
 						webListener.kill(e.getWaitForExit());
@@ -144,11 +145,9 @@ public class SwingJvmConnection implements MessageListener {
 					webListener.sendToWeb((MsgOut) o);
 				}
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			log.error("SwingJvmConnection:onMessage", e);
-
 		}
-
 	}
 
 	public void close() {
@@ -166,7 +165,7 @@ public class SwingJvmConnection implements MessageListener {
 					jmsOpen = false;
 				}
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			log.error("SwingJvmConnection:close", e);
 		}
 		webListener.notifyExiting();

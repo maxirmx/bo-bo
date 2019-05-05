@@ -60,7 +60,6 @@ public class SwingInstance implements WebSessionListener {
 	private Date endedAt = null;
 	private String customArgs = "";
 	private int debugPort = 0;
-	private SwingProcess swing = null;
 
 	public SwingInstance(String instanceId, ConnectionHandshakeMsgIn h, SwingDescriptor config, AtmosphereResource resource) throws Exception {
 		this.instanceId = instanceId;
@@ -211,6 +210,7 @@ public class SwingInstance implements WebSessionListener {
 
 	public void kill(int delayMs) {
 		if (app != null) {
+			log.info("SwingInstance kill()" + delayMs);
 			app.destroy(delayMs);
 		}
 	}
@@ -219,6 +219,7 @@ public class SwingInstance implements WebSessionListener {
 		final Integer screenWidth = handshake.getDesktopWidth();
 		final Integer screenHeight = handshake.getDesktopHeight();
 		final StrSubstitutor subs = ServerUtil.getConfigSubstitutor(user, clientId, clientIp, handshake.getLocale(), customArgs);
+		SwingProcess swing = null;
 		try {
 			swing = new SwingProcess(clientId);
 			File homeDir = getHomeDir(appConfig, subs);
@@ -306,10 +307,13 @@ public class SwingInstance implements WebSessionListener {
 
 				@Override
 				public void onClose() {
+					log.info("SwingInstance start() CloseListener");
 					connection.close();
 				}
 			});
-		} catch (Exception e1) {
+		}
+		catch (Exception e1) {
+			log.error("SwingInstance start() exception");
 			connection.close();
 			throw new Exception(e1);
 		}
@@ -416,13 +420,6 @@ public class SwingInstance implements WebSessionListener {
 				}
 			}
 		}
-	}
-	
-	public boolean isAlive() {
-		if (swing != null) {
-			return swing.isAlive();
-		}
-		return false;
 	}
 
 }

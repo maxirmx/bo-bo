@@ -113,7 +113,7 @@ abstract public class AbstractAsyncManagedService implements AtmosphereHandler {
 				log.error("Unable to decode message: " + message);
 			}
 			StatUtils.logInboundData(SwingInstanceManager.getInstance().findInstance(instanceIdMap.get(r.uuid())), length);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			log.error("Exception while processing websocket message.", e);
 		}
 	}

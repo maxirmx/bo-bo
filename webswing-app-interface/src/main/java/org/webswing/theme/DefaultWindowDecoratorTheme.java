@@ -297,6 +297,11 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 			return ((Frame) o).getIconImage();
 		} else if (o instanceof Dialog) {
 			List<Image> images = ((Dialog) o).getIconImages();
+			if (images.size()==0){
+				if(((Dialog) o).getParent() instanceof Frame){
+					images = ((Frame)(((Dialog) o).getParent())).getIconImages();
+				}
+			}
 			if (images.size() > 0) {
 				return images.get(0);
 			}
@@ -310,7 +315,7 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 		Insets i = w.getInsets();
 
 		// Dialogs can be RESIZABLE too, at least on Linux/Unix
-		if ((w instanceof Dialog && ((Dialog) w).isResizable()) || (w instanceof Frame) && ((Frame) w).isResizable()) {
+		if ((w instanceof Frame) && ((Frame) w).isResizable()) {
 			if (SwingUtilities.isRectangleContainingRectangle(getHideRect(w), eventPoint)) {
 				return WindowActionType.minimize;
 			}

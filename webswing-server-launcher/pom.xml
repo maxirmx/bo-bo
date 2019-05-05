@@ -36,17 +36,5 @@
 	</dependencies>
 	<build>
 		<finalName>webswing-server-launcher</finalName>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-					<compilerArguments>
-						<bootclasspath>${basedir}/../lib/rt1.7.0_60.jar</bootclasspath>
-					</compilerArguments>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 </project>

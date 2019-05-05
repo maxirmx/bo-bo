@@ -61,7 +61,7 @@ public class WebDataTransfer extends DataTransferer {
     }
 
     @Override
-    protected Image platformImageBytesOrStreamToImage(InputStream paramInputStream, byte[] paramArrayOfByte, long paramLong) throws IOException {
+    protected Image platformImageBytesToImage(byte[] bytes, long l) throws IOException {
         return null;
     }
 

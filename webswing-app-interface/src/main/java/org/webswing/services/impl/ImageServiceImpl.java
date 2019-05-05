@@ -1,5 +1,16 @@
 package org.webswing.services.impl;
 
+import com.objectplanet.image.PngEncoder;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+import org.webswing.common.WindowDecoratorTheme;
+import org.webswing.ext.services.ImageService;
+import org.webswing.toolkit.util.DeamonThreadFactory;
+import org.webswing.toolkit.util.Logger;
+import org.webswing.toolkit.util.Util;
+
+import javax.imageio.ImageIO;
+import javax.imageio.spi.IIORegistry;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -9,19 +20,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
-
-import javax.imageio.ImageIO;
-import javax.imageio.spi.IIORegistry;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
-import org.webswing.common.WindowDecoratorTheme;
-import org.webswing.ext.services.ImageService;
-import org.webswing.toolkit.util.Logger;
-import org.webswing.toolkit.util.Util;
-import org.webswing.toolkit.util.DeamonThreadFactory;
-
-import com.objectplanet.image.PngEncoder;
 
 public class ImageServiceImpl implements ImageService {
 

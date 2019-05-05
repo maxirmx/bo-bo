@@ -32,11 +32,12 @@ import org.webswing.server.util.ServerUtil;
 import org.webswing.server.util.StatUtils;
 import org.webswing.server.util.exec.SwingProcess;
 import org.webswing.toolkit.WebToolkit;
-import org.webswing.toolkit.WebToolkit6;
-import org.webswing.toolkit.WebToolkit7;
+//TODO: to uncomment this after Webtoolkit 6 and 7 can compile
+//import org.webswing.toolkit.WebToolkit6;
+//import org.webswing.toolkit.WebToolkit7;
 import org.webswing.toolkit.WebToolkit8;
-import org.webswing.toolkit.ge.WebGraphicsEnvironment6;
-import org.webswing.toolkit.ge.WebGraphicsEnvironment7;
+//import org.webswing.toolkit.ge.WebGraphicsEnvironment6;
+//import org.webswing.toolkit.ge.WebGraphicsEnvironment7;
 import org.webswing.toolkit.ge.WebGraphicsEnvironment8;
 
 import main.Main;
@@ -231,7 +232,8 @@ public class SwingInstance implements WebSessionListener {
 			String webToolkitClass;
 			String webGraphicsEnvClass;
 			String javaVersion = subs.replace(appConfig.getJavaVersion());
-			if (javaVersion.startsWith("1.6")) {
+			//TODO: to uncomment this after Webtoolkit 6 and 7 can compile
+			/*if (javaVersion.startsWith("1.6")) {
 				webSwingToolkitJarPathSpecific = getClassPathForClass(WebToolkit6.class);
 				webToolkitClass = WebToolkit6.class.getCanonicalName();
 				webGraphicsEnvClass = WebGraphicsEnvironment6.class.getCanonicalName();
@@ -239,7 +241,8 @@ public class SwingInstance implements WebSessionListener {
 				webSwingToolkitJarPathSpecific = getClassPathForClass(WebToolkit7.class);
 				webToolkitClass = WebToolkit7.class.getCanonicalName();
 				webGraphicsEnvClass = WebGraphicsEnvironment7.class.getCanonicalName();
-			} else if (javaVersion.startsWith("1.8")) {
+			} else*/
+			if (javaVersion.startsWith("1.8")) {
 				webSwingToolkitJarPathSpecific = getClassPathForClass(WebToolkit8.class);
 				webToolkitClass = WebToolkit8.class.getCanonicalName();
 				webGraphicsEnvClass = WebGraphicsEnvironment8.class.getCanonicalName();

@@ -265,6 +265,12 @@ public class WebEventDispatcher {
 				clickcount = computeClickCount(x, y, buttons, false);
 				modifiers = modifiers & (((1 << 6) - 1) | (~((1 << 14) - 1)) | MouseEvent.CTRL_DOWN_MASK | MouseEvent.ALT_DOWN_MASK | MouseEvent.SHIFT_DOWN_MASK | MouseEvent.META_DOWN_MASK);
 				e = new MouseEvent(c, id, when, modifiers, x, y, event.getX(), event.getY(), clickcount, popupTrigger, buttons);
+				if(event.getButton() == 0 && event.getX() == -1 && event.getY() == -1 && event.getType() == MouseEventType.mouseup)
+				{
+					Logger.debug("Event handling for mouse release event");
+					dispatchEventInSwing(c, e);
+					break;
+				}
 				dispatchEventInSwing(c, e);
 				if (lastMousePressEvent != null && lastMousePressEvent.getX() == x && lastMousePressEvent.getY() == y) {
 					e = new MouseEvent(c, MouseEvent.MOUSE_CLICKED, when, modifiers, x, y, event.getX(), event.getY(), clickcount, popupTrigger, buttons);
@@ -429,6 +435,12 @@ public class WebEventDispatcher {
 			w.setCursor(w.getCursor());// force cursor update
 		}
 		if ((Util.isWindowDecorationEvent(w, e) || WindowManager.getInstance().isLockedToWindowDecorationHandler()) && e instanceof MouseEvent) {
+			//把客户端放到在webswing里面后，不处理顶层窗口(MDIFrame)的拖放事件，避免MDIFrame窗口被拖动到其他位置，但其他内部窗口的拖动则不受影响。
+			if ((w.getParent()==null) && e.getID()== MouseEvent.MOUSE_DRAGGED){
+
+				WindowManager.getInstance().resetEventHandlerLock(false);
+				return;
+			}
 			Logger.debug("WebEventDispatcher.dispatchEventInSwing:windowManagerHandle", e);
 			WindowManager.getInstance().handleWindowDecorationEvent(w, (MouseEvent) e);
 		} else if (dndHandler.isDndInProgress() && (e instanceof MouseEvent || e instanceof KeyEvent)) {

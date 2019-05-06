@@ -19,8 +19,10 @@ import org.webswing.toolkit.WebWindowPeer;
 import org.webswing.toolkit.extra.WebRepaintManager;
 import org.webswing.toolkit.extra.WindowManager;
 import org.webswing.toolkit.util.DeamonThreadFactory;
+import org.webswing.toolkit.util.ImageComparator;
 import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Services;
+import org.webswing.toolkit.util.SubImage;
 import org.webswing.toolkit.util.Util;
 
 import javax.swing.JFileChooser;
@@ -124,15 +126,19 @@ public class WebPaintDispatcher {
 					if (Util.isDD()) {
 						Util.encodeWindowWebImages(windowWebImages, json);
 					} else {
-						Logger.trace("contentSender:pngEncodingStart", json.hashCode());
-						Util.encodeWindowImages(windowImages, json);
+						//Util.encodeWindowImages(windowImages, json);
+						Map<String, Set<SubImage>> partials = ImageComparator.updateWindowImages(windowImages, previousWindowImages, json);
+
 						Logger.trace("contentSender:pngEncodingDone", json.hashCode());
+						// draw partial changes to the buffer for next comaprision
+						ImageComparator.mergePartials(previousWindowImages, partials, json);
+
 					}
 					Services.getConnectionService().sendObject(json);
 					Logger.trace("frame processed "+ (new Date().getTime()-start)+"ms");
 
 				} catch (Exception e) {
-					Logger.error("contentSender:error", e);
+//					Logger.error("contentSender:error", e);
 				}
 			}
 

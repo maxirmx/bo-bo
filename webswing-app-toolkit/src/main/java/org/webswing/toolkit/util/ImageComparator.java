@@ -159,9 +159,7 @@ public class ImageComparator {
 					g2d.setBackground(new Color(0,0,0,0));
 					g2d.setComposite(AlphaComposite.SrcOver);
 					g2d.clearRect(0, 0, TEX_EDGE, TEX_EDGE);
-					Iterator<SubImage> itr = imageMap.iterator();
-					while(itr.hasNext()) {
-						SubImage subImg = itr.next();
+					for(SubImage subImg : imageMap) {
 						flush = true;
 						Rectangle r = subImg.getCoordinates();
 						if (r.width < window.getWidth() && r.height < window.getHeight()) {
@@ -176,18 +174,16 @@ public class ImageComparator {
 							spriteList.add(content);
 							
 							g2d.drawImage(subImg.getImage(), atlas_x*SQ, atlas_y*SQ, null);
-							if(itr.hasNext()) {
-								if(atlas_x < 5) {
-									atlas_x += 1;
-								} else if (atlas_y < 5){
-									atlas_x = 0;
-									atlas_y += 1;
-								} else {
-									flush(partialContentList, atlas_y, atlas_x, spriteImg);
-									flush = false;
-									atlas_x = 0;
-									atlas_y = 0;
-								}
+							if(atlas_x < 5) {
+								atlas_x += 1;
+							} else if (atlas_y < 5){
+								atlas_x = 0;
+								atlas_y += 1;
+							} else {
+								flush(partialContentList, atlas_y, atlas_x, spriteImg);
+								flush = false;
+								atlas_x = 0;
+								atlas_y = 0;
 							}
 						} else {
 							reset = true;

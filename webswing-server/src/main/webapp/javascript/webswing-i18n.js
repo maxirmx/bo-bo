@@ -1,6 +1,5 @@
 define([], function () {
     'use strict';
-
     var getCookie = function (name) {
         var value = "; " + document.cookie;
         var parts = value.split("; " + name + "=");
@@ -94,4 +93,6 @@ define([], function () {
             "logout": "登出"
         }
     };
+    return {get: get}
+
 });

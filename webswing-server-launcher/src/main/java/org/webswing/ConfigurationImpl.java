@@ -32,6 +32,7 @@ public class ConfigurationImpl extends Configuration {
 	private String usersFile;
 
 	private String allowedCorsOrigins;
+	private String jmsUrl;
 
 	public static Configuration parse(String[] args) {
 		ConfigurationImpl cimpl = (ConfigurationImpl) Configuration.getInstance();
@@ -136,10 +137,13 @@ public class ConfigurationImpl extends Configuration {
 		setHttps(Boolean.parseBoolean(prop.getProperty("org.webswing.server.https")));
 		setHttpsPort(prop.getProperty("org.webswing.server.https.port"));
 		setTruststore(prop.getProperty("org.webswing.server.https.truststore"));
-		setTruststorePassword(prop.getProperty("org.webswing.server.https.truststore.password"));
+		setTruststorePassword(String.valueOf(prop.getProperty("org.webswing.server.https.truststore.password").toCharArray()));
 		setKeystore(prop.getProperty("org.webswing.server.https.keystore"));
-		setKeystorePassword(prop.getProperty("org.webswing.server.https.keystore.password"));
+		setKeystorePassword(String.valueOf(prop.getProperty("org.webswing.server.https.keystore.password").toCharArray()));
 		setAllowedCorsOrigins(prop.getProperty("org.webswing.server.allowedCorsOrigins"));
+		if (null != prop.getProperty("org.webswing.jmsUrl")) {
+			setJmsUrl(prop.getProperty("org.webswing.jmsUrl"));
+		}
 	}
 
 	public String getHost() {
@@ -237,6 +241,15 @@ public class ConfigurationImpl extends Configuration {
 	public void setAllowedCorsOrigins(String allowedCorsOrigins) {
 		this.allowedCorsOrigins = allowedCorsOrigins;
 	}
+
+	public String getJmsUrl() {
+		return jmsUrl;
+	}
+
+	public void setJmsUrl(String jmsUrl) {
+		this.jmsUrl = jmsUrl;
+	}
+
 
 	@Override
 	public String toString() {

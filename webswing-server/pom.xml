@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>org.atmosphere.client</groupId>
 			<artifactId>javascript</artifactId>
-			<version>2.3.1</version>
+			<version>${atmosphere.js.version}</version>
 			<type>war</type>
 		</dependency>
 
@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>org.atmosphere</groupId>
 			<artifactId>atmosphere-runtime</artifactId>
-			<version>2.3.6</version>
+			<version>${atmosphere.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
@@ -51,11 +51,12 @@
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson.mapper.asl}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-broker</artifactId>
-			<version>5.13.3</version>
+			<version>${activemq.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
@@ -68,34 +69,36 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.6</version>
 		</dependency>
+
+
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-web</artifactId>
-			<version>1.2.3</version>
+			<version>${shiro.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-collections</groupId>
+					<artifactId>commons-collections</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
-			<version>2.5.0</version>
+			<version>${protobuf.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
-			<version>2.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
@@ -129,6 +132,47 @@
 			<artifactId>webswing-app-toolkit-java8</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+			<artifactId>hk2-api</artifactId>
+			<version>${glassfish.hk2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+			<artifactId>hk2-utils</artifactId>
+			<version>${glassfish.hk2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+			<artifactId>hk2-locator</artifactId>
+			<version>${glassfish.hk2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<!-- log4j2.x end -->
 	</dependencies>
 
 	<build>
@@ -219,7 +263,7 @@
 						WEB-INF/lib/slf4j-simple-*.jar,
 						WEB-INF/lib/freehep-*.jar,
 						WEB-INF/lib/webswing-directdraw-swing-*.jar,
-						WEB-INF/lib/lz4-*.jar
+						WEB-INF/lib/websocket*jar
 					</packagingExcludes>
 					<archive>
 						<manifest>
@@ -265,7 +309,7 @@
 						<configuration>
 							<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/server-lib</outputDirectory>
 							<includeArtifactIds>
-								webswing-app-toolkit,webswing-server-launcher,commons-cli,jetty-webapp,jetty-security,jetty-websocket,jetty-xml,jetty-servlet,jetty-server,jetty-continuation,jetty-http,jetty-io,jetty-util,javax.servlet,jetty-jmx
+								webswing-app-toolkit,webswing-server-launcher,commons-cli,jetty-webapp,jetty-security,jetty-servlets,jetty-websocket,jetty-xml,jetty-servlet,jetty-server,jetty-continuation,jetty-http,jetty-io,jetty-util,javax.servlet,jetty-jmx,baseutil
 							</includeArtifactIds>
 						</configuration>
 					</execution>
@@ -352,9 +396,9 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.mortbay.jetty</groupId>
+						<groupId>org.eclipse.jetty</groupId>
 						<artifactId>jetty-maven-plugin</artifactId>
-						<version>8.1.14.v20131031</version>
+						<version>${jetty.version}</version>
 						<executions>
 							<execution>
 								<goals>
@@ -362,15 +406,20 @@
 								</goals>
 								<phase>package</phase>
 								<configuration>
-									<scanIntervalSeconds>5</scanIntervalSeconds>
+									<jettyXml>${project.basedir}/src/test/resources/jetty.xml</jettyXml>
+									<reload>manual</reload>
 									<webApp>
 										<contextPath>/</contextPath>
-										<defaultsDescriptor>${project.basedir}/src/test/webapp/WEB-INF/jetty-maven-plugin-webdefault.xml</defaultsDescriptor>
 										<resourceBases>
 											<resourceBase>${project.basedir}/src/main/webapp</resourceBase>
 											<resourceBase>${project.basedir}/src/test/webapp</resourceBase>
+											<resourceBase>${project.basedir}/../webswing-directdraw/webswing-directdraw-server/src/main/webapp</resourceBase>
 											<resourceBase>${project.basedir}/../webswing-admin/src/main/webapp</resourceBase>
 										</resourceBases>
+										<webInfIncludeJarPattern>^$</webInfIncludeJarPattern>
+										<_initParams>
+											<org.eclipse.jetty.servlet.Default.useFileMappedBuffer>false</org.eclipse.jetty.servlet.Default.useFileMappedBuffer>
+										</_initParams>
 									</webApp>
 									<systemProperties>
 										<force>true</force>

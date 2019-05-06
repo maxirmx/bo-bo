@@ -26,9 +26,9 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.SystemUtils;
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.shiro.subject.Subject;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;

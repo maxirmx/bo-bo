@@ -6,7 +6,7 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.util.Date;
 
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.text.StrSubstitutor;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

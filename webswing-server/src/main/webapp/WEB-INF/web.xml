@@ -36,6 +36,10 @@
 			<param-value>org.webswing.server.handler</param-value>
 		</init-param>
 		<init-param>
+			<param-name>org.atmosphere.cpr.annotation.useBytecodeProcessor</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
 			<param-name>org.atmosphere.websocket.bufferSize</param-name>
 			<param-value>1048576</param-value>
 		</init-param>

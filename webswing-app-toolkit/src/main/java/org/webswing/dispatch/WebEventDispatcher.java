@@ -435,12 +435,6 @@ public class WebEventDispatcher {
 			w.setCursor(w.getCursor());// force cursor update
 		}
 		if ((Util.isWindowDecorationEvent(w, e) || WindowManager.getInstance().isLockedToWindowDecorationHandler()) && e instanceof MouseEvent) {
-			//把客户端放到在webswing里面后，不处理顶层窗口(MDIFrame)的拖放事件，避免MDIFrame窗口被拖动到其他位置，但其他内部窗口的拖动则不受影响。
-			if ((w.getParent()==null) && e.getID()== MouseEvent.MOUSE_DRAGGED){
-
-				WindowManager.getInstance().resetEventHandlerLock(false);
-				return;
-			}
 			Logger.debug("WebEventDispatcher.dispatchEventInSwing:windowManagerHandle", e);
 			WindowManager.getInstance().handleWindowDecorationEvent(w, (MouseEvent) e);
 		} else if (dndHandler.isDndInProgress() && (e instanceof MouseEvent || e instanceof KeyEvent)) {

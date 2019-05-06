@@ -1,18 +1,7 @@
 package org.webswing.toolkit.util;
 
 import java.applet.Applet;
-import java.awt.AWTEvent;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Panel;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -344,7 +333,7 @@ public class Util {
 	}
 
 	public static boolean isWindowDecorationPosition(Window w, Point locationOnScreen) {
-		if (w != null && locationOnScreen != null) {
+		if (w != null && locationOnScreen != null && !isWindowUndecorated(w)) {
 			Rectangle inner = w.getBounds();
 			Insets i = w.getInsets();
 			inner.x = i.left;
@@ -595,4 +584,12 @@ public class Util {
 		return e;
 	}
 
+	private static boolean isWindowUndecorated(Window w) {
+		if (w instanceof Frame) {
+			return ((Frame) w).isUndecorated();
+		} else if (w instanceof Dialog) {
+			return ((Dialog) w).isUndecorated();
+		}
+		return false;
+	}
 }

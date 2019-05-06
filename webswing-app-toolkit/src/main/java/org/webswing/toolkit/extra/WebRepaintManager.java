@@ -37,7 +37,7 @@ public class WebRepaintManager extends RepaintManager {
 	}
 
 	@Override
-	public void addDirtyRegion(JComponent c, int x, int y, int w, int h) {
+	public void addDirtyRegion(final JComponent c, final int x, final int y, final int w, final int h) {
 		addDirtyRegionPrivate(c, x, y, w, h);
 	}
 
@@ -83,8 +83,28 @@ public class WebRepaintManager extends RepaintManager {
 
 	public void process() {
 		synchronized (delegate) {
+			if (!dirty.isEmpty()) {
+				// 将当前积累的脏区域交由delegate进行合并,并启动绘制
+				// 注意一定要将脏区域提交放到EDT里，因为一个事件（比如鼠标点击菜单并会触发菜单小时以及对话框弹出）会提交很多脏区域，而addDirtyRegion是在EDT里
+				// 但是process方法是在33ms的另外一个线程，两个线程并发，如果提交到delegate脏区域只包含部分脏区域，导致多出一张图片的问题
+				SwingUtilities.invokeLater(new Runnable() {
+
+					@Override
+					public void run() {
+						addDirtyRegionToDelegate();
+					}
+				});
+			}
+		}
+	}
+
+	private void addDirtyRegionToDelegate() {
+		synchronized (delegate) {
 			for (Container c : dirty.keySet()) {
 				Rectangle r = dirty.get(c);
+				if (r == null) {
+					r = new Rectangle(0, 0, 0, 0);
+				}
 				if (c instanceof JComponent) {
 					Panel p = Util.findHwComponentParent((JComponent) c);
 					if (p != null) {
@@ -92,12 +112,18 @@ public class WebRepaintManager extends RepaintManager {
 							delegate.addDirtyRegion((JComponent) chld, 0, 0, chld.getWidth(), chld.getHeight());
 						}
 					} else {
-						delegate.addDirtyRegion((JComponent) c, r.x, r.y, r.width, r.height);
+						if (r != null) {
+							delegate.addDirtyRegion((JComponent) c, r.x, r.y, r.width, r.height);
+						}
 					}
 				} else if (c instanceof Window) {
-					delegate.addDirtyRegion((Window) c, r.x, r.y, r.width, r.height);
+					if (r != null) {
+						delegate.addDirtyRegion((Window) c, r.x, r.y, r.width, r.height);
+					}
 				} else if (c instanceof Applet) {
-					delegate.addDirtyRegion((Applet) c, r.x, r.y, r.width, r.height);
+					if (r != null) {
+						delegate.addDirtyRegion((Applet) c, r.x, r.y, r.width, r.height);
+					}
 				}
 			}
 			dirty.clear();

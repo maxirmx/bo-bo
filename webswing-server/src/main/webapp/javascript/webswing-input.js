@@ -1,5 +1,6 @@
 define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
     "use strict";
+    var prepos;
 
     return function InputModule() {
         var module = this;
@@ -108,6 +109,11 @@ define([ 'jquery', 'webswing-util' ], function amdFactory($, util) {
             }, false);
             util.bindEvent(canvas, 'mousemove', function(evt) {
                 var mousePos = getMousePos(canvas, evt, 'mousemove');
+                if (prepos && prepos.mouse.x == mousePos.mouse.x && prepos.mouse.y == mousePos.mouse.y) {
+                    return false;
+                }
+
+                prepos = mousePos;
                 mousePos.mouse.button = mouseDown;
                 latestMouseMoveEvent = mousePos;
                 return false;

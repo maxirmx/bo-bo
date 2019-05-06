@@ -76,6 +76,7 @@ public class SwingJvmConnection implements MessageListener {
 							consumer.close();
 							producer.close();
 							session.close();
+							connection.setExceptionListener(null);
 							connection.close();
 							jmsOpen = false;
 						}
@@ -158,9 +159,18 @@ public class SwingJvmConnection implements MessageListener {
 					producer.close();
 					session.close();
 				} finally {
-					((ActiveMQConnection) connection).destroyDestination((ActiveMQDestination) consumerQueue);
-					((ActiveMQConnection) connection).destroyDestination((ActiveMQDestination) consumerQueue);
-					webListener.sendToWeb(SimpleEventMsgOut.shutDownNotification.buildMsgOut());
+					try {
+						((ActiveMQConnection) connection).destroyDestination((ActiveMQDestination) consumerQueue);
+						((ActiveMQConnection) connection).destroyDestination((ActiveMQDestination) producerQueue);
+						webListener.sendToWeb(SimpleEventMsgOut.shutDownNotification.buildMsgOut());
+					} catch (Exception e1) {
+						log.error("SwingJvmConnection:close()e1", e1);
+					}
+					try {
+						connection.setExceptionListener(null);
+					} catch (Exception e2) {
+						log.error("SwingJvmConnection:close()e2", e2);
+					}
 					connection.close();
 					jmsOpen = false;
 				}

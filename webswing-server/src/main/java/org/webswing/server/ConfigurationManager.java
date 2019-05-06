@@ -1,15 +1,5 @@
 package org.webswing.server;
 
-import java.io.File;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -25,6 +15,18 @@ import org.webswing.model.server.admin.UserConfiguration;
 import org.webswing.server.handler.JmsService;
 import org.webswing.server.util.ServerUtil;
 
+import java.io.File;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ConfigurationManager {
 
 	private static final Logger log = LoggerFactory.getLogger(ConfigurationManager.class);
@@ -35,6 +37,7 @@ public class ConfigurationManager {
 	private WebswingConfiguration liveConfiguration = new WebswingConfiguration();
 	private List<ConfigurationChangeListener> changeListeners = new ArrayList<ConfigurationChangeListener>();
 	private long configFileLastModified = -1;
+	private final Object configFileLock = new Object();
 
 	private ConfigurationManager() {
 		reloadConfiguration();
@@ -108,19 +111,30 @@ public class ConfigurationManager {
 	}
 
 	public void applyApplicationConfiguration(WebswingConfiguration content) throws Exception {
-		if (content != null && !EqualsBuilder.reflectionEquals(liveConfiguration, content)) {
-			backupApplicationConfiguration(liveConfiguration);
-			File config = getConfigFile();
-			mapper.writerWithDefaultPrettyPrinter().writeValue(config, content);
-			reloadConfiguration();
-			notifyChange();
-		}
+
+		synchronized (configFileLock) {
+            if (content != null && !EqualsBuilder.reflectionEquals(liveConfiguration, content)) {
+                backupApplicationConfiguration(liveConfiguration);
+
+                File config = getConfigFile();
+                mapper.writerWithDefaultPrettyPrinter().writeValue(config, content);
+
+                reloadConfiguration();
+
+                notifyChange();
+            }
+        }
 	}
 
 	public void applyUserProperties(UserConfiguration content) throws Exception {
 		File usersFile = new File(URI.create(ServerUtil.getUserPropsFileName()));
 		FileUtils.writeByteArrayToFile(usersFile, content.getUsers().getBytes());
 		notifyChange();
+	}
+
+	public static String formatDate(Date date) {
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HHmmss");
+		return format.format(date);
 	}
 
 	private void backupApplicationConfiguration(WebswingConfiguration configuration) throws Exception {
@@ -134,14 +148,14 @@ public class ConfigurationManager {
 			}
 			if (backup.getBackupMap().size() >= MAX_BACKUP_HISTORY) {
 				// removeLast
-				List<Date> dates = new ArrayList<Date>(backup.getBackupMap().keySet());
+				List<String> dates = new ArrayList<>(backup.getBackupMap().keySet());
 				Collections.sort(dates);
 				backup.getBackupMap().remove(dates.get(dates.size() - 1));
 			}
-			backup.getBackupMap().put(new Date(), configuration);
+			backup.getBackupMap().put(formatDate(new Date()), configuration);
 		} else {
 			backup = new WebswingConfigurationBackup();
-			backup.getBackupMap().put(new Date(), configuration);
+			backup.getBackupMap().put(formatDate(new Date()), configuration);
 		}
 		mapper.writerWithDefaultPrettyPrinter().writeValue(backupFile, backup);
 	}
@@ -182,14 +196,16 @@ public class ConfigurationManager {
 
 	private WebswingConfiguration loadApplicationConfiguration() {
 		try {
-			WebswingConfiguration result = new WebswingConfiguration();
-			File config = getConfigFile();
-			if (config.exists()) {
-				result = mapper.readValue(config, WebswingConfiguration.class);
-				return result;
-			} else {
-				log.error("Configuration file " + config.getPath() + " does not exist!");
-				return null;
+			synchronized (configFileLock){
+                WebswingConfiguration result = new WebswingConfiguration();
+                File config = getConfigFile();
+                if (config.exists()) {
+                    result = mapper.readValue(config, WebswingConfiguration.class);
+                    return result;
+                } else {
+                    log.error("Configuration file " + config.getPath() + " does not exist!");
+                    return null;
+                }
 			}
 		} catch (Exception e) {
 			log.error("Failed to load configuration file:", e);
@@ -221,7 +237,15 @@ public class ConfigurationManager {
 			System.setProperty(configFile, Constants.CONFIG_FILE_PATH);
 		}
 		configFile = backup ? configFile + ".backup" : configFile;
-		File config = new File(URI.create(configFile));
+		File config = null;
+
+		try {
+		    config = new File(URI.create(configFile));
+		}
+		catch (IllegalArgumentException e) {
+		    //java.lang.IllegalArgumentException: URI is not absolute case
+		    config = new File(configFile);
+		}
 		return config;
 	}
 

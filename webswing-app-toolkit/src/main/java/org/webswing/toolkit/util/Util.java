@@ -193,7 +193,9 @@ public class Util {
 				Map<Integer, BufferedImage> imageMap = new HashMap<Integer, BufferedImage>();
 				for (int i = 0; i < window.getContent().size(); i++) {
 					WindowPartialContentMsg wpc = window.getContent().get(i);
-					imageMap.put(i, w.extractBufferedImage(new Rectangle(wpc.getPositionX(), wpc.getPositionY(), wpc.getWidth(), wpc.getHeight())));
+					Rectangle subRec = new Rectangle(wpc.getPositionX(), wpc.getPositionY(), wpc.getWidth(), wpc.getHeight());
+					Rectangle parentRec = new Rectangle(window.getPosX(), window.getPosY(), window.getWidth(), window.getHeight());
+					imageMap.put(i, w.extractBufferedImage(subRec, parentRec));
 				}
 				windowImages.put(window.getId(), imageMap);
 			}

@@ -75,14 +75,90 @@ public class WebComponentPeer implements ComponentPeer {
 		return guid;
 	}
 
-	public BufferedImage extractBufferedImage(Rectangle sub) {
+	public BufferedImage extractBufferedImage(Rectangle sub, Rectangle parent) {
+    	Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+    	int gw = (int) screensize.getWidth();
+    	int gh = (int) screensize.getHeight();
+    	int x1 = parent.x, y1 = parent.y, w1 = parent.width, h1 = parent.height;
+    	int x2 = sub.x, y2 = sub.y, w2 = sub.width, h2 = sub.height;
+    	int x = sub.x, y = sub.y, w = sub.width, h = sub.height;
+    	boolean cx1 = x1 >= 0;
+    	boolean cx2 = x1 + w1 <= gw;
+    	boolean cx3 = x1 + x2 >= 0;
+    	boolean cx4 = x1 + x2 + w2 <= gw;
+
+    	if (cx1) {
+    		if (!cx2) {
+    			if (cx3) {
+    				if (!cx4) {
+    					x = x2;
+    					w = gw - x1 - x2;
+    				}
+    			}
+    		}
+    	} else {
+    		if (cx2) {
+    			if (!cx3) {
+    				if (cx4) {
+    					x = -x1;
+    					w = x2 + w2 + x1;
+    				}
+    			}
+    		} else {
+    			if (!cx3) {
+    				if (cx4) {
+    					x = -x1;
+    					w = x2 + w2 + x1;
+    				} else {
+    					x = -x1;
+    					w = gw;
+    				}
+    			}
+    		}
+    	}
+
+    	boolean cy1 = y1 >= 0;
+    	boolean cy2 = y1 + h1 <= gh;
+    	boolean cy3 = y1 + y2 >= 0;
+    	boolean cy4 = y1 + y2 + h2 <= gh;
+
+    	if (cy1) {
+    		if (!cy2) {
+    			if (cy3) {
+    				if (!cy4) {
+    					y = y2;
+    					h = gh - y1 - y2;
+    				}
+    			}
+    		}
+    	} else {
+    		if (cy2) {
+    			if (!cy3) {
+    				if (cy4) {
+    					y = -y1;
+    					h = y2 + h2 + y1;
+    				}
+    			}
+    		} else {
+    			if (!cy3) {
+    				if (cy4) {
+    					y = -y1;
+    					h = y2 + h2 + y1;
+    				} else {
+    					y = -y1;
+    					h = gh;
+    				}
+    			}
+    		}
+    	}
+
 		if (safeImage == null || safeImage.getHeight() != image.getHeight() || safeImage.getWidth() != image.getWidth()) {
 			safeImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		}
-		int x1 = sub.x;
-		int y1 = sub.y;
-		int x2 = sub.x + sub.width;
-		int y2 = sub.y + sub.height;
+		x1 = x;
+		y1 = y;
+		x2 = x + w;
+		y2 = y + h;
 		if (isInitialized()) {
 			Graphics2D g = (Graphics2D) safeImage.getGraphics();
 			g.setBackground(new Color(0, 0, 0, 0));

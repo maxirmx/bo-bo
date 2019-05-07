@@ -55,7 +55,6 @@ define([], function () {
             "copyFailed": "Copy failed",
             "webswingError": "Failed to connect to the Webswing server.",
             "retry": "Retry",
-            "logout": "Logout"
         },
         "zh-cn": {
             "uploadfile": "上传文件",
@@ -90,7 +89,6 @@ define([], function () {
             "copyFailed": "拷贝失败",
             "webswingError": "连接Webswing服务器失败。",
             "retry": "重试",
-            "logout": "登出"
         }
     };
     return {get: get}

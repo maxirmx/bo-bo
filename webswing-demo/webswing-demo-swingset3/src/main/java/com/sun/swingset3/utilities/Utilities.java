@@ -39,7 +39,6 @@ import java.awt.Transparency;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.net.URL;
-import javax.jnlp.ServiceManager;
 import javax.swing.SwingConstants;
 
 /**
@@ -52,10 +51,6 @@ public class Utilities {
         // never instantiate
     }
     
-    public static boolean runningFromWebStart() {
-        return ServiceManager.getServiceNames() != null;        
-    }
-
     public static String getURLFileName(URL url) {
         String path = url.getPath();
         return path.substring(path.lastIndexOf("/") + 1);

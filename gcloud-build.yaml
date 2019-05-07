@@ -4,7 +4,7 @@ steps:
   - name: 'gcr.io/cloud-builders/gsutil'
     args: ['cp', 'gs://webswing-build-resources/*', '.']
   #build
-  - name: 'maven:3'
+  - name: 'maven:3-jdk-8'
     entrypoint: '/bin/sh'
     args: ['-c','apt-get update && apt-get install -y openjfx && cp mvnsettings.xml / && mvn -s /mvnsettings.xml -B -Pbuild,release install']
   #Save the build result to cloud

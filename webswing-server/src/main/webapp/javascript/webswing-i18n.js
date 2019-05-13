@@ -1,27 +1,27 @@
-define([], function () {
-    'use strict';
-    var getCookie = function (name) {
+export default class i18n {
+	static getCookie(name) {
         var value = "; " + document.cookie;
         var parts = value.split("; " + name + "=");
         if (parts.length === 2) {
             return parts.pop().split(";").shift();
         }
         return 'en-us';
-    };
-
-    var get = function () {
-        var temp = getCookie('locale');
+    }
+	
+	static get() {
+		var temp = i18n.getCookie('locale');
         var language = temp ? temp : 'en-us';
         var labelSplit = arguments[0].split('.'),
             lastWord = [labelSplit[labelSplit.length - 1]];
-        var _translate = javaClientLocale[language][lastWord];
+        var _translate = i18n.javaClientLocale[language][lastWord];
         if (arguments[1] && arguments[1].pop && arguments[1].length === 2) {
             return _translate + ' ' + arguments[1][0] + '~' + arguments[1][1];
         }
         return _translate;
     }
+}
 
-    var javaClientLocale = {
+i18n.javaClientLocale = {
         "en-us": {
             "uploadfile": "Upload files",
             "downloadSelected": "Download",
@@ -90,7 +90,5 @@ define([], function () {
             "webswingError": "连接Webswing服务器失败。",
             "retry": "重试",
         }
-    };
-    return {get: get}
+};    
 
-});

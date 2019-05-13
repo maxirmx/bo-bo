@@ -24,8 +24,8 @@
 			<version>${activemq.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
+			<groupId>com.fasterxml.jackson.core</groupId>
+  			<artifactId>jackson-databind</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>

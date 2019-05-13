@@ -1,14 +1,20 @@
-define(['jquery', 'text!templates/upload.html', 'text!templates/upload.css', 'jquery.iframe-transport', 'jquery.fileupload'], function amdFactory($, html, css) {
-    "use strict";
-    var style = $("<style></style>", {
-        type: "text/css"
-    });
-    style.text(css);
-    $("head").prepend(style);
+import $ from 'jquery';
+import html from './templates/upload.html';
+import css from './templates/upload.css';
+import i18n from './webswing-i18n';
+window.jQuery = require('jquery');
+require('blueimp-file-upload');
 
-    return function FilesModule() {
-        var module = this;
-        var api;
+export default class FilesModule {   
+    constructor() {
+		let style = $("<style></style>", {
+            type: "text/css"
+        });
+        style.text(css);
+        $("head").prepend(style);
+	
+        let module = this;
+        let api;
         module.injects = api = {
             cfg: 'webswing.config',
             send: 'socket.send'
@@ -21,13 +27,13 @@ define(['jquery', 'text!templates/upload.html', 'text!templates/upload.css', 'jq
             print: print
         };
 
-        var jqXHR_fileupload = [];
-        var doneFileList = [];
-        var timeout;
-        var errorTimeout;
-        var uploadBar, fileDialogTransferBarClientId, fileDialogErrorMessage;
-        var fileDialogErrorMessageContent, deleteSelectedButton, downloadSelectedButton;
-        var dropZone, fileUpload, uploadProgressBar, uploadProgress, cancelBtn, downloadBtn, uploadBtn, deleteBtn, fileInput;
+        let jqXHR_fileupload = [];
+        let doneFileList = [];
+        let timeout;
+        let errorTimeout;
+        let uploadBar, fileDialogTransferBarClientId, fileDialogErrorMessage;
+        let fileDialogErrorMessageContent, deleteSelectedButton, downloadSelectedButton;
+        let dropZone, fileUpload, uploadProgressBar, uploadProgress, cancelBtn, downloadBtn, uploadBtn, deleteBtn, fileInput;
 
         function open(data, clientId) {
             if (uploadBar == null) {
@@ -97,7 +103,7 @@ define(['jquery', 'text!templates/upload.html', 'text!templates/upload.css', 'jq
                 }, 100);
             });
 
-            var jqUpload = fileUpload.fileupload({
+            let jqUpload = fileUpload.fileupload({
                 xhrFields: {
                     withCredentials: true
                 },
@@ -130,7 +136,7 @@ define(['jquery', 'text!templates/upload.html', 'text!templates/upload.css', 'jq
             });
 
             jqUpload.bind("fileuploadprogressall", function (e, data) {
-                var progress = parseInt(data.loaded / data.total * 100, 10);
+                let progress = parseInt(data.loaded / data.total * 100, 10);
                 uploadProgress.css('width', progress + '%');
 
             });
@@ -191,7 +197,7 @@ define(['jquery', 'text!templates/upload.html', 'text!templates/upload.css', 'jq
         }
 
         function download(url) {
-            var hiddenIFrameID = 'hiddenDownloader', iframe = document.getElementById(hiddenIFrameID);
+            let hiddenIFrameID = 'hiddenDownloader', iframe = document.getElementById(hiddenIFrameID);
             if (iframe === null) {
                 iframe = document.createElement('iframe');
                 iframe.id = hiddenIFrameID;
@@ -208,5 +214,5 @@ define(['jquery', 'text!templates/upload.html', 'text!templates/upload.css', 'jq
         function print(url) {
             window.open(api.cfg.connectionUrl + 'print/viewer.html?file=' + url, '_blank');
         }
-    };
-});
+    }
+}

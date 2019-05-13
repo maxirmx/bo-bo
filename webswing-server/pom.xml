@@ -10,13 +10,13 @@
 	</parent>
 	<dependencies>
 
-		<!-- war overlays -->
-		<dependency>
+		<!-- war overlays commented as webswing-dd.js is managed within this webapp now-->
+		<!--<dependency>
 			<groupId>org.webswing</groupId>
 			<artifactId>webswing-directdraw-server</artifactId>
 			<version>${project.version}</version>
 			<type>war</type>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.webswing</groupId>
 			<artifactId>webswing-admin</artifactId>
@@ -48,11 +48,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>${jackson.mapper.asl}</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-broker</artifactId>
@@ -173,6 +169,13 @@
 			<version>${log4j2.version}</version>
 		</dependency>
 		<!-- log4j2.x end -->
+		
+		<dependency>
+			<groupId>org.lz4</groupId>
+			<artifactId>lz4-java</artifactId>
+			<version>${lz4.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -248,6 +251,14 @@
 						</resource>
 					</webResources>
 					<warSourceDirectory>src/main/webapp</warSourceDirectory>
+					<warSourceExcludes>
+						dist/,
+						javascript/,
+						node_modules/,
+						package.json,
+						webpack.config.js,
+						server.js,
+					</warSourceExcludes>
 					<packagingExcludes>
 						javascript/,
 						WEB-INF/lib/jetty-*.jar,
@@ -456,19 +467,37 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>com.github.bringking</groupId>
-						<artifactId>requirejs-maven-plugin</artifactId>
-						<version>2.0.4</version>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
 						<executions>
 							<execution>
+								<id>npm install</id>
+								<phase>compile</phase>
 								<goals>
-									<goal>optimize</goal>
+									<goal>exec</goal>
 								</goals>
-								<phase>prepare-package</phase>
 								<configuration>
-									<configFile>src/main/config/build.js</configFile>
-									<filterConfig>true</filterConfig>
+									<executable>npm</executable>
+									<workingDirectory>${project.basedir}/src/main/webapp/</workingDirectory>
+									<arguments>
+										<argument>install</argument>
+									</arguments>
 								</configuration>
+							</execution>
+							<execution>
+								<id>npm run build</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>npm</executable>
+									<workingDirectory>${project.basedir}/src/main/webapp/</workingDirectory>
+									<arguments>
+										<argument>run</argument>
+										<argument>debug</argument>
+									</arguments>
+								</configuration>						
 							</execution>
 						</executions>
 					</plugin>
@@ -481,12 +510,23 @@
 								<phase>package</phase>
 								<configuration>
 									<target>
+									    <mkdir dir="${project.build.directory}/${project.build.finalName}/javascript" />
+										<copy verbose="true" overwrite="true" force="true" todir="${project.build.directory}/${project.build.finalName}/javascript">
+											<fileset dir="${project.basedir}/src/main/webapp/dist">
+												<include name="webswing-embed.js" />
+											</fileset>
+										</copy>
+										<copy verbose="true" overwrite="true" force="true" todir="${project.build.directory}/${project.build.finalName}/javascript">
+											<fileset dir="${project.basedir}/src/main/webapp/javascript">
+												<include name="welcome.js" />
+											</fileset>
+										</copy>
 										<war destfile="${project.build.directory}/${project.build.finalName}.war" update="true">
 											<fileset dir="${project.build.directory}/${project.build.finalName}" includes="WEB-INF/lib/rt-win-shell*.jar" />
 											<fileset dir="${project.build.directory}/${project.build.finalName}" includes="WEB-INF/swing-lib/*.jar" />
 											<fileset dir="${project.build.directory}/${project.build.finalName}" includes="WEB-INF/server-lib/*.jar" />
 											<fileset dir="${project.build.directory}/${project.build.finalName}/WEB-INF/classes/" includes="main/*.class" />
-											<fileset dir="${project.build.directory}/require-build/" includes="javascript/**" />
+											<fileset dir="${project.build.directory}/${project.build.finalName}" includes="javascript/*.js" />
 										</war>
 									</target>
 								</configuration>
@@ -498,30 +538,6 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
-		<!-- =========================================RELEASE BUILD PROFILE================================== -->
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.github.bringking</groupId>
-						<artifactId>requirejs-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<goals>
-									<goal>optimize</goal>
-								</goals>
-								<phase>prepare-package</phase>
-								<configuration>
-									<configFile>src/main/config/build-release.js</configFile>
-									<filterConfig>true</filterConfig>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+		</profile>		
 	</profiles>
 </project>

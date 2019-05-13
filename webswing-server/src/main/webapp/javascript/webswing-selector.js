@@ -1,8 +1,10 @@
-define(['jquery','webswing-util'], function amdFactory($, util) {
-    "use strict";
-    return function SelectorModule() {
-        var module = this;
-        var api;
+import $ from 'jquery';
+import Util from './webswing-util';
+
+export default class SelectorModule {
+	constructor() {
+        let module = this;
+        let api;
         module.injects = api = {
             cfg: 'webswing.config',
             getUser: 'login.user',
@@ -18,31 +20,31 @@ define(['jquery','webswing-util'], function amdFactory($, util) {
         };
 
         function show(apps) {
-            var header = '';
+            let header = '';
             if (!api.cfg.anonym) {
                 header = '<span class="pull-right"><a href="javascript:;" data-id="logout">Logout</a></span>';
                 header = header + '<h4 class="modal-title" id="myModalLabel">Hello <span>' + api.getUser() + '</span>. ';
             }
             header = header + 'Select your application:</h4>';
-            var events = {
+            let events = {
                 logout_click: function () {
                     api.logout();
                 },
                 application_click: function () {
-                    var appName = $(this).attr('data-name');
-                    var applet = $(this).attr('data-applet');
-                    var restart = $(this).attr('data-always-restart');
+                    let appName = $(this).attr('data-name');
+                    let applet = $(this).attr('data-applet');
+                    let restart = $(this).attr('data-always-restart');
                     api.startApplication(appName, 'true' === applet, 'true' === restart);
                 }
             };
-            var content;
+            let content;
             if (apps == null || apps.length === 0) {
                 header = null;
                 content = '<p>Sorry, there is no application available for you.</p>';
             } else if (api.cfg.applicationName != null) {
-                var exists = false;
-                var isApplet = false;
-                var alwaysRestart = false;
+                let exists = false;
+                let isApplet = false;
+                let alwaysRestart = false;
                 apps.forEach(function (app) {
                     if (app.name === api.cfg.applicationName) {
                         exists = true;
@@ -62,8 +64,8 @@ define(['jquery','webswing-util'], function amdFactory($, util) {
                 content = '<p>Sorry, application "' + api.cfg.applicationName + '" is not available for you.</p>';
             } else {
                 content = '<div class="row">';
-                for (var i in apps) {
-                    var app = apps[i];
+                for (let i in apps) {
+                    let app = apps[i];
                     if (app.name === 'adminConsoleApplicationName') {
                         content += '<div class="col-xs-4 col-sm-3 col-md-2"><div class="thumbnail" style="max-width: 155px" onclick="window.location.href = \''
                                 + api.cfg.connectionUrl
@@ -78,7 +80,7 @@ define(['jquery','webswing-util'], function amdFactory($, util) {
                                 + '" data-always-restart="'
                                 + app.alwaysRestart
                                 + '"><img src="'
-                                + util.getImageString(app.base64Icon)
+                                + Util.getImageString(app.base64Icon)
                                 + '" class="img-thumbnail"/><div class="caption">' + app.name + '</div></div></div>';
                     }
                 }
@@ -94,5 +96,5 @@ define(['jquery','webswing-util'], function amdFactory($, util) {
         function hide() {
             api.hideDialog();
         }
-    };
-});
+    }
+}

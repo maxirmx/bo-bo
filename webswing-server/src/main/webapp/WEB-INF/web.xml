@@ -131,9 +131,6 @@
 		<param-name>org.atmosphere.cpr.SessionSupport</param-name>
 		<param-value>true</param-value>
 	</context-param>
-
-
-
 	<session-config>
 		<cookie-config>
 			<!--

@@ -1,8 +1,10 @@
-define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDraw, util) {
-    "use strict";
-    return function BaseModule() {
-        var module = this;
-        var api;
+import WebswingDirectDraw from './webswing-dd';
+import Util from './webswing-util';
+
+export default class BaseModule {
+	constructor() {
+        let module = this;
+        let api;
         module.injects = api = {
             cfg : 'webswing.config',
             disconnect : 'webswing.disconnect',
@@ -48,12 +50,12 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             dispose : dispose
         };
 
-        var timer1, timer2, timer3;
-        var drawingLock;
-        var drawingQ = [];
+        let timer1, timer2, timer3;
+        let drawingLock;
+        let drawingQ = [];
 
-        var windowImageHolders = {};
-        var directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: util.dpr});
+        let windowImageHolders = {};
+        let directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: Util.dpr});
 
         function startApplication(name, applet, alwaysReset) {
             if (alwaysReset===true){
@@ -100,7 +102,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
 
         function resetState() {
             api.cfg.clientId = '';
-            api.cfg.viewId = util.GUID(); 
+            api.cfg.viewId = Util.GUID();
             api.cfg.appName = null;
             api.cfg.hasControl = false;
             api.cfg.mirrorMode = false;
@@ -113,7 +115,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             timer3 = setInterval(servletHeartbeat, 100000);
             windowImageHolders = {};
             directDraw.dispose();
-            directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: util.dpr});
+            directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: Util.dpr});
         }
 
         function sendMessageEvent(message) {
@@ -172,10 +174,10 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             api.cfg.hasControl = false;
             api.cfg.mirrorMode = false;
             api.cfg.canPaint = false;
-            for (var key in windowImageHolders) {
-                if (windowImageHolders.hasOwnProperty(key)) {
-                    windowImageHolders[key] = null;
-                }
+            for (let key in windowImageHolders) {
+              if (windowImageHolders.hasOwnProperty(key)) {
+                windowImageHolders[key] = null;
+              }
             }
             windowImageHolders = null;
             api.disposeInput();
@@ -252,7 +254,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
 
         function processRequest(canvas, data) {
             api.hideDialog();
-            var context = canvas.getContext("2d");
+            let context = canvas.getContext("2d");
             if (data.linkAction != null && !api.cfg.recordingPlayback) {
                 if (data.linkAction.action == 'url') {
                     api.openLink(data.linkAction.src);
@@ -266,7 +268,7 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 copy(data.moveAction.sx, data.moveAction.sy, data.moveAction.dx, data.moveAction.dy, data.moveAction.width, data.moveAction.height,context);
             }
             if (data.focusEvent != null) {
-                var input=api.getInput();
+                let input=api.getInput();
                 if(data.focusEvent.type === 'focusWithCarretGained'){
                     input.style.top = (data.focusEvent.y+data.focusEvent.caretY)+'px';
                     input.style.left = (data.focusEvent.x+data.focusEvent.caretX)+'px';
@@ -295,14 +297,14 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 delete windowImageHolders[data.closedWindow];
             }
             // first is always the background
-            for ( var i in data.windows) {
-                var win = data.windows[i];
+            for ( let i in data.windows) {
+                let win = data.windows[i];
                 if (win.id == 'BG') {
                     if (api.cfg.mirrorMode || api.cfg.recordingPlayback) {
                         adjustCanvasSize(canvas, win.width, win.height);
                     }
-                    for ( var x in win.content) {
-                        var winContent = win.content[x];
+                    for ( let x in win.content) {
+                        let winContent = win.content[x];
                         if (winContent != null) {
                             clear(win.posX + winContent.positionX, win.posY + winContent.positionY, winContent.width, winContent.height, context);
                         }
@@ -330,12 +332,12 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
 
         function renderWindow(win, context) {
             return new Promise(function(resolved, rejected) {
-                var rPromise;
-            if (win.directDraw != null) {
-                    rPromise =  renderDirectDrawWindow(win, context);//windowImageHolders[win.id]);
-            } else {
+                let rPromise;
+                if (win.directDraw != null) {
+                    rPromise =  renderDirectDrawWindow(win, context);
+                } else {
                     rPromise =  renderPngDrawWindow(win, context);
-            }
+                }
                 rPromise.then(function(resultImage) {
                     resolved();
                 }, function(error) {
@@ -343,22 +345,22 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 });
             });
         }
-
+ 
         function renderPngDrawWindow(win, context) {
-            var decodedImages = [];
+            let decodedImages = [];
             return win.content.reduce(function(sequence, winContent) {
                 return sequence.then(function(decodedImages) {
                     return new Promise(function(resolved, rejected) {
                         if (winContent != null) {
-                            var imageObj = new Image();
-                            var ieTimeoutId = null;
-                            var onloadFunction = function() {
+                            let imageObj = new Image();
+                            let ieTimeoutId = null;
+                            let onloadFunction = function() {       
                                 if (ieTimeoutId) {
                                     window.clearTimeout(ieTimeoutId);
-                                }
+                                }                        
                                 decodedImages.push({image:imageObj,winContent:winContent})
                                 resolved(decodedImages);
-                                
+ 
                             };
                             imageObj.onload = function() {
                                 // fix for ie - onload is fired before the image is ready for rendering to canvas.
@@ -369,19 +371,19 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                                     onloadFunction();
                                 }
                             };
-                            imageObj.src = util.getImageString(winContent.base64Content);
+                            imageObj.src = Util.getImageString(winContent.base64Content);
                         }
                     });
                 }, errorHandler);
             }, Promise.resolve(decodedImages)).then(function(decodedImages){
                 decodedImages.forEach(function(image, idx){
-                    var dpr = util.dpr();
+                    let dpr = Util.dpr();
                     //for U2020 , sprites (splitted images) are not available in some swing pages like splash or create NE, add a list validation
                     if(win.sprites && win.sprites.length != 0){
                         //the server sends bigger chunks of size 6 each of which is 6px, so index to start is 36
                         const IMAGE_START_INDEX = 36;
-                        for(var i = IMAGE_START_INDEX * idx; i < IMAGE_START_INDEX * (idx+1) && i < win.sprites.length; i++ ){
-                            var sprite = win.sprites[i];
+                        for(let i = IMAGE_START_INDEX * idx; i < IMAGE_START_INDEX * (idx+1) && i < win.sprites.length; i++ ){
+                            let sprite = win.sprites[i];
                             context.save()
                             context.setTransform(dpr, 0, 0, dpr, 0, 0);
                             context.drawImage(image.image, sprite.spriteX, sprite.spriteY, sprite.width, sprite.height, win.posX + sprite.positionX, win.posY + sprite.positionY, sprite.width, sprite.height);
@@ -402,48 +404,48 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 //return canvas;
             });
         }
-
+ 
         function renderDirectDrawWindow(win, context) {
             return new Promise(function(resolved, rejected) {
-                var ddPromise;
-                if (typeof win.directDraw === 'string') {
-                    ddPromise = directDraw.draw64(win.directDraw, windowImageHolders[win.id]);
-                } else {
-                    ddPromise = directDraw.drawBin(win.directDraw, windowImageHolders[win.id]);
-                }
-                ddPromise.then(function(resultImage) {
-                    windowImageHolders[win.id] = resultImage;
-                                var dpr = util.dpr();
-                    for ( var x in win.content) {
-                        var winContent = win.content[x];
-                        if (winContent != null) {
-                                       var sx = Math.min(resultImage.width, Math.max(0, winContent.positionX * dpr));
-                                       var sy = Math.min(resultImage.height, Math.max(0, winContent.positionY * dpr));
-                                       var sw = Math.min(resultImage.width - sx, winContent.width * dpr - (sx - winContent.positionX * dpr));
-                                       var sh = Math.min(resultImage.height - sy, winContent.height * dpr - (sy - winContent.positionY * dpr));
+                            let ddPromise;
+                            if (typeof win.directDraw === 'string') {
+                                ddPromise = directDraw.draw64(win.directDraw, windowImageHolders[win.id]);
+                            } else {
+                                ddPromise = directDraw.drawBin(win.directDraw, windowImageHolders[win.id]);
+                            }
+                            ddPromise.then(function(resultImage) {
+                                windowImageHolders[win.id] = resultImage;
+                                let dpr = Util.dpr();
+                                for ( let x in win.content) {
+                                    let winContent = win.content[x];
+                                    if (winContent != null) {
+                                       let sx = Math.min(resultImage.width, Math.max(0, winContent.positionX * dpr));
+                                       let sy = Math.min(resultImage.height, Math.max(0, winContent.positionY * dpr));
+                                       let sw = Math.min(resultImage.width - sx, winContent.width * dpr - (sx - winContent.positionX * dpr));
+                                       let sh = Math.min(resultImage.height - sy, winContent.height * dpr - (sy - winContent.positionY * dpr));
 
-                                       var dx = win.posX * dpr + sx;
-                                       var dy = win.posY * dpr + sy;
-                                        var dw = sw;
-                                        var dh = sh;
+                                       let dx = win.posX * dpr + sx;
+                                       let dy = win.posY * dpr + sy;
+                                        let dw = sw;
+                                        let dh = sh;
 
                                         if (dx <= context.canvas.width && dy <= context.canvas.height && dx + dw > 0 && dy + dh > 0) {
                                             context.drawImage(resultImage, sx, sy, sw, sh, dx, dy, dw, dh);
                                         }
-                        }
-                    }
-                    resolved();
-                }, function(error) {
-                    rejected(error);
-                });
-            });
+                                    }
+                                }
+                                resolved();
+                            }, function(error) {
+                                rejected(error);
+                            });
+                        });
         }
-
+ 
         function adjustCanvasSize(canvas, width, height) {
-        	var dpr = util.dpr();
+        	let dpr = Util.dpr();
             if (canvas.width != width * dpr || canvas.height != height * dpr) {
-                var ctx = canvas.getContext("2d");
-                var snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                let ctx = canvas.getContext("2d");
+                let snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 canvas.width = width * dpr;
                 canvas.height = height * dpr;
                 ctx.putImageData(snapshot, 0, 0);
@@ -452,15 +454,15 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
                 }
             }
         }
-
+ 
         function clear(x, y, w, h, context) {
-            var dpr = util.dpr();
+            let dpr = Util.dpr();
             context.clearRect(x * dpr, y * dpr, w * dpr, h * dpr);
         }
-
+ 
         function copy(sx, sy, dx, dy, w, h, context) {
-            var dpr = util.dpr();
-            var copy = context.getImageData(sx * dpr, sy * dpr, w * dpr, h * dpr);
+            let dpr = Util.dpr();
+            let copy = context.getImageData(sx * dpr, sy * dpr, w * dpr, h * dpr);
             context.putImageData(copy, dx * dpr, dy * dpr);
             if (typeof(CollectGarbage) == "function") {
                 CollectGarbage();
@@ -471,13 +473,13 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             if (cursorMsg.b64img == null) {
                 return cursorMsg.cursor;
             } else {
-                var data = util.getImageString(cursorMsg.b64img);
+                let data = Util.getImageString(cursorMsg.b64img);
                 return 'url(' + data + ') ' + cursorMsg.x + ' ' + cursorMsg.y + ' , auto';
             }
         }
 
         function getHandShake(canvas, continueOldSession) {
-            var handshake = {
+            let handshake = {
                 applicationName : api.cfg.appName,
                 clientId : api.cfg.clientId,
                 viewId : api.cfg.viewId,
@@ -504,6 +506,5 @@ define([ 'webswing-dd', 'webswing-util' ], function amdFactory(WebswingDirectDra
             drawingLock = null;
             throw error;
         }
-    };
-
-});
+    }
+}

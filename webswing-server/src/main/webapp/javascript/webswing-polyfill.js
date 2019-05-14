@@ -1,5 +1,8 @@
-define(['es6promise', 'typedarray'], function f(es6promise) {
-    return function polyfill() {
+const typedarray = require('typedarray');
+const es6promise = require('es6-promise').Promise;
+
+export default class Polyfill {
+    static polyfill() {
         var typedArraysSupported = false;
         if (isArrayBufferSupported()) {
             typedArraysSupported = true;
@@ -23,5 +26,5 @@ define(['es6promise', 'typedarray'], function f(es6promise) {
             }
             return false;
         }
-    };
-});
+    }
+}

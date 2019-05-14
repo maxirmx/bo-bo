@@ -1,5 +1,18 @@
 package org.webswing.toolkit.extra;
 
+import org.webswing.common.WindowActionType;
+import org.webswing.dispatch.WebEventDispatcher;
+import org.webswing.dispatch.WebPaintDispatcher;
+import org.webswing.model.s2c.CursorChangeEventMsg;
+import org.webswing.toolkit.WebComponentPeer;
+import org.webswing.toolkit.WebDialogPeer;
+import org.webswing.toolkit.WebKeyboardFocusManagerPeer;
+import org.webswing.toolkit.WebToolkit;
+import org.webswing.toolkit.util.Services;
+import org.webswing.toolkit.util.Util;
+import sun.awt.CausedFocusEvent;
+
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Point;
@@ -10,20 +23,6 @@ import java.awt.event.WindowEvent;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.SwingUtilities;
-
-import org.webswing.common.WindowActionType;
-import org.webswing.dispatch.WebEventDispatcher;
-import org.webswing.dispatch.WebPaintDispatcher;
-import org.webswing.model.s2c.CursorChangeEventMsg;
-import org.webswing.toolkit.WebComponentPeer;
-import org.webswing.toolkit.WebKeyboardFocusManagerPeer;
-import org.webswing.toolkit.WebToolkit;
-import org.webswing.toolkit.util.Services;
-import org.webswing.toolkit.util.Util;
-
-import sun.awt.CausedFocusEvent;
 
 @SuppressWarnings("restriction")
 public class WindowManager {
@@ -47,6 +46,9 @@ public class WindowManager {
 	public void bringToFront(Window w) {
 		synchronized (Util.getWebToolkit().getTreeLock()) {
 			synchronized (WebPaintDispatcher.webPaintLock) {
+				if (w != null && !w.isEnabled()) {
+					return;
+				}
 				if ((w == null || w.isFocusableWindow()) && activeWindow != w) {
 					Window oldActiveWindow = activeWindow;
 					activeWindow = w;
@@ -143,14 +145,35 @@ public class WindowManager {
 
 	}
 
+    /**
+     * 当点击非模态Dialog内的区域时，为Dialog窗体增加闪烁效果<br>
+     * @author liuwen 00207214
+     * @since  iManager U2000 MSO, 2018年1月12日
+     * @param curSelectedWindow 当前选中对话框
+     */
+	public void flashTopModalDialog(Window curSelectedWindow)
+	{
+        // 当前顶部激活窗体为选中（鼠标点中）的窗体，不需要做进一步处理
+	    if(activeWindow.equals(curSelectedWindow))
+	    {
+	       return;
+	    }
+
+	    Object activeWindowPeer = WebToolkit.targetToPeer(activeWindow);
+	    if(activeWindowPeer instanceof WebDialogPeer)
+	    {
+	        ((WebDialogPeer) activeWindowPeer).flashWindow();
+	    }
+	}
+
 	private boolean isModal(Window w) {
 		return (w instanceof Dialog) && ((Dialog) w).isModal();
 	}
 
-	public void activateWindow(Window w, int x, int y) {
-		Component newFocusOwner = w.getFocusTraversalPolicy().getInitialComponent(w);
-		activateWindow(w, newFocusOwner, x, y, false, true, CausedFocusEvent.Cause.NATIVE_SYSTEM);
-	}
+    public void activateWindow(final Window w, final int x, final int y)
+    {
+        activateWindow(w, null, x, y, false, true, CausedFocusEvent.Cause.NATIVE_SYSTEM);
+    }
 
 	public Window getVisibleWindowOnPosition(int x, int y) {
 		Window positionWin = zorder.getVisibleWindowOnPosition(x, y);
@@ -198,5 +221,9 @@ public class WindowManager {
 	public void setCurrentCursor(String currentCursor) {
 		this.currentCursor = currentCursor;
 	}
+	
+	public void resetEventHandlerLock(boolean lockToBeReset) {
+		eventhandler.setLockedToWindow(lockToBeReset);	
+	}	
 
 }

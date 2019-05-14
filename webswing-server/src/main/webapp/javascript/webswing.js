@@ -1,19 +1,35 @@
-define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfill', 'webswing-base', 'webswing-socket', 'webswing-files', 'webswing-dialog', 'webswing-selector',
-        'webswing-login', 'webswing-canvas', 'webswing-identity', 'webswing-jslink', 'webswing-clipboard', 'webswing-playback', 'webswing-input', 'webswing-touch', 'webswing-inject' ],
-        function f($, css, util, polyfill, Base, Socket, Files, Dialog, Selector, Login, Canvas, Identity, JsLink, Clipboard, Playback, Input, Touch, Injector) {
-            "use strict";
-            var style = $("<style></style>", {
+import $ from 'jquery';
+import css from './templates/base.css';
+import Util from './webswing-util';
+import Polyfill from './webswing-polyfill';
+import Base from './webswing-base';
+import Socket from './webswing-socket';
+import Files from './webswing-files';
+import Dialog from './webswing-dialog';
+import Selector from './webswing-selector';
+import Login from './webswing-login';
+import Canvas from './webswing-canvas';
+import Identity from './webswing-identity';
+import JsLink from './webswing-jslink';
+import Clipboard from './webswing-clipboard';
+import Playback from './webswing-playback';
+import Input from './webswing-input';
+import Touch from './webswing-touch';
+import Injector from './webswing-inject';
+
+export default class Webswing {
+	constructor() {          
+            let style = $("<style></style>", {
                 type : "text/css"
             });
             style.text(css);
             $("head").prepend(style);
 
-            var globalName = $('[data-webswing-global-var]');
-            var global = {};
-            var typedArraysSupported = polyfill();
-
+            let globalName = $('[data-webswing-global-var]');
+            let global = {};
+            let typedArraysSupported = Polyfill.polyfill();
             if (globalName != null && globalName.length !== 0) {
-                var name = globalName.data('webswingGlobalVar');
+                let name = globalName.data('webswingGlobalVar');
                 global = window[name] = {
                     scan : scanForInstances,
                     bootstrap : bootstrap
@@ -25,20 +41,20 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
 
             function scanForInstances(root) {
                 root = root != null ? root : global;
-                var result = {};
-                var instances = $('[data-webswing-instance]');
+                let result = {};
+                let instances = $('[data-webswing-instance]');
                 instances.each(function(index, instance) {
-                    var id = $(instance).data('webswingInstance');
-                    var active = $(instance).data('webswingActive');
+                    let id = $(instance).data('webswingInstance');
+                    let active = $(instance).data('webswingActive');
                     if (!active) {
-                        var wsInstance = bootstrap($(instance));
+                        let wsInstance = bootstrap($(instance));
                         $(instance).attr('data-webswing-active', 'true');
                         if (id != null) {
                             result[id] = wsInstance;
                         }
                     }
                 });
-                for ( var exportName in result) {
+                for ( let exportName in result) {
                     root[exportName] = result[exportName];
                 }
             }
@@ -59,7 +75,7 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                 injector.module('jslink', new JsLink());
                 injector.module('clipboard', new Clipboard());
                 injector.module('playback', new Playback());
-                var externalObj = {
+                let externalObj = {
                     start : 'webswing.start',
                     disconnect : 'webswing.disconnect',
                     configure : 'webswing.configure',
@@ -80,8 +96,9 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
             }
 
             function WebswingInstance(rootElement) {
-                var module = this;
-                var api;
+                let module = this;
+                let api;
+                let clientCallbackHandler = false;
                 module.injects = api = {
                     cfg : 'webswing.config',
                     start : 'webswing.start',
@@ -95,8 +112,11 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                     disposeBase : 'base.dispose',
                     disposeCanvas : 'canvas.dispose',
                     disposeSocket : 'socket.dispose',
+                    disposeInput : 'input.dispose',
+                    disposeTouch : 'touch.dispose',
                     disposeFileDialog : 'files.close',
                     disposeCopyBar : 'clipboard.dispose',
+                    disposeJslink: 'jslink.dispose',
                     showPlaybackControls : 'playback.showControls'
                 };
                 module.provides = {
@@ -106,7 +126,9 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                     reTrySession : reTrySession,
                     disconnect : disconnect,
                     setControl : setControl,
-                    configure : configure
+                    configure : configure,
+                    setCallBack: setCallBack,
+                    fireCallBack: fireCallBack
                 };
                 module.ready = function() {
                     configure();
@@ -133,7 +155,7 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                         debugPort : null,
                         javaCallTimeout : 3000,
                         documentBase : document.location.origin + document.location.pathname,
-                        ieVersion : util.detectIE(),
+                        ieVersion : Util.detectIE(),
                         /* webswing instance context */
                         clientId : null,
                         viewId : null,
@@ -150,11 +172,23 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                    return rootElement.addClass('webswing-root');
                 }
 
+                function setCallBack(callback) {
+                    clientCallbackHandler = callback;
+                }
+
+                function fireCallBack(event) {
+                    if (clientCallbackHandler) {
+                        return clientCallbackHandler(event);
+                    } else {
+                        console.info('webswing callback is false, fire event is', event);
+                    }
+                }
+
                 function start() {
                     api.login(function() {
                         api.showDialog(api.initializingDialog);
                         api.connect();
-                    });
+                    }, clientCallbackHandler);
                 }
 
                 function newSession() {
@@ -171,13 +205,16 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                 function disconnect() {
                     api.disposeFileDialog();
                     api.disposeBase();
+            api.disposeInput();
+            api.disposeTouch();
                     api.disposeCanvas();
                     api.disposeSocket();
                     api.disposeCopyBar();
+            api.disposeJslink();
                 }
 
                 function configure(options, appletParams) {
-                    var cfg = api.cfg;
+                    let cfg = api.cfg;
                     options = options != null ? options : readOptions(cfg.rootElement);
                     if (options != null) {
                         cfg.autoStart = options.autoStart != null ? JSON.parse(options.autoStart) : cfg.autoStart;
@@ -202,7 +239,7 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                     appletParams = appletParams != null ? appletParams : readAppletParams(cfg.rootElement);
                     if (appletParams != null) {
                         cfg.params = [];
-                        for ( var prop in appletParams) {
+                        for ( let prop in appletParams) {
                             if (typeof appletParams[prop] === 'string') {
                                 cfg.params.push({
                                     name : prop,
@@ -218,7 +255,7 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                 }
 
                 function readOptions(element) {
-                    var options = element.data('webswingOptions');
+                    let options = element.data('webswingOptions');
                     if (typeof options !== 'object') {
                         try {
                             options = eval("(function(){return " + options + ";})()");
@@ -230,11 +267,11 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                 }
 
                 function readAppletParams(element) {
-                    var result = {};
-                    var params = $(element).find('webswing-param');
-                    for ( var i = 0; i < params.length; i++) {
-                        var name = params[i].getAttribute('name');
-                        var val = params[i].getAttribute('value');
+                    let result = {};
+                    let params = $(element).find('webswing-param');
+                    for ( let i = 0; i < params.length; i++) {
+                        let name = params[i].getAttribute('name');
+                        let val = params[i].getAttribute('value');
                         if (name != null) {
                             result[name] = val;
                         }
@@ -243,4 +280,5 @@ define([ 'jquery', 'text!templates/base.css', 'webswing-util', 'webswing-polyfil
                 }
 
             }
-        });
+        }
+}

@@ -53,7 +53,7 @@ public class Logger {
 						((Throwable) obj).printStackTrace(pw);
 						sb.append(sw.toString());
 					} else {
-						sb.append(o.toString());
+						sb.append(obj.toString());
 					}
 					sb.append(" | ");
 				}

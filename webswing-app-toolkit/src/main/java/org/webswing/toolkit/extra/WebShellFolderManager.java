@@ -149,11 +149,9 @@ public class WebShellFolderManager extends Win32ShellFolderManager2 {
 	}
 
 	@SuppressWarnings("rawtypes")
-	@Override
+//	@Override
 	public void sortFiles(List paramList) {
-		if (windows) {
-			super.sortFiles(paramList);
-		} else {
+		if (!windows) {
 			try {
 				Method m = defaultManager.getClass().getDeclaredMethod("sortFiles", List.class);
 				m.setAccessible(true);

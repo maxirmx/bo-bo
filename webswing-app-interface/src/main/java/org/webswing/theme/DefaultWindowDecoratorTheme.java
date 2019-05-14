@@ -197,14 +197,11 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 	}
 
 	@Override
-	public void paintWindowDecoration(Graphics g, Object window, int w, int h) {
-		Graphics2D g2 = (Graphics2D) g;
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+	public void paintWindowDecoration(Graphics g, Object window, int w, int h, boolean ... forceInactive) {
 
-		ImageSet is = (window != null && window.equals(WindowManager.getInstance().getActiveWindow())) ? active : inactive;
+        boolean isForceInactive = forceInactive.length > 0 ? forceInactive[0] : false;
+        ImageSet is = (isForceInactive || window == null
+                || !window.equals(WindowManager.getInstance().getActiveWindow())) ? inactive : active;
 
 		int xOffset = 0;
 		int yOffset = 0;
@@ -297,6 +294,11 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 			return ((Frame) o).getIconImage();
 		} else if (o instanceof Dialog) {
 			List<Image> images = ((Dialog) o).getIconImages();
+			if (images.size()==0){
+				if(((Dialog) o).getParent() instanceof Frame){
+					images = ((Frame)(((Dialog) o).getParent())).getIconImages();
+				}
+			}
 			if (images.size() > 0) {
 				return images.get(0);
 			}
@@ -310,7 +312,7 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 		Insets i = w.getInsets();
 
 		// Dialogs can be RESIZABLE too, at least on Linux/Unix
-		if ((w instanceof Dialog && ((Dialog) w).isResizable()) || (w instanceof Frame) && ((Frame) w).isResizable()) {
+		if ((w instanceof Frame) && ((Frame) w).isResizable()) {
 			if (SwingUtilities.isRectangleContainingRectangle(getHideRect(w), eventPoint)) {
 				return WindowActionType.minimize;
 			}
@@ -324,15 +326,31 @@ public class DefaultWindowDecoratorTheme implements WindowDecoratorTheme {
 
 		// resize
 		if((w instanceof Dialog && ((Dialog) w).isResizable()) || (w instanceof Frame) && ((Frame) w).isResizable()){
+			if (e.getX() < 10 && e.getY() < 10) {
+				return WindowActionType.resizeUniTopLeft;
+			}
+			if (e.getX() > (w.getWidth() - 10)  && e.getY() < 10) {
+				return WindowActionType.resizeUniTopRight;
+			}
+			if (e.getX() < 10 && e.getY() > (w.getHeight() - 10)) {
+				return WindowActionType.resizeUniBottomLeft;
+			}
 			if (e.getX() > (w.getWidth() - 10) && e.getY() > (w.getHeight() - 10)) {
-				return WindowActionType.resizeUni;
+				return WindowActionType.resizeUniBottomRight;
 			}
 			if (e.getX() > (w.getWidth() - i.right)) {
 				return WindowActionType.resizeRight;
 			}
+			if (e.getX() < i.left) {
+				return WindowActionType.resizeLeft;
+			}
 			if (e.getY() > (w.getHeight() - i.bottom)) {
 				return WindowActionType.resizeBottom;
 			}
+			if (e.getY() < i.bottom) {
+				return WindowActionType.resizeTop;
+			}
+
 		}
 		if (e.getY() < i.top) {
 			// move

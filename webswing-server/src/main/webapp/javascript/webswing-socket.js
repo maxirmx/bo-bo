@@ -1,12 +1,11 @@
-define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(atmosphere, ProtoBuf, wsProto) {
-    "use strict";
-    var proto = ProtoBuf.loadProto(wsProto, "webswing.proto");
-    var InputEventsFrameMsgInProto = proto.build("org.webswing.server.model.proto.InputEventsFrameMsgInProto");
-    var AppFrameMsgOutProto = proto.build("org.webswing.server.model.proto.AppFrameMsgOutProto");
+const atmosphere = require('atmosphere.js');
+const ProtoBuf = require('protobufjs');
+import wsProto from './webswing.proto';
 
-    return function SocketModule() {
-        var module = this;
-        var api;
+export default class SocketModule {
+	    constructor() {
+        let module = this;
+        let api;
         module.injects = api = {
             cfg: 'webswing.config',
             processMessage: 'base.processMessage',
@@ -16,7 +15,9 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             stoppedDialog: 'dialog.content.stoppedDialog',
             disconnectedDialog: 'dialog.content.disconnectedDialog',
             connectionErrorDialog: 'dialog.content.connectionErrorDialog',
-            initializingDialog: 'dialog.content.initializingDialog'
+            initializingDialog: 'dialog.content.initializingDialog',
+            continueSession: 'base.continueSession',
+            fireCallBack : 'webswing.fireCallBack'
         };
         module.provides = {
             connect: connect,
@@ -27,13 +28,21 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
         };
         module.ready = function () {
             binary = api.cfg.typedArraysSupported && api.cfg.binarySocket;
+            document.addEventListener('visibilitychange', focusToActive);
         };
 
-        var socket, uuid, binary;
-        var responseHandlers = {};
+        function focusToActive() {
+            if (document.visibilityState === 'visible' && !api.cfg.canPaint && !api.cfg.mirrorMode && api.currentDialog() !== api.stoppedDialog) {
+                api.continueSession();
+            }
+        }
+
+
+        let socket, uuid, binary;
+        let responseHandlers = {};
 
         function connect() {
-            var request = {
+            let request = {
                 url: api.cfg.connectionUrl + 'async/swing',
                 contentType: "application/json",
                 // logLevel : 'debug',
@@ -76,24 +85,27 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
                     binary = false;
                     dispose();
                     connect();
+                } else {
+                    api.fireCallBack({type: 'webswingWebSocketOpened'});
                 }
             };
 
             request.onReopen = function (response) {
                 api.hideDialog();
+                api.fireCallBack({type: 'webswingWebSocketReOpened'});
             };
 
             request.onMessage = function (response) {
                 try {
-                    var data = decodeResponse(response);
+                    let data = decodeResponse(response);
                     if (data.sessionId != null) {
                         uuid = data.sessionId;
                     }
                     // javascript2java response handling
                     if (data.javaResponse != null && data.javaResponse.correlationId != null) {
-                        var correlationId = data.javaResponse.correlationId;
+                        let correlationId = data.javaResponse.correlationId;
                         if (responseHandlers[correlationId] != null) {
-                            var callback = responseHandlers[correlationId];
+                            let callback = responseHandlers[correlationId];
                             delete responseHandlers[correlationId];
                             callback(data.javaResponse);
                         }
@@ -108,10 +120,12 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             request.onClose = function (response) {
                 if (api.currentDialog() !== api.stoppedDialog) {
                     api.showDialog(api.disconnectedDialog);
+                    api.fireCallBack({type: 'webswingWebSocketOnClose'});
                 }
             };
 
             request.onError = function (response) {
+                api.fireCallBack({type: 'webswingWebSocketOnError'});
                 api.showDialog(api.connectionErrorDialog);
             };
 
@@ -119,13 +133,13 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
         }
 
         function decodeResponse(response) {
-            var message = response.responseBody;
-            var data;
+            let message = response.responseBody;
+            let data;
             if (binary) {
                 if (message.byteLength === 1) {
                     return {};// ignore atmosphere heartbeat
                 }
-                data = AppFrameMsgOutProto.decode(message);
+                data = SocketModule.AppFrameMsgOutProto.decode(message);
                 explodeEnumNames(data);
             } else {
                 data = atmosphere.util.parseJSON(message);
@@ -135,15 +149,25 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
 
         function dispose() {
             atmosphere.unsubscribe(socket);
+            document.removeEventListener('visibilitychange', focusToActive);
             socket = null;
             uuid = null;
+            if (awaitResponseTimeoutId) {
+                clearTimeout(awaitResponseTimeoutId);
+            }
+            for (var key in responseHandlers) {
+                if (responseHandlers.hasOwnProperty(key)) {
+                    responseHandlers[key] = null;
+                }
+            }
+            responseHandlers = null;
         }
 
         function send(message) {
             if (socket != null && socket.request.isOpen && !socket.request.closed) {
                 if (typeof message === "object") {
                     if (binary) {
-                        var msg = new InputEventsFrameMsgInProto(message);
+                        let msg = new SocketModule.InputEventsFrameMsgInProto(message);
                         socket.push(msg.encode().toArrayBuffer());
                     } else {
                         socket.push(atmosphere.util.stringifyJSON(message));
@@ -154,10 +178,12 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
             }
         }
 
+        let awaitResponseTimeoutId = null;
+
         function awaitResponse(callback, request, correlationId, timeout) {
             send(request);
             responseHandlers[correlationId] = callback;
-            setTimeout(function () {
+            awaitResponseTimeoutId = setTimeout(function () {
                 if (responseHandlers[correlationId] != null) {
                     delete responseHandlers[correlationId];
                     callback(new Error("Java call timed out after " + timeout + " ms."));
@@ -179,8 +205,8 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
                     data.$type._fields.forEach(function (field) {
                         if (field.resolvedType != null) {
                             if (field.resolvedType.className === "Enum") {
-                                var enm = field.resolvedType.object;
-                                for (var key in enm) {
+                                let enm = field.resolvedType.object;
+                                for (let key in enm) {
                                     if (enm[key] === data[field.name]) {
                                         data[field.name] = key;
                                     }
@@ -193,6 +219,9 @@ define(['atmosphere', 'ProtoBuf', 'text!webswing.proto'], function amdFactory(at
                 }
             }
         }
-    };
+    }
+}
 
-});
+SocketModule.proto = ProtoBuf.loadProto(wsProto, "webswing.proto");
+SocketModule.InputEventsFrameMsgInProto = SocketModule.proto.build("org.webswing.server.model.proto.InputEventsFrameMsgInProto");
+SocketModule.AppFrameMsgOutProto = SocketModule.proto.build("org.webswing.server.model.proto.AppFrameMsgOutProto");

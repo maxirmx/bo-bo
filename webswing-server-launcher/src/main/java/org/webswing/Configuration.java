@@ -28,6 +28,8 @@ public abstract class Configuration {
 
 	public abstract String getAllowedCorsOrigins();
 
+	public abstract String getJmsUrl() ;
+
 	public static Configuration getInstance() {
 		return singleton;
 	}

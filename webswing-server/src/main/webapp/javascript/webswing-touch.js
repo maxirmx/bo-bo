@@ -1,15 +1,19 @@
-define([ 'jquery', 'text!templates/touch.html', 'text!templates/touch.css', 'webswing-util', 'hammer' ], function amdFactory($, html, css, util,
-        Hammer) {
-    "use strict";
-    var style = $("<style></style>", {
-        type : "text/css"
-    });
-    style.text(css);
-    $("head").prepend(style);
+import $ from 'jquery';
+import html from './templates/touch.html';
+import css from './templates/touch.css';
+import Util from './webswing-util';
+import Hammer from 'hammerjs';
 
-    return function TouchModule() {
-        var module = this;
-        var api;
+export default class TouchModule {
+	constructor() {
+		let style = $("<style></style>", {
+		    type : "text/css"
+        });
+        style.text(css);
+        $("head").prepend(style);
+
+        let module = this;
+        let api;
         module.injects = api = {
             cfg : 'webswing.config',
             send : 'socket.send',
@@ -23,15 +27,15 @@ define([ 'jquery', 'text!templates/touch.html', 'text!templates/touch.css', 'web
         module.ready = function() {
         };
 
-        var hammer;
-        var touchBar;
-        var compositionText = "";
-        var composition=false;
+        let hammer;
+        let touchBar;
+        let compositionText = "";
+        let composition=false;
 
         function register() {
-            var canvas = api.getCanvas();
+            let canvas = api.getCanvas();
             // prevent ghost mouse events to be fired
-            util.preventGhosts(api.cfg.rootElement);
+            Util.preventGhosts(api.cfg.rootElement);
 
             hammer = new Hammer(canvas, {
                 touchAction : 'manipulation'
@@ -42,7 +46,7 @@ define([ 'jquery', 'text!templates/touch.html', 'text!templates/touch.css', 'web
             });
             hammer.on('tap', function(ev) {
                 if (ev.pointerType === 'touch') {
-                    var eventMsg = getTouchPos(canvas, ev, 1);
+                    let eventMsg = getTouchPos(canvas, ev, 1);
                     api.send(eventMsg);
                     display();
                     canvas.focus();
@@ -51,7 +55,7 @@ define([ 'jquery', 'text!templates/touch.html', 'text!templates/touch.css', 'web
             });
             hammer.on('press', function(ev) {
                 if (ev.pointerType === 'touch') {
-                    var eventMsg = getTouchPos(canvas, ev, 3);
+                    let eventMsg = getTouchPos(canvas, ev, 3);
                     api.send(eventMsg);
                 }
             });
@@ -66,10 +70,10 @@ define([ 'jquery', 'text!templates/touch.html', 'text!templates/touch.css', 'web
         }
 
         function getTouchPos(canvas, evt, button) {
-            var rect = canvas.getBoundingClientRect();
+            let rect = canvas.getBoundingClientRect();
             // return relative mouse position
-            var mouseX = Math.round(evt.center.x - rect.left);
-            var mouseY = Math.round(evt.center.y - rect.top);
+            let mouseX = Math.round(evt.center.x - rect.left);
+            let mouseY = Math.round(evt.center.y - rect.top);
 
             return {
                 events : [ mouseEvent('mousedown'), mouseEvent('mouseup') ]
@@ -112,7 +116,7 @@ define([ 'jquery', 'text!templates/touch.html', 'text!templates/touch.css', 'web
                 composition=true;
             }
             if (evt.type === 'compositionupdate' || evt.type === 'compositionend') {
-                var newText = evt.originalEvent.data;
+                let newText = evt.originalEvent.data;
                 if (newText.indexOf(compositionText) == 0) {
                     sendString(newText.substring(compositionText.length));
                 } else {
@@ -130,7 +134,7 @@ define([ 'jquery', 'text!templates/touch.html', 'text!templates/touch.css', 'web
             }
             if(evt.type === 'input'){
                 if(!composition){
-                    var newText =evt.originalEvent.target.value;
+                    let newText =evt.originalEvent.target.value;
                     sendString(newText);
                     evt.currentTarget.value = "";
                 }
@@ -146,8 +150,8 @@ define([ 'jquery', 'text!templates/touch.html', 'text!templates/touch.css', 'web
         }
 
         function sendString(s) {
-            for ( var i = 0, len = s.length; i < len; i++) {
-                var char = 0;
+            for ( let i = 0, len = s.length; i < len; i++) {
+                let char = 0;
                 char = s.charCodeAt(i);
                 api.send({
                     events : [ keyEvent('keydown', char), keyEvent('keypress', char), keyEvent('keyup', char) ]
@@ -156,8 +160,8 @@ define([ 'jquery', 'text!templates/touch.html', 'text!templates/touch.css', 'web
         }
 
         function sendBackspace(no) {
-            var evts = [];
-            for ( var i = 0; i < no; i++) {
+            let evts = [];
+            for ( let i = 0; i < no; i++) {
                 evts.push(keyEvent("keydown", 8, 8));
                 evts.push(keyEvent("keyup", 8, 8));
             }
@@ -183,6 +187,10 @@ define([ 'jquery', 'text!templates/touch.html', 'text!templates/touch.css', 'web
 
         function dispose() {
             close();
+            if (hammer) {
+                hammer.destroy();
+                hammer = null;
+            }
         }
     }
-});
+}

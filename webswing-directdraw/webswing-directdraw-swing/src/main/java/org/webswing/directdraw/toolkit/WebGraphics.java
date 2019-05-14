@@ -1,22 +1,10 @@
 package org.webswing.directdraw.toolkit;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Paint;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.TexturePaint;
+import org.webswing.directdraw.util.RenderUtil;
+import org.webswing.directdraw.util.WaitingImageObserver;
+import org.webswing.directdraw.util.XorModeComposite;
+
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -52,9 +40,21 @@ public class WebGraphics extends AbstractVectorGraphics {
 			if (onDemandTexturePaint) {
 				thisImage.addInstruction(this, dif.setPaint(createTexture(s, getPaint())));
 			}
-			thisImage.addInstruction(this, dif.draw(s, getClip()));
+			if(thisImage.isFallbackActive()){
+				thisImage.addInstruction(this, dif.drawFallback(s));
+			}else {
+				thisImage.addInstruction(this, dif.draw(s, getClip()));
+			}
 		} else {
 			fill(getStroke().createStrokedShape(s));
+		}
+	}
+
+	@Override
+	protected void changeClip(Shape clip) {
+		super.changeClip(clip);
+		if(thisImage.isFallbackActive()){
+			thisImage.addInstruction(this, dif.clipFallback(getClip()));
 		}
 	}
 
@@ -108,6 +108,9 @@ public class WebGraphics extends AbstractVectorGraphics {
 
 	@Override
 	protected boolean writeImage(Image image, AffineTransform transform, Rectangle2D crop, Color bgcolor, ImageObserver observer) {
+		if(crop!=null && (crop.getWidth()<=0 || crop.getHeight()<=0)){
+			return true;
+		}
 		if (image instanceof WebImage || image instanceof VolatileWebImageWrapper) {
 			WebImage wi = image instanceof WebImage ? (WebImage) image : ((VolatileWebImageWrapper) image).getWebImage();
 			if (wi.isDirty()) {
@@ -124,6 +127,11 @@ public class WebGraphics extends AbstractVectorGraphics {
 	private ImageConvertResult toBufferedImage(Image image, ImageObserver observer) {
 		if (image instanceof BufferedImage) {
 			return new ImageConvertResult(true, (BufferedImage) image);
+		}
+		try {
+			new WaitingImageObserver(image).waitImageLoaded();//magic
+		} catch (Exception e) {
+			//ignore
 		}
 		BufferedImage bufferedImage = new BufferedImage(image.getWidth(observer), image.getHeight(observer), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = bufferedImage.createGraphics();
@@ -173,6 +181,8 @@ public class WebGraphics extends AbstractVectorGraphics {
 		if (composite instanceof AlphaComposite) {
 			AlphaComposite ac = (AlphaComposite) composite;
 			thisImage.addInstruction(this, dif.setComposite(ac));
+		} else if (composite instanceof XorModeComposite) {
+			thisImage.addInstruction(this, dif.setXorMode(((XorModeComposite) composite).getXorColor()));
 		}
 	}
 
@@ -198,14 +208,12 @@ public class WebGraphics extends AbstractVectorGraphics {
 
 	@Override
 	public void setPaintMode() {
-		// TODO Auto-generated method stub
-
+		setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 	}
 
 	@Override
 	public void setXORMode(Color c1) {
-		// TODO Auto-generated method stub
-
+		setComposite(new XorModeComposite(c1));
 	}
 
 	@Override
@@ -219,9 +227,11 @@ public class WebGraphics extends AbstractVectorGraphics {
 
 	@Override
 	public void dispose() {
-		thisImage.addInstruction(this, dif.disposeGraphics(this));
-		thisImage.dispose(this);
-		disposed = true;
+		if (!disposed) {
+			thisImage.addInstruction(this, dif.disposeGraphics(this));
+			thisImage.dispose(this);
+			disposed = true;
+		}
 	}
 
 	public int getId() {

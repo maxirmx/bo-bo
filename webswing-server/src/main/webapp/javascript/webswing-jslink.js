@@ -1,46 +1,74 @@
-define([], function amdFactory() {
-
-    return function JsLinkModule() {
-        var module = this;
-        var api;
+export default class JsLinkModule {
+	constructor() {
+        let module = this;
+        let api;
         module.injects = api = {
             cfg: 'webswing.config',
             external: 'external',
             send: 'socket.send',
-            awaitResponse: 'socket.awaitResponse'
+            awaitResponse: 'socket.awaitResponse',
+            fireCallBack : 'webswing.fireCallBack'
         };
         module.provides = {
-            process: process
+            process: process,
+            dispose: dispose
         };
         module.ready = function () {
             referenceCache['instanceObject'] = api.external;
         };
 
-        var idMemberName = '__webswing_jslink_id';
-        var referenceCache = {};
+        let idMemberName = '__webswing_jslink_id';
+        let referenceCache = {};
+
+        function dispose() {
+            for (let key in referenceCache) {
+                if (referenceCache.hasOwnProperty(key)) {
+                    referenceCache[key] = null;
+                }
+            }
+            referenceCache = {};
+            referenceCache['instanceObject'] = api.external;
+            window['listener'] = null;
+            delete window['listener'];
+        }
 
         function process(jsRequest) {
-            var response;
+            let response;
             try {
                 if (jsRequest.type === 'eval') {
-                    var indirectEval = eval;
-                    var result = indirectEval(jsRequest.evalString);
-                    response = buildResponse(result, jsRequest.correlationId);
+                    try {
+                        let indirectEval = eval;
+                        let result = indirectEval(jsRequest.evalString);
+                        response = buildResponse(result, jsRequest.correlationId);
+                    } catch(e) {
+                        api.fireCallBack({type: 'sendFromJavaClient', value: jsRequest.evalString});
+                        response = buildResponse(null, jsRequest.correlationId);
+                    }
                 } else if (jsRequest.type === 'call') {
-                    var ref = jsRequest.thisObjectId != null ? referenceCache[jsRequest.thisObjectId] : window;
-                    var args = decodeParams(jsRequest);
-                    var result = ref[jsRequest.evalString].apply(ref, args);
-                    response = buildResponse(result, jsRequest.correlationId);
+                    let ref = jsRequest.thisObjectId != null ? referenceCache[jsRequest.thisObjectId] : window;
+                    let args = decodeParams(jsRequest);
+					if(ref[jsRequest.evalString] === undefined || ref[jsRequest.evalString] === null)
+					{
+					    response = buildResponse(null, jsRequest.correlationId);  	
+					}
+                    else 
+					{						
+						var result = ref[jsRequest.evalString].apply(ref, args);
+						response = buildResponse(result, jsRequest.correlationId);
+					}
                 } else if (jsRequest.type === 'setMember' || jsRequest.type === 'setSlot') {
-                    var ref = jsRequest.thisObjectId != null ? referenceCache[jsRequest.thisObjectId] : window;
-                    var args = decodeParams(jsRequest);
+                    let ref = jsRequest.thisObjectId != null ? referenceCache[jsRequest.thisObjectId] : window;
+                    let args = decodeParams(jsRequest);
                     ref[jsRequest.evalString] = args != null ? args[0] : null;
+                    if (jsRequest.evalString === 'listener' && ref[jsRequest.evalString] != null) {
+                        api.fireCallBack({type: 'javaClientObjectId', value: ref[jsRequest.evalString].id});
+                    }
                     response = buildResponse(null, jsRequest.correlationId);
                 } else if (jsRequest.type === 'getMember' || jsRequest.type === 'getSlot') {
-                    var ref = jsRequest.thisObjectId != null ? referenceCache[jsRequest.thisObjectId] : window;
+                    let ref = jsRequest.thisObjectId != null ? referenceCache[jsRequest.thisObjectId] : window;
                     response = buildResponse(ref[jsRequest.evalString], jsRequest.correlationId);
                 } else if (jsRequest.type === 'deleteMember') {
-                    var ref = jsRequest.thisObjectId != null ? referenceCache[jsRequest.thisObjectId] : window;
+                    let ref = jsRequest.thisObjectId != null ? referenceCache[jsRequest.thisObjectId] : window;
                     delete ref[jsRequest.evalString];
                     response = buildResponse(null, jsRequest.correlationId);
                 }
@@ -58,7 +86,7 @@ define([], function amdFactory() {
         }
 
         function buildResponse(obj, correlationId) {
-            var result = {
+            let result = {
                 jsResponse: serializeObject(obj)
             };
             result.jsResponse.correlationId = correlationId;
@@ -66,7 +94,7 @@ define([], function amdFactory() {
         }
 
         function serializeObject(object) {
-            var jsResponse = {};
+            let jsResponse = {};
             if (object == null) {
                 return jsResponse;
             } else if (Object.prototype.toString.call(object) === '[object Error]') {
@@ -94,10 +122,10 @@ define([], function amdFactory() {
         }
 
         function decodeParams(jsRequest) {
-            var result = [];
-            var args = jsRequest.params;
+            let result = [];
+            let args = jsRequest.params;
             if (args != null) {
-                for (var i = 0; i < args.length; i++) {
+                for (let i = 0; i < args.length; i++) {
                     result.push(decodeJsParam(args[i]));
                 }
             }
@@ -112,8 +140,8 @@ define([], function amdFactory() {
             } else if (param.javaObject != null) {
                 return new JavaObjectRef(param.javaObject);
             } else if (param.array != null) {
-                var array = [];
-                for (var j = 0; j < param.array.length; j++) {
+                let array = [];
+                for (let j = 0; j < param.array.length; j++) {
                     array.push(decodeJsParam(param.array[j]));
                 }
                 return array;
@@ -122,7 +150,7 @@ define([], function amdFactory() {
         }
 
         function GUID() {
-            var S4 = function () {
+            let S4 = function () {
                 return Math.floor(Math.random() * 0x10000).toString(16);
             };
             return (S4() + S4() + S4());
@@ -131,19 +159,19 @@ define([], function amdFactory() {
         function JavaObjectRef(javaRefMsg) {
             this.id = javaRefMsg.id;
             if (javaRefMsg.methods != null) {
-                for (var i = 0; i < javaRefMsg.methods.length; i++) {
-                    var methodName = javaRefMsg.methods[i];
+                for (let i = 0; i < javaRefMsg.methods.length; i++) {
+                    let methodName = javaRefMsg.methods[i];
                     this[methodName] = function (m) {
                         return function () {
-                            var currentArguments = arguments;
+                            let currentArguments = arguments;
                             return new Promise(function (resolve, reject) {
-                                var jCorrelationId = GUID();
-                                var params = [];
-                                for (var i = 0; i < currentArguments.length; i++) {
-                                    var serializedObject = serializeObject(currentArguments[i]);
+                                let jCorrelationId = GUID();
+                                let params = [];
+                                for (let i = 0; i < currentArguments.length; i++) {
+                                    let serializedObject = serializeObject(currentArguments[i]);
                                     params[i] = serializedObject != null ? serializedObject.value : null;
                                 }
-                                var request = {
+                                let request = {
                                     javaRequest: {
                                         correlationId: jCorrelationId,
                                         objectId: javaRefMsg.id,
@@ -167,5 +195,5 @@ define([], function amdFactory() {
                 }
             }
         }
-    };
-});
+    }
+}

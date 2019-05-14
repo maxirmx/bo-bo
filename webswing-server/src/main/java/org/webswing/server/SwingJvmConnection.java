@@ -76,6 +76,7 @@ public class SwingJvmConnection implements MessageListener {
 							consumer.close();
 							producer.close();
 							session.close();
+							connection.setExceptionListener(null);
 							connection.close();
 							jmsOpen = false;
 						}
@@ -136,19 +137,26 @@ public class SwingJvmConnection implements MessageListener {
 						latest.setHeapSize(s.getHeapSize());
 						latest.setHeapSizeUsed(s.getHeapSizeUsed());
 					} else if (o instanceof ExitMsgInternal) {
-						close();
-						ExitMsgInternal e = (ExitMsgInternal) o;
-						webListener.kill(e.getWaitForExit());
+						log.info("SwingJvmConnection:onMessage() ExitMsgInternal");
+						//close operation need to be done in seperate thread, this avoids deadlock between onException and onMessage
+						Runnable closeThread = new Runnable() {
+							@Override
+							public void run() {
+								log.info("close thread start");
+								close();
+								ExitMsgInternal e = (ExitMsgInternal) o;
+								webListener.kill(e.getWaitForExit());
+							}
+						};
+						new Thread(closeThread).start();
 					}
 				} else if (o instanceof MsgOut) {
 					webListener.sendToWeb((MsgOut) o);
 				}
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			log.error("SwingJvmConnection:onMessage", e);
-
 		}
-
 	}
 
 	public void close() {
@@ -159,14 +167,23 @@ public class SwingJvmConnection implements MessageListener {
 					producer.close();
 					session.close();
 				} finally {
-					((ActiveMQConnection) connection).destroyDestination((ActiveMQDestination) consumerQueue);
-					((ActiveMQConnection) connection).destroyDestination((ActiveMQDestination) consumerQueue);
-					webListener.sendToWeb(SimpleEventMsgOut.shutDownNotification.buildMsgOut());
+					try {
+						((ActiveMQConnection) connection).destroyDestination((ActiveMQDestination) consumerQueue);
+						((ActiveMQConnection) connection).destroyDestination((ActiveMQDestination) producerQueue);
+						webListener.sendToWeb(SimpleEventMsgOut.shutDownNotification.buildMsgOut());
+					} catch (Exception e1) {
+						log.error("SwingJvmConnection:close()e1", e1);
+					}
+					try {
+						connection.setExceptionListener(null);
+					} catch (Exception e2) {
+						log.error("SwingJvmConnection:close()e2", e2);
+					}
 					connection.close();
 					jmsOpen = false;
 				}
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			log.error("SwingJvmConnection:close", e);
 		}
 		webListener.notifyExiting();

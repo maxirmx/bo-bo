@@ -203,7 +203,7 @@ public class ProtoMapper {
 		} else if (protoField.getJavaType().equals(JavaType.ENUM)) {
 			setField(b, protoField, resolveEnum((Enum<?>) value), list);
 		} else if (protoField.getJavaType().equals(JavaType.BYTE_STRING)) {
-			setField(b, protoField, ByteString.readFrom(new ByteArrayInputStream((byte[]) value)), list);
+			setField(b, protoField, ByteString.readFrom(new ByteArrayInputStream((byte[]) value),((byte[]) value).length), list);
 		} else {
 			setField(b, protoField, value, list);
 		}

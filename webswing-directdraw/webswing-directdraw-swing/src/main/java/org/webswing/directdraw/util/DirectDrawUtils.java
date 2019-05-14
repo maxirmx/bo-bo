@@ -155,6 +155,7 @@ public class DirectDrawUtils {
 				if (graphicsCreate != null) {
 					if (!equalStatus(graphicsCreate, mergedStatus)) {
 						graphicsCreate = createGraphics(ctx, graphicsCreate.getArg(0), mergedStatus);
+						mergedStatus.reset();
 					}
 					graphicsCreateMap.put(graphicsCreate.getArg(0).getId(), graphicsCreate);
 				} else if (isGraphicsCreateInst) {
@@ -270,7 +271,9 @@ public class DirectDrawUtils {
 		if (fileName != null) {
 			File f = new File(fileName);
 			if (f.exists()) {
-				return fileName.hashCode() + new File(fileName).getName();
+				String name = fileName.hashCode() + new File(fileName).getName();
+				name = name.length() > 20 ? name.substring(0, 20) : name; //IE will ignore the font if name is longer than 31 chars 
+				return name;
 			} else {
 				return fileName;
 			}

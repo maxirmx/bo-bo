@@ -1,14 +1,17 @@
-define([ 'jquery', 'text!templates/playback.html', 'text!templates/playback.css' ], function amdFactory($, html, css) {
-    "use strict";
-    var style = $("<style></style>", {
-        type : "text/css"
-    });
-    style.text(css);
-    $("head").prepend(style);
+import $ from 'jquery';
+import html from './templates/playback.html';
+import css from './templates/playback.css';
+    
+export default class PlaybackModule {
+	constructor() {
+		let style = $("<style></style>", {
+            type : "text/css"
+        });
+        style.text(css);
+        $("head").prepend(style);
 
-    return function PlaybackModule() {
-        var module = this;
-        var api;
+        let module = this;
+        let api;
         module.injects = api = {
             cfg : 'webswing.config',
             send : 'socket.send',
@@ -23,12 +26,12 @@ define([ 'jquery', 'text!templates/playback.html', 'text!templates/playback.css'
                 displayPlaybackBar();
             }
         }
-        var playbackBar;
+        let playbackBar;
 
         function playbackInfo(data) {
             if (playbackBar != null && data.playback != null) {
                 data = data.playback;
-                var progress = parseInt(data.current / data.total * 100, 10);
+                let progress = parseInt(data.current / data.total * 100, 10);
                 playbackBar.find('.webswing-playback-progress-bar').css('width', progress + '%');
                 playbackBar.find('span[data-id="current"]').html(data.current);
                 playbackBar.find('span[data-id="total"]').html(data.total)
@@ -40,7 +43,7 @@ define([ 'jquery', 'text!templates/playback.html', 'text!templates/playback.css'
             playbackBar = api.cfg.rootElement.find('div[data-id="playbackBar"]');
             playbackBar.find('button[data-id="reset"]').on('click', function(e) {
                 sendCommand('reset');
-                var ctx=api.getCanvas().getContext("2d");
+                let ctx=api.getCanvas().getContext("2d");
                 ctx.clearRect(0, 0, api.getCanvas().width, api.getCanvas().height);
             });
             playbackBar.find('button[data-id="play"]').on('click', function(e) {
@@ -69,5 +72,5 @@ define([ 'jquery', 'text!templates/playback.html', 'text!templates/playback.css'
             });
         }
 
-    };
-});
+    }
+}

@@ -18,28 +18,9 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
 import org.webswing.directdraw.DirectDraw;
-import org.webswing.directdraw.model.ArcConst;
-import org.webswing.directdraw.model.ColorConst;
-import org.webswing.directdraw.model.CompositeConst;
-import org.webswing.directdraw.model.DrawConstant;
-import org.webswing.directdraw.model.DrawInstruction;
-import org.webswing.directdraw.model.EllipseConst;
-import org.webswing.directdraw.model.FontConst;
-import org.webswing.directdraw.model.GlyphListConst;
-import org.webswing.directdraw.model.GradientConst;
-import org.webswing.directdraw.model.ImageConst;
-import org.webswing.directdraw.model.IntegerConst;
-import org.webswing.directdraw.model.LinearGradientConst;
-import org.webswing.directdraw.model.PathConst;
-import org.webswing.directdraw.model.PointsConst;
-import org.webswing.directdraw.model.RadialGradientConst;
-import org.webswing.directdraw.model.RectangleConst;
-import org.webswing.directdraw.model.RoundRectangleConst;
-import org.webswing.directdraw.model.StringConst;
-import org.webswing.directdraw.model.StrokeConst;
-import org.webswing.directdraw.model.TextureConst;
-import org.webswing.directdraw.model.TransformConst;
+import org.webswing.directdraw.model.*;
 import org.webswing.directdraw.proto.Directdraw.DrawInstructionProto.InstructionProto;
+import org.webswing.directdraw.util.XorModeComposite;
 
 public class DrawInstructionFactory {
 
@@ -51,6 +32,14 @@ public class DrawInstructionFactory {
 
 	public DrawInstruction draw(Shape s, Shape clip) {
 		return new DrawInstruction(InstructionProto.DRAW, toPathConst(s), toPathConst(clip));
+	}
+
+	public DrawInstruction drawFallback(Shape s) {
+		return new DrawInstruction(InstructionProto.DRAW,new FallbackConstant<Shape>(ctx,s),DrawConstant.nullConst);
+	}
+
+	public DrawInstruction clipFallback(Shape clip) {
+		return new DrawInstruction(InstructionProto.DRAW,DrawConstant.nullConst,new FallbackConstant<Shape>(ctx,clip));
 	}
 
 	public DrawInstruction fill(Shape s, Shape clip) {
@@ -86,7 +75,7 @@ public class DrawInstructionFactory {
 	public DrawInstruction createGraphics(WebGraphics g) {
 		DrawConstant<?> id = new IntegerConst(g.getId());
 		DrawConstant<?> transformConst = new TransformConst(ctx, g.getTransform());
-		DrawConstant<?> compositeConst = g.getComposite() instanceof AlphaComposite ? new CompositeConst(ctx, (AlphaComposite) g.getComposite()) : DrawConstant.nullConst;
+		DrawConstant<?> compositeConst =new CompositeConst(ctx,g.getComposite());
 		DrawConstant<?> strokeConst = g.getStroke() instanceof BasicStroke ? new StrokeConst(ctx, (BasicStroke) g.getStroke()) : DrawConstant.nullConst;
 		DrawConstant<?> paintConst;
 		try{
@@ -160,6 +149,10 @@ public class DrawInstructionFactory {
 
 	public DrawInstruction setComposite(AlphaComposite ac) {
 		return new DrawInstruction(InstructionProto.SET_COMPOSITE, new CompositeConst(ctx, ac));
+	}
+
+	public DrawInstruction setXorMode(Color xorColor) {
+		return new DrawInstruction(InstructionProto.SET_COMPOSITE, new CompositeConst(ctx, new XorModeComposite(xorColor)));
 	}
 
 }

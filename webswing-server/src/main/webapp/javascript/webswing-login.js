@@ -1,8 +1,11 @@
-define(['jquery', 'text!templates/login.html'], function amdFactory($, html) {
-    "use strict";
-    return function LoginModule() {
-        var module = this;
-        var api;
+import $ from 'jquery';
+import html from './templates/login.html';
+import i18n from './webswing-i18n';
+
+export default class LoginModule {
+	constructor() {
+        let module = this;
+        let api;
         module.injects = api = {
             cfg: 'webswing.config',
             start: 'webswing.start',
@@ -16,7 +19,7 @@ define(['jquery', 'text!templates/login.html'], function amdFactory($, html) {
             user: getUser
         };
 
-        var user;
+        let user;
 
         function loginDialog() {
             return {
@@ -48,7 +51,7 @@ define(['jquery', 'text!templates/login.html'], function amdFactory($, html) {
                 data: loginDialogVisible() ? api.cfg.rootElement.find('form[data-id="loginForm"]').serialize() : '',
                 success: function (data) {
                     if (loginDialogVisible()) {
-                        var errorMsg = api.cfg.rootElement.find('*[data-id="loginErrorMsg"]');
+                        let errorMsg = api.cfg.rootElement.find('*[data-id="loginErrorMsg"]');
                         errorMsg.html('');
                     }
                     user = data;
@@ -57,7 +60,7 @@ define(['jquery', 'text!templates/login.html'], function amdFactory($, html) {
                     }
                 },
                 error: function (data) {
-                	if(errorCallback!=null){
+                	if(errorCallback){
                 		errorCallback();
                 	}else{
                 		if (!loginDialogVisible()) {
@@ -95,5 +98,5 @@ define(['jquery', 'text!templates/login.html'], function amdFactory($, html) {
         function getUser() {
             return user;
         }
-    };
-});
+    }
+}

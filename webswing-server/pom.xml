@@ -5,18 +5,18 @@
 	<parent>
 		<artifactId>webswing</artifactId>
 		<groupId>org.webswing</groupId>
-		<version>2.4</version>
+		<version>2.4.1</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<dependencies>
 
-		<!-- war overlays -->
-		<dependency>
+		<!-- war overlays commented as webswing-dd.js is managed within this webapp now-->
+		<!--<dependency>
 			<groupId>org.webswing</groupId>
 			<artifactId>webswing-directdraw-server</artifactId>
 			<version>${project.version}</version>
 			<type>war</type>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.webswing</groupId>
 			<artifactId>webswing-admin</artifactId>
@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>org.atmosphere.client</groupId>
 			<artifactId>javascript</artifactId>
-			<version>2.3.1</version>
+			<version>${atmosphere.js.version}</version>
 			<type>war</type>
 		</dependency>
 
@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>org.atmosphere</groupId>
 			<artifactId>atmosphere-runtime</artifactId>
-			<version>2.3.6</version>
+			<version>${atmosphere.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
@@ -48,14 +48,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-broker</artifactId>
-			<version>5.13.3</version>
+			<version>${activemq.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
@@ -68,14 +65,21 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.6</version>
 		</dependency>
+
+
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>${shiro.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
@@ -83,19 +87,13 @@
 			<version>1.1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-web</artifactId>
-			<version>1.2.3</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
-			<version>2.5.0</version>
+			<version>${protobuf.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
-			<version>2.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
@@ -126,34 +124,62 @@
 		</dependency>
 		<dependency>
 			<groupId>org.webswing</groupId>
-			<artifactId>webswing-app-toolkit-java6</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webswing</groupId>
-			<artifactId>webswing-app-toolkit-java7</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webswing</groupId>
 			<artifactId>webswing-app-toolkit-java8</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+			<artifactId>hk2-api</artifactId>
+			<version>${glassfish.hk2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+			<artifactId>hk2-utils</artifactId>
+			<version>${glassfish.hk2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+			<artifactId>hk2-locator</artifactId>
+			<version>${glassfish.hk2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.apache.logging.log4j</groupId>-->
+			<!--<artifactId>log4j-slf4j-impl</artifactId>-->
+			<!--<version>${log4j2.version}</version>-->
+		<!--</dependency>-->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<!-- log4j2.x end -->
+
+		<dependency>
+			<groupId>org.lz4</groupId>
+			<artifactId>lz4-java</artifactId>
+			<version>${lz4.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
 		<finalName>webswing-server</finalName>
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<compilerArguments>
-						<bootclasspath>${basedir}/../lib/rt1.7.0_60.jar</bootclasspath>
-					</compilerArguments>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
@@ -224,6 +250,14 @@
 						</resource>
 					</webResources>
 					<warSourceDirectory>src/main/webapp</warSourceDirectory>
+					<warSourceExcludes>
+						dist/,
+						javascript/,
+						node_modules/,
+						package.json,
+						webpack.config.js,
+						server.js,
+					</warSourceExcludes>
 					<packagingExcludes>
 						javascript/,
 						WEB-INF/lib/jetty-*.jar,
@@ -239,7 +273,7 @@
 						WEB-INF/lib/slf4j-simple-*.jar,
 						WEB-INF/lib/freehep-*.jar,
 						WEB-INF/lib/webswing-directdraw-swing-*.jar,
-						WEB-INF/lib/lz4-*.jar
+						WEB-INF/lib/websocket*jar
 					</packagingExcludes>
 					<archive>
 						<manifest>
@@ -285,7 +319,7 @@
 						<configuration>
 							<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/server-lib</outputDirectory>
 							<includeArtifactIds>
-								webswing-app-toolkit,webswing-server-launcher,commons-cli,jetty-webapp,jetty-security,jetty-websocket,jetty-xml,jetty-servlet,jetty-server,jetty-continuation,jetty-http,jetty-io,jetty-util,javax.servlet,jetty-jmx
+								webswing-app-toolkit,webswing-server-launcher,commons-cli,jetty-security,jetty-xml,jetty-servlet,jetty-webapp,jetty-continuation,jetty-server,jetty-http,jetty-io,jetty-util,javax.servlet-api,baseutil,websocket-server,websocket-servlet,websocket-common,websocket-client,websocket-api,jetty-client
 							</includeArtifactIds>
 						</configuration>
 					</execution>
@@ -298,7 +332,7 @@
 						<configuration>
 							<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/swing-lib</outputDirectory>
 							<includeArtifactIds>
-								webswing-app-interface,webswing-app-launcher,webswing-directdraw-swing,protobuf-java,activemq-client,geronimo-jms_1.1_spec,geronimo-j2ee-management_1.1_spec,hawtbuf,commons-codec,commons-io,commons-lang,bcel,jakarta-regexp,guava,jsr305,pngencoder,slf4j-api,slf4j-simple,pdfbox,jempbox,fontbox,commons-logging,freehep-graphicsio-pdf,freehep-graphics2d,freehep-graphicsbase,freehep-graphicsio,freehep-io,lz4,jackson-mapper-asl,jackson-core-asl
+								webswing-app-interface,webswing-app-launcher,webswing-directdraw-swing,protobuf-java,activemq-client,geronimo-jms_1.1_spec,geronimo-j2ee-management_1.1_spec,hawtbuf,commons-codec,commons-io,commons-lang,bcel,jakarta-regexp,guava,jsr305,pngencoder,slf4j-api,slf4j-simple,pdfbox,jempbox,fontbox,commons-logging,freehep-graphicsio-pdf,freehep-graphics2d,freehep-graphicsbase,freehep-graphicsio,freehep-io,lz4-java,jackson-databind,jackson-core,jackson-annotations
 							</includeArtifactIds>
 						</configuration>
 					</execution>
@@ -372,9 +406,9 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.mortbay.jetty</groupId>
+						<groupId>org.eclipse.jetty</groupId>
 						<artifactId>jetty-maven-plugin</artifactId>
-						<version>8.1.14.v20131031</version>
+						<version>${jetty.version}</version>
 						<executions>
 							<execution>
 								<goals>
@@ -382,15 +416,20 @@
 								</goals>
 								<phase>package</phase>
 								<configuration>
-									<scanIntervalSeconds>5</scanIntervalSeconds>
+									<jettyXml>${project.basedir}/src/test/resources/jetty.xml</jettyXml>
+									<reload>manual</reload>
 									<webApp>
 										<contextPath>/</contextPath>
-										<defaultsDescriptor>${project.basedir}/src/test/webapp/WEB-INF/jetty-maven-plugin-webdefault.xml</defaultsDescriptor>
 										<resourceBases>
 											<resourceBase>${project.basedir}/src/main/webapp</resourceBase>
 											<resourceBase>${project.basedir}/src/test/webapp</resourceBase>
+											<resourceBase>${project.basedir}/../webswing-directdraw/webswing-directdraw-server/src/main/webapp</resourceBase>
 											<resourceBase>${project.basedir}/../webswing-admin/src/main/webapp</resourceBase>
 										</resourceBases>
+										<webInfIncludeJarPattern>^$</webInfIncludeJarPattern>
+										<_initParams>
+											<org.eclipse.jetty.servlet.Default.useFileMappedBuffer>false</org.eclipse.jetty.servlet.Default.useFileMappedBuffer>
+										</_initParams>
 									</webApp>
 									<systemProperties>
 										<force>true</force>
@@ -427,19 +466,37 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>com.github.bringking</groupId>
-						<artifactId>requirejs-maven-plugin</artifactId>
-						<version>2.0.4</version>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
 						<executions>
 							<execution>
+								<id>npm install</id>
+								<phase>compile</phase>
 								<goals>
-									<goal>optimize</goal>
+									<goal>exec</goal>
 								</goals>
-								<phase>prepare-package</phase>
 								<configuration>
-									<configFile>src/main/config/build.js</configFile>
-									<filterConfig>true</filterConfig>
+									<executable>npm</executable>
+									<workingDirectory>${project.basedir}/src/main/webapp/</workingDirectory>
+									<arguments>
+										<argument>install</argument>
+									</arguments>
 								</configuration>
+							</execution>
+							<execution>
+								<id>npm run build</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>npm</executable>
+									<workingDirectory>${project.basedir}/src/main/webapp/</workingDirectory>
+									<arguments>
+										<argument>run</argument>
+										<argument>debug</argument>
+									</arguments>
+								</configuration>						
 							</execution>
 						</executions>
 					</plugin>
@@ -452,12 +509,23 @@
 								<phase>package</phase>
 								<configuration>
 									<target>
+									    <mkdir dir="${project.build.directory}/${project.build.finalName}/javascript" />
+										<copy verbose="true" overwrite="true" force="true" todir="${project.build.directory}/${project.build.finalName}/javascript">
+											<fileset dir="${project.basedir}/src/main/webapp/dist">
+												<include name="webswing-embed.js" />
+											</fileset>
+										</copy>
+										<copy verbose="true" overwrite="true" force="true" todir="${project.build.directory}/${project.build.finalName}/javascript">
+											<fileset dir="${project.basedir}/src/main/webapp/javascript">
+												<include name="welcome.js" />
+											</fileset>
+										</copy>
 										<war destfile="${project.build.directory}/${project.build.finalName}.war" update="true">
 											<fileset dir="${project.build.directory}/${project.build.finalName}" includes="WEB-INF/lib/rt-win-shell*.jar" />
 											<fileset dir="${project.build.directory}/${project.build.finalName}" includes="WEB-INF/swing-lib/*.jar" />
 											<fileset dir="${project.build.directory}/${project.build.finalName}" includes="WEB-INF/server-lib/*.jar" />
 											<fileset dir="${project.build.directory}/${project.build.finalName}/WEB-INF/classes/" includes="main/*.class" />
-											<fileset dir="${project.build.directory}/require-build/" includes="javascript/**" />
+											<fileset dir="${project.build.directory}/${project.build.finalName}" includes="javascript/*.js" />
 										</war>
 									</target>
 								</configuration>
@@ -469,30 +537,6 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
-		<!-- =========================================RELEASE BUILD PROFILE================================== -->
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.github.bringking</groupId>
-						<artifactId>requirejs-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<goals>
-									<goal>optimize</goal>
-								</goals>
-								<phase>prepare-package</phase>
-								<configuration>
-									<configFile>src/main/config/build-release.js</configFile>
-									<filterConfig>true</filterConfig>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+		</profile>		
 	</profiles>
 </project>

@@ -99,7 +99,7 @@ public class WindowEventHandler {
 					previousSize.remove(w);
 					lockedOnEvent = false;
 				}
-				if (MouseEvent.MOUSE_DRAGGED == e.getID() && ((MouseEvent) e).getButton() == 1) {
+				if (MouseEvent.MOUSE_DRAGGED == e.getID()) {
 					Window w = (Window) e.getSource();
 					moveWindow(w, e.getXOnScreen() - referenceMouseLocation.x, e.getYOnScreen() - referenceMouseLocation.y);
 				}
@@ -107,13 +107,76 @@ public class WindowEventHandler {
 					((JFrame) e.getSource()).setExtendedState(JFrame.NORMAL);
 				}
 				break;
-			case resizeUni:
+			case resizeUniTopLeft:
 				if (MouseEvent.MOUSE_RELEASED == e.getID() && ((MouseEvent) e).getButton() == 1) {
 					Window w = (Window) e.getSource();
 					previousSize.remove(w);
 					lockedOnEvent = false;
 				}
-				if (MouseEvent.MOUSE_DRAGGED == e.getID() && ((MouseEvent) e).getButton() == 1) {
+				if (MouseEvent.MOUSE_DRAGGED == e.getID()) {
+					Window w = (Window) e.getSource();
+					Rectangle wb = w.getBounds();
+					Dimension wMinSize = getMinimumWindowSize(w);
+					Point stopPoint = new Point(wb.x + wb.width - wMinSize.width, wb.y + wb.height - wMinSize.height);
+					int x = (int) Math.min(e.getXOnScreen(), stopPoint.getX());
+					int y = (int) Math.min(e.getYOnScreen(), stopPoint.getY());
+					int width = wb.x + wb.width - x;
+					int height = wb.y + wb.height - y;
+					resizeAndMoveWindow(w, x, y, width, height);
+				}
+				if (e.getSource() instanceof JFrame) {
+					((JFrame) e.getSource()).setExtendedState(JFrame.NORMAL);
+				}
+				break;
+			case resizeUniTopRight:
+				if (MouseEvent.MOUSE_RELEASED == e.getID() && ((MouseEvent) e).getButton() == 1) {
+					Window w = (Window) e.getSource();
+					previousSize.remove(w);
+					lockedOnEvent = false;
+				}
+				if (MouseEvent.MOUSE_DRAGGED == e.getID()) {
+					Window w = (Window) e.getSource();
+					Rectangle wb = w.getBounds();
+					Dimension wMinSize = getMinimumWindowSize(w);
+					Point stopPoint = new Point(wb.x + wMinSize.width, wb.y + wb.height - wMinSize.height);
+					int x = wb.x;
+					int y = (int) Math.min(e.getYOnScreen(), stopPoint.getY());
+					int width = e.getXOnScreen() - wb.x;
+					int height = wb.y + wb.height - y;
+					resizeAndMoveWindow(w, x, y, width, height);
+				}
+				if (e.getSource() instanceof JFrame) {
+					((JFrame) e.getSource()).setExtendedState(JFrame.NORMAL);
+				}
+				break;
+			case resizeUniBottomLeft:
+				if (MouseEvent.MOUSE_RELEASED == e.getID() && ((MouseEvent) e).getButton() == 1) {
+					Window w = (Window) e.getSource();
+					previousSize.remove(w);
+					lockedOnEvent = false;
+				}
+				if (MouseEvent.MOUSE_DRAGGED == e.getID() ) {
+					Window w = (Window) e.getSource();
+					Rectangle wb = w.getBounds();
+					Dimension wMinSize = getMinimumWindowSize(w);
+					Point stopPoint = new Point(wb.x + wb.width - wMinSize.width, wb.y + wMinSize.height);
+					int x = (int) Math.min(e.getXOnScreen(), stopPoint.getX());
+					int y = wb.y;
+					int width = wb.x + wb.width - x;
+					int height = e.getYOnScreen() - wb.y;
+					resizeAndMoveWindow(w, x, y, width, height);
+				}
+				if (e.getSource() instanceof JFrame) {
+					((JFrame) e.getSource()).setExtendedState(JFrame.NORMAL);
+				}
+				break;
+			case resizeUniBottomRight:
+				if (MouseEvent.MOUSE_RELEASED == e.getID() && ((MouseEvent) e).getButton() == 1) {
+					Window w = (Window) e.getSource();
+					previousSize.remove(w);
+					lockedOnEvent = false;
+				}
+				if (MouseEvent.MOUSE_DRAGGED == e.getID()) {
 					Window w = (Window) e.getSource();
 					resizeWindow(w, e.getXOnScreen() - w.getX(), e.getYOnScreen() - w.getY());
 				}
@@ -127,9 +190,27 @@ public class WindowEventHandler {
 					previousSize.remove(w);
 					lockedOnEvent = false;
 				}
-				if (MouseEvent.MOUSE_DRAGGED == e.getID() && ((MouseEvent) e).getButton() == 1) {
+				if (MouseEvent.MOUSE_DRAGGED == e.getID()) {
 					Window w = (Window) e.getSource();
 					resizeWindow(w, e.getXOnScreen() - w.getX(), w.getSize().height);
+				}
+				if (e.getSource() instanceof JFrame) {
+					((JFrame) e.getSource()).setExtendedState(JFrame.NORMAL);
+				}
+				break;
+			case resizeLeft:
+				if (MouseEvent.MOUSE_RELEASED == e.getID() && ((MouseEvent) e).getButton() == 1) {
+					Window w = (Window) e.getSource();
+					previousSize.remove(w);
+					lockedOnEvent = false;
+				}
+				if (MouseEvent.MOUSE_DRAGGED == e.getID() ) {
+					Window w = (Window) e.getSource();
+					Rectangle wb = w.getBounds();
+					Dimension wMinSize = getMinimumWindowSize(w);
+					int x = (int) Math.min(e.getXOnScreen(), wb.x + wb.width - wMinSize.width);
+					int width = wb.x + wb.width - x;
+					resizeAndMoveWindow(w, x, wb.y, width, wb.height);
 				}
 				if (e.getSource() instanceof JFrame) {
 					((JFrame) e.getSource()).setExtendedState(JFrame.NORMAL);
@@ -141,9 +222,27 @@ public class WindowEventHandler {
 					previousSize.remove(w);
 					lockedOnEvent = false;
 				}
-				if (MouseEvent.MOUSE_DRAGGED == e.getID() && ((MouseEvent) e).getButton() == 1) {
+				if (MouseEvent.MOUSE_DRAGGED == e.getID()) {
 					Window w = (Window) e.getSource();
 					resizeWindow(w, w.getSize().width, e.getYOnScreen() - w.getY());
+				}
+				if (e.getSource() instanceof JFrame) {
+					((JFrame) e.getSource()).setExtendedState(JFrame.NORMAL);
+				}
+				break;
+			case resizeTop:
+				if (MouseEvent.MOUSE_RELEASED == e.getID() && ((MouseEvent) e).getButton() == 1) {
+					Window w = (Window) e.getSource();
+					previousSize.remove(w);
+					lockedOnEvent = false;
+				}
+				if (MouseEvent.MOUSE_DRAGGED == e.getID() ) {
+					Window w = (Window) e.getSource();
+					Rectangle wb = w.getBounds();
+					Dimension wMinSize = getMinimumWindowSize(w);
+					int y = (int) Math.min(e.getYOnScreen(), wb.y + wb.height - wMinSize.height);
+					int height = wb.y + wb.height - y;
+					resizeAndMoveWindow(w, wb.x, y, wb.width, height);
 				}
 				if (e.getSource() instanceof JFrame) {
 					((JFrame) e.getSource()).setExtendedState(JFrame.NORMAL);
@@ -153,6 +252,10 @@ public class WindowEventHandler {
 				lockedOnEvent = false;
 			}
 		}
+	}
+
+	private Dimension getMinimumWindowSize(Window w) {
+		return w.getMinimumSize();
 	}
 
 	public void moveWindow(Window w, int x, int y) {
@@ -177,6 +280,25 @@ public class WindowEventHandler {
 		}
 	}
 
+	public void resizeAndMoveWindow(final Window w, final int x, final int y, int width, int height) {
+		if (w instanceof JFrame) {
+			((JFrame) w).setExtendedState(JFrame.NORMAL);
+		}
+		final Dimension originalSize = w.getSize();
+		final Dimension newSize = new Dimension(width, height);
+		validateSize(w, newSize);
+		if (!originalSize.equals(newSize)) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					w.setSize(newSize);
+					w.setLocation(x, y);
+					WindowManager.getInstance().requestRepaintAfterMove(w, new Rectangle(w.getX(), w.getY(), originalSize.width, originalSize.height));
+				}
+			});
+		}
+	}
+
 	private void validateSize(Window w, Dimension newSize) {
 		Dimension min = w.getMinimumSize();
 		newSize.width = Math.max(min.width, newSize.width);
@@ -191,6 +313,11 @@ public class WindowEventHandler {
 
 	public Window getLockedToWindow() {
 		return window;
+	}
+	
+	public void setLockedToWindow(boolean lockToBeReset)
+	{
+		lockedOnEvent = lockToBeReset; 	
 	}
 
 }

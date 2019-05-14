@@ -43,7 +43,7 @@ public class ServerConnectionServiceImpl implements MessageListener, ServerConne
 	private static ServerConnectionServiceImpl impl;
 	private static ActiveMQConnectionFactory connectionFactory;
 	private static long syncTimeout = Long.getLong(Constants.SWING_START_SYS_PROP_SYNC_TIMEOUT, 3000);
-
+	private static final String WORK_IN_BACKGROUND = "WORK_IN_BACKGROUND";
 	private Connection connection;
 	private Session session;
 	private MessageProducer producer;
@@ -79,7 +79,7 @@ public class ServerConnectionServiceImpl implements MessageListener, ServerConne
 					if ((diff / 1000 > 10) && ((diff / 1000) % 10 == 0)) {
 						Logger.warn("Inactive for " + diff / 1000 + " seconds." + (terminated ? "[waiting for application to stop]" : ""));
 					}
-					if (diff > timeoutMs) {
+					if (diff > timeoutMs && !isWorkingInBackground()) {
 						if (!terminated) {//only call once
 							terminated = true;
 							Logger.warn("Exiting swing application due to inactivity for " + diff / 1000 + " seconds.");
@@ -93,6 +93,12 @@ public class ServerConnectionServiceImpl implements MessageListener, ServerConne
 			}
 		};
 
+	}
+
+	private boolean isWorkingInBackground() {
+		boolean workInBackground = Boolean.valueOf(System.getProperty(WORK_IN_BACKGROUND));
+		Logger.warn("isWorkingInBackground = " + workInBackground);
+		return workInBackground;
 	}
 
 	public void initialize() {
@@ -110,16 +116,10 @@ public class ServerConnectionServiceImpl implements MessageListener, ServerConne
 
 				@Override
 				public void onException(JMSException paramJMSException) {
-					Logger.warn("JMS clien connection error: " + paramJMSException.getMessage());
-					try {
-						producer.close();
-						consumer.close();
-						session.close();
-						connection.close();
-					} catch (JMSException e) {
-						// do nothing, will try to reinitialize.
-					}
-					ServerConnectionServiceImpl.this.initialize();
+                    Logger.warn("JMS clien connection error: " + paramJMSException.getMessage());
+                    Logger.error("Exiting swing application because could not connect to JMS:"
+                            + paramJMSException.getMessage(), paramJMSException);
+                    System.exit(1);
 				}
 			});
 		} catch (JMSException e) {

@@ -1,12 +1,5 @@
 package org.webswing.server;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.atmosphere.cpr.AtmosphereResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,18 +7,21 @@ import org.webswing.model.MsgIn;
 import org.webswing.model.c2s.ConnectionHandshakeMsgIn;
 import org.webswing.model.s2c.SimpleEventMsgOut;
 import org.webswing.model.server.SwingDescriptor;
-import org.webswing.model.server.SwingDescriptor.SessionMode;
 import org.webswing.model.server.admin.Sessions;
 import org.webswing.model.server.admin.SwingSession;
 import org.webswing.server.util.ServerUtil;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SwingInstanceManager {
 
 	private static SwingInstanceManager instance = new SwingInstanceManager();
 	private static final Logger log = LoggerFactory.getLogger(SwingInstanceManager.class);
 
-	private List<SwingInstance> closedInstances = new ArrayList<SwingInstance>();
+	//private List<SwingInstance> closedInstances = new ArrayList<SwingInstance>();
 	private Map<String, SwingInstance> swingInstances = new ConcurrentHashMap<String, SwingInstance>();
+	private Map<String, String> startingInstances = new ConcurrentHashMap<String, String>();
 	private SwingInstanceChangeListener changeListener;
 
 	private SwingInstanceManager() {
@@ -46,6 +42,11 @@ public class SwingInstanceManager {
 	public void connectSwingInstance(AtmosphereResource r, ConnectionHandshakeMsgIn h) {
 		SwingInstance swingInstance = findInstance(r, h);
 		if (swingInstance == null) {// start new swing app
+			if(h.isContinueSession()){
+				ServerUtil.broadcastMessage(r, SimpleEventMsgOut.shutDownNotification.buildMsgOut());
+				return;
+			}
+
 			SwingDescriptor app;
 			if (h.isApplet()) {
 				app = ConfigurationManager.getInstance().getApplet(h.getApplicationName());
@@ -59,12 +60,21 @@ public class SwingInstanceManager {
 				if (!h.isMirrored()) {
 					if (!reachedMaxConnections(app)) {
 						try {
+							if(startingInstances.containsKey(h.getClientId())){
+								log.error("find same client starting " + h.getClientId());
+								return;
+							}
+							startingInstances.put(h.getClientId(), h.getClientId());
 							swingInstance = new SwingInstance(resolveInstanceIdForMode(r, h, app), h, app, r);
 							synchronized (this) {
 								swingInstances.put(swingInstance.getInstanceId(), swingInstance);
+								startingInstances.remove(h.getClientId());
 							}
 						} catch (Exception e) {
 							log.error("Failed to create Swing instance.",e);
+							if(h != null){
+								startingInstances.remove(h.getClientId());
+							}
 						}
 						notifySwingInstanceChanged();
 					} else {
@@ -77,6 +87,9 @@ public class SwingInstanceManager {
 				log.error("Authorization error: User " + ServerUtil.getUserName(r) + " is not authorized to connect to application " + app.getName() + (h.isMirrored() ? " [Mirrored view only available for admin role]" : ""));
 			}
 		} else {
+			if(startingInstances.containsKey(h.getClientId())){
+				startingInstances.remove(h.getClientId());
+			}
 			if (h.isMirrored()) {// connect as mirror viewer
 				if (ServerUtil.isUserAuthorized(r, swingInstance.getAppConfig(), h)) {
 					notifySessionDisconnected(r.uuid());// disconnect possible running mirror sessions
@@ -90,8 +103,7 @@ public class SwingInstanceManager {
 				} else {
 					boolean result = swingInstance.connectPrimaryWebSession(r);
 					if (result) {
-						//ServerUtil.broadcastMessage(r, SimpleEventMsgOut.continueOldSessionAutomatic.buildMsgOut());
-						ServerUtil.broadcastMessage(r, SimpleEventMsgOut.continueOldSession.buildMsgOut());
+						ServerUtil.broadcastMessage(r, SimpleEventMsgOut.continueOldSessionAutomatic.buildMsgOut());
 						notifySwingInstanceChanged();
 					} else {
 						ServerUtil.broadcastMessage(r, SimpleEventMsgOut.applicationAlreadyRunning.buildMsgOut());
@@ -136,10 +148,13 @@ public class SwingInstanceManager {
 
 	public void notifySwingClose(SwingInstance swingInstance) {
 		synchronized (this) {
-			if(!closedInstances.contains(swingInstance)){
-				closedInstances.add(swingInstance);
-			}
+//			if(!closedInstances.contains(swingInstance)){
+//				closedInstances.add(swingInstance);
+//			}
 			swingInstances.remove(swingInstance.getInstanceId());
+			if(startingInstances.containsKey(swingInstance.getInstanceId())){
+				startingInstances.remove(swingInstance.getInstanceId());
+			}
 		}
 		notifySwingInstanceChanged();
 	}
@@ -149,9 +164,9 @@ public class SwingInstanceManager {
 		for (SwingInstance si : getSwingInstanceSet()) {
 			result.getSessions().add(si.toSwingSession());
 		}
-		for (SwingInstance si : closedInstances) {
-			result.getClosedSessions().add(si.toSwingSession());
-		}
+//		for (SwingInstance si : closedInstances) {
+//			result.getClosedSessions().add(si.toSwingSession());
+//		}
 		return result;
 	}
 
@@ -258,7 +273,7 @@ public class SwingInstanceManager {
 				return app.getName() + ServerUtil.getUserName(r);
 			default:
 				return h.getClientId();
-			}	
+			}
 		}
 	}
 

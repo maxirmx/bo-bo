@@ -175,5 +175,11 @@ public class PdfServiceImpl implements PdfService {
 			return graphics;
 		}
 
+
+		public void translate(double toX, double toY)
+		{
+		    // DO NOTHING
+		}
+
 	};
 }

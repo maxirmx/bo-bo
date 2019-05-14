@@ -6,8 +6,8 @@ import java.awt.Button;
 import java.awt.Checkbox;
 import java.awt.CheckboxMenuItem;
 import java.awt.Choice;
-import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.FileDialog;
@@ -17,6 +17,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
+import java.awt.Image;
 import java.awt.JobAttributes;
 import java.awt.KeyboardFocusManager;
 import java.awt.Label;
@@ -26,6 +27,7 @@ import java.awt.MenuBar;
 import java.awt.MenuItem;
 import java.awt.PageAttributes;
 import java.awt.Panel;
+import java.awt.Point;
 import java.awt.PopupMenu;
 import java.awt.PrintJob;
 import java.awt.RenderingHints;
@@ -120,9 +122,10 @@ public abstract class WebToolkit extends SunToolkit {
 				initDisplayMethod.setAccessible(true);
 				initDisplayMethod.invoke(null, false);
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			Logger.error("Failed to init X11 display: ", e.getMessage());
 		}
+
 	}
 
 	public void initSize(final Integer desktopWidth, final Integer desktopHeight) {
@@ -131,14 +134,19 @@ public abstract class WebToolkit extends SunToolkit {
 
 				@Override
 				public void run() {
-					initSize(desktopWidth, desktopHeight);
+					initSize(Math.max(1, desktopWidth), Math.max(1, desktopHeight));
 				}
 			});
+			return;
+		}
+		if((desktopWidth == screenWidth) && (desktopHeight == screenHeight))
+		{
+			return;
 		}
 		int oldWidht = screenWidth;
 		int oldHeight = screenHeight;
-		screenWidth = desktopWidth;
-		screenHeight = desktopHeight;
+		screenWidth = Math.max(1, desktopWidth);
+		screenHeight = Math.max(1, desktopHeight);
 		displayChanged();
 		resetGC();
 		Util.resetWindowsGC(screenWidth, screenHeight);
@@ -675,5 +683,10 @@ public abstract class WebToolkit extends SunToolkit {
 			TREELOCK = new JPanel().getTreeLock();
 		}
 		return TREELOCK;
+	}
+
+	@Override
+	public Cursor createCustomCursor(Image cursor, Point hotSpot, String name) throws IndexOutOfBoundsException, HeadlessException {
+		return new WebCursor(cursor, hotSpot, name);
 	}
 }

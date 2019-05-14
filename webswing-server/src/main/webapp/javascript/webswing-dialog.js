@@ -1,25 +1,31 @@
-define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'text!templates/bootstrap.css'], function amdFactory($, html, css, cssBootstrap) {
-    "use strict";
-    var style = $("<style></style>", {
+import $ from 'jquery';
+import html from './templates/dialog.html';
+import css from './templates/dialog.css';
+import i18n from './webswing-i18n';
+import cssBootstrap from './templates/bootstrap.css';
+
+export default class DialogModule {
+    constructor() {
+	    let style = $("<style></style>", {
         type: "text/css"
     });
     style.text(css);
-    var style0 = $("<style></style>", {
-        type: "text/css"
-    });
-    style0.text(cssBootstrap);
-    $("head").prepend(style0);
+     let style0 = $("<style></style>", {
+            type: "text/css"
+        });
+        style0.text(cssBootstrap);
+        $("head").prepend(style0);
     $("head").prepend(style);
 
-    return function DialogModule() {
-        var module = this;
-        var api;
+        let module = this;
+        let api;
         module.injects = api = {
             cfg: 'webswing.config',
             continueSession: 'base.continueSession',
             kill: 'base.kill',
             newSession: 'webswing.newSession',
             reTrySession: 'webswing.reTrySession',
+            fireCallBack: 'webswing.fireCallBack',
             logout: 'login.logout',
         };
         module.provides = {
@@ -29,31 +35,32 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
             content: configuration()
         };
 
-        var currentContent;
-        var dialog, content, header, backdrop;
+        let currentContent;
+        let dialog, content, header, backdrop;
 
         function configuration() {
             return {
                 readyDialog: {
-                    content: '<p>Webswing ready...</p>'
+                    content: '<p>' + i18n.get('ready') + '</p>'
                 },
                 initializingDialog: {
-                    content: '<p>Initializing...</p>'
+                    content: '<p>' + i18n.get('initializing') + '</p>'
                 },
                 startingDialog: {
-                    content: '<p>Starting app...</p>'
+                    content: '<p>' + i18n.get('startApp') + '</p>'
                 },
                 connectingDialog: {
-                    content: '<p>Connecting...</p>'
+                    content: '<p>' + i18n.get('connecting') + '</p>'
                 },
-                applicationAlreadyRunning: retryMessageDialog('Application is already running in other browser window...'),
-                sessionStolenNotification: retryMessageDialog('Application was opened in other browser window. Session disconnected...'),
-                disconnectedDialog: retryMessageDialog('Disconnected...'),
-                connectionErrorDialog: retryMessageDialog('Connection error...'),
-                tooManyClientsNotification: retryMessageDialog('Too many connections. Please try again later...'),
-                stoppedDialog: finalMessageDialog('Application stopped...'),
+                applicationAlreadyRunning: activeCurrentDialog(i18n.get('runningInOtherBrowser')),
+                sessionStolenNotification: activeCurrentDialog(i18n.get('sessionDisconnected')),
+                disconnectedDialog: retryMessageDialog(i18n.get('disconnected')),
+                connectionErrorDialog: retryMessageDialog(i18n.get('connectionError')),
+                tooManyClientsNotification: retryMessageDialog(i18n.get('toManyConnections')),
+                stoppedDialog: finalMessageDialog(i18n.get('stopped')),
                 continueOldSessionDialog: {
-                    content: '<p>Continue existing session?</p><button data-id="continue" class="btn btn-primary">Yes,	continue.</button><span> </span><button data-id="newsession" class="btn btn-default" >No, start new session.</button>',
+                    content: '<p>' + i18n.get('keepSession') + '</p>'
+                        + '<button data-id="continue" class="btn btn-primary">' + i18n.get('continue') + '</button><span> </span><button data-id="newsession" class="btn btn-default" >' + i18n.get('noStartNewSession') + '</button>',
                     events: {
                         continue_click: function () {
                             api.continueSession();
@@ -71,13 +78,26 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
             return {
                 content: '<p>'
                         + msg
-                        + '</p><button data-id="newsession" class="btn btn-primary">Start new session.</button> <span> </span><button data-id="logout" class="btn btn-default">Logout.</button>',
+                        + '</p><button data-id="newsession" class="btn btn-primary">' + i18n.get('startNewSession') + '</button> <span> </span><button data-id="logout" class="btn btn-default">' + i18n.get('logout') + '</button>',
                 events: {
                     newsession_click: function () {
+                        api.fireCallBack({type: 'reloadSession'});
                         api.newSession();
                     },
                     logout_click: function () {
                         api.logout();
+                    }
+                }
+            };
+        }
+
+        function activeCurrentDialog(msg) {
+            return {
+                content: '<p>' + msg + '</p>'
+                    + '<button data-id="retrysession" class="btn btn-primary">' + i18n.get('active') + '</button> <span> </span>',
+                events: {
+                    retrysession_click: function () {
+                        api.continueSession();
                     }
                 }
             };
@@ -87,9 +107,10 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
             return {
                 content: '<p>'
                         + msg
-                        + '</p><button data-id="retrysession" class="btn btn-primary">Try again.</button> <span> </span><button data-id="logout" class="btn btn-default">Logout.</button>',
+                        + '</p><button data-id="retrysession" class="btn btn-primary">' + i18n.get('tryAgain') + '</button> <span> </span><button data-id="logout" class="btn btn-default">' + i18n.get('logout') + '</button>',
                 events: {
                     retrysession_click: function () {
+                        api.fireCallBack({type: 'reloadSession'});
                         api.reTrySession();
                     },
                     logout_click: function () {
@@ -128,8 +149,8 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
                 header.html('');
             }
             content.html(msg.content);
-            for (var e in msg.events) {
-                var element = dialog.find('*[data-id="' + e.substring(0, e.lastIndexOf('_')) + '"]');
+            for (let e in msg.events) {
+                let element = dialog.find('*[data-id="' + e.substring(0, e.lastIndexOf('_')) + '"]');
                 element.bind(e.substring(e.lastIndexOf('_') + 1), msg.events[e]);
             }
             if (dialog.is(":visible")) {
@@ -149,5 +170,5 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
         function current() {
             return currentContent;
         }
-    };
-});
+    }
+}

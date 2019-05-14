@@ -59,6 +59,10 @@
             <param-name>org.atmosphere.cpr.broadcaster.shareableThreadPool</param-name>
             <param-value>true</param-value>
         </init-param>
+		<init-param>
+			<param-name>org.atmosphere.websocket.suppressJSR356</param-name>
+            <param-value>true</param-value>
+		</init-param>
 		<load-on-startup>0</load-on-startup>
 		<async-supported>true</async-supported>
 	</servlet>
@@ -127,4 +131,13 @@
 		<param-name>org.atmosphere.cpr.SessionSupport</param-name>
 		<param-value>true</param-value>
 	</context-param>
+	<session-config>
+		<cookie-config>
+			<!--
+              Specifies whether any session tracking cookies created
+              by this web application will be marked as HttpOnly
+            -->
+			<http-only>true</http-only>
+		</cookie-config>
+	</session-config>
 </web-app>

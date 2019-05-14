@@ -1,14 +1,18 @@
-define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.css', 'webswing-util' ], function amdFactory($, html, css, util) {
-    "use strict";
-    var style = $("<style></style>", {
-        type : "text/css"
-    });
-    style.text(css);
-    $("head").prepend(style);
+import $ from 'jquery';
+import html from './templates/clipboard.html';
+import css from './templates/clipboard.css';
+//import Util from './webswing-util';
+import i18n from './webswing-i18n';
 
-    return function ClipboardModule() {
-        var module = this;
-        var api;
+export default class ClipboardModule {	
+    constructor() {
+		let style = $("<style></style>", {
+            type : "text/css"
+        });
+        style.text(css);
+        $("head").prepend(style);
+        let module = this;
+        let api;
         module.injects = api = {
             cfg : 'webswing.config',
             send : 'socket.send',
@@ -22,7 +26,8 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
             dispose : close
         };
 
-        var copyBar;
+        let copyBar;
+        let isPasteDataToClient = false;
 
         function cut(event) {
             copy(event, true);
@@ -36,11 +41,11 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
                     }
                 });
             } else {
-                var data = copyBar.wsEventData;
+                let data = copyBar.wsEventData;
                 if (api.cfg.ieVersion) {
                     // handling of copy events only for IE
-                    var ieClipboardDiv = copyBar.find('div[data-id="ie-clipboard"]');
-                    var clipboardData = window.clipboardData;
+                    let ieClipboardDiv = copyBar.find('div[data-id="ie-clipboard"]');
+                    let clipboardData = window.clipboardData;
                     if (data.html != null) {
                         ieClipboardDiv.html(data.html);
                         focusIeClipboardDiv();
@@ -70,9 +75,9 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
 
         function focusIeClipboardDiv() {
             ieClipboardDiv.focus();
-            var range = document.createRange();
+            let range = document.createRange();
             range.selectNodeContents((ieClipboardDiv.get(0)));
-            var selection = window.getSelection();
+            let selection = window.getSelection();
             selection.removeAllRanges();
             selection.addRange(range);
         }
@@ -80,20 +85,20 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
         function paste(event) {
             if (api.cfg.hasControl) {
                 if (useLocalClipboard()) {
-                    var text = '';
-                    var html = '';
+                    let text = '';
+                    let html = '';
                     if (api.cfg.ieVersion) {
                         text = window.clipboardData.getData('Text');
                         html = text;
                     } else {
-                        var data = event.clipboardData || event.originalEvent.clipboardData;
+                        let data = event.clipboardData || event.originalEvent.clipboardData;
                         text = data.getData('text/plain');
                         html = data.getData('text/html');
                         if (data.items != null) {
-                            for ( var i = 0; i < data.items.length; i++) {
+                            for ( let i = 0; i < data.items.length; i++) {
                                 if (data.items[i].type.indexOf('image') === 0) {
-                                    var img = data.items[i];
-                                    var reader = new FileReader();
+                                    let img = data.items[i];
+                                    let reader = new FileReader();
                                     reader.onload = function(event) {
                                         sendPasteEvent(text, html, event.target.result);
                                     };
@@ -111,7 +116,7 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
         }
 
         function sendPasteEvent(text, html, img) {
-            var pasteObj = {};
+            let pasteObj = {};
             if (text != null) {
                 pasteObj.text = text;
             }
@@ -127,7 +132,7 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
         }
 
         function displayCopyBar(data) { // trigered by swing app
-        	var onlyOtherData=false;
+        	let onlyOtherData=false;
             if (copyBar != null) {
                 close();
             }
@@ -146,7 +151,7 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
             });
             copyBar.wsEventData = data;
             copyBar.minimized = false;
-            var closeBtn = copyBar.find('button[data-id="closeBtn"]');
+            let closeBtn = copyBar.find('button[data-id="closeBtn"]');
             closeBtn.click(function() {
                 close();
             });
@@ -156,7 +161,7 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
                 copyBar.find('#text').remove();
                 copyBar.find('#textTab').remove();
             } else {
-                var textarea = copyBar.find('textarea[data-id="textarea"]');
+                let textarea = copyBar.find('textarea[data-id="textarea"]');
                 textarea.val(data.text);
                 copyBar.find('span[data-id="plaintext"]').removeClass("webswing-copy-content-inactive").addClass("webswing-copy-content-active");
             }
@@ -165,7 +170,7 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
                 copyBar.find('#html').remove();
                 copyBar.find('#htmlTab').remove();
             } else {
-                var htmlarea = copyBar.find('textarea[data-id="htmlarea"]');
+                let htmlarea = copyBar.find('textarea[data-id="htmlarea"]');
                 htmlarea.val(data.html);
                 copyBar.find('span[data-id="html"]').removeClass("webswing-copy-content-inactive").addClass("webswing-copy-content-active");
             }
@@ -182,10 +187,10 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
                 copyBar.find('#files').remove();
                 copyBar.find('#filesTab').remove();
             } else {
-                var fileListElement = copyBar.find('#wsFileList');
-                for ( var i = 0; i < data.files.length; i++) {
-                    var fileName = data.files[i];
-                    var link = $('<a>');
+                let fileListElement = copyBar.find('#wsFileList');
+                for ( let i = 0; i < data.files.length; i++) {
+                    let fileName = data.files[i];
+                    let link = $('<a>');
                     if (fileName.indexOf("#") === 0) {
                         link = $('<span>');
                         link.html(data.files[i].substring(1));
@@ -214,7 +219,7 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
             }
 
             /* TAB Activation */
-            var tabs = copyBar.find('.nav-tabs>li');
+            let tabs = copyBar.find('.nav-tabs>li');
             tabs.first().addClass('active');
             copyBar.find('.tab-pane').first().addClass('active');
             tabs.on('click', function(event) {
@@ -224,12 +229,12 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
                 copyBar.find('#' + $(event.currentTarget).data('tab')).addClass('active');
             });
 
-            var infoBar = copyBar.find('div[data-id="minimizedInfoBar"]');
+            let infoBar = copyBar.find('div[data-id="minimizedInfoBar"]');
             infoBar.on('click', function(event) {// maximize
                 maximize();
             });
 
-            var minimizeBtn = copyBar.find('.webswing-minimize-symbol');
+            let minimizeBtn = copyBar.find('.webswing-minimize-symbol');
             minimizeBtn.on('click', function(event) {// minimize
                 minimize();
             });
@@ -240,7 +245,7 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
                 copyBar.find('div[data-id="minimizedInfoBar"]').show();
                 copyBar.minimized = true;
             }else{
-            	var minimizer = setTimeout(function() {
+            	let minimizer = setTimeout(function() {
                     minimize();
                 }, 2000);
             }
@@ -276,5 +281,5 @@ define([ 'jquery', 'text!templates/clipboard.html', 'text!templates/clipboard.cs
             }
         }
 
-    };
-});
+    }
+}

@@ -17,9 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
@@ -33,8 +31,6 @@ import org.apache.shiro.subject.Subject;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.FrameworkConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.webswing.Constants;
@@ -50,6 +46,10 @@ import org.webswing.server.ConfigurationManager;
 import org.webswing.server.handler.LoginServlet;
 import org.webswing.server.model.EncodedMessage;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 import main.Main;
 
 public class ServerUtil {
@@ -61,7 +61,7 @@ public class ServerUtil {
 	private static final ProtoMapper protoMapper = new ProtoMapper();
 
 	static {
-		mapper.setSerializationInclusion(Inclusion.NON_NULL);
+		mapper.setSerializationInclusion(Include.NON_NULL);
 	}
 
 	public static String encode2Json(MsgOut m) {

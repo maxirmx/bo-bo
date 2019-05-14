@@ -1,6 +1,7 @@
-define(['webswing-util'], function amdFactory(util) {
-    "use strict";
-    return function JsLinkModule() {
+import Util from './webswing-util';
+
+export default class Identity {
+	constructor() {
         var module = this;
         module.provides = {
             get: get,
@@ -11,10 +12,10 @@ define(['webswing-util'], function amdFactory(util) {
         var cookieName = 'webswingID';
         function get() {
             var id = readCookie(cookieName);
-                if (id != null && id != "") {
+            if (id != null && id != "") {
                 return id;
             } else {
-                id = util.GUID();
+                id = Util.GUID();
                 createCookie(cookieName, id);
                 return id;
             }
@@ -49,14 +50,14 @@ define(['webswing-util'], function amdFactory(util) {
                 var c = ca[i];
                 while (c.charAt(0) === ' ')
                     c = c.substring(1, c.length);
-                    if (c.indexOf(nameEQ) === 0){
-                        var webswingCookie = unescape(c.substring(nameEQ.length, c.length));
-                        if(webswingCookie == null || webswingCookie.length == 0){
-                            console.log("find unexpect null webswingID");
-                            continue;
-                        }
-                        return webswingCookie;
+                if (c.indexOf(nameEQ) === 0){
+                    var webswingCookie = unescape(c.substring(nameEQ.length, c.length));
+                    if(webswingCookie == null || webswingCookie.length == 0){
+                        console.log("find unexpect null webswingID");
+                        continue;
                     }
+                    return webswingCookie;
+                }
             }
             return null;
         }
@@ -64,5 +65,5 @@ define(['webswing-util'], function amdFactory(util) {
         function eraseCookie(name) {
             createCookie(name, "", -1);
         }
-    };
-});
+    }
+}

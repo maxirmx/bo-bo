@@ -36,10 +36,6 @@
 			<param-value>org.webswing.server.handler</param-value>
 		</init-param>
 		<init-param>
-			<param-name>org.atmosphere.cpr.annotation.useBytecodeProcessor</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<init-param>
 			<param-name>org.atmosphere.websocket.bufferSize</param-name>
 			<param-value>1048576</param-value>
 		</init-param>
@@ -63,6 +59,10 @@
             <param-name>org.atmosphere.cpr.broadcaster.shareableThreadPool</param-name>
             <param-value>true</param-value>
         </init-param>
+		<init-param>
+			<param-name>org.atmosphere.websocket.suppressJSR356</param-name>
+            <param-value>true</param-value>
+		</init-param>
 		<load-on-startup>0</load-on-startup>
 		<async-supported>true</async-supported>
 	</servlet>
@@ -131,9 +131,6 @@
 		<param-name>org.atmosphere.cpr.SessionSupport</param-name>
 		<param-value>true</param-value>
 	</context-param>
-
-
-
 	<session-config>
 		<cookie-config>
 			<!--

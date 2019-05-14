@@ -2,7 +2,7 @@ package org.webswing.server;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.codehaus.jackson.map.ObjectMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.webswing.Constants;
@@ -14,6 +14,8 @@ import org.webswing.model.server.admin.ServerProperties;
 import org.webswing.model.server.admin.UserConfiguration;
 import org.webswing.server.handler.JmsService;
 import org.webswing.server.util.ServerUtil;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.net.URI;

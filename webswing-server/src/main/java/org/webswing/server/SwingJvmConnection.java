@@ -138,9 +138,17 @@ public class SwingJvmConnection implements MessageListener {
 						latest.setHeapSizeUsed(s.getHeapSizeUsed());
 					} else if (o instanceof ExitMsgInternal) {
 						log.info("SwingJvmConnection:onMessage() ExitMsgInternal");
-						close();
-						ExitMsgInternal e = (ExitMsgInternal) o;
-						webListener.kill(e.getWaitForExit());
+						//close operation need to be done in seperate thread, this avoids deadlock between onException and onMessage
+						Runnable closeThread = new Runnable() {
+							@Override
+							public void run() {
+								log.info("close thread start");
+								close();
+								ExitMsgInternal e = (ExitMsgInternal) o;
+								webListener.kill(e.getWaitForExit());
+							}
+						};
+						new Thread(closeThread).start();
 					}
 				} else if (o instanceof MsgOut) {
 					webListener.sendToWeb((MsgOut) o);

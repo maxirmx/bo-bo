@@ -1,14 +1,12 @@
-define([], function amdFactory() {
-    "use strict";
-
-    return function Injector() {
-        var api = this;
+export default class Injector {
+	constructor() {
+        let api = this;
         api.module = module;
         api.injectAndVerify = injectAndVerify;
 
-        var services = {};
-        var inject = {};
-        var ready = {};
+        let services = {};
+        let inject = {};
+        let ready = {};
 
         function module(name, m) {
             if (m != null) {
@@ -25,8 +23,8 @@ define([], function amdFactory() {
         }
 
         function injectAndVerify() {
-            var errors = '';
-            for (var key in inject) {
+            let errors = '';
+            for (let key in inject) {
                 try {
                     injectObject(inject[key]);
                 } catch (e) {
@@ -40,7 +38,7 @@ define([], function amdFactory() {
             if (errors.length > 0) {
                 throw new InjectError("Dependency injection errors:\n" + errors);
             }
-            for (var key in ready) {
+            for (let key in ready) {
                 try {
                     ready[key]();
                 } catch (e) {
@@ -57,12 +55,12 @@ define([], function amdFactory() {
         }
 
         function injectObject(object) {
-            var errors = '';
-            for (var key in object) {
+            let errors = '';
+            for (let key in object) {
                 try {
-                    var serviceName = object[key];
+                    let serviceName = object[key];
                     if (typeof serviceName === 'string') {
-                        var value = resolve(services, serviceName);
+                        let value = resolve(services, serviceName);
                         object[key] = value;
                     }
                 } catch (e) {
@@ -100,5 +98,5 @@ define([], function amdFactory() {
                 return this.message;
             };
         }
-    };
-});
+    }
+}

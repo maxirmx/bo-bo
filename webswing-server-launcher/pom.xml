@@ -38,6 +38,11 @@
 			<version>${jetty.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-continuation</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.webswing</groupId>
 			<artifactId>webswing-app-toolkit</artifactId>
 			<version>${project.version}</version>

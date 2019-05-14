@@ -1,19 +1,24 @@
-define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'text!templates/bootstrap.css', 'webswing-i18n'], function amdFactory($, html, css, cssBootstrap, i18n) {
-    "use strict";
-    var style = $("<style></style>", {
+import $ from 'jquery';
+import html from './templates/dialog.html';
+import css from './templates/dialog.css';
+import i18n from './webswing-i18n';
+import cssBootstrap from './templates/bootstrap.css';
+
+export default class DialogModule {
+    constructor() {
+	    let style = $("<style></style>", {
         type: "text/css"
     });
     style.text(css);
-    var style0 = $("<style></style>", {
-        type: "text/css"
-    });
-    style0.text(cssBootstrap);
-    $("head").prepend(style0);
+     let style0 = $("<style></style>", {
+            type: "text/css"
+        });
+        style0.text(cssBootstrap);
+        $("head").prepend(style0);
     $("head").prepend(style);
 
-    return function DialogModule() {
-        var module = this;
-        var api;
+        let module = this;
+        let api;
         module.injects = api = {
             cfg: 'webswing.config',
             continueSession: 'base.continueSession',
@@ -30,8 +35,8 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
             content: configuration()
         };
 
-        var currentContent;
-        var dialog, content, header, backdrop;
+        let currentContent;
+        let dialog, content, header, backdrop;
 
         function configuration() {
             return {
@@ -144,8 +149,8 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
                 header.html('');
             }
             content.html(msg.content);
-            for (var e in msg.events) {
-                var element = dialog.find('*[data-id="' + e.substring(0, e.lastIndexOf('_')) + '"]');
+            for (let e in msg.events) {
+                let element = dialog.find('*[data-id="' + e.substring(0, e.lastIndexOf('_')) + '"]');
                 element.bind(e.substring(e.lastIndexOf('_') + 1), msg.events[e]);
             }
             if (dialog.is(":visible")) {
@@ -165,5 +170,5 @@ define(['jquery', 'text!templates/dialog.html', 'text!templates/dialog.css', 'te
         function current() {
             return currentContent;
         }
-    };
-});
+    }
+}

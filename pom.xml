@@ -6,8 +6,7 @@
 	<packaging>pom</packaging>
 	<url>http://www.webswing.org</url>
 	<scm>
-		<developerConnection>scm:git:https://bitbucket.org/meszarv/webswing.git</developerConnection>
-		<tag>2.4-SNAPSHOT</tag>
+		<developerConnection>scm:git:https://bitbucket.org/webswing/webswing-legacy.git</developerConnection>
 	</scm>
 	<modules>
 		<module>webswing-server</module>

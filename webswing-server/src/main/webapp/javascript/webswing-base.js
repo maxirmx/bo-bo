@@ -270,10 +270,17 @@ export default class BaseModule {
             if (data.focusEvent != null) {
                 let input=api.getInput();
                 if(data.focusEvent.type === 'focusWithCarretGained'){
+                    input.type = 'text';
                     input.style.top = (data.focusEvent.y+data.focusEvent.caretY)+'px';
                     input.style.left = (data.focusEvent.x+data.focusEvent.caretX)+'px';
                     input.style.height = data.focusEvent.caretH+'px';
-                }else{
+                } else if(data.focusEvent.type === 'focusPasswordGained'){
+                    input.type = 'password';
+                    input.style.top = (data.focusEvent.y + data.focusEvent.caretY) + 'px';
+                    input.style.left = (data.focusEvent.x + data.focusEvent.caretX) + 'px';
+                    input.style.height = data.focusEvent.caretH + 'px';
+                    input.focus();
+                } else {
                     input.style.top = null;
                     input.style.left = null;
                     input.style.height = null;

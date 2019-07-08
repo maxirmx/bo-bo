@@ -6,7 +6,8 @@ public class FocusEventMsg implements MsgOut{
 	public enum FocusEventType {
 		focusLost,
 		focusGained,
-		focusWithCarretGained;
+		focusWithCarretGained,
+		focusPasswordGained;
 	}
 
 	FocusEventType type;

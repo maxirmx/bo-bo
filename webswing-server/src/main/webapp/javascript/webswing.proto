@@ -33,6 +33,7 @@ message FocusEventMsgProto {
         focusLost = 1;
         focusGained = 2;
         focusWithCarretGained = 3;
+        focusPasswordGained = 4;
     }
 }
 

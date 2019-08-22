@@ -11,6 +11,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class WebGraphics extends AbstractVectorGraphics {
 
@@ -124,14 +126,21 @@ public class WebGraphics extends AbstractVectorGraphics {
 		}
 	}
 
+	private Map<Image,WaitingImageObserver> loadedImgs = new WeakHashMap<>();
+
 	private ImageConvertResult toBufferedImage(Image image, ImageObserver observer) {
 		if (image instanceof BufferedImage) {
 			return new ImageConvertResult(true, (BufferedImage) image);
 		}
-		try {
-			new WaitingImageObserver(image).waitImageLoaded();//magic
-		} catch (Exception e) {
-			//ignore
+		boolean skip= loadedImgs.containsKey(image);
+		if(!skip) {
+			try {
+				WaitingImageObserver wio = new WaitingImageObserver(image);
+				wio.waitImageLoaded();//magic
+				loadedImgs.put(image,wio);
+			} catch (Exception e) {
+				//ignore
+			}
 		}
 		BufferedImage bufferedImage = new BufferedImage(image.getWidth(observer), image.getHeight(observer), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = bufferedImage.createGraphics();
@@ -146,8 +155,7 @@ public class WebGraphics extends AbstractVectorGraphics {
 	protected void writeString(String string, double x, double y) {
 		Font font = getFont();
 		if (thisImage.getContext().requestFont(font)) {
-			int width = getFontMetrics().stringWidth(string);
-			thisImage.addInstruction(this, dif.drawString(string, x, y, width, getClip()));
+			thisImage.addInstruction(this, dif.drawString(string, x, y, getClip(),getFontMetrics()));
 		} else {
 			thisImage.addInstruction(this, dif.drawGlyphList(string, font, x, y, getTransform(), getClip()));
 		}

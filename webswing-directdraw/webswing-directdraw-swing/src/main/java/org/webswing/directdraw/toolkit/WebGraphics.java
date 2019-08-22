@@ -126,7 +126,7 @@ public class WebGraphics extends AbstractVectorGraphics {
 		}
 	}
 
-	private Map<Image,WaitingImageObserver> loadedImgs = new WeakHashMap<>();
+	private static Map<Image,WaitingImageObserver> loadedImgs = new WeakHashMap<>();
 
 	private ImageConvertResult toBufferedImage(Image image, ImageObserver observer) {
 		if (image instanceof BufferedImage) {

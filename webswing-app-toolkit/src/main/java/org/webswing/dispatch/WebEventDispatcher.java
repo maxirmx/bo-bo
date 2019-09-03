@@ -228,6 +228,7 @@ public class WebEventDispatcher {
 
 	private void dispatchMouseEvent(MouseEventMsgIn event) {
 		Component c = null;
+		boolean relatedToLastEvent = false;
 		if (WindowManager.getInstance().isLockedToWindowDecorationHandler()) {
 			c = WindowManager.getInstance().getLockedToWindow();
 			if(c != null && c.isShowing() == false)
@@ -239,6 +240,7 @@ public class WebEventDispatcher {
 			c = WindowManager.getInstance().getVisibleComponentOnPosition(event.getX(), event.getY());
 			if (lastMouseEvent != null && (lastMouseEvent.getID() == MouseEvent.MOUSE_DRAGGED || lastMouseEvent.getID() == MouseEvent.MOUSE_PRESSED) && ((event.getType() == MouseEventType.mousemove && event.getButton() == 1) || (event.getType() == MouseEventType.mouseup))) {
 				c = (Component) lastMouseEvent.getSource();
+				relatedToLastEvent=true;
 			}
 		}
 		if (c == null) {
@@ -268,7 +270,7 @@ public class WebEventDispatcher {
 				id = event.getButton() == 1 ? MouseEvent.MOUSE_DRAGGED : MouseEvent.MOUSE_MOVED;
 				e = new MouseEvent(c, id, when, modifiers, x, y, event.getX(), event.getY(), clickcount, false, buttons);
 				lastMouseEvent = e;
-				dispatchEventInSwing(c, e);
+				dispatchEventInSwing(c, e,relatedToLastEvent);
 				break;
 			case mouseup:
 				Logger.debug("webswing event : receive mouse up event");
@@ -280,7 +282,7 @@ public class WebEventDispatcher {
 				if(event.getButton() == 0 && event.getX() == -1 && event.getY() == -1 && event.getType() == MouseEventType.mouseup)
 				{
 					Logger.debug("Event handling for mouse release event");
-					dispatchEventInSwing(c, e);
+					dispatchEventInSwing(c, e,relatedToLastEvent);
 					break;
 				}
 				dispatchEventInSwing(c, e);
@@ -442,11 +444,15 @@ public class WebEventDispatcher {
 	}
 
 	public static void dispatchEventInSwing(final Component c, final AWTEvent e) {
+		dispatchEventInSwing(c, e, false);
+	}
+
+	public static void dispatchEventInSwing(final Component c, final AWTEvent e, boolean relatedToLastEvent) {
 		Window w = (Window) (c instanceof Window ? c : SwingUtilities.windowForComponent(c));
 		if (e instanceof MouseEvent) {
 			w.setCursor(w.getCursor());// force cursor update
 		}
-		if ((Util.isWindowDecorationEvent(w, e) || WindowManager.getInstance().isLockedToWindowDecorationHandler()) && e instanceof MouseEvent) {
+		if (((!relatedToLastEvent && Util.isWindowDecorationEvent(w, e)) || WindowManager.getInstance().isLockedToWindowDecorationHandler()) && e instanceof MouseEvent) {
 			Logger.debug("WebEventDispatcher.dispatchEventInSwing:windowManagerHandle", e);
 			WindowManager.getInstance().handleWindowDecorationEvent(w, (MouseEvent) e);
 		} else if (dndHandler.isDndInProgress() && (e instanceof MouseEvent || e instanceof KeyEvent)) {

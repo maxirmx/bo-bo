@@ -86,6 +86,7 @@ import java.util.Properties;
 import javax.swing.JPanel;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import org.webswing.Constants;
 import org.webswing.dispatch.WebEventDispatcher;
@@ -309,6 +310,10 @@ public abstract class WebToolkit extends SunToolkit implements WebswingApiProvid
 		this.desktopProperties.put("win.xpstyle.dllName", "C:\\WINDOWS\\resources\\themes\\Aero\\Aero.msstyles");
 		this.desktopProperties.put("win.xpstyle.sizeName", "NormalSize");
 		this.desktopProperties.put("win.xpstyle.themeActive", true);
+
+		int repaintInterval = 400;
+		UIManager.put("ProgressBar.repaintInterval", repaintInterval);
+		UIManager.put("ProgressBar.cycleTime", repaintInterval*60);
 	}
 
 	public boolean needUpdateWindow() {

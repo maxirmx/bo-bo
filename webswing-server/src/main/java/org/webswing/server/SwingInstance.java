@@ -276,6 +276,7 @@ public class SwingInstance implements WebSessionListener {
 
 			swing.addProperty(Constants.SWING_START_SYS_PROP_DIRECTDRAW, appConfig.isDirectdraw());
 			swing.addProperty(Constants.SWING_START_SYS_PROP_DIRECTDRAW_SUPPORTED, handshake.isDirectDrawSupported());
+			swing.addProperty(Constants.SWING_START_SYS_PROP_COMPOSITING_WM, appConfig.isCompositingWinManager());
 			swing.addProperty(Constants.SWING_SESSION_TIMEOUT_SEC, appConfig.getSwingSessionTimeout());
 			swing.addProperty("awt.toolkit", webToolkitClass);
 			swing.addProperty("java.awt.headless", "false");

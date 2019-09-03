@@ -17,6 +17,9 @@ message AppFrameMsgOutProto{
 	optional PlaybackInfoMsgProto playback = 12;
 	optional string sessionId = 13;
 	optional FocusEventMsgProto focusEvent = 14;
+	optional bool directDraw = 20;
+	optional ActionEventMsgOutProto actionEvent = 21;
+	optional bool compositingWM = 22;
 }
 
 message FocusEventMsgProto {
@@ -103,6 +106,9 @@ message WindowMsgProto{
 	optional sint32 posY = 7;
 	optional uint32 width = 8;
 	optional uint32 height = 9;
+	optional string name = 10;
+	optional bool html = 11;
+	optional bool modalBlocked = 12;
 }
 
 message WindowPartialContentMsgProto{
@@ -190,6 +196,8 @@ message InputEventsFrameMsgInProto{
 	optional JsResultMsgProto jsResponse = 6;
 	optional JavaEvalRequestMsgInProto javaRequest = 7;
 	optional PlaybackCommandMsgInProto playback = 8;
+	optional WindowEventMsgInProto window = 10;
+	optional ActionEventMsgInProto action = 11;
 }
 
 message InputEventMsgInProto{
@@ -315,3 +323,31 @@ message PlaybackCommandMsgInProto{
 	}
 }
 
+message WindowEventMsgInProto {
+	optional string id = 1;
+	optional sint32 x = 2;
+	optional sint32 y = 3;
+	optional sint32 width = 4;
+	optional sint32 height = 5;
+	optional bool close = 6;
+}
+
+message ActionEventMsgInProto {
+	optional string actionName = 1;
+	optional string data = 2;
+	optional bytes binaryData = 3;
+	optional string windowId = 4;
+	optional ActionEventTypeProto eventType = 5;
+
+    enum ActionEventTypeProto {
+    	init = 0;
+    	user = 1;
+    }
+}
+
+message ActionEventMsgOutProto {
+	optional string actionName = 1;
+	optional string data = 2;
+	optional bytes binaryData = 3;
+	optional string windowId = 4;
+}

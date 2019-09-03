@@ -80,7 +80,10 @@ export default class Webswing {
                     disconnect : 'webswing.disconnect',
                     configure : 'webswing.configure',
                     kill : 'base.kill',
-                    setControl : 'webswing.setControl'
+                    setControl : 'webswing.setControl',
+                    getWindows: 'base.getWindows',
+                    getWindowById: 'base.getWindowById',
+                    performAction: 'base.performAction'
                 };
                 injector.module('external', {
                     provides : externalObj,
@@ -164,7 +167,14 @@ export default class Webswing {
                         mirrorMode : false,
                         canPaint : false,
                         applet : false,
-                        virtualKB :false
+                        virtualKB :false,
+                        compositingWindowsListener: {
+                        	windowOpening: function(htmlOrCanvasWindow) {},
+                        	windowOpened: function(htmlOrCanvasWindow) {},
+                        	windowClosing: function(htmlOrCanvasWindow) {},
+                        	windowClosed: function(htmlOrCanvasWindow) {},
+                        	windowModalBlockedChanged: function(htmlOrCanvasWindow) {}
+                        }
                     };
                 }
 
@@ -235,6 +245,7 @@ export default class Webswing {
                             cfg.recordingPlayback = cfg.applicationName = options.recordingPlayback;
                             api.showPlaybackControls();
                         }
+                        cfg.compositingWindowsListener = typeof options.compositingWindowsListener === 'object' ? options.compositingWindowsListener : cfg.compositingWindowsListener;
                     }
                     appletParams = appletParams != null ? appletParams : readAppletParams(cfg.rootElement);
                     if (appletParams != null) {

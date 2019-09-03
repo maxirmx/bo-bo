@@ -1,37 +1,10 @@
 package org.webswing.dispatch;
 
-import netscape.javascript.JSObject;
-import org.webswing.Constants;
-import org.webswing.model.MsgIn;
-import org.webswing.model.c2s.ConnectionHandshakeMsgIn;
-import org.webswing.model.c2s.CopyEventMsgIn;
-import org.webswing.model.c2s.KeyboardEventMsgIn;
-import org.webswing.model.c2s.MouseEventMsgIn;
-import org.webswing.model.c2s.MouseEventMsgIn.MouseEventType;
-import org.webswing.model.c2s.PasteEventMsgIn;
-import org.webswing.model.c2s.SimpleEventMsgIn;
-import org.webswing.model.c2s.UploadEventMsgIn;
-import org.webswing.model.c2s.UploadedEventMsgIn;
-import org.webswing.model.internal.OpenFileResultMsgInternal;
-import org.webswing.model.jslink.JSObjectMsg;
-import org.webswing.toolkit.WebClipboard;
-import org.webswing.toolkit.WebClipboardTransferable;
-import org.webswing.toolkit.WebDragSourceContextPeer;
-import org.webswing.toolkit.extra.DndEventHandler;
-import org.webswing.toolkit.extra.WindowManager;
-import org.webswing.toolkit.jslink.WebJSObject;
-import org.webswing.toolkit.util.DeamonThreadFactory;
-import org.webswing.toolkit.util.Logger;
-import org.webswing.toolkit.util.Services;
-import org.webswing.toolkit.util.Util;
-import sun.awt.CausedFocusEvent;
-
-import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
 import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -51,6 +24,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+
+import org.webswing.Constants;
+import org.webswing.model.MsgIn;
+import org.webswing.model.c2s.ActionEventMsgIn;
+import org.webswing.model.c2s.ConnectionHandshakeMsgIn;
+import org.webswing.model.c2s.CopyEventMsgIn;
+import org.webswing.model.c2s.KeyboardEventMsgIn;
+import org.webswing.model.c2s.MouseEventMsgIn;
+import org.webswing.model.c2s.MouseEventMsgIn.MouseEventType;
+import org.webswing.model.c2s.PasteEventMsgIn;
+import org.webswing.model.c2s.SimpleEventMsgIn;
+import org.webswing.model.c2s.UploadEventMsgIn;
+import org.webswing.model.c2s.UploadedEventMsgIn;
+import org.webswing.model.c2s.WindowEventMsgIn;
+import org.webswing.model.internal.OpenFileResultMsgInternal;
+import org.webswing.model.jslink.JSObjectMsg;
+import org.webswing.toolkit.WebClipboard;
+import org.webswing.toolkit.WebClipboardTransferable;
+import org.webswing.toolkit.WebDragSourceContextPeer;
+import org.webswing.toolkit.WebWindowPeer;
+import org.webswing.toolkit.extra.DndEventHandler;
+import org.webswing.toolkit.extra.WindowManager;
+import org.webswing.toolkit.jslink.WebJSObject;
+import org.webswing.toolkit.util.DeamonThreadFactory;
+import org.webswing.toolkit.util.Logger;
+import org.webswing.toolkit.util.Services;
+import org.webswing.toolkit.util.Util;
+
+import netscape.javascript.JSObject;
+import sun.awt.CausedFocusEvent;
 
 @SuppressWarnings("restriction")
 public class WebEventDispatcher {
@@ -137,6 +143,12 @@ public class WebEventDispatcher {
 							}
 						}
 					}
+				}
+				if (event instanceof WindowEventMsgIn) {
+					handleWindowEvent((WindowEventMsgIn) event);
+				}
+				if (event instanceof ActionEventMsgIn) {
+					Util.getWebToolkit().processApiEvent(event);
 				}
 			}
 		});
@@ -475,6 +487,28 @@ public class WebEventDispatcher {
 		}
 	}
 
+	public void handleWindowEvent(WindowEventMsgIn windowUpdate) {
+		WebWindowPeer win = Util.findWindowPeerById(windowUpdate.getId());
+			
+		if (win == null) {
+			return;
+		}
+		
+		synchronized (Util.getWebToolkit().getTreeLock()) {
+			synchronized (WebPaintDispatcher.webPaintLock) {
+				if (windowUpdate.isClose()) {
+					if (win.getTarget() instanceof Frame) {
+						((Frame) win.getTarget()).setVisible(false);
+					}
+				} else {
+					((Component) win.getTarget()).setLocation(windowUpdate.getX(), windowUpdate.getY());
+					((Component) win.getTarget()).setSize(windowUpdate.getWidth(), windowUpdate.getHeight());
+					win.notifyWindowAreaRepainted(new Rectangle(windowUpdate.getX(), windowUpdate.getY(), windowUpdate.getWidth(), windowUpdate.getY()));
+				}
+			}
+		}
+	}
+	
 	public static boolean isDndInProgress() {
 		return dndHandler.isDndInProgress();
 	}

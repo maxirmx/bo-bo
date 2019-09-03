@@ -6,12 +6,16 @@ export default class BaseModule {
         let module = this;
         let api;
         module.injects = api = {
+        	external: 'external',
             cfg : 'webswing.config',
             disconnect : 'webswing.disconnect',
             fireCallBack : 'webswing.fireCallBack',
             getSocketId : 'socket.uuid',
             getCanvas : 'canvas.get',
             getInput: 'canvas.getInput',
+            getDesktopSize: 'canvas.getDesktopSize',
+            translateBrowserPoint: 'canvas.translateBrowserPoint',
+            translateDesktopPoint: 'canvas.translateDesktopPoint',
             registerInput : 'input.register',
             sendInput : 'input.sendInput',
             disposeInput : 'input.dispose',
@@ -38,7 +42,9 @@ export default class BaseModule {
             download : 'files.download',
             displayCopyBar : 'clipboard.displayCopyBar',
             processJsLink : 'jslink.process',
-            playbackInfo : 'playback.playbackInfo'
+            playbackInfo : 'playback.playbackInfo',
+            performAction: 'base.performAction',
+            handleActionEvent: 'base.handleActionEvent'
         };
         module.provides = {
             startApplication : startApplication,
@@ -47,16 +53,22 @@ export default class BaseModule {
             kill : kill,
             handshake : handshake,
             processMessage : processMessage,
-            dispose : dispose
+            dispose : dispose,
+            getWindows: getWindows,
+            getWindowById: getWindowById,
+            performAction: performAction,
+            handleActionEvent: handleActionEvent
         };
 
         let timer1, timer2, timer3;
         let drawingLock;
         let drawingQ = [];
 
-        let windowImageHolders = {};
+        let windowImageHolders = {}; // <id> : <CanvasWindow/HtmlWindow>
         let directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: Util.dpr});
-
+        var compositingWM = false;
+        var compositionBaseZIndex = 100;
+        
         function startApplication(name, applet, alwaysReset) {
             if (alwaysReset===true){
                 api.disposeIdentity();
@@ -244,7 +256,7 @@ export default class BaseModule {
             if (drawingQ.length > 0) {
                 drawingLock = drawingQ.shift();
                 try {
-                    processRequest(api.getCanvas(), drawingLock);
+                    processRequest(drawingLock);
                 } catch (error) {
                     drawingLock = null;
                     throw error;
@@ -252,9 +264,21 @@ export default class BaseModule {
             }
         }
 
-        function processRequest(canvas, data) {
-            api.hideDialog();
-            let context = canvas.getContext("2d");
+        function processRequest(data) {
+        	var windowsData = null;
+        	if (data.windows != null && data.windows.length > 0) {
+        		windowsData = data.windows;
+        	}
+        	if (data.compositingWM && !compositingWM) {
+        		compositingWM = true;
+        		api.cfg.rootElement.addClass("composition");
+        		$(api.getCanvas()).css({"width": "0px", "height": "0px", "position": "absolute", "top" : "0", "left": "0"});
+        	}
+        	        	
+        	if (windowsData != null) {
+        		api.hideDialog();
+        	}
+        	
             if (data.linkAction != null && !api.cfg.recordingPlayback) {
                 if (data.linkAction.action == 'url') {
                     api.openLink(data.linkAction.src);
@@ -265,7 +289,8 @@ export default class BaseModule {
                 }
             }
             if (data.moveAction != null) {
-                copy(data.moveAction.sx, data.moveAction.sy, data.moveAction.dx, data.moveAction.dy, data.moveAction.width, data.moveAction.height,context);
+            	// this applies only to non-CWM 
+            	copy(data.moveAction.sx, data.moveAction.sy, data.moveAction.dx, data.moveAction.dy, data.moveAction.width, data.moveAction.height, api.getCanvas().getContext("2d"));
             }
             if (data.focusEvent != null) {
                 let input=api.getInput();
@@ -279,7 +304,7 @@ export default class BaseModule {
                     input.style.top = (data.focusEvent.y + data.focusEvent.caretY) + 'px';
                     input.style.left = (data.focusEvent.x + data.focusEvent.caretX) + 'px';
                     input.style.height = data.focusEvent.caretH + 'px';
-                    input.focus();
+                    input.focus({preventScroll: true});
                 } else {
                     input.style.top = null;
                     input.style.left = null;
@@ -287,7 +312,9 @@ export default class BaseModule {
                 }
             }
             if (data.cursorChange != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {
-                canvas.style.cursor = getCursorStyle(data.cursorChange);
+            	$("canvas.webswing-canvas").each(function(i, canvas) {
+            		canvas.style.cursor = getCursorStyle(data.cursorChange);
+            	});
             }
             if (data.copyEvent != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {
                 api.displayCopyBar(data.copyEvent);
@@ -300,57 +327,77 @@ export default class BaseModule {
                 }
             }
             if (data.closedWindow != null) {
-                windowImageHolders[data.closedWindow] = null;
-                delete windowImageHolders[data.closedWindow];
+            	var canvasWindow = windowImageHolders[data.closedWindow.id];
+            		            	
+            	if (canvasWindow) {
+            		if (compositingWM) {
+            			windowClosing(canvasWindow);
+            			canvasWindow.windowClosing();
+            		}
+            		
+            		$(canvasWindow.element).remove();
+            		delete windowImageHolders[data.closedWindow.id];
+            	            		
+            		if (compositingWM) {
+            			windowClosed(canvasWindow);
+            			canvasWindow.windowClosed();
+            		}
+            	}
             }
-            // first is always the background
-            for ( let i in data.windows) {
-                let win = data.windows[i];
-                if (win.id == 'BG') {
-                    if (api.cfg.mirrorMode || api.cfg.recordingPlayback) {
-                        adjustCanvasSize(canvas, win.width, win.height);
-                    }
-                    for ( let x in win.content) {
-                        let winContent = win.content[x];
-                        if (winContent != null) {
-                            clear(win.posX + winContent.positionX, win.posY + winContent.positionY, winContent.width, winContent.height, context);
-                        }
-                    }
-                    data.windows.splice(i, 1);
-                    break;
-                }
+            if (data.actionEvent != null && api.cfg.hasControl && !api.recordingPlayback) {
+            	if (data.actionEvent.windowId && windowImageHolders[data.actionEvent.windowId]) {
+            		windowImageHolders[data.actionEvent.windowId].handleActionEvent(data.actionEvent.actionName, data.actionEvent.data, data.actionEvent.binaryData);
+            	} else {
+            		api.handleActionEvent(data.actionEvent.actionName, data.actionEvent.data, data.actionEvent.binaryData);
+            	}
             }
+            
             // regular windows (background removed)
             if (data.windows != null) {
+            	// first is always the background
+                for ( let i in data.windows) {
+                    let win = data.windows[i];
+                    if (win.id == 'BG') {
+                        if (api.cfg.mirrorMode || api.cfg.recordingPlayback) {
+                            adjustCanvasSize(canvas, win.width, win.height);
+                        }
+                        for ( let x in win.content) {
+                            let winContent = win.content[x];
+                            if (winContent != null) {
+                                clear(win.posX + winContent.positionX, win.posY + winContent.positionY, winContent.width, winContent.height, context);
+                            }
+                        }
+                        data.windows.splice(i, 1);
+                        break;
+                    }
+                }
 
-
-                data.windows.reduce(function(sequence, window) {
-                    return sequence.then(function() {
-                        return renderWindow(window, context);
-                    }, errorHandler);
-                }, Promise.resolve()).then(function() {
-                    ack();
-                    processNextQueuedFrame();
+                // regular windows (background removed)
+                windowsData.reduce(function (sequence, window, index) {
+                	return sequence.then(function () {
+                		return renderWindow(window, compositingWM ? windowsData.length - index - 1 : index, data.directDraw);
+                	}, errorHandler);
+                }, Promise.resolve()).then(function () {
+                	ack(data);
+                	processNextQueuedFrame();
                 }, errorHandler);
             } else {
                 processNextQueuedFrame();
             }
         }
-
-        function renderWindow(win, context) {
-            return new Promise(function(resolved, rejected) {
-                let rPromise;
-                if (win.directDraw != null) {
-                    rPromise =  renderDirectDrawWindow(win, context);
-                } else {
-                    rPromise =  renderPngDrawWindow(win, context);
-                }
-                rPromise.then(function(resultImage) {
-                    resolved();
-                }, function(error) {
-                    rejected(error);
-                });
-            });
+        
+        function renderWindow(win, index, directDraw) {
+        	if (directDraw) {
+        		if (compositingWM) {
+        			return renderDirectDrawComposedWindow(win, index);
+        		}
+        		return renderDirectDrawWindow(win, api.getCanvas().getContext("2d"));
+        	} else {
+        		if (compositingWM) {
+        			return renderPngDrawComposedWindow(win, index);
+        		}
+        		return renderPngDrawWindow(win, api.getCanvas().getContext("2d"));
+        	}
         }
  
         function renderPngDrawWindow(win, context) {
@@ -411,41 +458,227 @@ export default class BaseModule {
                 //return canvas;
             });
         }
+        
+        function renderPngDrawComposedWindow(win, index) {
+        	if (win.html) {
+        		var newWindowOpened = false;
+        		
+        		if (windowImageHolders[win.id] == null) {
+        			var htmlDiv = document.createElement("div");
+        			htmlDiv.classList.add("webswing-html-canvas");
+        			
+        			windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name, win.title);
+        			newWindowOpened = true;
+        			$(htmlDiv).attr('data-id', win.id).css("position", "absolute");
+
+        			windowOpening(windowImageHolders[win.id]);
+        			api.cfg.rootElement.append(htmlDiv);
+        		}
+        		
+        		var htmlDiv = windowImageHolders[win.id].element;
+        		
+        		$(htmlDiv).css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'});
+        		if ($(htmlDiv).is(".modal-blocked") != win.modalBlocked) {
+        			$(htmlDiv).toggleClass("modal-blocked", win.modalBlocked);
+        			windowModalBlockedChanged(windowImageHolders[win.id]);
+        		}
+        		if (isVisible(htmlDiv.parentNode)) {
+        			var p = api.translateDesktopPoint(win.posX, win.posY, htmlDiv.parentNode);
+        			$(htmlDiv).css({"left": p.x + 'px', "top": p.y + 'px'});
+        		}
+        		
+        		if (newWindowOpened) {
+        			windowOpened(windowImageHolders[win.id]);
+        			performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
+        		}
+        		
+        		return Promise.resolve();
+        	} else {
+        		var newWindowOpened = false;
+        		
+        		if (windowImageHolders[win.id] == null) {
+        			var canvas = document.createElement("canvas");
+        			canvas.classList.add("webswing-canvas");
+        			
+        			windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.name, win.title);
+        			newWindowOpened = true;
+        			$(canvas).attr('data-id', win.id).css("position", "absolute");
+        			
+        			windowOpening(windowImageHolders[win.id]);
+        			api.cfg.rootElement.append(canvas);
+        		}
+        		
+        		var canvas = windowImageHolders[win.id].element;
+        		
+        		if ($(canvas).width() != win.width || $(canvas).height() != win.height) {
+        			$(canvas).css({"width": win.width + 'px', "height": win.height + 'px'});
+        			$(canvas).attr("width", win.width).attr("height", win.height);
+        		}
+        		
+        		var p = api.translateDesktopPoint(win.posX, win.posY, canvas.parentNode);
+        		$(canvas).css({"left": p.x + 'px', "top": p.y + 'px'});
+        		// update z-order
+        		$(canvas).css({"z-index": (compositionBaseZIndex + index + 1)});
+        		if ($(canvas).is(".modal-blocked") != win.modalBlocked) {
+        			$(canvas).toggleClass("modal-blocked", win.modalBlocked);
+        			windowModalBlockedChanged(windowImageHolders[win.id]);
+        		}
+        		
+        		if (newWindowOpened) {
+        			windowOpened(windowImageHolders[win.id]);
+        			performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
+        		}
+        		
+        		var context = canvas.getContext("2d");
+        		var dpr = util.dpr;
+        		
+        		return win.content.reduce(function (sequence, winContent) {
+        			return sequence.then(function () {
+        				return new Promise(function (resolved, rejected) {
+        					if (winContent != null) {
+        						var imageObj = new Image();
+        						var onloadFunction = function () {
+        							context.save();
+        							context.drawImage(imageObj, winContent.positionX, winContent.positionY);
+        							context.restore();
+        							resolved();
+        							imageObj.onload = null;
+        							imageObj.src = '';
+        							if (imageObj.clearAttributes != null) {
+        								imageObj.clearAttributes();
+        							}
+        							imageObj = null;
+        						};
+        						imageObj.onload = function () {
+        							// fix for ie - onload is fired before the image
+        							// is ready for rendering to canvas.
+        							// This is an ugly quickfix
+        							if (api.cfg.ieVersion && api.cfg.ieVersion <= 10) {
+        								window.setTimeout(onloadFunction, 20);
+        							} else {
+        								onloadFunction();
+        							}
+        						};
+        						imageObj.src = util.getImageString(winContent.base64Content);
+        					}
+        				});
+        			}, errorHandler);
+        		}, Promise.resolve());
+        	}
+        }
  
         function renderDirectDrawWindow(win, context) {
             return new Promise(function(resolved, rejected) {
-                            let ddPromise;
-                            if (typeof win.directDraw === 'string') {
-                                ddPromise = directDraw.draw64(win.directDraw, windowImageHolders[win.id]);
-                            } else {
-                                ddPromise = directDraw.drawBin(win.directDraw, windowImageHolders[win.id]);
+                let ddPromise;
+                var wih = windowImageHolders[win.id] != null ? windowImageHolders[win.id].element : null;
+                
+                if (typeof win.directDraw === 'string') {
+                    ddPromise = directDraw.draw64(win.directDraw, wih);
+                } else {
+                    ddPromise = directDraw.drawBin(win.directDraw, wih);
+                }
+                
+                ddPromise.then(function(canvas) {
+                    windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.name, win.title);
+                    
+                    let dpr = Util.dpr();
+                    for ( let x in win.content) {
+                        let winContent = win.content[x];
+                        if (winContent != null) {
+                           let sx = Math.min(canvas.width, Math.max(0, winContent.positionX * dpr));
+                           let sy = Math.min(canvas.height, Math.max(0, winContent.positionY * dpr));
+                           let sw = Math.min(canvas.width - sx, winContent.width * dpr - (sx - winContent.positionX * dpr));
+                           let sh = Math.min(canvas.height - sy, winContent.height * dpr - (sy - winContent.positionY * dpr));
+
+                           let dx = win.posX * dpr + sx;
+                           let dy = win.posY * dpr + sy;
+                            let dw = sw;
+                            let dh = sh;
+
+                            if (dx <= context.canvas.width && dy <= context.canvas.height && dx + dw > 0 && dy + dh > 0) {
+                                context.drawImage(canvas, sx, sy, sw, sh, dx, dy, dw, dh);
                             }
-                            ddPromise.then(function(resultImage) {
-                                windowImageHolders[win.id] = resultImage;
-                                let dpr = Util.dpr();
-                                for ( let x in win.content) {
-                                    let winContent = win.content[x];
-                                    if (winContent != null) {
-                                       let sx = Math.min(resultImage.width, Math.max(0, winContent.positionX * dpr));
-                                       let sy = Math.min(resultImage.height, Math.max(0, winContent.positionY * dpr));
-                                       let sw = Math.min(resultImage.width - sx, winContent.width * dpr - (sx - winContent.positionX * dpr));
-                                       let sh = Math.min(resultImage.height - sy, winContent.height * dpr - (sy - winContent.positionY * dpr));
+                        }
+                    }
+                    resolved();
+                }, function(error) {
+                    rejected(error);
+                });
+            });
+        }
+        
+        function renderDirectDrawComposedWindow(win, index) {
+        	return new Promise(function (resolved, rejected) {
+        		var ddPromise;
+        		var wih = windowImageHolders[win.id] != null ? windowImageHolders[win.id].element : null;
+        		
+        		if (win.html) {
+        			// we don't need to draw html window, also do not create canvas
+        			ddPromise = Promise.resolve(null);
+        		} else if (win.directDraw == null) {
+        			ddPromise = Promise.resolve(wih);
+        		} else if (typeof win.directDraw === 'string') {
+        			ddPromise = directDraw.draw64(win.directDraw, wih);
+        		} else {
+        			ddPromise = directDraw.drawBin(win.directDraw, wih);
+        		}
+        		
+        		ddPromise.then(function (canvas) {
+        			var newWindowOpened = false;
+        			
+        			if (canvas != null) {
+        				if (windowImageHolders[win.id] == null) {
+        					windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.name, win.title);
+        					newWindowOpened = true;
+        					$(canvas).attr('data-id', win.id).css("position", "absolute");
 
-                                       let dx = win.posX * dpr + sx;
-                                       let dy = win.posY * dpr + sy;
-                                        let dw = sw;
-                                        let dh = sh;
+        					windowOpening(windowImageHolders[win.id]);
+        					api.cfg.rootElement.append(canvas);
+        				}
+        			} else if (win.html) {
+        				if (windowImageHolders[win.id] == null) {
+        					var htmlDiv = document.createElement("div");
+        					htmlDiv.classList.add("webswing-html-canvas");
+        					
+        					windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name, win.title);
+        					newWindowOpened = true;
+        					$(htmlDiv).attr('data-id', win.id).css("position", "absolute");
 
-                                        if (dx <= context.canvas.width && dy <= context.canvas.height && dx + dw > 0 && dy + dh > 0) {
-                                            context.drawImage(resultImage, sx, sy, sw, sh, dx, dy, dw, dh);
-                                        }
-                                    }
-                                }
-                                resolved();
-                            }, function(error) {
-                                rejected(error);
-                            });
-                        });
+        					windowOpening(windowImageHolders[win.id]);
+        					api.cfg.rootElement.append(htmlDiv);
+        				}
+        			}
+        			
+        			if (newWindowOpened) {
+        				windowOpened(windowImageHolders[win.id]);
+        				performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
+        			}
+        			
+        			var htmlOrCanvasElement = $(windowImageHolders[win.id].element);;
+        			htmlOrCanvasElement.css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'});
+        			if (htmlOrCanvasElement.is(".modal-blocked") != win.modalBlocked) {
+        				htmlOrCanvasElement.toggleClass("modal-blocked", win.modalBlocked);
+        				windowModalBlockedChanged(windowImageHolders[win.id]);
+        			}
+        			
+        			if (isVisible(htmlOrCanvasElement[0].parentNode)) {
+        				var p = api.translateDesktopPoint(win.posX, win.posY, htmlOrCanvasElement[0].parentNode);
+        				htmlOrCanvasElement.css({"left": p.x + 'px', "top": p.y + 'px'});
+        			}
+        			
+        			resolved();
+        		}, function (error) {
+        			rejected(error);
+        		});
+        	});
+        }
+
+        function isVisible(element) {
+        	if (!element || element == null) {
+        		return false;
+        	}
+        	
+        	return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
         }
  
         function adjustCanvasSize(canvas, width, height) {
@@ -498,11 +731,12 @@ export default class BaseModule {
             };
 
             if (!api.cfg.mirrorMode) {
+            	var desktopSize = api.getDesktopSize();
                 handshake.applet = api.cfg.applet;
                 handshake.documentBase = api.cfg.documentBase;
                 handshake.params = api.cfg.params;
-                handshake.desktopWidth = canvas.offsetWidth;
-                handshake.desktopHeight = canvas.offsetHeight;
+                handshake.desktopWidth = desktopSize.width;
+                handshake.desktopHeight = desktopSize.height;
             }
             return {
                 handshake : handshake
@@ -513,5 +747,197 @@ export default class BaseModule {
             drawingLock = null;
             throw error;
         }
+        
+        function CanvasWindow(id, element, name, title) {
+        	this.id = id;
+        	this.element = element;
+        	this.name = name;
+        	this.title = title;
+        	this.htmlWindow = false;
+        	this.webswingInstance = api.external;
+        }
+        
+        CanvasWindow.prototype.isModalBlocked = function() {
+        	return this.element.classList.contains('modal-blocked');
+        };
+        
+        CanvasWindow.prototype.setBounds = function(x, y, width, height) {
+        	api.send({window: {id: this.id, x: Math.floor(x), y: Math.floor(y), width: Math.floor(width), height: Math.floor(height)}});
+    	};
+    	
+    	CanvasWindow.prototype.setBoundsInBrowser = function(x, y, width, height) {
+    		var p = api.translateBrowserPoint(x, y);
+    		api.send({window: {id: this.id, x: Math.floor(p.x), y: Math.floor(p.y), width: Math.floor(width), height: Math.floor(height)}});
+    	};
+    	
+    	// move the Swing window to a location based on Desktop coordinates (defined by .webswing-element, [0, 0] is [webswing-element.offsetLeft, webswing-element.offsetTop])
+    	CanvasWindow.prototype.moveOnDesktop = function(x, y) {
+    		var rect = this.element.getBoundingClientRect();
+    		api.send({window: {id: this.id, x: Math.floor(x), y: Math.floor(y), width: Math.floor(rect.width), height: Math.floor(rect.height)}});
+    	};
+    	
+    	// move the Swing window to a location based on browser document coordinates ([0, 0] is document [0, 0]), this will be translated to Desktop coordinates
+    	CanvasWindow.prototype.moveInBrowser = function(x, y) {
+    		var rect = this.element.getBoundingClientRect();
+    		var p = api.translateBrowserPoint(x, y);
+    		
+    		api.send({window: {id: this.id, x: Math.floor(p.x), y: Math.floor(p.y), width: Math.floor(rect.width), height: Math.floor(rect.height)}});
+    	};
+    	
+    	CanvasWindow.prototype.setSize = function(width, height) {
+    		var rect = this.element.getBoundingClientRect();
+    		api.send({window: {id: this.id, x: Math.floor(rect.x + document.body.scrollLeft), y: Math.floor(rect.y + document.body.scrollTop), width: Math.floor(width), height: Math.floor(height)}});
+    	};
+    	
+    	CanvasWindow.prototype.detach = function() {
+    		if (!this.element.parentNode) {
+    			console.error("Cannot detach window, it is not attached to any parent!");
+    			return;
+    		}
+    		
+    		return this.element.parentNode.removeChild(this.element);
+    	};
+    	
+    	CanvasWindow.prototype.attach = function(parent, pos) {
+    		if (this.element.parentNode) {
+    			console.error("Cannot attach window, it is still attached to another parent!");
+    			return;
+    		}
+    		
+    		if (parent) {
+    			parent.append(this.element);
+    			var rect = this.element.getBoundingClientRect();
+    			if (pos) {
+    				this.moveInBrowser(pos.x, pos.y);
+    			} else {
+    				this.moveInBrowser(rect.left, rect.top);
+    			}
+    		}
+    	};
+    	
+    	CanvasWindow.prototype.close = function() {
+    		api.send({window: {id: this.id, close: true}});
+    	};
+    	
+    	CanvasWindow.prototype.performAction = function(options) {
+    		performAction($.extend({"windowId": this.id}, options));
+    	}
+    	
+    	CanvasWindow.prototype.handleActionEvent = function(actionName, data, binaryData) {
+        	// to be customized
+        }
+    	
+    	CanvasWindow.prototype.windowClosing = function() {
+    		// to be customized
+    	}
+    	
+    	CanvasWindow.prototype.windowClosed = function() {
+    		// to be customized
+    	}
+    	
+    	function HtmlWindow(id, element, name, title) {
+        	this.id = id;
+        	this.element = element;
+        	this.name = name;
+        	this.title = title;
+        	this.htmlWindow = true;
+        	this.webswingInstance = api.external;
+        }
+    	
+    	HtmlWindow.prototype.isModalBlocked = function() {
+        	return this.element.classList.contains('modal-blocked');
+        };
+        
+    	HtmlWindow.prototype.performAction = function(options) {
+    		performAction($.extend({"windowId": this.id}, options));
+    	}
+    	
+    	HtmlWindow.prototype.handleActionEvent = function(actionName, data, binaryData) {
+        	// to be customized
+        }
+    	
+    	HtmlWindow.prototype.windowClosing = function() {
+    		// to be customized
+    	}
+    	
+    	HtmlWindow.prototype.windowClosed = function() {
+    		// to be customized
+    	}
+    	
+        function getWindows() {
+        	if (!compositingWM) {
+        		// compositingWM only
+        		return [];
+        	}
+        	
+        	var wins = [];
+        	for (var id in windowImageHolders) {
+        		wins.push(windowImageHolders[id]);
+        	}
+        	
+        	return wins;
+        }
+        
+        function getWindowById(winId) {
+        	if (!compositingWM) {
+        		// compositingWM only
+        		return;
+        	}
+        	
+        	return windowImageHolders[winId];
+        }
+        
+        
+        function performAction(options) {
+        	// options = {actionName, data, binaryData, windowId}
+        	performActionInternal($.extend({"eventType": "user"}, options));
+        }
+        
+        function performActionInternal(options) {
+        	api.send({
+                action: {
+                	actionName: options.actionName,
+                	eventType: options.eventType,
+                	data: options.data || "",
+                	binaryData: options.binaryData || null,
+                	windowId: options.windowId || ""
+                }
+            });
+        }
+        
+        function windowOpening(htmlOrCanvasWindow) {
+        	if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowOpening) {
+        		api.cfg.compositingWindowsListener.windowOpening(htmlOrCanvasWindow);
+        	}
+        }
+        
+        function windowOpened(htmlOrCanvasWindow) {
+        	if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowOpened) {
+        		api.cfg.compositingWindowsListener.windowOpened(htmlOrCanvasWindow);
+        	}
+        }
+        
+        function windowClosing(htmlOrCanvasWindow) {
+        	if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowClosing) {
+        		api.cfg.compositingWindowsListener.windowClosing(htmlOrCanvasWindow);
+        	}
+        }
+        
+        function windowClosed(htmlOrCanvasWindow) {
+        	if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowClosed) {
+        		api.cfg.compositingWindowsListener.windowClosed(htmlOrCanvasWindow);
+        	}
+        }
+        
+        function windowModalBlockedChanged(htmlOrCanvasWindow) {
+        	if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowModalBlockedChanged) {
+        		api.cfg.compositingWindowsListener.windowModalBlockedChanged(htmlOrCanvasWindow);
+        	}
+        }
+        
+        function handleActionEvent(actionName, data, binaryData) {
+        	// to be customized
+        }
+        
     }
 }

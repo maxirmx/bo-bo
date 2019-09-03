@@ -1,6 +1,7 @@
 package org.webswing.toolkit.extra;
 
 import java.awt.Dialog;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -258,6 +259,15 @@ public class WindowHierarchyTree {
 		}
 		return result;
 	}
+	
+	public List<String> getZOrder() {
+		List<String> zorder = new ArrayList<>();
+		for (int i = 0; i < zOrder.size(); i++) {
+			String id = ((WebWindowPeer) WebToolkit.targetToPeer(zOrder.get(i).getW())).getGuid();
+			zorder.add(id);
+		}
+		return zorder;
+	}
 
 	public void requestRepaintAfterMove(Window w, Rectangle originalPosition) {
 		requestRepaintUnderlying(zOrder.indexOf(lookup.get(w)) + 1, originalPosition);
@@ -301,7 +311,7 @@ public class WindowHierarchyTree {
 		}
 	}
 
-	private boolean isParent(Window parent, Window child) {
+	public boolean isParent(Window parent, Window child) {
 		if (parent != null && child != null) {
 			if (child.getParent() != null) {
 				return child.getParent() == parent || isParent(parent, (Window) child.getParent());
@@ -325,6 +335,25 @@ public class WindowHierarchyTree {
 			}
 		} else {
 			return null;
+		}
+	}
+	
+	public boolean isInModalBranch(Window w){
+		return getModalParent(w) != null;
+	}
+	
+	public boolean isInFullModalBranch(Window w) {
+		WindowHierarchyNode window = lookup.get(w);
+		if (window != null) {
+			if ((window.getW() instanceof Dialog) && ((Dialog) window.getW()).isModal() && ((Dialog) window.getW()).getModalityType()!=ModalityType.DOCUMENT_MODAL) {
+				return true;
+			} else if (window.getW().getParent() != null) {
+				return isInFullModalBranch((Window) window.getW().getParent());
+			} else {
+				return false;
+			}
+		} else {
+			return false;
 		}
 	}
 

@@ -60,6 +60,7 @@ export default class WebswingDirectDraw {
                 newCanvas = targetCanvas;
             } else {
                 newCanvas = document.createElement("canvas");
+                newCanvas.classList.add("webswing-canvas");
                 newCanvas.getContext("2d").scale(config.dpr, config.dpr);
             }
             if (newCanvas.width != image.width * config.dpr || newCanvas.height != image.height * config.dpr) {

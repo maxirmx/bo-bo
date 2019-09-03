@@ -14,6 +14,9 @@ public class InputEventsFrameMsgIn implements MsgIn {
 	private PasteEventMsgIn paste;
 	private UploadedEventMsgIn uploaded;
 	private PlaybackCommandMsgIn playback;
+	
+	private WindowEventMsgIn window;
+	private ActionEventMsgIn action;
 
 	private JsResultMsg jsResponse;// java2js call return value
 	private JavaEvalRequestMsgIn javaRequest;// js2java call
@@ -72,6 +75,22 @@ public class InputEventsFrameMsgIn implements MsgIn {
 
 	public void setPlayback(PlaybackCommandMsgIn playback) {
 		this.playback = playback;
+	}
+
+	public WindowEventMsgIn getWindow() {
+		return window;
+	}
+
+	public void setWindow(WindowEventMsgIn window) {
+		this.window = window;
+	}
+
+	public ActionEventMsgIn getAction() {
+		return action;
+	}
+
+	public void setAction(ActionEventMsgIn action) {
+		this.action = action;
 	}
 
 }

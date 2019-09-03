@@ -90,6 +90,9 @@ import javax.swing.SwingUtilities;
 import org.webswing.Constants;
 import org.webswing.dispatch.WebEventDispatcher;
 import org.webswing.dispatch.WebPaintDispatcher;
+import org.webswing.model.Msg;
+import org.webswing.toolkit.api.WebswingApi;
+import org.webswing.toolkit.api.WebswingApiProvider;
 import org.webswing.toolkit.extra.WebRepaintManager;
 import org.webswing.toolkit.extra.WindowManager;
 import org.webswing.toolkit.util.Logger;
@@ -101,7 +104,7 @@ import sun.java2d.SurfaceData;
 import sun.print.PrintJob2D;
 
 @SuppressWarnings("restriction")
-public abstract class WebToolkit extends SunToolkit {
+public abstract class WebToolkit extends SunToolkit implements WebswingApiProvider {
 	public static final Font defaultFont = new Font("Dialog", 0, 12);
 
 	public static final String BACKGROUND_WINDOW_ID = "BG";
@@ -109,6 +112,7 @@ public abstract class WebToolkit extends SunToolkit {
 
 	private WebEventDispatcher eventDispatcher = new WebEventDispatcher();
 	private WebPaintDispatcher paintDispatcher = new WebPaintDispatcher();
+	private WebswingApiImpl api = new WebswingApiImpl();
 
 	private WindowManager windowManager = WindowManager.getInstance();
 
@@ -155,7 +159,7 @@ public abstract class WebToolkit extends SunToolkit {
 		getPaintDispatcher().notifyWindowRepaintAll();
 	}
 
-	protected WindowManager getWindowManager() {
+	public WindowManager getWindowManager() {
 		return windowManager;
 	}
 
@@ -689,4 +693,14 @@ public abstract class WebToolkit extends SunToolkit {
 	public Cursor createCustomCursor(Image cursor, Point hotSpot, String name) throws IndexOutOfBoundsException, HeadlessException {
 		return new WebCursor(cursor, hotSpot, name);
 	}
+	
+	@Override
+	public WebswingApi getApi() {
+		return api;
+	}
+	
+	public void processApiEvent(Msg event) {
+		api.processEvent(event);
+	}
+	
 }

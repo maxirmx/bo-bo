@@ -34,6 +34,7 @@ public class SwingDescriptor implements Serializable {
 	private boolean debug = false;
 	private boolean authentication = true;
 	private boolean directdraw = true;
+	private boolean compositingWinManager = false;
 	private boolean allowDelete = true;
 	private boolean allowDownload = true;
 	private boolean allowAutoDownload = true;
@@ -155,6 +156,14 @@ public class SwingDescriptor implements Serializable {
 
 	public void setDirectdraw(boolean directdraw) {
 		this.directdraw = directdraw;
+	}
+
+	public boolean isCompositingWinManager() {
+		return compositingWinManager;
+	}
+
+	public void setCompositingWinManager(boolean compositingWinManager) {
+		this.compositingWinManager = compositingWinManager;
 	}
 
 	public boolean isAllowDelete() {

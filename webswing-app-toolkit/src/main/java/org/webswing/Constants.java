@@ -16,6 +16,7 @@ public interface Constants {
 	public static final String SWING_START_SYS_PROP_TRANSFER_DIR = "webswing.transfer.dir";
 	public static final String SWING_START_SYS_PROP_DIRECTDRAW = "webswing.directdraw";
 	public static final String SWING_START_SYS_PROP_DIRECTDRAW_SUPPORTED = "webswing.directdraw.supported";
+	public static final String SWING_START_SYS_PROP_COMPOSITING_WM = "webswing.compositingWindowManager";
 	public static final String SWING_START_SYS_PROP_ALLOW_DOWNLOAD = "webswing.allowDownload";
 	public static final String SWING_START_SYS_PROP_ALLOW_AUTO_DOWNLOAD = "webswing.allowAutoDownload";
 	public static final String SWING_START_SYS_PROP_ALLOW_UPLOAD = "webswing.allowUpload";

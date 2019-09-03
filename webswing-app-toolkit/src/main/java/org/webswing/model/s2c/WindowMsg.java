@@ -12,10 +12,13 @@ public class WindowMsg implements Msg {
 	private List<SpriteMsg> sprites;
 	private byte[] directDraw;
 	private String title;
+	private String name;
 	private Integer posX;
 	private Integer posY;
 	private Integer width;
 	private Integer height;
+	private boolean html;
+	private boolean modalBlocked;
 
 	public String getId() {
 		return id;
@@ -47,6 +50,14 @@ public class WindowMsg implements Msg {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Integer getPosX() {
@@ -87,6 +98,22 @@ public class WindowMsg implements Msg {
 
 	public void setSprites(List<SpriteMsg> sprites) {
 		this.sprites = sprites;
+	}
+
+	public boolean isHtml() {
+		return html;
+	}
+
+	public void setHtml(boolean html) {
+		this.html = html;
+	}
+
+	public boolean isModalBlocked() {
+		return modalBlocked;
+	}
+
+	public void setModalBlocked(boolean modalBlocked) {
+		this.modalBlocked = modalBlocked;
 	}
 
 }

@@ -29,3 +29,15 @@ html,body {
 .webswing-version a{
 	color: lightgray;
 }
+
+.webswing-element .webswing-html-canvas.modal-blocked {
+	pointer-events: none;
+}
+
+.webswing-element canvas {
+	z-index: 100;
+}
+
+.webswing-element.composition {
+	position: relative;
+}

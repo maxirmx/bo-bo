@@ -1,34 +1,5 @@
 package org.webswing.dispatch;
 
-import org.webswing.Constants;
-import org.webswing.model.internal.ExitMsgInternal;
-import org.webswing.model.internal.OpenFileResultMsgInternal;
-import org.webswing.model.s2c.AppFrameMsgOut;
-import org.webswing.model.s2c.CopyEventMsg;
-import org.webswing.model.s2c.CursorChangeEventMsg;
-import org.webswing.model.s2c.FileDialogEventMsg;
-import org.webswing.model.s2c.FileDialogEventMsg.FileDialogEventType;
-import org.webswing.model.s2c.FocusEventMsg;
-import org.webswing.model.s2c.LinkActionMsg;
-import org.webswing.model.s2c.LinkActionMsg.LinkActionType;
-import org.webswing.model.s2c.WindowMoveActionMsg;
-import org.webswing.model.s2c.WindowMsg;
-import org.webswing.toolkit.WebCursor;
-import org.webswing.toolkit.WebToolkit;
-import org.webswing.toolkit.WebWindowPeer;
-import org.webswing.toolkit.extra.WebRepaintManager;
-import org.webswing.toolkit.extra.WindowManager;
-import org.webswing.toolkit.util.DeamonThreadFactory;
-import org.webswing.toolkit.util.ImageComparator;
-import org.webswing.toolkit.util.Logger;
-import org.webswing.toolkit.util.Services;
-import org.webswing.toolkit.util.SubImage;
-import org.webswing.toolkit.util.Util;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -51,6 +22,38 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.RepaintManager;
+import javax.swing.SwingUtilities;
+
+import org.webswing.Constants;
+import org.webswing.component.HtmlPanelImpl.HtmlWindow;
+import org.webswing.model.internal.ExitMsgInternal;
+import org.webswing.model.internal.OpenFileResultMsgInternal;
+import org.webswing.model.s2c.ActionEventMsgOut;
+import org.webswing.model.s2c.AppFrameMsgOut;
+import org.webswing.model.s2c.CopyEventMsg;
+import org.webswing.model.s2c.CursorChangeEventMsg;
+import org.webswing.model.s2c.FileDialogEventMsg;
+import org.webswing.model.s2c.FileDialogEventMsg.FileDialogEventType;
+import org.webswing.model.s2c.FocusEventMsg;
+import org.webswing.model.s2c.LinkActionMsg;
+import org.webswing.model.s2c.LinkActionMsg.LinkActionType;
+import org.webswing.model.s2c.WindowMoveActionMsg;
+import org.webswing.model.s2c.WindowMsg;
+import org.webswing.toolkit.WebCursor;
+import org.webswing.toolkit.WebToolkit;
+import org.webswing.toolkit.WebWindowPeer;
+import org.webswing.toolkit.extra.WebRepaintManager;
+import org.webswing.toolkit.extra.WindowManager;
+import org.webswing.toolkit.util.DeamonThreadFactory;
+import org.webswing.toolkit.util.ImageComparator;
+import org.webswing.toolkit.util.Logger;
+import org.webswing.toolkit.util.Services;
+import org.webswing.toolkit.util.SubImage;
+import org.webswing.toolkit.util.Util;
 
 public class WebPaintDispatcher {
 
@@ -77,20 +80,13 @@ public class WebPaintDispatcher {
 					AppFrameMsgOut json;
 					Map<String, Map<Integer, BufferedImage>> windowImages = null;
 					Map<String, Image> windowWebImages = null;
-					Map<String, List<Rectangle>> windowNonVisibleAreas;
 					Map<String, Set<Rectangle>> currentAreasToUpdate = null;
 					long start= new Date().getTime();
 					synchronized (Util.getWebToolkit().getTreeLock()) {
 						synchronized (webPaintLock) {
-							if (clientReadyToReceive) {
-								if (RepaintManager.currentManager(null) instanceof WebRepaintManager) {
-									((WebRepaintManager) RepaintManager.currentManager(null)).process();
-								}
-								lastReadyStateTime = System.currentTimeMillis();
-							}
-							if ((areasToUpdate.size() == 0 && moveAction == null) || !clientReadyToReceive) {
-								if (!clientReadyToReceive && (System.currentTimeMillis() - lastReadyStateTime) > 2000) {
-									Logger.info("contentSender.readyToReceive re-enabled after timeout");
+							if (!clientReadyToReceive) {
+								if (System.currentTimeMillis() - lastReadyStateTime > 2000) {
+									Logger.debug("contentSender.readyToReceive re-enabled after timeout");
 									if (Util.isDD()) {
 										Services.getDirectDrawService().resetCache();
 									}
@@ -98,19 +94,30 @@ public class WebPaintDispatcher {
 								}
 								return;
 							}
+							
+							if (RepaintManager.currentManager(null) instanceof WebRepaintManager) {
+								((WebRepaintManager) RepaintManager.currentManager(null)).process();
+							}
+							lastReadyStateTime = System.currentTimeMillis();
+							
 							currentAreasToUpdate = areasToUpdate;
 							areasToUpdate = Util.postponeNonShowingAreas(currentAreasToUpdate,windowRendered);
-							if (currentAreasToUpdate.size() == 0 && moveAction == null) {
+							
+							if ((Util.isCompositingWM() && currentAreasToUpdate.isEmpty()) 
+									|| (!Util.isCompositingWM() && currentAreasToUpdate.isEmpty() && moveAction == null)) {
 								return;
 							}
-							windowNonVisibleAreas = WindowManager.getInstance().extractNonVisibleAreas();
-							json = Util.fillJsonWithWindowsData(currentAreasToUpdate, windowNonVisibleAreas);
-							if (Util.isDD()) {
-								windowWebImages = new HashMap<String, Image>();
-								windowWebImages = Util.extractWindowWebImages(json, windowWebImages);
+							
+							if (Util.isCompositingWM()) {
+								json = Util.fillWithCompositingWindowsData(currentAreasToUpdate);
 							} else {
-								windowImages = new HashMap<String, Map<Integer, BufferedImage>>();
-								windowImages = Util.extractWindowImages(json, windowImages);
+								json = Util.fillWithWindowsData(currentAreasToUpdate);
+							}
+							
+							if (Util.isDD()) {
+								windowWebImages = Util.extractWindowWebImages(currentAreasToUpdate.keySet(), new HashMap<>());
+							} else {
+								windowImages = Util.extractWindowImages(json, new HashMap<>());
 							}
 							if (moveAction != null) {
 								json.setMoveAction(moveAction);
@@ -134,6 +141,10 @@ public class WebPaintDispatcher {
 						ImageComparator.mergePartials(previousWindowImages, partials, json);
 
 					}
+					
+					json.setDirectDraw(Util.isDD());
+					json.setCompositingWM(Util.isCompositingWM());
+					
 					Services.getConnectionService().sendObject(json);
 					Logger.trace("frame processed "+ (new Date().getTime()-start)+"ms");
 
@@ -261,7 +272,9 @@ public class WebPaintDispatcher {
 				Rectangle b = w.getBounds();
 				Dimension current = Util.getWebToolkit().getScreenSize();
 
-				if (peer.getTarget() instanceof JFrame) {
+				if (w instanceof HtmlWindow) {
+					((HtmlWindow) w).updateBounds();
+				} else if (peer.getTarget() instanceof JFrame) {
 					JFrame frame = (JFrame) peer.getTarget();
 					//maximized window - auto resize
 					if (frame.getExtendedState() == Frame.MAXIMIZED_BOTH) {
@@ -298,15 +311,19 @@ public class WebPaintDispatcher {
 
 	public void notifyWindowMoved(Window w, Rectangle from, Rectangle to) {
 		synchronized (webPaintLock) {
-			if (moveAction == null) {
-				moveAction = new WindowMoveActionMsg(from.x, from.y, to.x, to.y, from.width, from.height);
-				notifyRepaintOffScreenAreas(w, moveAction);
-			} else if (moveAction.getDx() == from.x && moveAction.getDy() == from.y && moveAction.getWidth() == from.width && moveAction.getHeight() == from.height) {
-				moveAction.setDx(to.x);
-				moveAction.setDy(to.y);
-				notifyRepaintOffScreenAreas(w, moveAction);
+			if (Util.isCompositingWM()) {
+ 				notifyWindowRepaint(w);
 			} else {
-				notifyWindowRepaint(w);
+				if (moveAction == null) {
+					moveAction = new WindowMoveActionMsg(from.x, from.y, to.x, to.y, from.width, from.height);
+					notifyRepaintOffScreenAreas(w, moveAction);
+				} else if (moveAction.getDx() == from.x && moveAction.getDy() == from.y && moveAction.getWidth() == from.width && moveAction.getHeight() == from.height) {
+					moveAction.setDx(to.x);
+					moveAction.setDy(to.y);
+					notifyRepaintOffScreenAreas(w, moveAction);
+				} else {
+					notifyWindowRepaint(w);
+				}
 			}
 		}
 	}
@@ -500,6 +517,21 @@ public class WebPaintDispatcher {
 
 	public void notifyFocusEvent(FocusEventMsg msg) {
 		focusEvent=msg;
+	}
+	
+	public void notifyActionEvent(String windowId, String actionName, String data, byte[] binaryData) {
+		AppFrameMsgOut f = new AppFrameMsgOut();
+		
+		ActionEventMsgOut actionEvent = new ActionEventMsgOut();
+		actionEvent.setWindowId(windowId);
+		actionEvent.setActionName(actionName);
+		actionEvent.setData(data);
+		actionEvent.setBinaryData(binaryData);
+		
+		f.setActionEvent(actionEvent);
+		
+		Logger.debug("WebPaintDispatcher:notifyActionEvent", f);
+		sendObject(f);
 	}
 
 	public void notifyWindowReset(String guid) {

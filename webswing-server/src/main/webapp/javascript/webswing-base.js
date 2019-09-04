@@ -1,5 +1,6 @@
 import WebswingDirectDraw from './webswing-dd';
 import Util from './webswing-util';
+import $ from 'jquery';
 
 export default class BaseModule {
 	constructor() {
@@ -11,6 +12,7 @@ export default class BaseModule {
             disconnect : 'webswing.disconnect',
             fireCallBack : 'webswing.fireCallBack',
             getSocketId : 'socket.uuid',
+            send: 'socket.send',
             getCanvas : 'canvas.get',
             getInput: 'canvas.getInput',
             getDesktopSize: 'canvas.getDesktopSize',
@@ -353,7 +355,7 @@ export default class BaseModule {
             }
             
             // regular windows (background removed)
-            if (data.windows != null) {
+            if (windowsData != null) {
             	// first is always the background
                 for ( let i in data.windows) {
                     let win = data.windows[i];
@@ -364,7 +366,7 @@ export default class BaseModule {
                         for ( let x in win.content) {
                             let winContent = win.content[x];
                             if (winContent != null) {
-                                clear(win.posX + winContent.positionX, win.posY + winContent.positionY, winContent.width, winContent.height, context);
+                                clear(win.posX + winContent.positionX, win.posY + winContent.positionY, winContent.width, winContent.height, api.getCanvas().getContext("2d"));
                             }
                         }
                         data.windows.splice(i, 1);
@@ -530,40 +532,64 @@ export default class BaseModule {
         		}
         		
         		var context = canvas.getContext("2d");
-        		var dpr = util.dpr;
+        		var dpr = Util.dpr();
         		
-        		return win.content.reduce(function (sequence, winContent) {
-        			return sequence.then(function () {
-        				return new Promise(function (resolved, rejected) {
-        					if (winContent != null) {
-        						var imageObj = new Image();
-        						var onloadFunction = function () {
-        							context.save();
-        							context.drawImage(imageObj, winContent.positionX, winContent.positionY);
-        							context.restore();
-        							resolved();
-        							imageObj.onload = null;
-        							imageObj.src = '';
-        							if (imageObj.clearAttributes != null) {
-        								imageObj.clearAttributes();
-        							}
-        							imageObj = null;
-        						};
-        						imageObj.onload = function () {
-        							// fix for ie - onload is fired before the image
-        							// is ready for rendering to canvas.
-        							// This is an ugly quickfix
-        							if (api.cfg.ieVersion && api.cfg.ieVersion <= 10) {
-        								window.setTimeout(onloadFunction, 20);
-        							} else {
-        								onloadFunction();
-        							}
-        						};
-        						imageObj.src = util.getImageString(winContent.base64Content);
-        					}
-        				});
-        			}, errorHandler);
-        		}, Promise.resolve());
+        		let decodedImages = [];
+                return win.content.reduce(function(sequence, winContent) {
+                    return sequence.then(function(decodedImages) {
+                        return new Promise(function(resolved, rejected) {
+                            if (winContent != null) {
+                                let imageObj = new Image();
+                                let ieTimeoutId = null;
+                                let onloadFunction = function() {       
+                                    if (ieTimeoutId) {
+                                        window.clearTimeout(ieTimeoutId);
+                                    }                        
+                                    decodedImages.push({image:imageObj,winContent:winContent})
+                                    resolved(decodedImages);
+     
+                                };
+                                imageObj.onload = function() {
+                                    // fix for ie - onload is fired before the image is ready for rendering to canvas.
+                                    // This is an ugly quickfix
+                                    if (api.cfg.ieVersion && api.cfg.ieVersion <= 10) {
+                                        ieTimeoutId = window.setTimeout(onloadFunction, 20);
+                                    } else {
+                                        onloadFunction();
+                                    }
+                                };
+                                imageObj.src = Util.getImageString(winContent.base64Content);
+                            }
+                        });
+                    }, errorHandler);
+                }, Promise.resolve(decodedImages)).then(function(decodedImages){
+                    decodedImages.forEach(function(image, idx){
+                        let dpr = Util.dpr();
+                        //for U2020 , sprites (splitted images) are not available in some swing pages like splash or create NE, add a list validation
+                        if(win.sprites && win.sprites.length != 0){
+                            //the server sends bigger chunks of size 6 each of which is 6px, so index to start is 36
+                            const IMAGE_START_INDEX = 36;
+                            for(let i = IMAGE_START_INDEX * idx; i < IMAGE_START_INDEX * (idx+1) && i < win.sprites.length; i++ ){
+                                let sprite = win.sprites[i];
+                                context.save()
+                                context.setTransform(dpr, 0, 0, dpr, 0, 0);
+                                context.drawImage(image.image, sprite.spriteX, sprite.spriteY, sprite.width, sprite.height, sprite.positionX, sprite.positionY, sprite.width, sprite.height);
+                                context.restore();
+                            }
+                        } else {
+                            context.save()
+                            context.setTransform(dpr, 0, 0, dpr, 0, 0);
+                            context.drawImage(image.image, image.winContent.positionX, image.winContent.positionY);
+                            context.restore();
+                        }
+                        image.image.onload = null;
+                        image.image.src = '';
+                        if (image.image.clearAttributes != null) {
+                            image.image.clearAttributes();
+                        }
+                    })
+                    //return canvas;
+                });
         	}
         }
  
@@ -615,6 +641,10 @@ export default class BaseModule {
         		if (win.html) {
         			// we don't need to draw html window, also do not create canvas
         			ddPromise = Promise.resolve(null);
+        		} else if (win.directDraw == null && wih == null) {
+        			// ignore empty draw after first open
+        			resolved();
+        			return;
         		} else if (win.directDraw == null) {
         			ddPromise = Promise.resolve(wih);
         		} else if (typeof win.directDraw === 'string') {
@@ -654,7 +684,7 @@ export default class BaseModule {
         				performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
         			}
         			
-        			var htmlOrCanvasElement = $(windowImageHolders[win.id].element);;
+        			var htmlOrCanvasElement = $(windowImageHolders[win.id].element);
         			htmlOrCanvasElement.css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'});
         			if (htmlOrCanvasElement.is(".modal-blocked") != win.modalBlocked) {
         				htmlOrCanvasElement.toggleClass("modal-blocked", win.modalBlocked);

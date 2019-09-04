@@ -36,6 +36,7 @@ import org.webswing.toolkit.WebToolkit;
 //import org.webswing.toolkit.WebToolkit6;
 //import org.webswing.toolkit.WebToolkit7;
 import org.webswing.toolkit.WebToolkit8;
+import org.webswing.toolkit.api.WebswingApi;
 //import org.webswing.toolkit.ge.WebGraphicsEnvironment6;
 //import org.webswing.toolkit.ge.WebGraphicsEnvironment7;
 import org.webswing.toolkit.ge.WebGraphicsEnvironment8;
@@ -251,7 +252,9 @@ public class SwingInstance implements WebSessionListener {
 				log.error("Java version " + javaVersion + " not supported in this version of Webswing.");
 				throw new RuntimeException("Java version not supported. (Version starting with 1.6 , 1.7 and 1.8 are supported.)");
 			}
-			String bootCp = "-Xbootclasspath/a:\"" + webSwingToolkitJarPathSpecific + "\"" + File.pathSeparatorChar + "\"" + webSwingToolkitJarPath + "\"";
+			String webSwingToolkitApiJarPath = getClassPathForClass(WebswingApi.class);
+			
+			String bootCp = "-Xbootclasspath/a:\"" + webSwingToolkitJarPathSpecific + "\"" + File.pathSeparatorChar + "\"" + webSwingToolkitJarPath + "\"" + File.pathSeparatorChar + "\"" + webSwingToolkitApiJarPath + "\"";
 
 			if (!System.getProperty("os.name", "").startsWith("Windows")) {
 				// filesystem isolation support on non windows systems:

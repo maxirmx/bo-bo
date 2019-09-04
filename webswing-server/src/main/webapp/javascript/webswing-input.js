@@ -29,6 +29,7 @@ export default class InputModule {
         let latestMouseWheelEvent = null;
         let latestWindowResizeEvent = null;
         let mouseDown = 0;
+        var mouseDownCanvas = null;
         let inputEvtQueue = [];
         let compositionInput = false;
 
@@ -73,6 +74,7 @@ export default class InputModule {
             latestMouseWheelEvent = null;
             latestWindowResizeEvent = null;
             mouseDown = 0;
+            mouseDownCanvas = null;
             inputEvtQueue = [];
         }
 
@@ -81,7 +83,7 @@ export default class InputModule {
             resetInput();
             for (let key in canvasEventHandlerMap) {
                 if (canvasEventHandlerMap.hasOwnProperty(key)) {
-                    api.getCanvas().removeEventListener(key, canvasEventHandlerMap[key]);
+                    document.removeEventListener(key, canvasEventHandlerMap[key]);
                 }
             }
             canvasEventHandlerMap = null;
@@ -91,10 +93,8 @@ export default class InputModule {
                 }
             }
             inputEventHandlerMap = null;
-            api.getCanvas().removeEventListener('mousedown', mouseDownEventHandler);
-            api.getCanvas().removeEventListener('mouseout', mouseOutEventHandler);
-            api.getCanvas().removeEventListener('mouseup', mouseUpEventHandler);
-			api.getCanvas().removeEventListener('mouseover', mouseOverEventHandler);
+            document.removeEventListener('mouseout', mouseOutEventHandler);
+			//api.getCanvas().removeEventListener('mouseover', mouseOverEventHandler);
         }
 
         let canvasEventHandlerMap = {};
@@ -107,32 +107,46 @@ export default class InputModule {
             let canvas = api.getCanvas();
             let input = api.getInput();
             resetInput();
-            focusInput(input);
+            focusInput();
 
             let canvasMousedownEventHandler = function (evt) {
+            	if (!evt.target || !evt.target.matches("canvas.webswing-canvas")) {
+            		return;
+            	}
+            	
+                mouseDownEventHandler(evt);
+                
                 let mousePos = getMousePos(canvas, evt, 'mousedown');
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);
-                focusInput(input);
+                focusInput();
                 sendInput();
                 return false;
             };
             canvasEventHandlerMap['mousedown'] = canvasMousedownEventHandler;
-            Util.bindEvent(canvas, 'mousedown', canvasMousedownEventHandler, false);
+            Util.bindEvent(document, 'mousedown', canvasMousedownEventHandler, false);
 
             let canvasDblclickEventHandler = function (evt) {
-                let mousePos = getMousePos(canvas, evt, 'dblclick');
+            	if (!evt.target || !evt.target.matches("canvas.webswing-canvas")) {
+            		return;
+            	}
+            	
+                var mousePos = getMousePos(canvas, evt, 'dblclick');
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);
-                focusInput(input);
+                focusInput();
                 sendInput();
                 return false;
             };
             canvasEventHandlerMap['dblclick'] = canvasDblclickEventHandler;
-            Util.bindEvent(canvas, 'dblclick', canvasDblclickEventHandler, false);
+            Util.bindEvent(document, 'dblclick', canvasDblclickEventHandler, false);
 
             let canvasMousemoveEventHandler = function (evt) {
-                let mousePos = getMousePos(canvas, evt, 'mousemove');
+            	if ((!evt.target || !evt.target.matches("canvas.webswing-canvas")) && (mouseDownCanvas == null)) {
+            		return;
+            	}
+            	
+                var mousePos = getMousePos(canvas, evt, 'mousemove');
                 if (prepos && prepos.mouse.x == mousePos.mouse.x && prepos.mouse.y == mousePos.mouse.y) {
                     return false;
                 }
@@ -140,24 +154,47 @@ export default class InputModule {
                 prepos = mousePos;
                 mousePos.mouse.button = mouseDown;
                 latestMouseMoveEvent = mousePos;
+                
+                if ((!evt.target || !evt.target.matches("canvas.webswing-canvas")) && (mouseDownCanvas != null)) {
+                	// prevent firing mouse move events on underlying html components if dragging webswing component and mouse gets out of canvas bounds
+                	// this can happen when you quickly move a webswing dialog window over an html element (using compositing window manager)
+            		evt.preventDefault();
+            		evt.stopPropagation();
+            	}
+                
                 return false;
             };
             canvasEventHandlerMap['mousemove'] = canvasMousemoveEventHandler;
-            Util.bindEvent(canvas, 'mousemove', canvasMousemoveEventHandler, false);
+            Util.bindEvent(document, 'mousemove', canvasMousemoveEventHandler, false);
 
             let canvasMouseupEventHandler = function (evt) {
-                let mousePos = getMousePos(canvas, evt, 'mouseup');
+                // do this for the whole document, not only canvas
+            	
+                var mousePos = getMousePos(canvas, evt, 'mouseup');
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);
-                focusInput(input);
+                
+                if (evt.target && evt.target.matches("canvas.webswing-canvas") && mouseDownCanvas != null) {
+                	// focus input only in case mouse was pressed and released over canvas
+                	focusInput();
+            	}
+                
                 sendInput();
+                
+                mouseDown = 0;
+                mouseDownCanvas = null;
+                
                 return false;
             };
             canvasEventHandlerMap['mouseup'] = canvasMouseupEventHandler;
-            Util.bindEvent(canvas, 'mouseup', canvasMouseupEventHandler, false);
+            Util.bindEvent(document, 'mouseup', canvasMouseupEventHandler, false);
 
             // IE9, Chrome, Safari, Opera
             let canvasMouseWheelEventHandler = function (evt) {
+            	if (!evt.target || !evt.target.matches("canvas.webswing-canvas")) {
+            		return;
+            	}
+            	
                 let mousePos = getMousePos(canvas, evt, 'mousewheel');
                 latestMouseMoveEvent = null;
                 if (latestMouseWheelEvent != null) {
@@ -167,10 +204,14 @@ export default class InputModule {
                 return false;
             };
             canvasEventHandlerMap['mousewheel'] = canvasMouseWheelEventHandler;
-            Util.bindEvent(canvas, "mousewheel", canvasMouseWheelEventHandler, false);
+            Util.bindEvent(document, "mousewheel", canvasMouseWheelEventHandler, false);
 
             // firefox
             let canvasDOMMouseScrollEventHandler = function (evt) {
+            	if (!evt.target || !evt.target.matches("canvas.webswing-canvas")) {
+            		return;
+            	}
+            	
                 let mousePos = getMousePos(canvas, evt, 'mousewheel');
                 latestMouseMoveEvent = null;
                 if (latestMouseWheelEvent != null) {
@@ -180,15 +221,19 @@ export default class InputModule {
                 return false;
             };
             canvasEventHandlerMap['DOMMouseScroll'] = canvasDOMMouseScrollEventHandler;
-            Util.bindEvent(canvas, "DOMMouseScroll", canvasDOMMouseScrollEventHandler, false);
+            Util.bindEvent(document, "DOMMouseScroll", canvasDOMMouseScrollEventHandler, false);
 
             let canvasContextmenuEventHandler = function (event) {
+            	if (!event.target || !event.target.matches("canvas.webswing-canvas")) {
+            		return;
+            	}
+            	
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
             };
             canvasEventHandlerMap['contextmenu'] = canvasContextmenuEventHandler;
-            Util.bindEvent(canvas, 'contextmenu', canvasContextmenuEventHandler);
+            Util.bindEvent(document, 'contextmenu', canvasContextmenuEventHandler);
 
             function isCharatersPress(kc){
                 return (kc>=97&&kc<=122)||(kc>=65&&kc<=90);
@@ -236,10 +281,18 @@ export default class InputModule {
                 }
                 return false;
             };
+            var handleKeyDown = function(evt) {
+            	if (!evt.target || !evt.target.matches("canvas.webswing-canvas")) {
+            		return;
+            	}
+            	
+            	keydownHandler(evt);
+            }
+            
             inputEventHandlerMap['keydown'] = keydownHandler;
             Util.bindEvent(input, 'keydown', keydownHandler, false);
-            canvasEventHandlerMap['keydown'] = keydownHandler;
-			Util.bindEvent(canvas, 'keydown', keydownHandler, false);
+            canvasEventHandlerMap['keydown'] = handleKeyDown;
+			Util.bindEvent(document, 'keydown', handleKeyDown, false);
 			
             let keypressHandler = function(event) {
                 let keyevt = getKBKey('keypress', canvas, event);
@@ -254,10 +307,18 @@ export default class InputModule {
                 }
                 return false;
             };
+            var handleKeyPress = function(evt) {
+            	if (!evt.target || !evt.target.matches("canvas.webswing-canvas")) {
+            		return;
+            	}
+            	
+            	keypressHandler(evt);
+            }
+            
             inputEventHandlerMap['keypress'] = keypressHandler;
 			Util.bindEvent(input, 'keypress', keypressHandler, false);
-            canvasEventHandlerMap['keypress'] = keypressHandler;
-			Util.bindEvent(canvas, 'keypress', keypressHandler, false);
+            canvasEventHandlerMap['keypress'] = handleKeyPress;
+			Util.bindEvent(document, 'keypress', handleKeyPress, false);
 			
              let keyupHandler = function(event) {
                 let keyevt = getKBKey('keyup', canvas, event);
@@ -272,10 +333,18 @@ export default class InputModule {
                 }
                 return false;
             };
+            var handleKeyUp = function(evt) {
+            	if (!evt.target || !evt.target.matches("canvas.webswing-canvas")) {
+            		return;
+            	}
+            	
+            	keyUpHandler(evt);
+            }
+            
             inputEventHandlerMap['keyup'] = keyupHandler;
 			Util.bindEvent(input, 'keyup', keyupHandler, false);
-            canvasEventHandlerMap['keyup'] = keyupHandler;
-			Util.bindEvent(canvas, 'keyup', keyupHandler, false);
+            canvasEventHandlerMap['keyup'] = handleKeyUp;
+			Util.bindEvent(document, 'keyup', handleKeyUp, false);
 
             let DEFAULT_FONT = '14px sans-serif';
             // 中文输入法（如搜狗，智能ABC）等最终可见字符需要一连串键盘输入才能形成的，当用户开始输入字符的时候，
@@ -300,7 +369,7 @@ export default class InputModule {
                 let isIE = api.cfg.ieVersion && api.cfg.ieVersion <= 11;
                 sentWordsUsingKeypressEvent(isIE ? event.target.value : event.data);
                 compositionInput = false;
-                focusInput(input);
+                focusInput();
             };
             inputEventHandlerMap['compositionend'] = inputCompositionendEventHandler;
             Util.bindEvent(input, 'compositionend', inputCompositionendEventHandler, false);
@@ -323,7 +392,7 @@ export default class InputModule {
                     && input.value != " "
                 ) {
                     sentWordsUsingKeypressEvent(input.value)
-                    focusInput(input);
+                    focusInput();
                 }
             };
             inputEventHandlerMap['input'] = inputInputEventHandler;
@@ -365,10 +434,8 @@ export default class InputModule {
             inputEventHandlerMap['paste'] = inputPasteEventHandler;
             Util.bindEvent(input, 'paste', inputPasteEventHandler, false);
 
-            Util.bindEvent(canvas, 'mousedown', mouseDownEventHandler);
-            Util.bindEvent(canvas, 'mouseout', mouseOutEventHandler);
-            Util.bindEvent(canvas, 'mouseup', mouseUpEventHandler);
-			Util.bindEvent(canvas, 'mouseover', mouseOverEventHandler);
+            Util.bindEvent(document, 'mouseout', mouseOutEventHandler);
+			//Util.bindEvent(document, 'mouseover', mouseOverEventHandler);
 
             registered = true;
         }
@@ -383,14 +450,25 @@ export default class InputModule {
             ctx.restore();
             return Math.ceil(metrics.width)+5;
         }
-
-        function mouseDownEventHandler(evt) {
-            if (evt.which == 1) {
-                mouseDown = 1;
-            }
-        }
-
+	   	
+	   	function mouseDownEventHandler(evt) {
+	   		mouseDown = mouseDown | Math.pow(2, evt.which);
+	   		if (evt.which == 1) {
+	   			mouseDown = 1;
+	   		}
+	   		mouseDownCanvas = (evt.target && evt.target.matches("canvas.webswing-canvas")) ? evt.target : null;
+	   	}
+	   
         function mouseOutEventHandler(evt) {
+        	if (((evt.target && evt.target.matches("canvas.webswing-canvas")) 
+        			|| (evt.relatedTarget && evt.relatedTarget.matches("canvas.webswing-canvas"))) || mouseDownCanvas != null) {
+        		return;
+        	}
+        	
+        	mouseOutEventHandlerImpl(evt);
+        }
+        
+        function mouseOutEventHandlerImpl(evt) {
             // canvas会铺满整个界面
             // 当鼠标移除document范围后，鼠标松开的事件需要监听在document之上。
             // 中文输入的时候，承载中文输入的input空间也会触发本事件，需忽略
@@ -402,30 +480,25 @@ export default class InputModule {
                 mousePos.mouse.y = -1;
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);
-                focusInput(api.getInput());
+                focusInput();
                 sendInput();
             }
             mouseDown = 0;
         }
 		
-		function mouseOverEventHandler(evt) {
+		/*function mouseOverEventHandler(evt) {
 			if (api.cfg.hasControl && api.cfg.canPaint && !api.cfg.mirrorMode && !compositionInput) {
 				var mousePos = getMousePos(api.getCanvas(), evt, 'mouseup');
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);
-                focusInput(api.getInput());
+                focusInput();
                 sendInput();
 			}
 			mouseDown = 0;
-        }
+        }*/
 
-        function mouseUpEventHandler(evt) {
-            if (evt.which == 1) {
-                mouseDown = 0;
-            }
-        }
-
-        function focusInput(input) {
+        function focusInput() {
+        	var input = api.getInput();
             // In order to ensure that the browser will fire clipboard events, we always need to have something selected
             // scrollX , scrollY attributes on IE gives undefined, so changed to compatible pageXOffset,pageYOffset
             let sx = window.pageXOffset, sy = window.pageYOffset;
@@ -433,7 +506,7 @@ export default class InputModule {
             // set the style attributes as the focus/select cannot work well in IE
             input.style.top = sy +'px';
             input.style.left = sx +'px';
-            input.focus();
+            input.focus({preventScroll: true});
             input.select();
             window.scrollTo(sx,sy);
         }

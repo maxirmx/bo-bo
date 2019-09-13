@@ -868,7 +868,7 @@ public class Tests {
 			return false;
 		}
 		JPanel p = new JPanel(new GridLayout(5, 1));
-		String text = "<html><span style=\"font-size:2em;text-decoration:underline;\">The</span> <span style=\"font-size:1.5em;\"><b>Quick</b></span> <span style=\"font-size:1em;color:white;background-color:red;\">Brown</span> <span style=\"font-size:1em\">Fox <i>Jumps</i> <span style=\"text-decoration:line-through;\"> Over </span> </span><span style=\"font-size:1em\"> <sup>The</sup> <b><i>Lazy</i></b> <sub>Dog</sub> </span>123¡¢£½¦€”©«®°±²´¨<span style=\"font-size:0.5em\">test </span></html>";
+		String text = "<html><span style=\"font-size:2em;text-decoration:underline;\">The</span> <span style=\"font-size:1.5em;\"><b>Quick</b></span> <span style=\"font-size:1em;color:white;background-color:red;\">Brown</span> <span style=\"font-size:1em\">Fox <i>Jumps</i> <span style=\"text-decoration:line-through;\"> Over </span> </span><span style=\"font-size:1em\"> <sup>The</sup> <b><i>Lazy</i></b> <sub>Dog</sub> </span>123ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<span style=\"font-size:0.5em\">test </span></html>";
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		final String[] families = ge.getAvailableFontFamilyNames();
 		for (int i = 0; i < Math.min(families.length, 5); i++) {
@@ -889,6 +889,53 @@ public class Tests {
 		g.fill(new RoundRectangle2D.Double(0, 0, 200, 100, 40, 40));
 		g.setStroke(new BasicStroke(17, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 2.5f, new float[] { 3, 20, 40, 20 }, 10));
 		g.drawPolyline(new int[] { 220, 270, 320, 370, 420, 470 }, new int[] { 5, 95, 5, 95, 5, 95 }, 6);
+
+		return true;
+	}
+	
+	public static boolean t37ScaledTextRenderingTest(Graphics2D g, int repeat) {
+		if (repeat > 0) {
+			return false;
+		}
+		g.setFont(new Font("dialog",Font.PLAIN,12));
+		String ys="iiiiwiwiiiii";
+		int yswidth = g.getFontMetrics().stringWidth(ys);
+		String Ms = "wwwwwwwwwwwwwwwww";
+		int Mswidth = g.getFontMetrics().stringWidth(Ms);
+
+		g.setColor(Color.BLACK);
+		g.drawLine(0,10,yswidth,10);
+		g.setColor(Color.RED);
+		g.drawLine(yswidth,10,Mswidth+yswidth,10);
+		g.drawString(ys+Ms,0,10);
+		g.setColor(Color.BLACK);
+		g.drawString(ys,0,12);
+		g.drawString(Ms,yswidth,12);
+
+		g.translate(0,20);
+		g.scale(2,2);
+		yswidth = g.getFontMetrics().stringWidth(ys);
+		Mswidth = g.getFontMetrics().stringWidth(Ms);
+
+		g.setColor(Color.BLACK);
+		g.drawLine(0,10,yswidth,10);
+		g.setColor(Color.RED);
+		g.drawLine(yswidth,10,Mswidth+yswidth,10);
+		g.drawString(ys+Ms,0,10);
+		g.setColor(Color.BLACK);
+		g.drawString(ys,0,12);
+		g.drawString(Ms,yswidth,12);
+
+		g.translate(0,20);
+		g.scale(0.5,0.5);
+		yswidth = g.getFontMetrics().stringWidth(ys);
+		Mswidth = g.getFontMetrics().stringWidth(Ms);
+
+		g.setColor(Color.BLACK);
+		g.drawLine(0,10,yswidth,10);
+		g.setColor(Color.RED);
+		g.drawLine(yswidth,10,Mswidth+yswidth,10);
+		g.drawString(ys+Ms,0,10);
 
 		return true;
 	}

@@ -305,6 +305,12 @@ public abstract class WebToolkit extends SunToolkit {
 		this.desktopProperties.put("win.xpstyle.dllName", "C:\\WINDOWS\\resources\\themes\\Aero\\Aero.msstyles");
 		this.desktopProperties.put("win.xpstyle.sizeName", "NormalSize");
 		this.desktopProperties.put("win.xpstyle.themeActive", true);
+
+		if(Util.isDD()){
+			RenderingHints hints= new RenderingHints(RenderingHints.KEY_FRACTIONALMETRICS,RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+			this.desktopProperties.put("awt.font.desktophints",hints);
+		}
+
 	}
 
 	public boolean needUpdateWindow() {

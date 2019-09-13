@@ -153,7 +153,7 @@ public class WebImage extends Image {
 	}
 
 	public void addInstruction(WebGraphics g, DrawInstruction in) {
-		if (g != null && g.isDisposed()) {
+		if ((g != null && g.isDisposed()) || in==null) {
 			return;
 		}
 		synchronized (this) {

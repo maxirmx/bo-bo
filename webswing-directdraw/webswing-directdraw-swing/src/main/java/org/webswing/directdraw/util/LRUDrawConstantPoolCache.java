@@ -10,11 +10,13 @@ public class LRUDrawConstantPoolCache {
     private DoubleLinkedListNode head;
     private DoubleLinkedListNode end;
     private int capacity;
+    private final int idOffset;
     // reserve zero id for null constants
     private int nextId = 1;
 
-    public LRUDrawConstantPoolCache(int capacity) {
+    public LRUDrawConstantPoolCache(int capacity,int idOffset) {
         this.capacity = capacity;
+        this.idOffset = idOffset;
     }
 
     public synchronized boolean contains(DrawConstant<?> constant) {
@@ -28,14 +30,16 @@ public class LRUDrawConstantPoolCache {
             oldNode.makeHead();
             return oldNode.getVal();
         } else {
-            if (nextId >= capacity) {
-                // remove oldest node
-                map.remove(end.getVal());
-                end.remove();
-            }
             DoubleLinkedListNode newNode = new DoubleLinkedListNode(constant);
             newNode.makeHead();
-            newNode.setId(nextId++);
+            if (nextId >= capacity) {
+                // remove oldest node
+                int evictedId = map.remove(end.getVal()).getVal().getId();
+                end.remove();
+                newNode.setId(evictedId);
+            }else{
+                newNode.setId((nextId++) + idOffset);
+            }
             map.put(constant, newNode);
             return constant;
         }

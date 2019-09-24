@@ -11,12 +11,25 @@ public class LRUDrawConstantPoolCache {
     private DoubleLinkedListNode end;
     private int capacity;
     private final int idOffset;
+    private final int maxSize;
     // reserve zero id for null constants
     private int nextId = 1;
 
-    public LRUDrawConstantPoolCache(int capacity,int idOffset) {
+    public LRUDrawConstantPoolCache(int capacity,int idOffset, int maxSize) {
         this.capacity = capacity;
         this.idOffset = idOffset;
+        this.maxSize = maxSize;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void increaseCapacity(){
+        capacity*=2;
+        if(capacity>maxSize){
+            throw new RuntimeException("Directdraw: can not process more then "+maxSize+" constants in single frame. Check rendering of swing application.");
+        }
     }
 
     public synchronized boolean contains(DrawConstant<?> constant) {

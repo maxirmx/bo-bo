@@ -16,27 +16,38 @@ import org.webswing.directdraw.proto.Directdraw.DrawConstantProto;
 
 public class DrawConstantPool {
 
-	private static int IMG_CACHE_SIZE = Integer.getInteger("webswing.ddImageCaceSize",128);
+	private static final int IMG_CACHE_SIZE = Integer.getInteger("webswing.ddImageCacheSize", 128);
+	private static final int CONSTANT_CACHE_SIZE = Integer.getInteger("webswing.ddConstCacheSize", 8192);
 
 	private LRUDrawConstantPoolCache pool;
 	private LRUDrawConstantPoolCache imgPool;
 	private Set<String> registeredFonts = new HashSet<String>();
 	private Map<String, FontFaceConst> requestedFonts = new HashMap<String, FontFaceConst>();
+	private int poolOverflowCounter = 0;
+	private int imgPoolOverflowCounter = 0;
 
-	public DrawConstantPool(int size) {
-		imgPool = new LRUDrawConstantPoolCache(IMG_CACHE_SIZE,0);
-		pool = new LRUDrawConstantPoolCache(size - IMG_CACHE_SIZE,IMG_CACHE_SIZE);
+	public DrawConstantPool() {
+		pool = new LRUDrawConstantPoolCache(CONSTANT_CACHE_SIZE, 0, CONSTANT_CACHE_SIZE);
+		imgPool = new LRUDrawConstantPoolCache(IMG_CACHE_SIZE, CONSTANT_CACHE_SIZE, CONSTANT_CACHE_SIZE);
+	}
+
+	public void resetCacheOverflowCounters() {
+		poolOverflowCounter = 0;
+		imgPoolOverflowCounter = 0;
 	}
 
 	public int addToCache(List<DrawConstantProto> protos, DrawConstant<?> cons) {
 		if (cons instanceof ImageConst) {
-			return addToCache(imgPool, protos, cons);
+			return addToCache(imgPool, protos, cons, imgPoolOverflowCounter++);
 		} else {
-			return addToCache(pool, protos, cons);
+			return addToCache(pool, protos, cons, poolOverflowCounter++);
 		}
 	}
 
-	private int addToCache(LRUDrawConstantPoolCache cache, List<DrawConstantProto> protos, DrawConstant<?> cons) {
+	private int addToCache(LRUDrawConstantPoolCache cache, List<DrawConstantProto> protos, DrawConstant<?> cons, int overflowCounter) {
+		if (overflowCounter >= cache.getCapacity()) {
+			cache.increaseCapacity();
+		}
 		int thisId;
 		if (!cache.contains(cons)) {
 			DrawConstant<?> cacheEntry = cons.toCacheEntry();

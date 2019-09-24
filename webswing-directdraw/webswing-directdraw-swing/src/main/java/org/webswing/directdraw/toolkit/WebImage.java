@@ -257,6 +257,7 @@ public class WebImage extends Image {
 
 	protected WebImageProto toMessageInternal(DirectDraw dd) {
 		DrawConstantPool constantPool = dd.getConstantPool();
+		constantPool.resetCacheOverflowCounters();
 
 		WebImageProto.Builder webImageBuilder = WebImageProto.newBuilder();
 

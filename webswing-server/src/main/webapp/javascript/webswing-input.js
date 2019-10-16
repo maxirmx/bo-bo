@@ -121,6 +121,10 @@ export default class InputModule {
                 enqueueInputEvent(mousePos);
                 focusInput();
                 sendInput();
+                
+                evt.preventDefault();
+                evt.stopPropagation();
+                
                 return false;
             };
             canvasEventHandlerMap['mousedown'] = canvasMousedownEventHandler;
@@ -136,6 +140,10 @@ export default class InputModule {
                 enqueueInputEvent(mousePos);
                 focusInput();
                 sendInput();
+                
+                evt.preventDefault();
+                evt.stopPropagation();
+                
                 return false;
             };
             canvasEventHandlerMap['dblclick'] = canvasDblclickEventHandler;

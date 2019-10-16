@@ -20,6 +20,7 @@ public class WindowMsg implements Msg {
 	private boolean html;
 	private boolean modalBlocked;
 	private String ownerId;
+	private Integer state;
 
 	public String getId() {
 		return id;
@@ -123,6 +124,14 @@ public class WindowMsg implements Msg {
 
 	public void setOwnerId(String ownerId) {
 		this.ownerId = ownerId;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 }

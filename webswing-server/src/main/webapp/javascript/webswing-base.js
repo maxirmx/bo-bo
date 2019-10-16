@@ -68,6 +68,7 @@ export default class BaseModule {
         let directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: Util.dpr});
         var compositingWM = false;
         var compositionBaseZIndex = 100;
+        const JFRAME_MAXIMIZED_STATE = 6;
         
         function startApplication(name, applet, alwaysReset) {
             if (alwaysReset===true){
@@ -473,6 +474,7 @@ export default class BaseModule {
         		}
         		
         		var canvas = windowImageHolders[win.id].element;
+        		var canvasWin = windowImageHolders[win.id];
         		
         		if ($(canvas).width() != win.width || $(canvas).height() != win.height) {
         			$(canvas).css({"width": win.width + 'px', "height": win.height + 'px'});
@@ -490,6 +492,15 @@ export default class BaseModule {
         		if (newWindowOpened) {
         			windowOpened(windowImageHolders[win.id]);
         			performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
+        		}
+
+        		if (typeof win.state !== 'undefined' && canvasWin.state != win.state) {
+        			canvasWin.state = win.state;
+        			if (win.state == JFRAME_MAXIMIZED_STATE && canvas.parentNode) {
+        				// window has been maximized, we need to set its bounds according to its parent node (could be detached)
+        				var rect = canvas.parentNode.getBoundingClientRect();
+        				canvasWin.setBounds(0, 0, rect.width, rect.height);
+        			}
         		}
         		
                 return renderPngDrawWindowInternal(win, canvas.getContext("2d"));
@@ -661,6 +672,9 @@ export default class BaseModule {
         				}
         			}
         			
+        			var htmlOrCanvasElement = $(windowImageHolders[win.id].element);
+        			var htmlOrCanvasWin = windowImageHolders[win.id];
+        			
         			if (newWindowOpened) {
         				windowOpened(windowImageHolders[win.id]);
         				performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
@@ -675,6 +689,15 @@ export default class BaseModule {
         			
         			if (isVisible(htmlOrCanvasElement[0].parentNode)) {
         				htmlOrCanvasElement.css({"left": win.posX + 'px', "top": win.posY + 'px'});
+        			}
+        			
+        			if (!htmlOrCanvasWin.htmlWindow && typeof win.state !== 'undefined' && htmlOrCanvasWin.state != win.state) {
+        				htmlOrCanvasWin.state = win.state;
+        				if (win.state == JFRAME_MAXIMIZED_STATE && htmlOrCanvasElement[0].parentNode) {
+        					// window has been maximized, we need to set its bounds according to its parent node (could be detached)
+        					var rect = htmlOrCanvasElement[0].parentNode.getBoundingClientRect();
+        					htmlOrCanvasWin.setBounds(0, 0, rect.width, rect.height);
+        				}
         			}
         			
         			resolved();
@@ -765,6 +788,7 @@ export default class BaseModule {
         	this.name = name;
         	this.title = title;
         	this.htmlWindow = false;
+        	this.state = 0;
         	this.webswingInstance = api.external;
         }
         

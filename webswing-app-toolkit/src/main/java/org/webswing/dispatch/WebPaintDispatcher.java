@@ -277,7 +277,7 @@ public class WebPaintDispatcher {
 				} else if (peer.getTarget() instanceof JFrame) {
 					JFrame frame = (JFrame) peer.getTarget();
 					//maximized window - auto resize
-					if (frame.getExtendedState() == Frame.MAXIMIZED_BOTH) {
+					if (frame.getExtendedState() == Frame.MAXIMIZED_BOTH && !Util.isCompositingWM()) {
 						w.setLocation(0, 0);
 						w.setBounds(0, 0, current.width, current.height);
 					}

@@ -339,6 +339,7 @@ public class Util {
 				window.setHeight(ww.getBounds().height);
 				if (ww.getTarget() instanceof Frame) {
 					window.setTitle(((Frame) ww.getTarget()).getTitle());
+					window.setState(((Frame) ww.getTarget()).getExtendedState());
 				}
 				if (ww.getTarget() instanceof Window) {
 					Window owner = ((Window) ww.getTarget()).getOwner();

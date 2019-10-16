@@ -425,7 +425,7 @@ export default class BaseModule {
         			var htmlDiv = document.createElement("div");
         			htmlDiv.classList.add("webswing-html-canvas");
         			
-        			windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name, win.title);
+        			windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name);
         			newWindowOpened = true;
         			$(htmlDiv).attr('data-id', win.id).css("position", "absolute");
 
@@ -659,7 +659,7 @@ export default class BaseModule {
         					var htmlDiv = document.createElement("div");
         					htmlDiv.classList.add("webswing-html-canvas");
         					
-        					windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name, win.title);
+        					windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name);
         					newWindowOpened = true;
         					$(htmlDiv).attr('data-id', win.id).css("position", "absolute");
 
@@ -858,11 +858,10 @@ export default class BaseModule {
     		// to be customized
     	}
     	
-    	function HtmlWindow(id, element, name, title) {
+    	function HtmlWindow(id, element, name) {
         	this.id = id;
         	this.element = element;
         	this.name = name;
-        	this.title = title;
         	this.htmlWindow = true;
         	this.webswingInstance = api.external;
         }

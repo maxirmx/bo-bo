@@ -334,7 +334,11 @@ export default class BaseModule {
             	if (canvasWindow) {
             		if (compositingWM) {
             			windowClosing(canvasWindow);
-            			canvasWindow.windowClosing();
+            			try {
+            				canvasWindow.windowClosing();
+            			} catch (e) {
+            				console.error(e);
+            			}
             		}
             		
             		$(canvasWindow.element).remove();
@@ -342,16 +346,24 @@ export default class BaseModule {
             	            		
             		if (compositingWM) {
             			windowClosed(canvasWindow);
-            			canvasWindow.windowClosed();
+            			try {
+            				canvasWindow.windowClosed();
+            			} catch (e) {
+            				console.error(e);
+            			}
             		}
             	}
             }
             if (data.actionEvent != null && api.cfg.hasControl && !api.recordingPlayback) {
-            	if (data.actionEvent.windowId && windowImageHolders[data.actionEvent.windowId]) {
-            		windowImageHolders[data.actionEvent.windowId].handleActionEvent(data.actionEvent.actionName, data.actionEvent.data, data.actionEvent.binaryData);
-            	} else {
-            		api.handleActionEvent(data.actionEvent.actionName, data.actionEvent.data, data.actionEvent.binaryData);
-            	}
+            	try {
+            		if (data.actionEvent.windowId && windowImageHolders[data.actionEvent.windowId]) {
+            			windowImageHolders[data.actionEvent.windowId].handleActionEvent(data.actionEvent.actionName, data.actionEvent.data, data.actionEvent.binaryData);
+            		} else {
+            			api.handleActionEvent(data.actionEvent.actionName, data.actionEvent.data, data.actionEvent.binaryData);
+            		}
+    			} catch (e) {
+    				console.error(e);
+    			}
             }
             
             // regular windows (background removed)
@@ -894,33 +906,53 @@ export default class BaseModule {
         }
         
         function windowOpening(htmlOrCanvasWindow) {
-        	if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowOpening) {
-        		api.cfg.compositingWindowsListener.windowOpening(htmlOrCanvasWindow);
-        	}
+        	try {
+        		if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowOpening) {
+        			api.cfg.compositingWindowsListener.windowOpening(htmlOrCanvasWindow);
+        		}
+			} catch (e) {
+				console.error(e);
+			}
         }
         
         function windowOpened(htmlOrCanvasWindow) {
-        	if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowOpened) {
-        		api.cfg.compositingWindowsListener.windowOpened(htmlOrCanvasWindow);
-        	}
+        	try {
+        		if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowOpened) {
+        			api.cfg.compositingWindowsListener.windowOpened(htmlOrCanvasWindow);
+        		}
+			} catch (e) {
+				console.error(e);
+			}
         }
         
         function windowClosing(htmlOrCanvasWindow) {
-        	if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowClosing) {
-        		api.cfg.compositingWindowsListener.windowClosing(htmlOrCanvasWindow);
-        	}
+        	try {
+        		if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowClosing) {
+        			api.cfg.compositingWindowsListener.windowClosing(htmlOrCanvasWindow);
+        		}
+			} catch (e) {
+				console.error(e);
+			}
         }
         
         function windowClosed(htmlOrCanvasWindow) {
-        	if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowClosed) {
-        		api.cfg.compositingWindowsListener.windowClosed(htmlOrCanvasWindow);
-        	}
+        	try {
+        		if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowClosed) {
+        			api.cfg.compositingWindowsListener.windowClosed(htmlOrCanvasWindow);
+        		}
+			} catch (e) {
+				console.error(e);
+			}
         }
         
         function windowModalBlockedChanged(htmlOrCanvasWindow) {
-        	if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowModalBlockedChanged) {
-        		api.cfg.compositingWindowsListener.windowModalBlockedChanged(htmlOrCanvasWindow);
-        	}
+        	try {
+        		if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowModalBlockedChanged) {
+        			api.cfg.compositingWindowsListener.windowModalBlockedChanged(htmlOrCanvasWindow);
+        		}
+			} catch (e) {
+				console.error(e);
+			}
         }
         
         function handleActionEvent(actionName, data, binaryData) {

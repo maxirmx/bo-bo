@@ -65,6 +65,7 @@ export default class BaseModule {
         let drawingQ = [];
 
         let windowImageHolders = {}; // <id> : <CanvasWindow/HtmlWindow>
+        var closedWindows = {}; // <id> : <boolean>, map of windows requested to be closed, rendering of windows in this map will be ignored, until message about closed window is received
         let directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: Util.dpr});
         var compositingWM = false;
         var compositionBaseZIndex = 100;
@@ -128,6 +129,7 @@ export default class BaseModule {
             timer3 = setInterval(servletHeartbeat, 100000);
             compositingWM = false;
             windowImageHolders = {};
+            closedWindows = {};
             directDraw.dispose();
             directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: Util.dpr});
         }
@@ -353,6 +355,8 @@ export default class BaseModule {
             			}
             		}
             	}
+            	
+            	delete closedWindows[data.closedWindow.id];
             }
             if (data.actionEvent != null && api.cfg.hasControl && !api.recordingPlayback) {
             	try {
@@ -401,6 +405,11 @@ export default class BaseModule {
         }
         
         function renderWindow(win, index, directDraw) {
+        	if (closedWindows[win.id]) {
+        		// ignore this window as it has been requested to be closed
+        		return Promise.resolve();
+        	}
+        	
         	if (directDraw) {
         		if (compositingWM) {
         			return renderDirectDrawComposedWindow(win, index);
@@ -870,6 +879,7 @@ export default class BaseModule {
     	
     	CanvasWindow.prototype.close = function() {
     		api.send({window: {id: this.id, close: true}});
+    		closedWindows[this.id] = true;
     	};
     	
     	CanvasWindow.prototype.isRelocated = function() {

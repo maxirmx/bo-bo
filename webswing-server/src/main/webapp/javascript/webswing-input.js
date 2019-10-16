@@ -582,10 +582,18 @@ export default class InputModule {
                 delta = -Math.max(-1, Math.min(1, (evt.wheelDelta || -evt.detail)));
             }
             
-            if (type == 'mouseup' && (!targetElement || !targetElement.matches("canvas.webswing-canvas"))) {
+            if (type == 'mouseup' && (!targetElement || !targetElement.matches || !targetElement.matches("canvas.webswing-canvas"))) {
             	// fix for detached composition canvas windows that might overlay same coordinates space, when clicked outside a canvas
             	mouseX = -1;
             	mouseY = -1;
+            }
+            
+            if (type == 'mouseup' && targetElement && targetElement.matches && targetElement.closest(".webswing-html-canvas") != null) {
+            	// fix for mouseup over an HtmlWindow div content
+            	rect = targetElement.closest(".webswing-html-canvas").parentNode.getBoundingClientRect();
+            	            	
+            	mouseX = Math.round(evt.clientX - rect.left);
+            	mouseY = Math.round(evt.clientY - rect.top);
             }
             
             return {

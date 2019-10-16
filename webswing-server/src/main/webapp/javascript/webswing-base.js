@@ -451,7 +451,9 @@ export default class BaseModule {
         		
         		if (newWindowOpened) {
         			windowOpened(windowImageHolders[win.id]);
-        			performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
+        			if (!api.cfg.mirrorMode) {
+        				performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
+        			}
         		}
         		
         		return Promise.resolve();
@@ -493,12 +495,14 @@ export default class BaseModule {
         		
         		if (newWindowOpened) {
         			windowOpened(windowImageHolders[win.id]);
-        			performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
+        			if (!api.cfg.mirrorMode) {
+        				performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
+        			}
         		}
 
         		if (typeof win.state !== 'undefined' && canvasWin.state != win.state) {
         			canvasWin.state = win.state;
-        			if (win.state == JFRAME_MAXIMIZED_STATE && canvas.parentNode) {
+        			if (!api.cfg.mirrorMode && win.state == JFRAME_MAXIMIZED_STATE && canvas.parentNode) {
         				// window has been maximized, we need to set its bounds according to its parent node (could be detached)
         				var rect = canvas.parentNode.getBoundingClientRect();
         				canvasWin.setBounds(0, 0, rect.width, rect.height);
@@ -679,7 +683,9 @@ export default class BaseModule {
         			
         			if (newWindowOpened) {
         				windowOpened(windowImageHolders[win.id]);
-        				performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
+        				if (!api.cfg.mirrorMode) {
+        					performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
+        				}
         			}
         			
         			var htmlOrCanvasElement = $(windowImageHolders[win.id].element);
@@ -693,7 +699,7 @@ export default class BaseModule {
         			
         			if (!htmlOrCanvasWin.htmlWindow && typeof win.state !== 'undefined' && htmlOrCanvasWin.state != win.state) {
         				htmlOrCanvasWin.state = win.state;
-        				if (win.state == JFRAME_MAXIMIZED_STATE && htmlOrCanvasElement[0].parentNode) {
+        				if (!api.cfg.mirrorMode && win.state == JFRAME_MAXIMIZED_STATE && htmlOrCanvasElement[0].parentNode) {
         					// window has been maximized, we need to set its bounds according to its parent node (could be detached)
         					var rect = htmlOrCanvasElement[0].parentNode.getBoundingClientRect();
         					htmlOrCanvasWin.setBounds(0, 0, rect.width, rect.height);
@@ -734,7 +740,7 @@ export default class BaseModule {
 						overrideLocation = true;
 					}
 					
-					if (overrideLocation) {
+					if (!api.cfg.mirrorMode && overrideLocation) {
 						htmlOrCanvasWin.setLocation(winPosX, winPosY);
 					}
 				}

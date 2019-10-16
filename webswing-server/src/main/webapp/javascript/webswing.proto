@@ -109,6 +109,7 @@ message WindowMsgProto{
 	optional string name = 10;
 	optional bool html = 11;
 	optional bool modalBlocked = 12;
+	optional string ownerId = 13;
 }
 
 message WindowPartialContentMsgProto{

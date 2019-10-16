@@ -19,6 +19,7 @@ public class WindowMsg implements Msg {
 	private Integer height;
 	private boolean html;
 	private boolean modalBlocked;
+	private String ownerId;
 
 	public String getId() {
 		return id;
@@ -114,6 +115,14 @@ public class WindowMsg implements Msg {
 
 	public void setModalBlocked(boolean modalBlocked) {
 		this.modalBlocked = modalBlocked;
+	}
+
+	public String getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
 	}
 
 }

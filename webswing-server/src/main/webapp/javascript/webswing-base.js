@@ -429,7 +429,11 @@ export default class BaseModule {
         			$(htmlDiv).attr('data-id', win.id).css("position", "absolute");
 
         			windowOpening(windowImageHolders[win.id]);
-        			api.cfg.rootElement.append(htmlDiv);
+        			if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
+        				windowImageHolders[win.ownerId].element.parentNode.append(htmlDiv);
+        			} else {
+        				api.cfg.rootElement.append(htmlDiv);
+        			}
         		}
         		
         		var htmlDiv = windowImageHolders[win.id].element;
@@ -461,7 +465,11 @@ export default class BaseModule {
         			$(canvas).attr('data-id', win.id).css("position", "absolute");
         			
         			windowOpening(windowImageHolders[win.id]);
-        			api.cfg.rootElement.append(canvas);
+        			if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
+        				windowImageHolders[win.ownerId].element.parentNode.append(canvas);
+        			} else {
+        				api.cfg.rootElement.append(canvas);
+        			}
         		}
         		
         		var canvas = windowImageHolders[win.id].element;
@@ -629,7 +637,11 @@ export default class BaseModule {
         					$(canvas).attr('data-id', win.id).css("position", "absolute");
 
         					windowOpening(windowImageHolders[win.id]);
-        					api.cfg.rootElement.append(canvas);
+        					if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
+        						windowImageHolders[win.ownerId].element.parentNode.append(canvas);
+        					} else {
+        						api.cfg.rootElement.append(canvas);
+        					}
         				}
         			} else if (win.html) {
         				if (windowImageHolders[win.id] == null) {
@@ -641,7 +653,11 @@ export default class BaseModule {
         					$(htmlDiv).attr('data-id', win.id).css("position", "absolute");
 
         					windowOpening(windowImageHolders[win.id]);
-        					api.cfg.rootElement.append(htmlDiv);
+        					if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
+        						windowImageHolders[win.ownerId].element.parentNode.append(htmlDiv);
+        					} else {
+        						api.cfg.rootElement.append(htmlDiv);
+        					}
         				}
         			}
         			
@@ -797,6 +813,10 @@ export default class BaseModule {
     	CanvasWindow.prototype.close = function() {
     		api.send({window: {id: this.id, close: true}});
     	};
+    	
+    	CanvasWindow.prototype.isRelocated = function() {
+    		return this.element.parentNode != api.cfg.rootElement[0];
+    	}
     	
     	CanvasWindow.prototype.performAction = function(options) {
     		performAction($.extend({"windowId": this.id}, options));

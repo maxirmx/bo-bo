@@ -327,7 +327,8 @@ public class Util {
 	
 	public static AppFrameMsgOut fillWithCompositingWindowsData(Map<String, Set<Rectangle>> currentAreasToUpdate) {
 		AppFrameMsgOut frame = new AppFrameMsgOut();
-		for (String windowId : getWebToolkit().getWindowManager().getZOrder()) {
+		List<String> zOrder = getWebToolkit().getWindowManager().getZOrder();
+		for (String windowId : zOrder) {
 			WebWindowPeer ww = findWindowPeerById(windowId);
 			if (ww != null) {
 				WindowMsg window = frame.getOrCreateWindowById(windowId);
@@ -338,6 +339,16 @@ public class Util {
 				window.setHeight(ww.getBounds().height);
 				if (ww.getTarget() instanceof Frame) {
 					window.setTitle(((Frame) ww.getTarget()).getTitle());
+				}
+				if (ww.getTarget() instanceof Window) {
+					Window owner = ((Window) ww.getTarget()).getOwner();
+					if (owner != null) {
+						WebWindowPeer peer = (WebWindowPeer) WebToolkit.targetToPeer(owner);
+						if (peer != null && zOrder.contains(peer.getGuid())) {
+							// must be from current z-order windows, otherwise it could be SwingUtilities$SharedOwnerFrame
+							window.setOwnerId(peer.getGuid());
+						}
+					}
 				}
 				if (ww.getTarget() instanceof Component) {
 					window.setName(((Component) ww.getTarget()).getName());

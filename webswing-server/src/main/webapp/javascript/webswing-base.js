@@ -332,27 +332,33 @@ export default class BaseModule {
             }
             if (data.closedWindow != null) {
             	var canvasWindow = windowImageHolders[data.closedWindow.id];
-            		            	
+            	
             	if (canvasWindow) {
+            		var winCloseEvent = new WindowCloseEvent(canvasWindow.id);
+            		
             		if (compositingWM) {
-            			windowClosing(canvasWindow);
+            			windowClosing(canvasWindow, winCloseEvent);
             			try {
-            				canvasWindow.windowClosing();
-            			} catch (e) {
-            				console.error(e);
-            			}
+            				canvasWindow.windowClosing(winCloseEvent);
+                        } catch (e) {
+                            console.error(e);
+                        }
             		}
             		
-            		$(canvasWindow.element).remove();
-            		delete windowImageHolders[data.closedWindow.id];
-            	            		
+            		if (compositingWM && canvasWindow.htmlWindow && winCloseEvent.isDefaultPrevented()) {
+            			$(canvasWindow.element).hide();
+            		} else {
+            			$(canvasWindow.element).remove();
+            			delete windowImageHolders[data.closedWindow.id];
+            		}
+            		
             		if (compositingWM) {
             			windowClosed(canvasWindow);
             			try {
             				canvasWindow.windowClosed();
-            			} catch (e) {
-            				console.error(e);
-            			}
+                        } catch (e) {
+                            console.error(e);
+                        }
             		}
             	}
             	
@@ -449,7 +455,7 @@ export default class BaseModule {
         		
         		var htmlDiv = windowImageHolders[win.id].element;
         		
-        		$(htmlDiv).css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'});
+        		$(htmlDiv).css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'}).show();
         		if ($(htmlDiv).is(".modal-blocked") != win.modalBlocked) {
         			$(htmlDiv).toggleClass("modal-blocked", win.modalBlocked);
         			windowModalBlockedChanged(windowImageHolders[win.id]);
@@ -698,7 +704,7 @@ export default class BaseModule {
         			}
         			
         			var htmlOrCanvasElement = $(windowImageHolders[win.id].element);
-        			htmlOrCanvasElement.css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'});
+        			htmlOrCanvasElement.css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'}).show();
         			if (htmlOrCanvasElement.is(".modal-blocked") != win.modalBlocked) {
         				htmlOrCanvasElement.toggleClass("modal-blocked", win.modalBlocked);
         				windowModalBlockedChanged(windowImageHolders[win.id]);
@@ -894,7 +900,7 @@ export default class BaseModule {
         	// to be customized
         }
     	
-    	CanvasWindow.prototype.windowClosing = function() {
+    	CanvasWindow.prototype.windowClosing = function(windowCloseEvent) {
     		// to be customized
     	}
     	
@@ -928,12 +934,25 @@ export default class BaseModule {
         	// to be customized
         }
     	
-    	HtmlWindow.prototype.windowClosing = function() {
+    	HtmlWindow.prototype.windowClosing = function(windowCloseEvent) {
     		// to be customized
     	}
     	
     	HtmlWindow.prototype.windowClosed = function() {
     		// to be customized
+    	}
+    	
+    	function WindowCloseEvent(id) {
+    		this.id = id;
+    		this.defaultPrevented = false;
+    	}
+    	
+    	WindowCloseEvent.prototype.preventDefault = function() {
+    		this.defaultPrevented = true;
+    	}
+    	
+    	WindowCloseEvent.prototype.isDefaultPrevented = function() {
+    		return this.defaultPrevented;
     	}
     	
         function getWindows() {
@@ -997,10 +1016,10 @@ export default class BaseModule {
 			}
         }
         
-        function windowClosing(htmlOrCanvasWindow) {
+        function windowClosing(htmlOrCanvasWindow, windowCloseEvent) {
         	try {
         		if (api.cfg.compositingWindowsListener && api.cfg.compositingWindowsListener.windowClosing) {
-        			api.cfg.compositingWindowsListener.windowClosing(htmlOrCanvasWindow);
+        			api.cfg.compositingWindowsListener.windowClosing(htmlOrCanvasWindow, windowCloseEvent);
         		}
 			} catch (e) {
 				console.error(e);

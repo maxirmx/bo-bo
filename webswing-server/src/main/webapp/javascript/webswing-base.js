@@ -482,7 +482,8 @@ export default class BaseModule {
         			$(canvas).attr("width", win.width).attr("height", win.height);
         		}
         		
-        		$(canvas).css({"left": win.posX + 'px', "top": win.posY + 'px'});
+        		validateAndPositionWindow(canvasWin, win.posX, win.posY);
+        		
         		// update z-order
         		$(canvas).css({"z-index": (compositionBaseZIndex + index + 1)});
         		if ($(canvas).is(".modal-blocked") != win.modalBlocked) {
@@ -688,9 +689,7 @@ export default class BaseModule {
         				windowModalBlockedChanged(windowImageHolders[win.id]);
         			}
         			
-        			if (isVisible(htmlOrCanvasElement[0].parentNode)) {
-        				htmlOrCanvasElement.css({"left": win.posX + 'px', "top": win.posY + 'px'});
-        			}
+        			validateAndPositionWindow(htmlOrCanvasWin, win.posX, win.posY);
         			
         			if (!htmlOrCanvasWin.htmlWindow && typeof win.state !== 'undefined' && htmlOrCanvasWin.state != win.state) {
         				htmlOrCanvasWin.state = win.state;
@@ -714,6 +713,34 @@ export default class BaseModule {
         	}
         	
         	return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
+        }
+        
+        function validateAndPositionWindow(htmlOrCanvasWin, posX, posY) {
+        	if (isVisible(htmlOrCanvasWin.element.parentNode)) {
+				var winPosX = posX;
+				var winPosY = posY;
+				
+				if (!htmlOrCanvasWin.htmlWindow) {
+					var threshold = 40;
+					var overrideLocation = false;
+					var rect = htmlOrCanvasWin.element.parentNode.getBoundingClientRect();
+					
+					if (winPosX > rect.width - threshold) {
+						winPosX = rect.width - threshold;
+						overrideLocation = true;
+					}
+					if (winPosY > rect.height - threshold) {
+						winPosY = rect.height - threshold;
+						overrideLocation = true;
+					}
+					
+					if (overrideLocation) {
+						htmlOrCanvasWin.setLocation(winPosX, winPosY);
+					}
+				}
+				
+				$(htmlOrCanvasWin.element).css({"left": winPosX + 'px', "top": winPosY + 'px'});
+			}
         }
  
         function adjustCanvasSize(canvas, width, height) {

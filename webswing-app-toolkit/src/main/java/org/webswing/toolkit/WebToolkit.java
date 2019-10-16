@@ -314,6 +314,12 @@ public abstract class WebToolkit extends SunToolkit implements WebswingApiProvid
 		int repaintInterval = 400;
 		UIManager.put("ProgressBar.repaintInterval", repaintInterval);
 		UIManager.put("ProgressBar.cycleTime", repaintInterval*60);
+
+		if(Util.isDD()){
+			RenderingHints hints= new RenderingHints(RenderingHints.KEY_FRACTIONALMETRICS,RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+			this.desktopProperties.put("awt.font.desktophints",hints);
+		}
+
 	}
 
 	public boolean needUpdateWindow() {
@@ -698,14 +704,14 @@ public abstract class WebToolkit extends SunToolkit implements WebswingApiProvid
 	public Cursor createCustomCursor(Image cursor, Point hotSpot, String name) throws IndexOutOfBoundsException, HeadlessException {
 		return new WebCursor(cursor, hotSpot, name);
 	}
-	
+
 	@Override
 	public WebswingApi getApi() {
 		return api;
 	}
-	
+
 	public void processApiEvent(Msg event) {
 		api.processEvent(event);
 	}
-	
+
 }

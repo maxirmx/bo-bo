@@ -542,9 +542,9 @@ export default class WebswingDirectDraw {
 
         function iprtDrawString(ctx, args, fontTransform) {
             let string = args[0].string;
-            var p = args[1].points.points;
-            var x=p[0];
-            var y=p[1];
+            let p = args[1].points.points;
+            let x=p[0];
+            let y=p[1];
             let clip = args[2];
             ctx.save();
             if (path(ctx, clip)) {

@@ -403,62 +403,7 @@ export default class BaseModule {
         }
  
         function renderPngDrawWindow(win, context) {
-            let decodedImages = [];
-            return win.content.reduce(function(sequence, winContent) {
-                return sequence.then(function(decodedImages) {
-                    return new Promise(function(resolved, rejected) {
-                        if (winContent != null) {
-                            let imageObj = new Image();
-                            let ieTimeoutId = null;
-                            let onloadFunction = function() {       
-                                if (ieTimeoutId) {
-                                    window.clearTimeout(ieTimeoutId);
-                                }                        
-                                decodedImages.push({image:imageObj,winContent:winContent})
-                                resolved(decodedImages);
- 
-                            };
-                            imageObj.onload = function() {
-                                // fix for ie - onload is fired before the image is ready for rendering to canvas.
-                                // This is an ugly quickfix
-                                if (api.cfg.ieVersion && api.cfg.ieVersion <= 10) {
-                                    ieTimeoutId = window.setTimeout(onloadFunction, 20);
-                                } else {
-                                    onloadFunction();
-                                }
-                            };
-                            imageObj.src = Util.getImageString(winContent.base64Content);
-                        }
-                    });
-                }, errorHandler);
-            }, Promise.resolve(decodedImages)).then(function(decodedImages){
-                decodedImages.forEach(function(image, idx){
-                    let dpr = Util.dpr();
-                    //for U2020 , sprites (splitted images) are not available in some swing pages like splash or create NE, add a list validation
-                    if(win.sprites && win.sprites.length != 0){
-                        //the server sends bigger chunks of size 6 each of which is 6px, so index to start is 36
-                        const IMAGE_START_INDEX = 36;
-                        for(let i = IMAGE_START_INDEX * idx; i < IMAGE_START_INDEX * (idx+1) && i < win.sprites.length; i++ ){
-                            let sprite = win.sprites[i];
-                            context.save()
-                            context.setTransform(dpr, 0, 0, dpr, 0, 0);
-                            context.drawImage(image.image, sprite.spriteX, sprite.spriteY, sprite.width, sprite.height, win.posX + sprite.positionX, win.posY + sprite.positionY, sprite.width, sprite.height);
-                            context.restore();
-                        }
-                    } else {
-                        context.save()
-                        context.setTransform(dpr, 0, 0, dpr, 0, 0);
-                        context.drawImage(image.image, win.posX + image.winContent.positionX, win.posY + image.winContent.positionY);
-                        context.restore();
-                    }
-                    image.image.onload = null;
-                    image.image.src = '';
-                    if (image.image.clearAttributes != null) {
-                        image.image.clearAttributes();
-                    }
-                })
-                //return canvas;
-            });
+            return renderPngDrawWindowInternal(win, context);
         }
         
         function renderPngDrawComposedWindow(win, index) {
@@ -531,66 +476,79 @@ export default class BaseModule {
         			performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
         		}
         		
-        		var context = canvas.getContext("2d");
-        		var dpr = Util.dpr();
-        		
-        		let decodedImages = [];
-                return win.content.reduce(function(sequence, winContent) {
-                    return sequence.then(function(decodedImages) {
-                        return new Promise(function(resolved, rejected) {
-                            if (winContent != null) {
-                                let imageObj = new Image();
-                                let ieTimeoutId = null;
-                                let onloadFunction = function() {       
-                                    if (ieTimeoutId) {
-                                        window.clearTimeout(ieTimeoutId);
-                                    }                        
-                                    decodedImages.push({image:imageObj,winContent:winContent})
-                                    resolved(decodedImages);
-     
-                                };
-                                imageObj.onload = function() {
-                                    // fix for ie - onload is fired before the image is ready for rendering to canvas.
-                                    // This is an ugly quickfix
-                                    if (api.cfg.ieVersion && api.cfg.ieVersion <= 10) {
-                                        ieTimeoutId = window.setTimeout(onloadFunction, 20);
-                                    } else {
-                                        onloadFunction();
-                                    }
-                                };
-                                imageObj.src = Util.getImageString(winContent.base64Content);
-                            }
-                        });
-                    }, errorHandler);
-                }, Promise.resolve(decodedImages)).then(function(decodedImages){
-                    decodedImages.forEach(function(image, idx){
-                        let dpr = Util.dpr();
-                        //for U2020 , sprites (splitted images) are not available in some swing pages like splash or create NE, add a list validation
-                        if(win.sprites && win.sprites.length != 0){
-                            //the server sends bigger chunks of size 6 each of which is 6px, so index to start is 36
-                            const IMAGE_START_INDEX = 36;
-                            for(let i = IMAGE_START_INDEX * idx; i < IMAGE_START_INDEX * (idx+1) && i < win.sprites.length; i++ ){
-                                let sprite = win.sprites[i];
-                                context.save()
-                                context.setTransform(dpr, 0, 0, dpr, 0, 0);
-                                context.drawImage(image.image, sprite.spriteX, sprite.spriteY, sprite.width, sprite.height, sprite.positionX, sprite.positionY, sprite.width, sprite.height);
-                                context.restore();
-                            }
-                        } else {
+                return renderPngDrawWindowInternal(win, canvas.getContext("2d"));
+        	}
+        }
+        
+        function renderPngDrawWindowInternal(win, context) {
+        	if (!win.content) {
+        		return Promise.resolve();
+        	}
+        	
+        	let decodedImages = [];
+            return win.content.reduce(function(sequence, winContent) {
+                return sequence.then(function(decodedImages) {
+                    return new Promise(function(resolved, rejected) {
+                        if (winContent != null) {
+                            let imageObj = new Image();
+                            let ieTimeoutId = null;
+                            let onloadFunction = function() {       
+                                if (ieTimeoutId) {
+                                    window.clearTimeout(ieTimeoutId);
+                                }                        
+                                decodedImages.push({image:imageObj,winContent:winContent})
+                                resolved(decodedImages);
+ 
+                            };
+                            imageObj.onload = function() {
+                                // fix for ie - onload is fired before the image is ready for rendering to canvas.
+                                // This is an ugly quickfix
+                                if (api.cfg.ieVersion && api.cfg.ieVersion <= 10) {
+                                    ieTimeoutId = window.setTimeout(onloadFunction, 20);
+                                } else {
+                                    onloadFunction();
+                                }
+                            };
+                            imageObj.src = Util.getImageString(winContent.base64Content);
+                        }
+                    });
+                }, errorHandler);
+            }, Promise.resolve(decodedImages)).then(function(decodedImages){
+                decodedImages.forEach(function(image, idx){
+                    let dpr = Util.dpr();
+                    //for U2020 , sprites (splitted images) are not available in some swing pages like splash or create NE, add a list validation
+                    if(win.sprites && win.sprites.length != 0){
+                        //the server sends bigger chunks of size 6 each of which is 6px, so index to start is 36
+                        const IMAGE_START_INDEX = 36;
+                        for(let i = IMAGE_START_INDEX * idx; i < IMAGE_START_INDEX * (idx+1) && i < win.sprites.length; i++ ){
+                            let sprite = win.sprites[i];
                             context.save()
                             context.setTransform(dpr, 0, 0, dpr, 0, 0);
-                            context.drawImage(image.image, image.winContent.positionX, image.winContent.positionY);
+                            if (compositingWM) {
+                            	context.drawImage(image.image, sprite.spriteX, sprite.spriteY, sprite.width, sprite.height, sprite.positionX, sprite.positionY, sprite.width, sprite.height);
+                            } else {
+                            	context.drawImage(image.image, sprite.spriteX, sprite.spriteY, sprite.width, sprite.height, win.posX + sprite.positionX, win.posY + sprite.positionY, sprite.width, sprite.height);
+                            }
                             context.restore();
                         }
-                        image.image.onload = null;
-                        image.image.src = '';
-                        if (image.image.clearAttributes != null) {
-                            image.image.clearAttributes();
+                    } else {
+                        context.save()
+                        context.setTransform(dpr, 0, 0, dpr, 0, 0);
+                        if (compositingWM) {
+                        	context.drawImage(image.image, image.winContent.positionX, image.winContent.positionY);
+                        } else {
+                        	context.drawImage(image.image, win.posX + image.winContent.positionX, win.posY + image.winContent.positionY);
                         }
-                    })
-                    //return canvas;
-                });
-        	}
+                        context.restore();
+                    }
+                    image.image.onload = null;
+                    image.image.src = '';
+                    if (image.image.clearAttributes != null) {
+                        image.image.clearAttributes();
+                    }
+                })
+                //return canvas;
+            });
         }
  
         function renderDirectDrawWindow(win, context) {

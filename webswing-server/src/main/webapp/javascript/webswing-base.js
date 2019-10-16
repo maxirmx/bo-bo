@@ -918,6 +918,12 @@ export default class BaseModule {
     		performAction($.extend({"windowId": this.id}, options));
     	}
     	
+    	HtmlWindow.prototype.dispose = function() {
+    		$(this.element).remove();
+    		delete windowImageHolders[this.id];
+    		repaint();
+    	}
+    	
     	HtmlWindow.prototype.handleActionEvent = function(actionName, data, binaryData) {
         	// to be customized
         }

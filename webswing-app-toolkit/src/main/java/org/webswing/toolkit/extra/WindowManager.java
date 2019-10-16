@@ -212,9 +212,14 @@ public class WindowManager {
 	}
 
 	@SuppressWarnings("deprecation")
-	public Component getVisibleComponentOnPosition(int x, int y) {
+	public Component getVisibleComponentOnPosition(int x, int y, String winId) {
 		Component result = activeWindow;
-		Window positionWin = zorder.getVisibleWindowOnPosition(x, y);
+		Window positionWin;
+		if (winId != null && winId.length() > 0) {
+			positionWin = Util.findWindowById(winId);
+		} else {
+			positionWin = zorder.getVisibleWindowOnPosition(x, y);
+		}
 		if (positionWin != null) {
 			result = ((WebComponentPeer) positionWin.getPeer()).getHwComponentAt(x, y);
 		}

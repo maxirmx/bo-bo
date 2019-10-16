@@ -116,7 +116,7 @@ export default class InputModule {
             	
                 mouseDownEventHandler(evt);
                 
-                let mousePos = getMousePos(canvas, evt, 'mousedown');
+                let mousePos = getMousePos(canvas, evt, 'mousedown', evt.target);
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);
                 focusInput();
@@ -131,7 +131,7 @@ export default class InputModule {
             		return;
             	}
             	
-                var mousePos = getMousePos(canvas, evt, 'dblclick');
+                var mousePos = getMousePos(canvas, evt, 'dblclick', evt.target);
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);
                 focusInput();
@@ -146,7 +146,7 @@ export default class InputModule {
             		return;
             	}
             	
-                var mousePos = getMousePos(canvas, evt, 'mousemove');
+                var mousePos = getMousePos(canvas, evt, 'mousemove', mouseDownCanvas != null ? mouseDownCanvas : evt.target);
                 if (prepos && prepos.mouse.x == mousePos.mouse.x && prepos.mouse.y == mousePos.mouse.y) {
                     return false;
                 }
@@ -170,7 +170,7 @@ export default class InputModule {
             let canvasMouseupEventHandler = function (evt) {
                 // do this for the whole document, not only canvas
             	
-                var mousePos = getMousePos(canvas, evt, 'mouseup');
+                var mousePos = getMousePos(canvas, evt, 'mouseup', evt.target);
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);
                 
@@ -195,7 +195,7 @@ export default class InputModule {
             		return;
             	}
             	
-                let mousePos = getMousePos(canvas, evt, 'mousewheel');
+                let mousePos = getMousePos(canvas, evt, 'mousewheel', evt.target);
                 latestMouseMoveEvent = null;
                 if (latestMouseWheelEvent != null) {
                     mousePos.mouse.wheelDelta += latestMouseWheelEvent.mouse.wheelDelta;
@@ -212,7 +212,7 @@ export default class InputModule {
             		return;
             	}
             	
-                let mousePos = getMousePos(canvas, evt, 'mousewheel');
+                let mousePos = getMousePos(canvas, evt, 'mousewheel', evt.target);
                 latestMouseMoveEvent = null;
                 if (latestMouseWheelEvent != null) {
                     mousePos.mouse.wheelDelta += latestMouseWheelEvent.mouse.wheelDelta;
@@ -474,7 +474,7 @@ export default class InputModule {
             // 中文输入的时候，承载中文输入的input空间也会触发本事件，需忽略
             if (api.cfg.hasControl && api.cfg.canPaint && !api.cfg.mirrorMode && !compositionInput
 					&& document.activeElement.getAttribute('data-id') === "input-handler") {
-                let mousePos = getMousePos(api.getCanvas(), evt, 'mouseup');
+                let mousePos = getMousePos(api.getCanvas(), evt, 'mouseup', evt.target);
                 //when an new web page pops after user click, mouseup will send twice
                 mousePos.mouse.x = -1;
                 mousePos.mouse.y = -1;
@@ -525,8 +525,20 @@ export default class InputModule {
             }
         }
 
-        function getMousePos(canvas, evt, type) {
-            let rect = canvas.getBoundingClientRect();
+        function getMousePos(canvas, evt, type, targetElement) {
+        	var rect;
+        	if (targetElement && targetElement != null && targetElement.parentNode && targetElement.parentNode != null && targetElement.parentNode.getBoundingClientRect) {
+        		rect = targetElement.parentNode.getBoundingClientRect();
+        	} else {
+        		rect = api.getCanvas().getBoundingClientRect();
+        	}         
+        	            
+        	var winId;
+        	if (targetElement && targetElement.matches("canvas.webswing-canvas") && $(targetElement).data("id") && $(targetElement).data("id") != "canvas") {
+        		// for a composition canvas window send winId
+        		winId = $(targetElement).data("id");
+        	}
+        	
             let scaleX = 1;
             let scaleY = 1;
 
@@ -569,6 +581,13 @@ export default class InputModule {
             if (type == 'mousewheel') {
                 delta = -Math.max(-1, Math.min(1, (evt.wheelDelta || -evt.detail)));
             }
+            
+            if (type == 'mouseup' && (!targetElement || !targetElement.matches("canvas.webswing-canvas"))) {
+            	// fix for detached composition canvas windows that might overlay same coordinates space, when clicked outside a canvas
+            	mouseX = -1;
+            	mouseY = -1;
+            }
+            
             return {
                 mouse : {
                     x : mouseX,
@@ -579,7 +598,8 @@ export default class InputModule {
                     ctrl : evt.ctrlKey,
                     alt : evt.altKey,
                     shift : evt.shiftKey,
-                    meta : evt.metaKey
+                    meta : evt.metaKey,
+                    winId: winId || ""
                 }
             };
         }

@@ -237,7 +237,7 @@ public class WebEventDispatcher {
 				c = null;
 			}
 		} else {
-			c = WindowManager.getInstance().getVisibleComponentOnPosition(event.getX(), event.getY());
+			c = WindowManager.getInstance().getVisibleComponentOnPosition(event.getX(), event.getY(), event.getWinId());
 			if (lastMouseEvent != null && (lastMouseEvent.getID() == MouseEvent.MOUSE_DRAGGED || lastMouseEvent.getID() == MouseEvent.MOUSE_PRESSED) && ((event.getType() == MouseEventType.mousemove && event.getButton() == 1) || (event.getType() == MouseEventType.mouseup))) {
 				c = (Component) lastMouseEvent.getSource();
 				relatedToLastEvent=true;

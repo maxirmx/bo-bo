@@ -11,9 +11,7 @@ export default class CanvasModule {
             dispose: dispose,
             get: get,
             getInput: getInput,
-            getDesktopSize: getDesktopSize,
-            translateBrowserPoint: translateBrowserPoint, // translate point from browser coordinate system to desktop CS based on api.cfg.rootElement location representing [0,0]
-            translateDesktopPoint: translateDesktopPoint // translate point from desktop coordinate system to browser CS based on document root location representing [0,0] and relative element
+            getDesktopSize: getDesktopSize
         };
 
         let canvas;
@@ -109,28 +107,5 @@ export default class CanvasModule {
         	return {width: get().offsetWidth, height: get().offsetHeight};
         }
         
-        function translateBrowserPoint(x, y) {
-        	var rect = api.cfg.rootElement[0].getBoundingClientRect();
-        	
-        	var result = {
-        			x: x - rect.left, 
-        			y: y - rect.top
-        	};
-        	
-        	return result;
-        }
-        
-        function translateDesktopPoint(x, y, relativeElement) {
-        	var rectRoot = api.cfg.rootElement[0].getBoundingClientRect();
-        	var rectRel = relativeElement.getBoundingClientRect();
-        	
-        	var result = {
-        			x: (x + rectRoot.left + api.cfg.rootElement[0].scrollLeft) - (rectRel.left - relativeElement.scrollLeft), 
-        			y: (y + rectRoot.top + api.cfg.rootElement[0].scrollTop) - (rectRel.top - relativeElement.scrollTop)
-        	};
-        	
-        	return result;
-        }
-	
     }
 }

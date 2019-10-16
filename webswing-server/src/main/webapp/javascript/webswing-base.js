@@ -16,8 +16,6 @@ export default class BaseModule {
             getCanvas : 'canvas.get',
             getInput: 'canvas.getInput',
             getDesktopSize: 'canvas.getDesktopSize',
-            translateBrowserPoint: 'canvas.translateBrowserPoint',
-            translateDesktopPoint: 'canvas.translateDesktopPoint',
             registerInput : 'input.register',
             sendInput : 'input.sendInput',
             disposeInput : 'input.dispose',
@@ -442,8 +440,7 @@ export default class BaseModule {
         			windowModalBlockedChanged(windowImageHolders[win.id]);
         		}
         		if (isVisible(htmlDiv.parentNode)) {
-        			var p = api.translateDesktopPoint(win.posX, win.posY, htmlDiv.parentNode);
-        			$(htmlDiv).css({"left": p.x + 'px', "top": p.y + 'px'});
+        			$(htmlDiv).css({"left": win.posX + 'px', "top": win.posY + 'px'});
         		}
         		
         		if (newWindowOpened) {
@@ -474,8 +471,7 @@ export default class BaseModule {
         			$(canvas).attr("width", win.width).attr("height", win.height);
         		}
         		
-        		var p = api.translateDesktopPoint(win.posX, win.posY, canvas.parentNode);
-        		$(canvas).css({"left": p.x + 'px', "top": p.y + 'px'});
+        		$(canvas).css({"left": win.posX + 'px', "top": win.posY + 'px'});
         		// update z-order
         		$(canvas).css({"z-index": (compositionBaseZIndex + index + 1)});
         		if ($(canvas).is(".modal-blocked") != win.modalBlocked) {
@@ -662,8 +658,7 @@ export default class BaseModule {
         			}
         			
         			if (isVisible(htmlOrCanvasElement[0].parentNode)) {
-        				var p = api.translateDesktopPoint(win.posX, win.posY, htmlOrCanvasElement[0].parentNode);
-        				htmlOrCanvasElement.css({"left": p.x + 'px', "top": p.y + 'px'});
+        				htmlOrCanvasElement.css({"left": win.posX + 'px', "top": win.posY + 'px'});
         			}
         			
         			resolved();
@@ -765,23 +760,9 @@ export default class BaseModule {
         	api.send({window: {id: this.id, x: Math.floor(x), y: Math.floor(y), width: Math.floor(width), height: Math.floor(height)}});
     	};
     	
-    	CanvasWindow.prototype.setBoundsInBrowser = function(x, y, width, height) {
-    		var p = api.translateBrowserPoint(x, y);
-    		api.send({window: {id: this.id, x: Math.floor(p.x), y: Math.floor(p.y), width: Math.floor(width), height: Math.floor(height)}});
-    	};
-    	
-    	// move the Swing window to a location based on Desktop coordinates (defined by .webswing-element, [0, 0] is [webswing-element.offsetLeft, webswing-element.offsetTop])
-    	CanvasWindow.prototype.moveOnDesktop = function(x, y) {
+    	CanvasWindow.prototype.setLocation = function(x, y) {
     		var rect = this.element.getBoundingClientRect();
     		api.send({window: {id: this.id, x: Math.floor(x), y: Math.floor(y), width: Math.floor(rect.width), height: Math.floor(rect.height)}});
-    	};
-    	
-    	// move the Swing window to a location based on browser document coordinates ([0, 0] is document [0, 0]), this will be translated to Desktop coordinates
-    	CanvasWindow.prototype.moveInBrowser = function(x, y) {
-    		var rect = this.element.getBoundingClientRect();
-    		var p = api.translateBrowserPoint(x, y);
-    		
-    		api.send({window: {id: this.id, x: Math.floor(p.x), y: Math.floor(p.y), width: Math.floor(rect.width), height: Math.floor(rect.height)}});
     	};
     	
     	CanvasWindow.prototype.setSize = function(width, height) {
@@ -808,9 +789,7 @@ export default class BaseModule {
     			parent.append(this.element);
     			var rect = this.element.getBoundingClientRect();
     			if (pos) {
-    				this.moveInBrowser(pos.x, pos.y);
-    			} else {
-    				this.moveInBrowser(rect.left, rect.top);
+    				this.setLocation(pos.x, pos.y);
     			}
     		}
     	};

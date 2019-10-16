@@ -503,8 +503,8 @@ public class WebEventDispatcher {
 		synchronized (Util.getWebToolkit().getTreeLock()) {
 			synchronized (WebPaintDispatcher.webPaintLock) {
 				if (windowUpdate.isClose()) {
-					if (win.getTarget() instanceof Frame) {
-						((Frame) win.getTarget()).setVisible(false);
+					if (win.getTarget() instanceof Window) {
+						((Window) win.getTarget()).setVisible(false);
 					}
 				} else {
 					((Component) win.getTarget()).setLocation(windowUpdate.getX(), windowUpdate.getY());

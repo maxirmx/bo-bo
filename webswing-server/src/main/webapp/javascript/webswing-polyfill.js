@@ -10,6 +10,11 @@ export default class Polyfill {
         if (!isPromisesSupported()) {
             es6promise.polyfill();
         }
+        
+        if (!Element.prototype.matches) {
+        	// fix for IE matches selector
+        	Element.prototype.matches = Element.prototype.msMatchesSelector;
+        }
 
         return typedArraysSupported;
 

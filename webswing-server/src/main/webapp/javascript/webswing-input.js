@@ -592,7 +592,7 @@ export default class InputModule {
             	mouseY = -1;
             }
             
-            if (type == 'mouseup' && targetElement && targetElement.matches && targetElement.closest(".webswing-html-canvas") != null) {
+            if (type == 'mouseup' && targetElement && targetElement.matches && !targetElement.matches("canvas.webswing-canvas") && targetElement.closest(".webswing-html-canvas") != null) {
             	// fix for mouseup over an HtmlWindow div content
             	rect = targetElement.closest(".webswing-html-canvas").parentNode.getBoundingClientRect();
             	            	

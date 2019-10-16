@@ -45,8 +45,9 @@ public class WebswingApiImpl implements WebswingApi {
 						} else {
 							((HtmlWindow) w).getTarget().handleWebActionEvent(new WebActionEvent(action.getActionName(), action.getData(), action.getBinaryData()));
 						}
-					} else {
+					} else if (action.getEventType() != ActionEventType.init) {
 						// fire the general listeners
+						// don't fire for init event type
 						fireBrowserActionListener(new WebActionEvent(action.getActionName(), action.getData(), action.getBinaryData()));
 					}
 				} else {

@@ -126,6 +126,7 @@ export default class BaseModule {
             timer1 = setInterval(api.sendInput, 100);
             timer2 = setInterval(heartbeat, 10000);
             timer3 = setInterval(servletHeartbeat, 100000);
+            compositingWM = false;
             windowImageHolders = {};
             directDraw.dispose();
             directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: Util.dpr});

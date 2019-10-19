@@ -41,3 +41,7 @@ html,body {
 .webswing-element.composition {
 	position: relative;
 }
+
+.webswing-element .webswing-iframe-muted-while-dragging{
+	pointer-events: none;
+}

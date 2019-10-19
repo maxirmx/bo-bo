@@ -74,7 +74,7 @@ export default class InputModule {
             latestMouseWheelEvent = null;
             latestWindowResizeEvent = null;
             mouseDown = 0;
-            mouseDownCanvas = null;
+            resetMouseDownCanvas();
             inputEvtQueue = [];
         }
 
@@ -190,7 +190,7 @@ export default class InputModule {
                 sendInput();
                 
                 mouseDown = 0;
-                mouseDownCanvas = null;
+                resetMouseDownCanvas();
                 
                 return false;
             };
@@ -448,6 +448,22 @@ export default class InputModule {
             registered = true;
         }
 
+        function isWebswingCanvas(e){
+            return e && e.matches && e.matches("canvas.webswing-canvas")
+        }
+
+        function setMouseDownCanvas(evt){
+            mouseDownCanvas = isWebswingCanvas(evt.target) ? evt.target : null;
+            if(isWebswingCanvas(evt.target)){
+                $('.webswing-html-canvas iframe').addClass('webswing-iframe-muted-while-dragging');
+            }
+        }
+
+        function resetMouseDownCanvas(){
+            mouseDownCanvas = null;
+            $('.webswing-html-canvas iframe').removeClass('webswing-iframe-muted-while-dragging');
+        }
+
         // 获取文本宽度
 	   function getTextWidth(text, font) {
             let canvas = api.getCanvas();
@@ -464,12 +480,11 @@ export default class InputModule {
 	   		if (evt.which == 1) {
 	   			mouseDown = 1;
 	   		}
-	   		mouseDownCanvas = (evt.target && evt.target.matches && evt.target.matches("canvas.webswing-canvas")) ? evt.target : null;
+            setMouseDownCanvas(evt);
 	   	}
 	   
         function mouseOutEventHandler(evt) {
-        	if (((evt.target && evt.target.matches && evt.target.matches("canvas.webswing-canvas")) 
-        			|| (evt.relatedTarget && evt.relatedTarget.matches && evt.relatedTarget.matches("canvas.webswing-canvas"))) || mouseDownCanvas != null) {
+        	if (isWebswingCanvas(evt.target) || isWebswingCanvas(evt.relatedTarget) || mouseDownCanvas != null) {
         		return;
         	}
         	
@@ -492,6 +507,7 @@ export default class InputModule {
                 sendInput();
             }
             mouseDown = 0;
+            resetMouseDownCanvas();
         }
 		
 		/*function mouseOverEventHandler(evt) {
@@ -506,7 +522,7 @@ export default class InputModule {
         }*/
 
         function isNotValidCanvasTarget(evt) {
-        	return !evt.target || !evt.target.matches || !evt.target.matches("canvas.webswing-canvas");
+        	return !isWebswingCanvas(evt.target)
         }
         
         function focusInput() {

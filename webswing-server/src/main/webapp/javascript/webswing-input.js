@@ -211,8 +211,8 @@ export default class InputModule {
                 latestMouseWheelEvent = mousePos;
                 return false;
             };
-            canvasEventHandlerMap['mousewheel'] = canvasMouseWheelEventHandler;
-            Util.bindEvent(document, "mousewheel", canvasMouseWheelEventHandler, false);
+            canvasEventHandlerMap['wheel'] = canvasMouseWheelEventHandler;
+            Util.bindEvent(document, "wheel", canvasMouseWheelEventHandler, false);
 
             // firefox
             let canvasDOMMouseScrollEventHandler = function (evt) {

@@ -567,44 +567,12 @@ export default class InputModule {
         		winId = $(targetElement).data("id");
         	}
         	
-            let scaleX = 1;
-            let scaleY = 1;
-
-            //for lesser zoom %
-            if(window.innerWidth > canvas.width)
-            {
-                scaleX = (window.innerWidth-canvas.width)/canvas.width + 1;
-            }
-            if(window.innerHeight > Math.round(canvas.height + rect.top))
-            {
-                scaleY = (window.innerHeight-canvas.height - rect.top)/canvas.height + 1;
-            }
             let mouseX = 0;
             let mouseY = 0;
-            let translateX = (window.innerWidth-canvas.width)/2;
-            let translateY = (window.innerHeight-canvas.height - rect.top)/2;
 
-            // return relative mouse position
-            if(scaleX > 1 && scaleY > 1)
-            {
-                mouseX = Math.round(window.innerWidth/2 - translateX - rect.left - (window.innerWidth/2 - evt.clientX)/scaleX);
-                mouseY = Math.round((window.innerHeight - rect.top)/2 - translateY - ((window.innerHeight + rect.top)/2 - evt.clientY)/scaleY);
-            }
-            else if(scaleX > 1)
-            {
-                mouseX = Math.round(window.innerWidth/2 - translateX - rect.left - (window.innerWidth/2 - evt.clientX)/scaleX);
-                mouseY = Math.round(evt.clientY - rect.top);
-            }
-            else if(scaleY > 1)
-            {
-                mouseX = Math.round(evt.clientX - rect.left);
-                mouseY = Math.round((window.innerHeight - rect.top)/2 - translateY - ((window.innerHeight + rect.top)/2 - evt.clientY)/scaleY);
-            }
-            else
-            {
-                mouseX = Math.round(evt.clientX - rect.left);
-                mouseY = Math.round(evt.clientY - rect.top);
-            }			
+            mouseX = Math.round(evt.clientX - rect.left);
+            mouseY = Math.round(evt.clientY - rect.top);
+
             let delta = 0;
             if (type == 'mousewheel') {
                 delta = -Math.max(-1, Math.min(1, (evt.wheelDelta || -evt.detail)));

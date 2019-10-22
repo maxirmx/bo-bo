@@ -331,38 +331,7 @@ export default class BaseModule {
                 }
             }
             if (data.closedWindow != null) {
-            	var canvasWindow = windowImageHolders[data.closedWindow.id];
-            	
-            	if (canvasWindow) {
-            		var winCloseEvent = new WindowCloseEvent(canvasWindow.id);
-            		
-            		if (compositingWM) {
-            			windowClosing(canvasWindow, winCloseEvent);
-            			try {
-            				canvasWindow.windowClosing(winCloseEvent);
-                        } catch (e) {
-                            console.error(e);
-                        }
-            		}
-            		
-            		if (compositingWM && canvasWindow.htmlWindow && winCloseEvent.isDefaultPrevented()) {
-            			$(canvasWindow.element).hide();
-            		} else {
-            			$(canvasWindow.element).remove();
-            			delete windowImageHolders[data.closedWindow.id];
-            		}
-            		
-            		if (compositingWM) {
-            			windowClosed(canvasWindow);
-            			try {
-            				canvasWindow.windowClosed();
-                        } catch (e) {
-                            console.error(e);
-                        }
-            		}
-            	}
-            	
-            	delete closedWindows[data.closedWindow.id];
+            	closeWindow(data.closedWindow.id);
             }
             if (data.actionEvent != null && api.cfg.hasControl && !api.recordingPlayback) {
             	try {
@@ -378,6 +347,8 @@ export default class BaseModule {
             
             // regular windows (background removed)
             if (windowsData != null) {
+            	var winMap = {};
+
             	// first is always the background
                 for ( let i in data.windows) {
                     let win = data.windows[i];
@@ -392,7 +363,17 @@ export default class BaseModule {
                             }
                         }
                         data.windows.splice(i, 1);
-                        break;
+                    }
+                    winMap[win.id] = true;
+                }
+
+                if (compositingWM) {
+                    // with CWM we always get all the windows, so if an already open window is missing in windowsData we should close it
+                    for (var winId in windowImageHolders) {
+                        if (!winMap[winId]) {
+                            console.log("closing obsolete window " + winId);
+                            closeWindow(winId);
+                        }
                     }
                 }
 
@@ -409,7 +390,42 @@ export default class BaseModule {
                 processNextQueuedFrame();
             }
         }
-        
+
+        function closeWindow(id) {
+            var canvasWindow = windowImageHolders[id];
+
+            if (canvasWindow) {
+                var winCloseEvent = new WindowCloseEvent(canvasWindow.id);
+
+                if (compositingWM) {
+                    windowClosing(canvasWindow, winCloseEvent);
+                    try {
+                        canvasWindow.windowClosing(winCloseEvent);
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                if (compositingWM && canvasWindow.htmlWindow && winCloseEvent.isDefaultPrevented()) {
+                    $(canvasWindow.element).hide();
+                } else {
+                    $(canvasWindow.element).remove();
+                    delete windowImageHolders[id];
+                }
+
+                if (compositingWM) {
+                    windowClosed(canvasWindow);
+                    try {
+                        canvasWindow.windowClosed();
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+            }
+
+            delete closedWindows[id];
+        }
+
         function renderWindow(win, index, directDraw) {
         	if (closedWindows[win.id]) {
         		// ignore this window as it has been requested to be closed

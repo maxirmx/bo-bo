@@ -9,17 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JWindow;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 import com.sun.swingset3.DemoProperties;
@@ -210,6 +200,9 @@ public class WindowDecorationDemo extends JPanel {
 		frame.setLocation(position);
 		frame.setAlwaysOnTop(ontop);
 		frame.setUndecorated(undecorated);
+		if(undecorated){
+			frame.getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+		}
 		WindowDecorationDemo panel = new WindowDecorationDemo(frame, null, position, undecorated, ontop);
 		frame.getContentPane().add(panel);
 
@@ -228,6 +221,9 @@ public class WindowDecorationDemo extends JPanel {
 		frame.setModal(modal);
 		frame.setAlwaysOnTop(ontop);
 		frame.setUndecorated(undecorated);
+		if(undecorated){
+			frame.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
+		}
 		WindowDecorationDemo panel = new WindowDecorationDemo(frame, owner, position, undecorated, ontop);
 		frame.getContentPane().add(panel);
 		frame.setLocation(position);

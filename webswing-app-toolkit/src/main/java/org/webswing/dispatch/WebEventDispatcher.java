@@ -245,7 +245,7 @@ public class WebEventDispatcher {
 		}
 		if (c == null) {
 			if (Util.getWebToolkit().getPaintDispatcher() != null) {
-				Util.getWebToolkit().getPaintDispatcher().notifyCursorUpdate(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				Util.getWebToolkit().getPaintDispatcher().notifyCursorUpdate(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR),null);
 			}
 			return;
 		}

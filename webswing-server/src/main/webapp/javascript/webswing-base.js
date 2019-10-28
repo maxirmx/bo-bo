@@ -316,9 +316,10 @@ export default class BaseModule {
                 }
             }
             if (data.cursorChange != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {
-            	$("canvas.webswing-canvas").each(function(i, canvas) {
-            		canvas.style.cursor = getCursorStyle(data.cursorChange);
-            	});
+                var element=compositingWM?$("canvas[data-id="+data.cursorChange.winId+"]"):$("canvas.webswing-canvas");
+                element.each(function(i, canvas) {
+                    canvas.style.cursor = getCursorStyle(data.cursorChange);
+                });
             }
             if (data.copyEvent != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {
                 api.displayCopyBar(data.copyEvent);

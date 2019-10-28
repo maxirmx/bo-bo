@@ -41,7 +41,8 @@ public class DndEventHandler {
                 dragEnd(w, e, lastDropTargetAction != 0, lastDropTargetAction);
 			} else if (e.getID() == MouseEvent.MOUSE_DRAGGED) {
 				updateCursor();
-				Util.getWebToolkit().getPaintDispatcher().notifyCursorUpdate(cursor);
+				String winId = Util.getPeerForTarget(w) == null ? null : Util.getPeerForTarget(w).getGuid();
+				Util.getWebToolkit().getPaintDispatcher().notifyCursorUpdate(cursor, winId);
             }
         } else if (e instanceof KeyEvent) {
             if (e.getID() == KeyEvent.KEY_PRESSED && ((KeyEvent) e).getKeyCode() == KeyEvent.VK_ESCAPE) {

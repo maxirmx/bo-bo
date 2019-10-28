@@ -351,11 +351,11 @@ public class WebPaintDispatcher {
 		}
 	}
 
-	public void notifyCursorUpdate(Cursor cursor) {
-		notifyCursorUpdate(cursor, null);
+	public void notifyCursorUpdate(Cursor cursor,String winId) {
+		notifyCursorUpdate(cursor, null, winId);
 	}
 
-	public void notifyCursorUpdate(Cursor cursor, Cursor overridenCursorName) {
+	public void notifyCursorUpdate(Cursor cursor, Cursor overridenCursorName,String winId) {
 		String webcursorName = null;
 		Cursor webcursor = null;
 		if (overridenCursorName == null) {
@@ -405,9 +405,10 @@ public class WebPaintDispatcher {
 			webcursor = overridenCursorName;
 			webcursorName = overridenCursorName.getName();
 		}
-		if (!WindowManager.getInstance().getCurrentCursor().equals(webcursorName)) {
-			AppFrameMsgOut f = new AppFrameMsgOut();
+		String currentCursor = Util.getCurrentCursor(winId);
+		if ( currentCursor!=null && !currentCursor.equals(webcursorName)) {			AppFrameMsgOut f = new AppFrameMsgOut();
 			CursorChangeEventMsg cursorChange = new CursorChangeEventMsg(webcursorName);
+			cursorChange.setWinId(winId);
 			if (webcursor instanceof WebCursor) {
 				WebCursor c = (WebCursor) webcursor;
 				BufferedImage img = c.getImage();
@@ -416,7 +417,7 @@ public class WebPaintDispatcher {
 				cursorChange.setY(c.getHotSpot() != null ? c.getHotSpot().y : 0);
 			}
 			f.setCursorChange(cursorChange);
-			WindowManager.getInstance().setCurrentCursor(webcursorName);
+			Util.setCurrentCursor(winId, webcursorName);
 			Logger.debug("WebPaintDispatcher:notifyCursorUpdate", f);
 			Services.getConnectionService().sendObject(f);
 		}

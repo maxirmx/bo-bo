@@ -54,9 +54,11 @@ import org.webswing.model.c2s.MouseEventMsgIn;
 import org.webswing.model.s2c.AppFrameMsgOut;
 import org.webswing.model.s2c.WindowMsg;
 import org.webswing.model.s2c.WindowPartialContentMsg;
+import org.webswing.toolkit.WebComponentPeer;
 import org.webswing.toolkit.WebToolkit;
 import org.webswing.toolkit.WebWindowPeer;
 import org.webswing.toolkit.api.component.HtmlPanel;
+import org.webswing.toolkit.extra.WindowManager;
 
 public class Util {
 
@@ -704,6 +706,31 @@ public class Util {
 			}
 		}
 		return null;
+	}
+
+	public static WebComponentPeer getPeerForTarget(Object paramObject) {
+		WebComponentPeer localWObjectPeer = (WebComponentPeer) WebToolkit.targetToPeer(paramObject);
+		return localWObjectPeer;
+	}
+
+	public static String getCurrentCursor(String winId) {
+		if (isCompositingWM()) {
+			WebWindowPeer peer = findWindowPeerById(winId);
+			return peer == null ? null : peer.getCurrentCursor();
+		} else {
+			return WindowManager.getInstance().getCurrentCursor();
+		}
+	}
+
+	public static void setCurrentCursor(String winId, String cursor) {
+		if (isCompositingWM()) {
+			WebWindowPeer peer = findWindowPeerById(winId);
+			if (peer != null) {
+				peer.setCurrentCursor(cursor);
+			}
+		} else {
+			WindowManager.getInstance().setCurrentCursor(cursor);
+		}
 	}
 		
 }

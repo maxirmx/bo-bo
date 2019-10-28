@@ -72,6 +72,7 @@ message CursorChangeEventMsgProto{
 	optional bytes b64img = 2;
 	optional sint32 x = 3;
 	optional sint32 y = 4;
+    optional string winId = 5;
 }
 
 message CopyEventMsgProto{

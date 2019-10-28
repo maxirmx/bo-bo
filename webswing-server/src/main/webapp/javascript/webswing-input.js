@@ -18,6 +18,7 @@ export default class InputModule {
         module.provides = {
             register : register,
             sendInput : sendInput,
+            focusInput : focusInput,
             dispose : dispose
         };
 

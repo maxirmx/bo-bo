@@ -18,6 +18,7 @@ export default class BaseModule {
             getDesktopSize: 'canvas.getDesktopSize',
             registerInput : 'input.register',
             sendInput : 'input.sendInput',
+            focusInput : 'input.focusInput',
             disposeInput : 'input.dispose',
             registerTouch : 'touch.register',
             disposeTouch : 'touch.dispose',
@@ -303,16 +304,19 @@ export default class BaseModule {
                     input.style.top = (data.focusEvent.y+data.focusEvent.caretY)+'px';
                     input.style.left = (data.focusEvent.x+data.focusEvent.caretX)+'px';
                     input.style.height = data.focusEvent.caretH+'px';
+                    api.focusInput();
                 } else if(data.focusEvent.type === 'focusPasswordGained'){
                     input.type = 'password';
                     input.style.top = (data.focusEvent.y + data.focusEvent.caretY) + 'px';
                     input.style.left = (data.focusEvent.x + data.focusEvent.caretX) + 'px';
                     input.style.height = data.focusEvent.caretH + 'px';
-                    input.focus({preventScroll: true});
+                    api.focusInput();
                 } else {
                     input.style.top = null;
                     input.style.left = null;
                     input.style.height = null;
+                    input.value = '';
+                    api.getCanvas().focus({preventScroll: true});
                 }
             }
             if (data.cursorChange != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {

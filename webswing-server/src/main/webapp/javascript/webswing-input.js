@@ -177,8 +177,11 @@ export default class InputModule {
             Util.bindEvent(document, 'mousemove', canvasMousemoveEventHandler, false);
 
             let canvasMouseupEventHandler = function (evt) {
+                if(mouseDown === 0 ){ // ignore mouseup events if the mousedown did not originate on canvas
+                    return;
+                }
                 // do this for the whole document, not only canvas
-            	
+
                 var mousePos = getMousePos(canvas, evt, 'mouseup', evt.target);
                 latestMouseMoveEvent = null;
                 enqueueInputEvent(mousePos);

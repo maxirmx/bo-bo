@@ -519,8 +519,8 @@ export default class BaseModule {
         			$(canvas).css({"width": win.width + 'px', "height": win.height + 'px'});
         			$(canvas).attr("width", win.width).attr("height", win.height);
         		}
-        		
-        		validateAndPositionWindow(canvasWin, win.posX, win.posY);
+
+                canvasWin.validatePositionAndSize(win.posX, win.posY);
         		
         		// update z-order
         		$(canvas).css({"z-index": (compositionBaseZIndex + index + 1)});
@@ -730,9 +730,9 @@ export default class BaseModule {
         				htmlOrCanvasElement.toggleClass("modal-blocked", win.modalBlocked);
         				windowModalBlockedChanged(windowImageHolders[win.id]);
         			}
-        			
-        			validateAndPositionWindow(htmlOrCanvasWin, win.posX, win.posY);
-        			
+
+                    htmlOrCanvasWin.validatePositionAndSize(win.posX, win.posY);
+
         			if (!htmlOrCanvasWin.htmlWindow && typeof win.state !== 'undefined' && htmlOrCanvasWin.state != win.state) {
         				htmlOrCanvasWin.state = win.state;
         				if (!api.cfg.mirrorMode && win.state == JFRAME_MAXIMIZED_STATE && htmlOrCanvasElement[0].parentNode) {
@@ -768,11 +768,11 @@ export default class BaseModule {
 					var rect = htmlOrCanvasWin.element.parentNode.getBoundingClientRect();
 					
 					if (winPosX > rect.width - threshold) {
-						winPosX = rect.width - threshold;
+						winPosX = Math.max(0,rect.width - threshold);
 						overrideLocation = true;
 					}
 					if (winPosY > rect.height - threshold) {
-						winPosY = rect.height - threshold;
+						winPosY = Math.max(0,rect.height - threshold);
 						overrideLocation = true;
 					}
 					
@@ -860,6 +860,9 @@ export default class BaseModule {
         	this.htmlWindow = false;
         	this.state = 0;
         	this.webswingInstance = api.external;
+            this.validatePositionAndSize = function(x,y){
+                validateAndPositionWindow(this,x,y);
+            }
         }
         
         CanvasWindow.prototype.isModalBlocked = function() {
@@ -935,6 +938,9 @@ export default class BaseModule {
         	this.name = name;
         	this.htmlWindow = true;
         	this.webswingInstance = api.external;
+            this.validatePositionAndSize = function(x,y){
+                validateAndPositionWindow(this,x,y);
+            }
         }
     	
     	HtmlWindow.prototype.isModalBlocked = function() {

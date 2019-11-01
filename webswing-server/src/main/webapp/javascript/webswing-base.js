@@ -520,8 +520,11 @@ export default class BaseModule {
         			$(canvas).attr("width", win.width).attr("height", win.height);
         		}
 
-                canvasWin.validatePositionAndSize(win.posX, win.posY);
-        		
+                if (isVisible(canvasWin.element.parentNode)) {
+                    $(canvasWin.element).css({"left": win.posX + 'px', "top": win.posY + 'px'});
+                    canvasWin.validatePositionAndSize(win.posX, win.posY);
+                }
+
         		// update z-order
         		$(canvas).css({"z-index": (compositionBaseZIndex + index + 1)});
         		if ($(canvas).is(".modal-blocked") != win.modalBlocked) {
@@ -731,9 +734,12 @@ export default class BaseModule {
         				windowModalBlockedChanged(windowImageHolders[win.id]);
         			}
 
-                    htmlOrCanvasWin.validatePositionAndSize(win.posX, win.posY);
+                    if (isVisible(htmlOrCanvasWin.element.parentNode)) {
+                        $(htmlOrCanvasWin.element).css({"left": win.posX + 'px', "top": win.posY + 'px'});
+                        htmlOrCanvasWin.validatePositionAndSize(win.posX, win.posY);
+                    }
 
-        			if (!htmlOrCanvasWin.htmlWindow && typeof win.state !== 'undefined' && htmlOrCanvasWin.state != win.state) {
+                    if (!htmlOrCanvasWin.htmlWindow && typeof win.state !== 'undefined' && htmlOrCanvasWin.state != win.state) {
         				htmlOrCanvasWin.state = win.state;
         				if (!api.cfg.mirrorMode && win.state == JFRAME_MAXIMIZED_STATE && htmlOrCanvasElement[0].parentNode) {
         					// window has been maximized, we need to set its bounds according to its parent node (could be detached)
@@ -757,32 +763,26 @@ export default class BaseModule {
         	return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
         }
         
-        function validateAndPositionWindow(htmlOrCanvasWin, posX, posY) {
-        	if (isVisible(htmlOrCanvasWin.element.parentNode)) {
-				var winPosX = posX;
-				var winPosY = posY;
-				
-				if (!htmlOrCanvasWin.htmlWindow) {
-					var threshold = 40;
-					var overrideLocation = false;
-					var rect = htmlOrCanvasWin.element.parentNode.getBoundingClientRect();
-					
-					if (winPosX > rect.width - threshold) {
-						winPosX = Math.max(0,rect.width - threshold);
-						overrideLocation = true;
-					}
-					if (winPosY > rect.height - threshold) {
-						winPosY = Math.max(0,rect.height - threshold);
-						overrideLocation = true;
-					}
-					
-					if (!api.cfg.mirrorMode && overrideLocation) {
-						htmlOrCanvasWin.setLocation(winPosX, winPosY);
-					}
-				}
-				
-				$(htmlOrCanvasWin.element).css({"left": winPosX + 'px', "top": winPosY + 'px'});
-			}
+        function validateAndPositionWindow(htmlOrCanvasWin, winPosX, winPosY) {
+
+            if (!htmlOrCanvasWin.htmlWindow) {
+                var threshold = 40;
+                var overrideLocation = false;
+                var rect = htmlOrCanvasWin.element.parentNode.getBoundingClientRect();
+
+                if (winPosX > rect.width - threshold) {
+                    winPosX = Math.max(0,rect.width - threshold);
+                    overrideLocation = true;
+                }
+                if (winPosY > rect.height - threshold) {
+                    winPosY = Math.max(0,rect.height - threshold);
+                    overrideLocation = true;
+                }
+
+                if (!api.cfg.mirrorMode && overrideLocation) {
+                    htmlOrCanvasWin.setLocation(winPosX, winPosY);
+                }
+            }
         }
  
         function adjustCanvasSize(canvas, width, height) {

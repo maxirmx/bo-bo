@@ -494,22 +494,24 @@ public class WebEventDispatcher {
 	}
 
 	public void handleWindowEvent(WindowEventMsgIn windowUpdate) {
-		WebWindowPeer win = Util.findWindowPeerById(windowUpdate.getId());
-			
-		if (win == null) {
+		WebWindowPeer winPeer = Util.findWindowPeerById(windowUpdate.getId());
+
+		if (winPeer == null) {
 			return;
 		}
 		
 		synchronized (Util.getWebToolkit().getTreeLock()) {
 			synchronized (WebPaintDispatcher.webPaintLock) {
+				final Window win = ((Window) winPeer.getTarget());
 				if (windowUpdate.isClose()) {
-					if (win.getTarget() instanceof Window) {
-						((Window) win.getTarget()).setVisible(false);
+					if (winPeer.getTarget() instanceof Window) {
+						win.setVisible(false);
 					}
 				} else {
-					((Component) win.getTarget()).setLocation(windowUpdate.getX(), windowUpdate.getY());
-					((Component) win.getTarget()).setSize(windowUpdate.getWidth(), windowUpdate.getHeight());
-					win.notifyWindowAreaRepainted(new Rectangle(windowUpdate.getX(), windowUpdate.getY(), windowUpdate.getWidth(), windowUpdate.getY()));
+					SwingUtilities.invokeLater(()->{
+						win.setBounds(windowUpdate.getX(), windowUpdate.getY(), windowUpdate.getWidth(), windowUpdate.getHeight());
+						WindowManager.getInstance().requestRepaintAfterMove(win, new Rectangle(windowUpdate.getX(), windowUpdate.getY(), windowUpdate.getWidth(), windowUpdate.getY()));
+					});
 				}
 			}
 		}

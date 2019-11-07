@@ -30,6 +30,10 @@ export default class Util {
         }
     }
 
+    static detectFF() {
+        return typeof InstallTrigger !== 'undefined';
+    }
+
     static detectIE() {
         let ua = window.navigator.userAgent;
 

@@ -579,7 +579,13 @@ export default class InputModule {
 
             let delta = 0;
             if (type == 'mousewheel') {
-                delta = -Math.max(-1, Math.min(1, (evt.wheelDelta || -evt.detail)));
+                if (Util.detectFF()) {
+                    delta = -Math.max(-1, Math.min(1, (-evt.deltaY * 100)));
+                } else if (Util.detectIE() <= 11) {
+                    delta = -Math.max(-1, Math.min(1, (-evt.deltaY)));
+                } else {
+                    delta = -Math.max(-1, Math.min(1, (evt.wheelDelta || -evt.detail)));
+                }
             }
             
             if (type == 'mouseup' && (!targetElement || !targetElement.matches || !targetElement.matches("canvas.webswing-canvas"))) {

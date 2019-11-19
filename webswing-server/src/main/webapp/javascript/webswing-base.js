@@ -320,7 +320,7 @@ export default class BaseModule {
                 }
             }
             if (data.cursorChange != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {
-                var element=compositingWM?$("canvas[data-id="+data.cursorChange.winId+"]"):$("canvas.webswing-canvas");
+                var element=compositingWM?$("canvas[data-id="+data.cursorChange.winId+"], .internal-frames-wrapper[data-ownerid="+data.cursorChange.winId+"]"):$("canvas.webswing-canvas");
                 element.each(function(i, canvas) {
                     canvas.style.cursor = getCursorStyle(data.cursorChange);
                 });

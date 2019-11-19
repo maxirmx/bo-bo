@@ -68,9 +68,10 @@
             			win.element.style.overflow = "hidden";
             		} else if (win.htmlWindow && win.name == "internalIframe") {
             			var iframe = document.createElement("iframe");
-            			iframe.src = "iframe.html";
+            			iframe.src = "iframe_internal.html";
             			iframe.width = "100%";
             			iframe.height = "100%";
+            			iframe.setAttribute("data-id", win.id);
             			win.element.appendChild(iframe);
             			win.element.style.background = "white";
             			win.element.style.overflow = "hidden";
@@ -88,6 +89,16 @@
             }
 		}
 	}
+	
+    function focusWindow(winId) {
+    	var win = window.webswingInstance0.getWindowById(winId);
+    	if (!win) {
+    		return;
+    	}
+    	
+    	win.performAction({actionName: "focus"});
+    }
+
 	</script>
 	<script>
 	

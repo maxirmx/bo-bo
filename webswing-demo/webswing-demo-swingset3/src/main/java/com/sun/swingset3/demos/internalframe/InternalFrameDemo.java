@@ -36,6 +36,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyVetoException;
 import javax.swing.*;
 
 import javax.swing.border.EmptyBorder;
@@ -44,6 +45,8 @@ import com.sun.swingset3.DemoProperties;
 import com.sun.swingset3.demos.ResourceManager;
 
 import org.webswing.toolkit.api.WebswingUtil;
+import org.webswing.toolkit.api.action.WebActionEvent;
+import org.webswing.toolkit.api.action.WebWindowActionListener;
 import org.webswing.toolkit.api.component.HtmlPanel;
 import org.webswing.toolkit.api.component.WebDesktopPane;
 
@@ -162,7 +165,7 @@ public class InternalFrameDemo extends JPanel {
         //<snip>Create desktop pane
         // The desktop pane will contain all the internal frames
         desktop = new JDesktopPane();
-        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canCreateWebDesktopPane()) {
+        if (isShowHtmlPanelDemo()) {
         	webDesktop = WebswingUtil.getWebswingApi().createWebDesktopPane(desktop);
         	add(webDesktop, BorderLayout.CENTER);
         } else {
@@ -191,8 +194,7 @@ public class InternalFrameDemo extends JPanel {
         if (!windowTitleField.getText().equals(resourceManager.getString("InternalFrameDemo.frame_label"))) {
             internalFrame.setTitle(windowTitleField.getText() + "  ");
         } else {
-            internalFrame = new JInternalFrame(
-                    resourceManager.getString("InternalFrameDemo.frame_label") + " " + windowCount + "  ");
+        	internalFrame.setTitle(resourceManager.getString("InternalFrameDemo.frame_label") + " " + windowCount + "  ");
         }
 
         //<snip>Set internal frame properties
@@ -246,6 +248,27 @@ public class InternalFrameDemo extends JPanel {
     	HtmlPanel htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanelForInternalFrame(webDesktop, internalFrame);
     	htmlPanel.setName("internalIframe");
     	htmlPanel.setOpaque(false);
+    	htmlPanel.addWebWindowActionListener(new WebWindowActionListener() {
+			@Override
+			public void actionPerformed(WebActionEvent actionEvent) {
+        		switch (actionEvent.getActionName()) {
+        			case "focus": {
+        				internalFrame.toFront();
+        				try {
+        					internalFrame.setSelected(true);
+        				} catch (PropertyVetoException e) {
+        					e.printStackTrace();
+        				}
+        				internalFrame.requestFocusInWindow();
+        				break;
+        			}
+        		}
+			}
+			
+			@Override
+			public void windowInitialized() {
+			}
+		});
     	
     	internalFrame.setBounds(FRAME0_X + 20 * (windowCount % 10),
     			FRAME0_Y + 20 * (windowCount % 10), FRAME_WIDTH, FRAME_HEIGHT);
@@ -316,7 +339,7 @@ public class InternalFrameDemo extends JPanel {
         p.add(buttons1);
         p.add(Box.createRigidArea(VGAP15));
         p.add(buttons2);
-        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canCreateHtmlPanel()) {
+        if (isShowHtmlPanelDemo()) {
         	JPanel buttons3 = new JPanel();
         	buttons3.setLayout(new BoxLayout(buttons3, BoxLayout.X_AXIS));
 
@@ -385,7 +408,10 @@ public class InternalFrameDemo extends JPanel {
         palette.show();
         palette.pack();
     }
-
+    
+    private boolean isShowHtmlPanelDemo() {
+    	return WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canCreateHtmlPanel() && WebswingUtil.getWebswingApi().canCreateWebDesktopPane();
+    }
 
     private class CreateFrameAction extends AbstractAction {
         final InternalFrameDemo demo;

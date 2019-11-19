@@ -34,7 +34,9 @@ public class WebJInternalFrame extends JWindow {
 	private void init() {
 		setName(target.getName());
 		setSize(target.getSize());
-		updateVisible(target.isVisible());
+
+		updateBounds();
+		
 		target.addHierarchyListener(new HierarchyListener() {
 			@Override
 			public void hierarchyChanged(HierarchyEvent e) {
@@ -127,6 +129,8 @@ public class WebJInternalFrame extends JWindow {
 		if (!target.isShowing() || !ownerPane.isShowing() || ownerPane.getWidth() == 0 || ownerPane.getHeight() == 0) {
 			return;
 		}
+		
+		updateVisible(true);
 
 		Point targetLocation = target.getLocationOnScreen();
 		Dimension targetSize = target.getSize();

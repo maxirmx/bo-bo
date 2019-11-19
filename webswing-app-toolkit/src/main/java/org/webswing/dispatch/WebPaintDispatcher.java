@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -46,8 +48,8 @@ import org.webswing.model.s2c.WindowMsg;
 import org.webswing.toolkit.WebCursor;
 import org.webswing.toolkit.WebToolkit;
 import org.webswing.toolkit.WebWindowPeer;
+import org.webswing.toolkit.api.component.WebDesktopPane;
 import org.webswing.toolkit.extra.WebRepaintManager;
-import org.webswing.toolkit.extra.WindowManager;
 import org.webswing.toolkit.util.DeamonThreadFactory;
 import org.webswing.toolkit.util.ImageComparator;
 import org.webswing.toolkit.util.Logger;
@@ -71,6 +73,8 @@ public class WebPaintDispatcher {
 	private ScheduledExecutorService contentSender = Executors.newScheduledThreadPool(1,DeamonThreadFactory.getInstance());
 
 	private Map<String, BufferedImage> previousWindowImages = new HashMap<String, BufferedImage>();
+	
+	private Map<WebDesktopPane, Window> registeredJDesktopPanes = new WeakHashMap<>();
 
 	public WebPaintDispatcher() {
 		Runnable sendUpdate = new Runnable() {
@@ -546,4 +550,38 @@ public class WebPaintDispatcher {
 	public void notifyWindowRendered(String guid) {
 		windowRendered.put(guid,true);
 	}
+	
+	public void registerWebDesktopPane(WebDesktopPane wdp) {
+		synchronized (WebPaintDispatcher.webPaintLock) {
+			registeredJDesktopPanes.put(wdp, SwingUtilities.getWindowAncestor(wdp));
+		}
+	}
+
+	public Map<Window, List<WebDesktopPane>> getRegisteredWebDesktopPanes() {
+		Map<Window, List<WebDesktopPane>> map = new HashMap<>();
+		
+		synchronized (WebPaintDispatcher.webPaintLock) {
+			Set<WebDesktopPane> keys = registeredJDesktopPanes.keySet();
+			for (WebDesktopPane key : keys) {
+				if (registeredJDesktopPanes.get(key) == null) {
+					Window anc = SwingUtilities.getWindowAncestor(key);
+					if (anc != null) {
+						registeredJDesktopPanes.put(key, anc);
+						if (!map.containsKey(anc)) {
+							map.put(anc, new ArrayList<>());
+						}
+						map.get(anc).add(key);
+					}
+				} else {
+					Window win = registeredJDesktopPanes.get(key);
+					if (!map.containsKey(win)) {
+						map.put(win, new ArrayList<>());
+					}
+					map.get(win).add(key);
+				}
+			}
+		}
+		return map;
+	}
+	
 }

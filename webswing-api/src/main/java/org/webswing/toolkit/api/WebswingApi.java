@@ -1,12 +1,11 @@
 package org.webswing.toolkit.api;
 
-import java.awt.Component;
-
 import javax.swing.JDesktopPane;
 
 import org.webswing.toolkit.api.action.WebActionListener;
 import org.webswing.toolkit.api.action.WebWindow;
 import org.webswing.toolkit.api.component.HtmlPanel;
+import org.webswing.toolkit.api.component.WebDesktopPane;
 
 /**
  * Webswing API used by Swing application for easy integration.  
@@ -38,9 +37,8 @@ public interface WebswingApi {
 	 */
 	public HtmlPanel createHtmlPanel();
 	
-	/**
-	 * Creates an WebDesktopPane component.
-	 */
-	public Component createWebDesktopPane(JDesktopPane original);
+	public boolean canCreateWebDesktopPane();
+
+	public WebDesktopPane createWebDesktopPane(JDesktopPane jDesktopPane);
 	
 }

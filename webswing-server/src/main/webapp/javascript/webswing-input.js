@@ -560,7 +560,11 @@ export default class InputModule {
         function getMousePos(canvas, evt, type, targetElement) {
         	var rect;
         	if (targetElement && targetElement != null && targetElement.parentNode && targetElement.parentNode != null && targetElement.parentNode.getBoundingClientRect) {
-        		rect = targetElement.parentNode.getBoundingClientRect();
+                if ($(targetElement).is(".internal")) {
+                	rect = targetElement.parentNode.parentNode.getBoundingClientRect();
+                } else {
+                	rect = targetElement.parentNode.getBoundingClientRect();
+                }
         	} else {
         		rect = api.getCanvas().getBoundingClientRect();
         	}         
@@ -570,8 +574,8 @@ export default class InputModule {
         		// for a composition canvas window send winId
             	if ($(targetElement).is(".internal")) {
             		// internal window must use its parent as mouse events target
-            		if ($(targetElement).data("ownerid")) {
-            			winId = $(targetElement).data("ownerid");
+            		if ($(targetElement.parentNode).data("ownerid")) {
+            			winId = $(targetElement.parentNode).data("ownerid");
             		}
             	} else {
             		winId = $(targetElement).data("id");

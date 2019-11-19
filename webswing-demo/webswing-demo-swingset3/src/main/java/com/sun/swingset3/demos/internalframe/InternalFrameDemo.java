@@ -33,7 +33,6 @@ package com.sun.swingset3.demos.internalframe;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -44,6 +43,8 @@ import javax.swing.border.EmptyBorder;
 import com.sun.swingset3.DemoProperties;
 import com.sun.swingset3.demos.ResourceManager;
 
+import org.webswing.toolkit.api.WebswingUtil;
+import org.webswing.toolkit.api.component.WebDesktopPane;
 
 /**
  * Internal Frames Demo
@@ -96,6 +97,7 @@ public class InternalFrameDemo extends JPanel {
 
     private int windowCount = 0;
     private JDesktopPane desktop = null;
+    private WebDesktopPane webDesktop;
 
     private final ImageIcon icon1;
     private final ImageIcon icon2;
@@ -116,9 +118,6 @@ public class InternalFrameDemo extends JPanel {
 
     private JTextField windowTitleField = null;
     private JLabel windowTitleLabel = null;
-    
-    private Component webDesktopPane;
-
 
     /**
      * main method allows us to run as a standalone demo.
@@ -162,9 +161,9 @@ public class InternalFrameDemo extends JPanel {
         //<snip>Create desktop pane
         // The desktop pane will contain all the internal frames
         desktop = new JDesktopPane();
-        if (WebswingUtil.isWebswing()) {
-        	webDesktopPane = WebswingUtil.getWebswingApi().createWebDesktopPane(desktop);
-        	add(webDesktopPane, BorderLayout.CENTER);
+        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canCreateWebDesktopPane()) {
+        	webDesktop = WebswingUtil.getWebswingApi().createWebDesktopPane(desktop);
+        	add(webDesktop, BorderLayout.CENTER);
         } else {
         	add(desktop, BorderLayout.CENTER);
         }

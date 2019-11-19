@@ -47,7 +47,6 @@ import javax.swing.SwingUtilities;
 
 import org.webswing.Constants;
 import org.webswing.component.HtmlPanelImpl.HtmlWindow;
-import org.webswing.component.WebJInternalFrame;
 import org.webswing.dispatch.WebPaintDispatcher;
 import org.webswing.model.c2s.KeyboardEventMsgIn;
 import org.webswing.model.c2s.KeyboardEventMsgIn.KeyEventType;
@@ -60,6 +59,7 @@ import org.webswing.toolkit.WebComponentPeer;
 import org.webswing.toolkit.WebToolkit;
 import org.webswing.toolkit.WebWindowPeer;
 import org.webswing.toolkit.api.component.HtmlPanel;
+import org.webswing.toolkit.api.component.WebDesktopPane;
 import org.webswing.toolkit.extra.WindowManager;
 
 public class Util {
@@ -332,6 +332,8 @@ public class Util {
 	public static AppFrameMsgOut fillWithCompositingWindowsData(Map<String, Set<Rectangle>> currentAreasToUpdate) {
 		AppFrameMsgOut frame = new AppFrameMsgOut();
 		List<String> zOrder = getWebToolkit().getWindowManager().getZOrder();
+		Map<Window, List<WebDesktopPane>> webDesktopPanes = getWebToolkit().getPaintDispatcher().getRegisteredWebDesktopPanes();
+		
 		for (String windowId : zOrder) {
 			WebWindowPeer ww = findWindowPeerById(windowId);
 			if (ww != null) {
@@ -355,13 +357,19 @@ public class Util {
 				if (ww.getTarget() instanceof HtmlWindow) {
 					window.setType(WindowType.html);
 				}
-				if (ww.getTarget() instanceof WebJInternalFrame) {
-					window.setType(WindowType.internal);
-					WebJInternalFrame internalFrame = (WebJInternalFrame) ww.getTarget();
-					Window owner = SwingUtilities.getWindowAncestor(internalFrame.getOwnerPane());
-					fillWindowOwner(owner, window, zOrder);
+				boolean modalBlocked = ww.getTarget() instanceof Window && getWebToolkit().getWindowManager().isBlockedByModality((Window) ww.getTarget(), false);
+				window.setModalBlocked(modalBlocked);
+				
+				if (webDesktopPanes.containsKey(ww.getTarget())) {
+					webDesktopPanes.get(ww.getTarget()).forEach(wdp -> {
+						if (wdp.isShowing()) {
+							WindowMsg win = frame.getOrCreateWindowById(System.identityHashCode(wdp) + "");
+							win.setModalBlocked(modalBlocked);
+							win.setOwnerId(window.getId());
+							fillWebDesktopPaneWindowMsg(wdp, win, frame);
+						}
+					});
 				}
-				window.setModalBlocked(ww.getTarget() instanceof Window && getWebToolkit().getWindowManager().isBlockedByModality((Window) ww.getTarget(), false));
 				
 				if (!isDD()) {
 					Set<Rectangle> rects = currentAreasToUpdate.get(windowId);
@@ -387,6 +395,32 @@ public class Util {
 			}
 		}
 		return frame;
+	}
+	
+	private static void fillWebDesktopPaneWindowMsg(WebDesktopPane wdp, WindowMsg window, AppFrameMsgOut frame) {
+		{
+			Point location = wdp.getLocationOnScreen();
+			window.setPosX(location.x);
+			window.setPosY(location.y);
+			window.setWidth(wdp.getBounds().width);
+			window.setHeight(wdp.getBounds().height);
+			window.setName(wdp.getName());
+			window.setType(WindowType.internalWrapper);
+		}
+		
+		for (Component c : wdp.getOriginal().getComponents()) {
+			WindowMsg cWin = frame.getOrCreateWindowById(System.identityHashCode(c) + "");
+		
+			Point location = c.getLocationOnScreen();
+			cWin.setPosX(location.x);
+			cWin.setPosY(location.y);
+			cWin.setWidth(c.getBounds().width);
+			cWin.setHeight(c.getBounds().height);
+			cWin.setName(c.getName());
+			cWin.setType(WindowType.internal);
+			cWin.setModalBlocked(window.isModalBlocked());
+			cWin.setOwnerId(window.getId());
+		}
 	}
 	
 	private static void fillWindowOwner(Window owner, WindowMsg msg, List<String> zOrder) {

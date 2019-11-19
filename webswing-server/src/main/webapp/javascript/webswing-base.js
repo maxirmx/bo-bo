@@ -644,19 +644,7 @@ export default class BaseModule {
                     }
                 });
                 
-				if (win.internalWindows && win.internalWindows.length > 0) {
-					for (var i=0; i<win.internalWindows.length; i++) {
-						var intWin = win.internalWindows[i];
-						
-						if (intWin.type == 'internalWrapper') {
-	        				handleInternalWrapperWindow(intWin);
-	        			} else if (intWin.type == 'internal') {
-	        				handleInternalWindow(intWin, win.internalWindows.length - i - 1);
-	        			} if (intWin.type == 'internalHtml') {
-	        				handleInternalHtmlWindow(intWin, win.internalWindows.length - i - 1);
-	        			}
-					}
-				}
+                drawInternalWindows(win.internalWindows);
                 //return canvas;
             });
         }
@@ -797,25 +785,43 @@ export default class BaseModule {
     					}
     				}
     				
-    				if (win.internalWindows && win.internalWindows.length > 0) {
-    					for (var i=0; i<win.internalWindows.length; i++) {
-    						var intWin = win.internalWindows[i];
-    						
-    						if (intWin.type == 'internalWrapper') {
-    	        				handleInternalWrapperWindow(intWin);
-    	        			} else if (intWin.type == 'internal') {
-    	        				handleInternalWindow(intWin, win.internalWindows.length - i - 1);
-    	        			} if (intWin.type == 'internalHtml') {
-    	        				handleInternalHtmlWindow(intWin, win.internalWindows.length - i - 1);
-    	        			}
-    					}
-    				}
+    				drawInternalWindows(win.internalWindows);
         			
         			resolved();
         		}, function (error) {
         			rejected(error);
         		});
         	});
+        }
+        
+        function drawInternalWindows(internalWindows) {
+        	if (!internalWindows || internalWindows.length == 0) {
+        		return;
+        	}
+        	
+			var intWins = [];
+        	
+			for (var i = internalWindows.length - 1; i >= 0; i--) {
+				var intWin = internalWindows[i];
+				
+				if (intWin.type == 'internalWrapper') {
+    				handleInternalWrapperWindow(intWin);
+    			} else if (intWin.type == 'internal' || intWin.type == 'internalHtml') {
+    				intWins.push(intWin);
+    			}
+			}
+			
+			var underlyingHtmlWindows = [];
+			for (var i = 0; i < intWins.length; i++) {
+				var intWin = intWins[i];
+				
+				if (intWin.type == 'internal') {
+					handleInternalWindow(intWin, i, underlyingHtmlWindows);
+				} else if (intWin.type == 'internalHtml') {
+					handleInternalHtmlWindow(intWin, i);
+					underlyingHtmlWindows.push(intWin);
+				}
+			}
         }
         
         function handleInternalWrapperWindow(win) {
@@ -842,7 +848,7 @@ export default class BaseModule {
 			}
         }
 
-        function handleInternalWindow(win, index) {
+        function handleInternalWindow(win, index, underlyingHtmlWindows) {
         	var wrapper = $("div.internal-frames-wrapper#wrapper-" + win.ownerId);
         	if (!wrapper.length) {
         		// wait for the parent wrapper to be attached first and render this window in next cycle
@@ -881,12 +887,22 @@ export default class BaseModule {
 				$(canvas).toggleClass("modal-blocked", win.modalBlocked);
 			}
 			
-			var ownerCanvasId = wrapper.data("ownerid");
-			if (ownerCanvasId && windowImageHolders[ownerCanvasId] && windowImageHolders[ownerCanvasId].element) {
-				var src = windowImageHolders[ownerCanvasId].element;
-				var ctx = canvas.getContext("2d");
-				var pos = $(src).position();
-				ctx.putImageData(src.getContext("2d").getImageData((win.posX - pos.left) * util.dpr, (win.posY - pos.top) * util.dpr, win.width * util.dpr, win.height * util.dpr), 0, 0);
+			if (underlyingHtmlWindows.length > 0) {
+				var ownerCanvasId = wrapper.data("ownerid");
+				if (ownerCanvasId && windowImageHolders[ownerCanvasId] && windowImageHolders[ownerCanvasId].element) {
+					var src = windowImageHolders[ownerCanvasId].element;
+					var ctx = canvas.getContext("2d");
+					var pos = $(src).position();
+					
+					for (var i=0; i<underlyingHtmlWindows.length; i++) {
+						var int = findWindowIntersection(win, underlyingHtmlWindows[i]);
+						if (int && (int.x2 - int.x1 > 0) && (int.y2 - int.y1 > 0)) {
+							var width = (int.x2 - int.x1) * util.dpr;
+							var height = (int.y2 - int.y1) * util.dpr;
+							ctx.drawImage(src, (int.x1 - pos.left) * util.dpr, (int.y1 - pos.top) * util.dpr, width, height, (int.x1 - pos.left - win.posX) * util.dpr, (int.y1 - pos.top - win.posY) * util.dpr, width, height);
+						}
+					}
+				}
 			}
         }
         
@@ -938,6 +954,28 @@ export default class BaseModule {
         	if ($(htmlDiv).is(".modal-blocked") != win.modalBlocked) {
         		$(htmlDiv).toggleClass("modal-blocked", win.modalBlocked);
         	}
+        }
+        
+        function findWindowIntersection(win1, win2) {
+        	var r1 = {x1: win1.posX, y1: win1.posY, x2: win1.posX + win1.width, y2: win1.posY + win1.height};
+        	var r2 = {x1: win2.posX, y1: win2.posY, x2: win2.posX + win2.width, y2: win2.posY + win2.height};
+        	
+        	[r1, r2] = [r1, r2].map(r => {
+        		return {x: [r.x1, r.x2].sort(sortNumber), y: [r.y1, r.y2].sort(sortNumber)};
+        	});
+
+        	const noIntersect = r2.x[0] > r1.x[1] || r2.x[1] < r1.x[0] ||
+        						r2.y[0] > r1.y[1] || r2.y[1] < r1.y[0];
+        	return noIntersect ? false : {
+        		x1: Math.max(r1.x[0], r2.x[0]), // _[0] is the lesser,
+        		y1: Math.max(r1.y[0], r2.y[0]), // _[1] is the greater
+        		x2: Math.min(r1.x[1], r2.x[1]),
+        		y2: Math.min(r1.y[1], r2.y[1])
+        	};
+        }
+        
+        function sortNumber(a, b) {
+        	return a - b;
         }
 			
         function isVisible(element) {

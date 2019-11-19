@@ -95,6 +95,8 @@ public class HtmlElementDemo extends JPanel {
 		if (htmlPanel != null && htmlIframePanel != null) {
 			htmlPanel.setPreferredSize(new Dimension(getWidth() / 2, getHeight()));
 			htmlIframePanel.setPreferredSize(new Dimension(getWidth() / 2, getHeight()));
+			htmlPanel.revalidate();
+			htmlIframePanel.revalidate();
 		}
 	}
 

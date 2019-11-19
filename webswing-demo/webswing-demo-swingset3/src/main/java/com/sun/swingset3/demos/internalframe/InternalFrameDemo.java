@@ -83,7 +83,7 @@ public class InternalFrameDemo extends JPanel {
     private static final int PALETTE_Y = 20;
 
     private static final int PALETTE_WIDTH = 250;
-    private static final int PALETTE_HEIGHT = 250;
+    private static final int PALETTE_HEIGHT = 300;
 
     private static final int FRAME0_X = PALETTE_X + PALETTE_WIDTH + 20;
     private static final int FRAME0_Y = 20;
@@ -316,12 +316,17 @@ public class InternalFrameDemo extends JPanel {
         p.add(Box.createRigidArea(VGAP15));
         p.add(buttons2);
         if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canCreateHtmlPanel()) {
+        	JPanel buttons3 = new JPanel();
+        	buttons3.setLayout(new BoxLayout(buttons3, BoxLayout.X_AXIS));
+
         	p.add(Box.createRigidArea(VGAP15));
         	JButton iframeButton = new JButton("iframe");
         	iframeButton.addActionListener(e -> {
         		createHtmlPanelInternalFrame();
         	});
-        	p.add(iframeButton);
+        	
+        	buttons3.add(iframeButton);
+        	p.add(buttons3);
         }
         p.add(Box.createRigidArea(VGAP10));
 
@@ -334,10 +339,10 @@ public class InternalFrameDemo extends JPanel {
         p.setBorder(new EmptyBorder(10, 15, 10, 5));
         p.setLayout(new GridLayout(1, 2));
 
-
         Box box = new Box(BoxLayout.Y_AXIS);
         windowResizable = new JCheckBox(resourceManager.getString("InternalFrameDemo.resizable_label"), true);
         windowIconifiable = new JCheckBox(resourceManager.getString("InternalFrameDemo.iconifiable_label"), true);
+        box.setPreferredSize(new Dimension(100, 40));
 
         box.add(Box.createGlue());
         box.add(windowResizable);
@@ -348,6 +353,7 @@ public class InternalFrameDemo extends JPanel {
         box = new Box(BoxLayout.Y_AXIS);
         windowClosable = new JCheckBox(resourceManager.getString("InternalFrameDemo.closable_label"), true);
         windowMaximizable = new JCheckBox(resourceManager.getString("InternalFrameDemo.maximizable_label"), true);
+        box.setPreferredSize(new Dimension(100, 40));
 
         box.add(Box.createGlue());
         box.add(windowClosable);
@@ -376,6 +382,7 @@ public class InternalFrameDemo extends JPanel {
         palette.getContentPane().add(p, BorderLayout.SOUTH);
 
         palette.show();
+        palette.pack();
     }
 
 

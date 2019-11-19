@@ -344,82 +344,46 @@ public class Util {
 			WindowMsg window = new WindowMsg();
 			window.setId(windowId);
 			
-			fillCompositionWindowMsg(window, ww, frame, currentAreasToUpdate);
+			Point location = ww.getLocationOnScreen();
+			window.setBounds(location.x, location.y, ww.getBounds().width, ww.getBounds().height);
+			if (ww.getTarget() instanceof Frame) {
+				window.setTitle(((Frame) ww.getTarget()).getTitle());
+				window.setState(((Frame) ww.getTarget()).getExtendedState());
+			}
+			if (ww.getTarget() instanceof Component) {
+				window.setName(((Component) ww.getTarget()).getName());
+			}
+			
+			boolean modalBlocked = ww.getTarget() instanceof Window && getWebToolkit().getWindowManager().isBlockedByModality((Window) ww.getTarget(), false);
+			window.setModalBlocked(modalBlocked);
+			
+			if (!isDD()) {
+				Set<Rectangle> rects = currentAreasToUpdate.get(window.getId());
+				window.setContent(Collections.emptyList());
+				
+				if (rects != null) {
+					List<Rectangle> toPaint = joinRectangles(getGrid(new ArrayList<Rectangle>(rects), null));
+					List<WindowPartialContentMsg> partialContentList = new ArrayList<WindowPartialContentMsg>();
+					for (Rectangle r : toPaint) {
+						if (r.x < window.getWidth() && r.y < window.getHeight()) {
+							WindowPartialContentMsg content = new WindowPartialContentMsg(r.x, r.y, Math.min(r.width, window.getWidth() - r.x), Math.min(r.height, window.getHeight() - r.y));
+							partialContentList.add(content);
+						}
+					}
+					window.setContent(partialContentList);
+				}
+			}
 			
 			if (ww.getTarget() instanceof Window) {
 				window.setOwnerId(findWindowOwner(((Window) ww.getTarget()).getOwner(), zOrder));
 			}
 			
 			if (htmlPanels.containsKey(ww.getTarget())) {
-				for (HtmlPanel htmlPanel : htmlPanels.get(ww.getTarget())) {
-					if (!htmlPanel.isShowing()) {
-						continue;
-					}
-					
-					WindowMsg htmlWin = new WindowMsg();
-					htmlWin.setId(System.identityHashCode(htmlPanel) + "");
-					htmlWin.setOwnerId(window.getId());
-					htmlWin.setModalBlocked(window.isModalBlocked());
-					Point location = htmlPanel.getLocationOnScreen();
-					htmlWin.setPosX(location.x);
-					htmlWin.setPosY(location.y);
-					htmlWin.setWidth(htmlPanel.getBounds().width);
-					htmlWin.setHeight(htmlPanel.getBounds().height);
-					htmlWin.setName(htmlPanel.getName());
-					htmlWin.setType(WindowType.html);
-					if (!isDD()) {
-						htmlWin.setContent(Collections.emptyList());
-					}
-					
-					if (htmlPanel instanceof HtmlPanelImpl) {
-						Container container = ((HtmlPanelImpl) htmlPanel).getWebContainer();
-						JComponent component = ((HtmlPanelImpl) htmlPanel).getWebComponent();
-						if (container != null && component != null) {
-							// process later when web containers are processed
-							if (!htmlWebComponentsMap.containsKey(container)) {
-								htmlWebComponentsMap.put(container, new HashMap<>());
-							}
-							htmlWebComponentsMap.get(container).put(component, htmlWin);
-							continue;
-						}
-					}
-					
-					frame.getWindows().add(htmlWin);
-				}
+				handleHtmlPanels(htmlPanels, ww, window, frame, htmlWebComponentsMap);
 			}
 			
 			if (webContainers.containsKey(ww.getTarget())) {
-				List<Container> containers = webContainers.get(ww.getTarget());
-				Collections.sort(containers, (o1, o2) -> {
-					return o1.isAncestorOf(o2) ? -1 : (o2.isAncestorOf(o1) ? 1 : 0);
-				});
-				for (Container container : containers) {
-					if (!container.isShowing()) {
-						continue;
-					}
-					
-					WindowMsg containerWin = new WindowMsg();
-					containerWin.setId(System.identityHashCode(container) + "");
-					containerWin.setModalBlocked(window.isModalBlocked());
-					containerWin.setOwnerId(window.getId());
-					Point location = container.getLocationOnScreen();
-					containerWin.setPosX(location.x);
-					containerWin.setPosY(location.y);
-					containerWin.setWidth(container.getBounds().width);
-					containerWin.setHeight(container.getBounds().height);
-					containerWin.setName(container.getName());
-					containerWin.setType(WindowType.internalWrapper);
-					if (!isDD()) {
-						containerWin.setContent(Collections.emptyList());
-					}
-					
-					if (window.getInternalWindows() == null) {
-						window.setInternalWindows(new ArrayList<>());
-					}
-					window.getInternalWindows().add(containerWin);
-					
-					fillWebDesktopPaneWindowMsg(window, containerWin, container, frame, currentAreasToUpdate, htmlWebComponentsMap.containsKey(container) ? htmlWebComponentsMap.get(container) : null);
-				}
+				handleWebContainers(webContainers.get(ww.getTarget()), window, frame, htmlWebComponentsMap);
 			}
 			
 			frame.getWindows().add(window);
@@ -427,73 +391,79 @@ public class Util {
 		return frame;
 	}
 	
-	private static void fillWebDesktopPaneWindowMsg(WindowMsg parentWin, WindowMsg containerWin, Container container, AppFrameMsgOut frame, Map<String, Set<Rectangle>> currentAreasToUpdate, 
-			Map<JComponent, WindowMsg> htmlComponents) {
-		for (Component c : container.getComponents()) {
-			if (htmlComponents != null && htmlComponents.containsKey(c)) {
-				WindowMsg htmlWin = htmlComponents.get(c);
-				htmlWin.setOwnerId(containerWin.getId());
-				htmlWin.setType(WindowType.internalHtml);
-				parentWin.getInternalWindows().add(htmlWin);
+	private static void handleHtmlPanels(Map<Window, List<HtmlPanel>> htmlPanels, WebWindowPeer ww, WindowMsg window, AppFrameMsgOut frame, Map<Container, Map<JComponent, WindowMsg>> htmlWebComponentsMap) {
+		for (HtmlPanel htmlPanel : htmlPanels.get(ww.getTarget())) {
+			if (!htmlPanel.isShowing()) {
+				continue;
 			}
 			
-			WindowMsg componentWin = new WindowMsg();
-			componentWin.setId(System.identityHashCode(c) + "");
-			
-			Point location = c.getLocationOnScreen();
-			componentWin.setPosX(location.x);
-			componentWin.setPosY(location.y);
-			componentWin.setWidth(c.getBounds().width);
-			componentWin.setHeight(c.getBounds().height);
-			componentWin.setName(c.getName());
-			componentWin.setType(WindowType.internal);
-			componentWin.setModalBlocked(containerWin.isModalBlocked());
-			componentWin.setOwnerId(containerWin.getId());
+			WindowMsg htmlWin = new WindowMsg(System.identityHashCode(htmlPanel) + "", htmlPanel.getName(), htmlPanel.getLocationOnScreen(), 
+					htmlPanel.getBounds().width, htmlPanel.getBounds().height, WindowType.html, window.isModalBlocked(), window.getId());
+
 			if (!isDD()) {
-				componentWin.setContent(Collections.emptyList());
+				htmlWin.setContent(Collections.emptyList());
 			}
 			
-			parentWin.getInternalWindows().add(componentWin);
-		}
-	}
-	
-	private static void fillCompositionWindowMsg(WindowMsg window, WebWindowPeer ww, AppFrameMsgOut frame, Map<String, Set<Rectangle>> currentAreasToUpdate) {
-		Point location = ww.getLocationOnScreen();
-		window.setPosX(location.x);
-		window.setPosY(location.y);
-		window.setWidth(ww.getBounds().width);
-		window.setHeight(ww.getBounds().height);
-		if (ww.getTarget() instanceof Frame) {
-			window.setTitle(((Frame) ww.getTarget()).getTitle());
-			window.setState(((Frame) ww.getTarget()).getExtendedState());
-		}
-		if (ww.getTarget() instanceof Component) {
-			window.setName(((Component) ww.getTarget()).getName());
-		}
-		
-		boolean modalBlocked = ww.getTarget() instanceof Window && getWebToolkit().getWindowManager().isBlockedByModality((Window) ww.getTarget(), false);
-		window.setModalBlocked(modalBlocked);
-		
-		if (!isDD()) {
-			Set<Rectangle> rects = currentAreasToUpdate.get(window.getId());
-			if (rects == null) {
-				window.setContent(Collections.emptyList());
-				return;
-			}
-			
-			List<Rectangle> toPaint = joinRectangles(getGrid(new ArrayList<Rectangle>(rects), null));
-			List<WindowPartialContentMsg> partialContentList = new ArrayList<WindowPartialContentMsg>();
-			for (Rectangle r : toPaint) {
-				if (r.x < window.getWidth() && r.y < window.getHeight()) {
-					WindowPartialContentMsg content = new WindowPartialContentMsg();
-					content.setPositionX(r.x);
-					content.setPositionY(r.y);
-					content.setWidth(Math.min(r.width, window.getWidth() - r.x));
-					content.setHeight(Math.min(r.height, window.getHeight() - r.y));
-					partialContentList.add(content);
+			if (htmlPanel instanceof HtmlPanelImpl) {
+				Container container = ((HtmlPanelImpl) htmlPanel).getWebContainer();
+				JComponent component = ((HtmlPanelImpl) htmlPanel).getWebComponent();
+				if (container != null && component != null) {
+					// if HtmlPanel has a registered container, process later when web containers are processed (see handleWebContainers method)
+					if (!htmlWebComponentsMap.containsKey(container)) {
+						htmlWebComponentsMap.put(container, new HashMap<>());
+					}
+					htmlWebComponentsMap.get(container).put(component, htmlWin);
+					continue;
 				}
 			}
-			window.setContent(partialContentList);
+			
+			frame.getWindows().add(htmlWin);
+		}
+	}
+
+	private static void handleWebContainers(List<Container> containers, WindowMsg window, AppFrameMsgOut frame, Map<Container, Map<JComponent, WindowMsg>> htmlWebComponentsMap) {
+		// sort according to hierarchy
+		Collections.sort(containers, (o1, o2) -> {
+			return o1.isAncestorOf(o2) ? -1 : (o2.isAncestorOf(o1) ? 1 : 0);
+		});
+		
+		for (Container container : containers) {
+			if (!container.isShowing()) {
+				continue;
+			}
+			
+			// handle wrapper
+			WindowMsg containerWin = new WindowMsg(System.identityHashCode(container) + "", container.getName(), container.getLocationOnScreen(), 
+					container.getBounds().width, container.getBounds().height, WindowType.internalWrapper, window.isModalBlocked(), window.getId());
+			if (!isDD()) {
+				containerWin.setContent(Collections.emptyList());
+			}
+			
+			if (window.getInternalWindows() == null) {
+				window.setInternalWindows(new ArrayList<>());
+			}
+			window.getInternalWindows().add(containerWin);
+			
+			// handle child components
+			Map<JComponent, WindowMsg> htmlComponents = htmlWebComponentsMap.get(container);
+			for (Component c : container.getComponents()) {
+				if (htmlComponents != null && htmlComponents.containsKey(c)) {
+					// if component contains a registered HtmlPanel
+					WindowMsg htmlWin = htmlComponents.get(c);
+					htmlWin.setOwnerId(containerWin.getId());
+					htmlWin.setType(WindowType.internalHtml);
+					window.getInternalWindows().add(htmlWin);
+				}
+				
+				WindowMsg componentWin = new WindowMsg(System.identityHashCode(c) + "", c.getName(), c.getLocationOnScreen(), 
+						c.getBounds().width, c.getBounds().height, WindowType.internal, containerWin.isModalBlocked(), containerWin.getId());
+				
+				if (!isDD()) {
+					componentWin.setContent(Collections.emptyList());
+				}
+				
+				window.getInternalWindows().add(componentWin);
+			}
 		}
 	}
 	

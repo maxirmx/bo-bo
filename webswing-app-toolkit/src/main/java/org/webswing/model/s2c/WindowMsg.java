@@ -1,5 +1,6 @@
 package org.webswing.model.s2c;
 
+import java.awt.Point;
 import java.util.List;
 
 import org.webswing.model.Msg;
@@ -31,6 +32,29 @@ public class WindowMsg implements Msg {
 	private String ownerId;
 	private Integer state;
 	private List<WindowMsg> internalWindows;
+	
+	public WindowMsg() {
+	}
+
+	public WindowMsg(String id, String name, Point location, Integer width, Integer height, WindowType type, boolean modalBlocked, String ownerId) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.posX = location.x;
+		this.posY = location.y;
+		this.width = width;
+		this.height = height;
+		this.type = type;
+		this.modalBlocked = modalBlocked;
+		this.ownerId = ownerId;
+	}
+
+	public void setBounds(Integer posX, Integer posY, Integer width, Integer height) {
+		this.posX = posX;
+		this.posY = posY;
+		this.width = width;
+		this.height = height;
+	}
 	
 	public String getId() {
 		return id;

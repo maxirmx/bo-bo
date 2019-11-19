@@ -42,9 +42,9 @@ public class HtmlPanelImpl extends HtmlPanel {
 	}
 	
 	public HtmlPanelImpl(WebDesktopPane webDesktopPane, JInternalFrame jInternalFrame) {
-		this();
 		this.webDesktopPane = webDesktopPane;
 		this.jInternalFrame = jInternalFrame;
+		init();
 	}
 	
 	private void init() {
@@ -61,6 +61,53 @@ public class HtmlPanelImpl extends HtmlPanel {
 				}
 			}
 		});
+		
+		if (jInternalFrame != null) {
+			jInternalFrame.addComponentListener(new ComponentListener() {
+				@Override
+				public void componentShown(ComponentEvent e) {
+					if (htmlWin != null) {
+						htmlWin.updateBounds();
+					}
+				}
+				
+				@Override
+				public void componentResized(ComponentEvent e) {
+					if (htmlWin != null) {
+						htmlWin.updateBounds();
+					}
+				}
+				
+				@Override
+				public void componentMoved(ComponentEvent e) {
+					if (htmlWin != null) {
+						htmlWin.updateBounds();
+					}
+				}
+				
+				@Override
+				public void componentHidden(ComponentEvent e) {
+					if (htmlWin != null) {
+						htmlWin.updateBounds();
+					}
+				}
+			});
+			jInternalFrame.addHierarchyBoundsListener(new HierarchyBoundsListener() {
+				@Override
+				public void ancestorResized(HierarchyEvent e) {
+					if (htmlWin != null) {
+						htmlWin.updateBounds();
+					}
+				}
+				
+				@Override
+				public void ancestorMoved(HierarchyEvent e) {
+					if (htmlWin != null) {
+						htmlWin.updateBounds();
+					}
+				}
+			});
+		}
 	}
 	
 	@Override

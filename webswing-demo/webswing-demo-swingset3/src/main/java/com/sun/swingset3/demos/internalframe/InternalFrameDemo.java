@@ -245,6 +245,7 @@ public class InternalFrameDemo extends JPanel {
     	
     	HtmlPanel htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanelForInternalFrame(webDesktop, internalFrame);
     	htmlPanel.setName("internalIframe");
+    	htmlPanel.setOpaque(false);
     	
     	internalFrame.setBounds(FRAME0_X + 20 * (windowCount % 10),
     			FRAME0_Y + 20 * (windowCount % 10), FRAME_WIDTH, FRAME_HEIGHT);

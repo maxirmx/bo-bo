@@ -546,14 +546,17 @@ export default class BaseModule {
         			}
         		}
 
-        		if (typeof win.state !== 'undefined' && canvasWin.state != win.state) {
-        			canvasWin.state = win.state;
-        			if (!api.cfg.mirrorMode && win.state == JFRAME_MAXIMIZED_STATE && canvas.parentNode) {
-        				// window has been maximized, we need to set its bounds according to its parent node (could be detached)
-        				var rect = canvas.parentNode.getBoundingClientRect();
-        				canvasWin.setBounds(0, 0, rect.width, rect.height);
-        			}
-        		}
+				if (typeof win.state !== 'undefined' && win.state == JFRAME_MAXIMIZED_STATE) {
+					canvasWin.state = win.state;
+					if (!api.cfg.mirrorMode && canvas.parentNode) {
+						// window has been maximized, we need to set its bounds according to its parent node (could be detached)
+						var rectP = canvas.parentNode.getBoundingClientRect();
+						var rectC = canvas.getBoundingClientRect();
+						if (rectC.width != rectP.width || rectC.height != rectP.height) {
+							canvasWin.setBounds(0, 0, rectP.width, rectP.height);
+						}
+					}
+				}
         		
                 return renderPngDrawWindowInternal(win, canvas.getContext("2d"));
         	} else if (win.type == 'internalWrapper') {
@@ -777,15 +780,18 @@ export default class BaseModule {
                         $(htmlOrCanvasWin.element).css({"left": win.posX + 'px', "top": win.posY + 'px'});
                         htmlOrCanvasWin.validatePositionAndSize(win.posX, win.posY);
                     }
-
-                    if (!htmlOrCanvasWin.htmlWindow && typeof win.state !== 'undefined' && htmlOrCanvasWin.state != win.state) {
-        				htmlOrCanvasWin.state = win.state;
-        				if (!api.cfg.mirrorMode && win.state == JFRAME_MAXIMIZED_STATE && htmlOrCanvasElement[0].parentNode) {
-        					// window has been maximized, we need to set its bounds according to its parent node (could be detached)
-        					var rect = htmlOrCanvasElement[0].parentNode.getBoundingClientRect();
-        					htmlOrCanvasWin.setBounds(0, 0, rect.width, rect.height);
-        				}
-        			}
+                    
+    				if (!htmlOrCanvasWin.htmlWindow && typeof win.state !== 'undefined' && win.state == JFRAME_MAXIMIZED_STATE) {
+    					htmlOrCanvasWin.state = win.state;
+    					if (!api.cfg.mirrorMode && htmlOrCanvasElement[0].parentNode) {
+    						// window has been maximized, we need to set its bounds according to its parent node (could be detached)
+    						var rectP = htmlOrCanvasElement[0].parentNode.getBoundingClientRect();
+    						var rectC = htmlOrCanvasElement[0].getBoundingClientRect();
+    						if (rectC.width != rectP.width || rectC.height != rectP.height) {
+    							htmlOrCanvasWin.setBounds(0, 0, rectP.width, rectP.height);
+    						}
+    					}
+    				}
         			
         			resolved();
         		}, function (error) {

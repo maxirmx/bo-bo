@@ -123,8 +123,8 @@ public class WebswingApiImpl implements WebswingApi {
 	
 	@Override
 	public HtmlPanel createHtmlPanel() {
-		if (!canCreateHtmlPanel()) {
-			throw new IllegalArgumentException("Not allowed to create HtmlPanel!");
+		if (!isCompositingWindowManager()) {
+			throw new IllegalArgumentException("Not allowed to create HtmlPanel! Enable compositing window manager.");
 		}
 		HtmlPanel htmlPanel = new HtmlPanelImpl();
 		Util.getWebToolkit().getPaintDispatcher().registerHtmlPanel(htmlPanel);
@@ -132,31 +132,25 @@ public class WebswingApiImpl implements WebswingApi {
 	}
 	
 	@Override
-
 	public HtmlPanel createHtmlPanelForComponent(Container container, JComponent component) {
-		if (!canCreateHtmlPanel()) {
-			throw new IllegalArgumentException("Not allowed to create HtmlPanel!");
+		if (!isCompositingWindowManager()) {
+			throw new IllegalArgumentException("Not allowed to create HtmlPanel! Enable compositing window manager.");
 		}
 		HtmlPanel htmlPanel = new HtmlPanelImpl(container, component);
 		Util.getWebToolkit().getPaintDispatcher().registerHtmlPanel(htmlPanel);
 		return htmlPanel;
 	}
-
-	@Override
-	public boolean canCreateHtmlPanel() {
-		return Util.isCompositingWM();
-	}
-
+	
 	@Override
 	public void registerWebContainer(Container container) {
-		if (!canRegisterWebContainer()) {
-			throw new IllegalArgumentException("Not allowed to create web container!");
+		if (!isCompositingWindowManager()) {
+			throw new IllegalArgumentException("Not allowed to create web container! Enable compositing window manager.");
 		}
 		Util.getWebToolkit().getPaintDispatcher().registerWebContainer(container);
 	}
-
+	
 	@Override
-	public boolean canRegisterWebContainer() {
+	public boolean isCompositingWindowManager() {
 		return Util.isCompositingWM();
 	}
 	

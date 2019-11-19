@@ -37,7 +37,7 @@ public class HtmlElementDemo extends JPanel {
 		
 		htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanel();
 		htmlPanel.setName("test123");
-		if (!WebswingUtil.getWebswingApi().canCreateHtmlPanel()) {
+		if (!WebswingUtil.getWebswingApi().isCompositingWindowManager()) {
 			htmlPanel.add(new JLabel("Please enable Compositing Window Manager in application config to see this demo."));
 		}
 		add(htmlPanel, BorderLayout.CENTER);

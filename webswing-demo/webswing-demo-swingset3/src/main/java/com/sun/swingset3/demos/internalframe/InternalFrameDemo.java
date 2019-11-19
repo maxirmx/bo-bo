@@ -177,7 +177,7 @@ public class InternalFrameDemo extends JPanel {
         // The desktop pane will contain all the internal frames
         desktop = new JDesktopPane();
         add(desktop, BorderLayout.CENTER);
-        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canRegisterWebContainer()) {
+        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().isCompositingWindowManager()) {
         	WebswingUtil.getWebswingApi().registerWebContainer(desktop);
         }
         //</snip>
@@ -347,7 +347,7 @@ public class InternalFrameDemo extends JPanel {
         p.add(buttons1);
         p.add(Box.createRigidArea(VGAP15));
         p.add(buttons2);
-        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canCreateHtmlPanel() && WebswingUtil.getWebswingApi().canRegisterWebContainer()) {
+        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().isCompositingWindowManager()) {
         	JPanel buttons3 = new JPanel();
         	buttons3.setLayout(new BoxLayout(buttons3, BoxLayout.X_AXIS));
 

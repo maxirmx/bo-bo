@@ -74,8 +74,8 @@ public class WebPaintDispatcher {
 
 	private Map<String, BufferedImage> previousWindowImages = new HashMap<String, BufferedImage>();
 	
-	private Map<Container, Window> registeredContainers = new WeakHashMap<>();
-	private Map<HtmlPanel, Window> registeredHtmlPanels = new WeakHashMap<>();
+	private Map<Container, Void> registeredContainers = new WeakHashMap<>();
+	private Map<HtmlPanel, Void> registeredHtmlPanels = new WeakHashMap<>();
 
 	public WebPaintDispatcher() {
 		Runnable sendUpdate = new Runnable() {
@@ -552,7 +552,7 @@ public class WebPaintDispatcher {
 	
 	public void registerWebContainer(Container container) {
 		synchronized (WebPaintDispatcher.webPaintLock) {
-			registeredContainers.put(container, SwingUtilities.getWindowAncestor(container));
+			registeredContainers.put(container, null);
 		}
 	}
 	
@@ -562,22 +562,11 @@ public class WebPaintDispatcher {
 		synchronized (WebPaintDispatcher.webPaintLock) {
 			Set<Container> keys = registeredContainers.keySet();
 			for (Container key : keys) {
-				if (registeredContainers.get(key) == null) {
-					Window anc = SwingUtilities.getWindowAncestor(key);
-					if (anc != null) {
-						registeredContainers.put(key, anc);
-						if (!map.containsKey(anc)) {
-							map.put(anc, new ArrayList<>());
-						}
-						map.get(anc).add(key);
-					}
-				} else {
-					Window win = registeredContainers.get(key);
-					if (!map.containsKey(win)) {
-						map.put(win, new ArrayList<>());
-					}
-					map.get(win).add(key);
+				Window win = SwingUtilities.getWindowAncestor(key);
+				if (!map.containsKey(win)) {
+					map.put(win, new ArrayList<>());
 				}
+				map.get(win).add(key);
 			}
 		}
 		return map;
@@ -585,32 +574,21 @@ public class WebPaintDispatcher {
 	
 	public void registerHtmlPanel(HtmlPanel hp) {
 		synchronized (WebPaintDispatcher.webPaintLock) {
-			registeredHtmlPanels.put(hp, SwingUtilities.getWindowAncestor(hp));
+			registeredHtmlPanels.put(hp, null);
 		}
 	}
 	
 	public Map<Window, List<HtmlPanel>> getRegisteredHtmlPanelsAsMap() {
 		Map<Window, List<HtmlPanel>> map = new HashMap<>();
-
+		
 		synchronized (WebPaintDispatcher.webPaintLock) {
 			Set<HtmlPanel> keys = registeredHtmlPanels.keySet();
 			for (HtmlPanel key : keys) {
-				if (registeredHtmlPanels.get(key) == null) {
-					Window anc = SwingUtilities.getWindowAncestor(key);
-					if (anc != null) {
-						registeredHtmlPanels.put(key, anc);
-						if (!map.containsKey(anc)) {
-							map.put(anc, new ArrayList<>());
-						}
-						map.get(anc).add(key);
-					}
-				} else {
-					Window win = registeredHtmlPanels.get(key);
-					if (!map.containsKey(win)) {
-						map.put(win, new ArrayList<>());
-					}
-					map.get(win).add(key);
+				Window win = SwingUtilities.getWindowAncestor(key);
+				if (!map.containsKey(win)) {
+					map.put(win, new ArrayList<>());
 				}
+				map.get(win).add(key);
 			}
 		}
 		return map;

@@ -118,7 +118,7 @@ public class WindowDecorationDemo extends JPanel {
 		JLabel context = new JLabel("Right click for context menu");
 		context.setBorder(BorderFactory.createLineBorder(Color.black));
 		JPopupMenu menu = new JPopupMenu("test");
-		if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canRegisterWebContainer()) {
+		if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().isCompositingWindowManager()) {
 			JMenuItem dialogWithWebContainer = new JMenuItem("Dialog with web container");
 			dialogWithWebContainer.addActionListener(new ActionListener() {
 				@Override

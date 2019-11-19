@@ -35,30 +35,28 @@ public interface WebswingApi {
 
 	/**
 	 * Creates an HtmlPanel component.
-	 * @throws IllegalArgumentException if canCreateHtmlPanel() returns false
+	 * Compositing window manager must be enabled in config.
+	 * @throws IllegalArgumentException if isCompositingWindowManager() returns false
 	 */
 	public HtmlPanel createHtmlPanel();
 	
 	/**
 	 * Creates an HtmlPanel component which is a part of given component and has a container parent.
-	 * @throws IllegalArgumentException if canCreateHtmlPanel() returns false
+	 * Compositing window manager must be enabled in config.
+	 * @throws IllegalArgumentException if isCompositingWindowManager() returns false
 	 */
 	public HtmlPanel createHtmlPanelForComponent(Container container, JComponent component);
 	
 	/**
-	 * Is it allowed to create an HtmlPanel?
-	 */
-	public boolean canCreateHtmlPanel();
-
-	/**
 	 * Registers given container to be a parent web container and all of its child components will be rendered into separate canvases.
-	 * @throws IllegalArgumentException if canRegisterWebContainer() returns false
+	 * Compositing window manager must be enabled in config.
+	 * @throws IllegalArgumentException if isCompositingWindowManager() returns false
 	 */
 	public void registerWebContainer(Container container);
 	
 	/**
-	 * Is it allowed to register a web container?
+	 * Is compositing window manager enabled?
 	 */
-	public boolean canRegisterWebContainer();
+	public boolean isCompositingWindowManager();
 
 }

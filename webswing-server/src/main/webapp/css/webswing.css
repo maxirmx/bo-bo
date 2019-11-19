@@ -55,3 +55,7 @@ html,body {
 .webswing-element .internal-frames-wrapper canvas {
 	pointer-events: all;
 }
+
+.webswing-element .internal-frames-wrapper .webswing-html-canvas {
+	pointer-events: all;
+}

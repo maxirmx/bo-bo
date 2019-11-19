@@ -837,7 +837,6 @@ export default class BaseModule {
         		canvas = document.createElement("canvas");
 				canvas.classList.add("webswing-canvas", "internal");
         		
-        		// TODO should these be part of the list with other CanvasWindows and be accessible by user?
 				windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, true, win.name, win.title);
 				
 				$(canvas).attr('data-id', win.id).css("position", "absolute");
@@ -845,9 +844,6 @@ export default class BaseModule {
 					$(canvas).attr('data-ownerid', win.ownerId);
 				}
 
-				// TODO send these events?
-				// windowOpening(windowImageHolders[win.id]);
-				
 				wrapper.append(canvas);
 			} else {
 				canvas = windowImageHolders[win.id].element;
@@ -861,7 +857,7 @@ export default class BaseModule {
         		"width": win.width + "px",
         		"height": win.height + "px"
         	});
-        	$(canvas).attr("width", win.width).attr("height", win.height);
+        	$(canvas).attr("width", win.width * util.dpr).attr("height", win.height * util.dpr);
         	
 			if ($(canvas).is(".modal-blocked") != win.modalBlocked) {
 				$(canvas).toggleClass("modal-blocked", win.modalBlocked);
@@ -872,8 +868,7 @@ export default class BaseModule {
 				var src = windowImageHolders[ownerCanvasId].element;
 				var ctx = canvas.getContext("2d");
 				var rect = src.getBoundingClientRect();
-				
-				ctx.putImageData(src.getContext("2d").getImageData(win.posX - rect.left, win.posY - rect.top, win.width, win.height), 0, 0);
+				ctx.putImageData(src.getContext("2d").getImageData((win.posX - rect.left) * util.dpr, (win.posY - rect.top) * util.dpr, win.width * util.dpr, win.height * util.dpr), 0, 0);
 			}
         }
         

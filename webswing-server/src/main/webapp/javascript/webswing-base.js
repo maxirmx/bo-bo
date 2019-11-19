@@ -368,7 +368,12 @@ export default class BaseModule {
                             }
                         }
                         data.windows.splice(i, 1);
-                    }
+                    } else if (win.internalWindows) {
+            			for (var j=0; j<win.internalWindows.length; j++) {
+    						winMap[win.internalWindows[j].id] = true;
+            			}
+            		}
+                    
                     winMap[win.id] = true;
                 }
 
@@ -559,12 +564,6 @@ export default class BaseModule {
 				}
         		
                 return renderPngDrawWindowInternal(win, canvas.getContext("2d"));
-        	} else if (win.type == 'internalWrapper') {
-				handleInternalWrapperWindow(win);
-			} else if (win.type == 'internal') {
-				handleInternalWindow(win, index);
-			} else if (win.type == 'internalHtml') {
-				handleInternalHtmlWindow(win, index);
 			}
         }
         
@@ -634,7 +633,21 @@ export default class BaseModule {
                     if (image.image.clearAttributes != null) {
                         image.image.clearAttributes();
                     }
-                })
+                });
+                
+				if (win.internalWindows && win.internalWindows.length > 0) {
+					for (var i=0; i<win.internalWindows.length; i++) {
+						var intWin = win.internalWindows[i];
+						
+						if (intWin.type == 'internalWrapper') {
+	        				handleInternalWrapperWindow(intWin);
+	        			} else if (intWin.type == 'internal') {
+	        				handleInternalWindow(intWin, win.internalWindows.length - i - 1);
+	        			} if (intWin.type == 'internalHtml') {
+	        				handleInternalHtmlWindow(intWin, win.internalWindows.length - i - 1);
+	        			}
+					}
+				}
                 //return canvas;
             });
         }
@@ -701,24 +714,6 @@ export default class BaseModule {
         		
         		ddPromise.then(function (canvas) {
         			var newWindowOpened = false;
-        			
-        			if (win.type == 'internalWrapper') {
-        				handleInternalWrapperWindow(win);
-        				resolved();
-        				return;
-        			}
-        			
-        			if (win.type == 'internal') {
-        				handleInternalWindow(win, index);
-        				resolved();
-        				return;
-        			}
-        			
-        			if (win.type == 'internalHtml') {
-        				handleInternalHtmlWindow(win, index);
-        				resolved();
-        				return;
-        			}
         			
         			if (canvas != null) {
         				if (windowImageHolders[win.id] == null) {
@@ -790,6 +785,20 @@ export default class BaseModule {
     						if (rectC.width != rectP.width || rectC.height != rectP.height) {
     							htmlOrCanvasWin.setBounds(0, 0, rectP.width, rectP.height);
     						}
+    					}
+    				}
+    				
+    				if (win.internalWindows && win.internalWindows.length > 0) {
+    					for (var i=0; i<win.internalWindows.length; i++) {
+    						var intWin = win.internalWindows[i];
+    						
+    						if (intWin.type == 'internalWrapper') {
+    	        				handleInternalWrapperWindow(intWin);
+    	        			} else if (intWin.type == 'internal') {
+    	        				handleInternalWindow(intWin, win.internalWindows.length - i - 1);
+    	        			} if (intWin.type == 'internalHtml') {
+    	        				handleInternalHtmlWindow(intWin, win.internalWindows.length - i - 1);
+    	        			}
     					}
     				}
         			

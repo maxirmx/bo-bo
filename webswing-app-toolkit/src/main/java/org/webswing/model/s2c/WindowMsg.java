@@ -30,6 +30,7 @@ public class WindowMsg implements Msg {
 	private boolean modalBlocked;
 	private String ownerId;
 	private Integer state;
+	private List<WindowMsg> internalWindows;
 	
 	public String getId() {
 		return id;
@@ -141,6 +142,14 @@ public class WindowMsg implements Msg {
 
 	public void setType(WindowType type) {
 		this.type = type;
+	}
+
+	public List<WindowMsg> getInternalWindows() {
+		return internalWindows;
+	}
+
+	public void setInternalWindows(List<WindowMsg> internalWindows) {
+		this.internalWindows = internalWindows;
 	}
 
 }

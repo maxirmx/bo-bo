@@ -11,7 +11,6 @@ import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 
 import org.webswing.component.HtmlPanelImpl;
-import org.webswing.component.HtmlPanelImpl.HtmlWindow;
 import org.webswing.component.WebDesktopPaneImpl;
 import org.webswing.dispatch.WebPaintDispatcher;
 import org.webswing.model.Msg;
@@ -37,6 +36,7 @@ public class WebswingApiImpl implements WebswingApi {
 			if (action != null) {
 				if (action.getWindowId() != null) {
 					Window w = Util.findWindowById(action.getWindowId());
+					HtmlPanel hp = Util.findHtmlPanelById(action.getWindowId());
 					
 					if (w != null && w instanceof WebWindow) {
 						if (action.getEventType() == ActionEventType.init) {
@@ -44,11 +44,11 @@ public class WebswingApiImpl implements WebswingApi {
 						} else {
 							((WebWindow) w).handleWebActionEvent(new WebActionEvent(action.getActionName(), action.getData(), action.getBinaryData()));
 						}
-					} else if (w != null && w instanceof HtmlWindow) {
+					} else if (hp != null) {
 						if (action.getEventType() == ActionEventType.init) {
-							((HtmlWindow) w).getTarget().handleWindowInitialized();
+							hp.handleWindowInitialized();
 						} else {
-							((HtmlWindow) w).getTarget().handleWebActionEvent(new WebActionEvent(action.getActionName(), action.getData(), action.getBinaryData()));
+							hp.handleWebActionEvent(new WebActionEvent(action.getActionName(), action.getData(), action.getBinaryData()));
 						}
 					} else if (action.getEventType() != ActionEventType.init) {
 						// fire the general listeners
@@ -100,20 +100,20 @@ public class WebswingApiImpl implements WebswingApi {
 			return;
 		}
 		
-		WebWindowPeer peer = null;
+		String windowId = null;
 		if (webWindow instanceof HtmlPanel) {
-			peer = Util.findWindowPeerByHtmlPanel((HtmlPanel) webWindow);
+			windowId = System.identityHashCode(webWindow) + "";
 		}
 		if (webWindow instanceof Window) {
-			peer = (WebWindowPeer) WebToolkit.targetToPeer(webWindow);
+			windowId = ((WebWindowPeer) WebToolkit.targetToPeer(webWindow)).getGuid();
 		}
-		
-		if (peer == null) {
+
+		if (windowId == null) {
 			sendActionEvent(actionName, data, binaryData);
 			return;
 		}
-		
-		sendActionEvent(peer.getGuid(), actionName, data, binaryData);
+
+		sendActionEvent(windowId, actionName, data, binaryData);
 	}
 	
 	private void sendActionEvent(String windowId, String actionName, String data, byte[] binaryData) {
@@ -125,7 +125,12 @@ public class WebswingApiImpl implements WebswingApi {
 	
 	@Override
 	public HtmlPanel createHtmlPanel() {
-		return new HtmlPanelImpl();
+		if (!canCreateHtmlPanel()) {
+			throw new IllegalArgumentException("Not allowed to create HtmlPanel!");
+		}
+		HtmlPanel htmlPanel = new HtmlPanelImpl();
+		Util.getWebToolkit().getPaintDispatcher().registerHtmlPanel(htmlPanel);
+		return htmlPanel;
 	}
 	
 	@Override
@@ -135,7 +140,12 @@ public class WebswingApiImpl implements WebswingApi {
 	
 	@Override
 	public HtmlPanel createHtmlPanelForInternalFrame(WebDesktopPane webDesktopPane, JInternalFrame jInternalFrame) {
-		return new HtmlPanelImpl(webDesktopPane, jInternalFrame);
+		if (!canCreateHtmlPanel()) {
+			throw new IllegalArgumentException("Not allowed to create HtmlPanel!");
+		}
+		HtmlPanel htmlPanel = new HtmlPanelImpl(webDesktopPane, jInternalFrame);
+		Util.getWebToolkit().getPaintDispatcher().registerHtmlPanel(htmlPanel);
+		return htmlPanel;
 	}
 	
 	@Override

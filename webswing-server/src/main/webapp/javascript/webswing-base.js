@@ -858,11 +858,11 @@ export default class BaseModule {
 				canvas = windowImageHolders[win.id].element;
 			}
         	
-        	var parentRect = wrapper[0].getBoundingClientRect();
+        	var parentPos = wrapper.position();
         	$(canvas).css({
         		"z-index": (compositionBaseZIndex + index + 1),
-        		"left": (win.posX - parentRect.left) + "px",
-        		"top": (win.posY - parentRect.top) + "px",
+        		"left": (win.posX - parentPos.left) + "px",
+        		"top": (win.posY - parentPos.top) + "px",
         		"width": win.width + "px",
         		"height": win.height + "px"
         	});
@@ -876,8 +876,8 @@ export default class BaseModule {
 			if (ownerCanvasId && windowImageHolders[ownerCanvasId] && windowImageHolders[ownerCanvasId].element) {
 				var src = windowImageHolders[ownerCanvasId].element;
 				var ctx = canvas.getContext("2d");
-				var rect = src.getBoundingClientRect();
-				ctx.putImageData(src.getContext("2d").getImageData((win.posX - rect.left) * util.dpr, (win.posY - rect.top) * util.dpr, win.width * util.dpr, win.height * util.dpr), 0, 0);
+				var pos = $(src).position();
+				ctx.putImageData(src.getContext("2d").getImageData((win.posX - pos.left) * util.dpr, (win.posY - pos.top) * util.dpr, win.width * util.dpr, win.height * util.dpr), 0, 0);
 			}
         }
         
@@ -916,11 +916,11 @@ export default class BaseModule {
 				}
 			}
         	
-        	var parentRect = wrapper[0].getBoundingClientRect();
+        	var parentPos = wrapper.position();
         	$(htmlDiv).css({
         		"z-index": (compositionBaseZIndex + index + 1),
-        		"left": (win.posX - parentRect.left) + "px",
-        		"top": (win.posY - parentRect.top) + "px",
+        		"left": (win.posX - parentPos.left) + "px",
+        		"top": (win.posY - parentPos.top) + "px",
         		"width": win.width + "px",
         		"height": win.height + "px"
         	});

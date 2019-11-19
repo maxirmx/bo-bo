@@ -75,6 +75,15 @@
             			win.element.appendChild(iframe);
             			win.element.style.background = "white";
             			win.element.style.overflow = "hidden";
+            		} else if (win.htmlWindow && win.name == "window-internalIframe") {
+            			var iframe = document.createElement("iframe");
+            			iframe.src = "iframe_internal.html";
+            			iframe.width = "100%";
+            			iframe.height = "100%";
+            			iframe.setAttribute("data-id", win.id);
+            			win.element.appendChild(iframe);
+            			win.element.style.background = "white";
+            			win.element.style.overflow = "hidden";
             		}
             	},
             	windowOpening: function(win) {

@@ -389,7 +389,8 @@ public class Util {
 			}
 			
 			if (webContainers.containsKey(ww.getTarget())) {
-				for (Container container : webContainers.get(ww.getTarget())) {
+				List<Container> containers = webContainers.get(ww.getTarget());
+				for (Container container : containers) {
 					if (!container.isShowing()) {
 						continue;
 					}
@@ -409,7 +410,9 @@ public class Util {
 						containerWin.setContent(Collections.emptyList());
 					}
 					
-					window.setInternalWindows(new ArrayList<>());
+					if (window.getInternalWindows() == null) {
+						window.setInternalWindows(new ArrayList<>());
+					}
 					window.getInternalWindows().add(containerWin);
 					
 					fillWebDesktopPaneWindowMsg(window, containerWin, container, frame, currentAreasToUpdate, htmlWebComponentsMap.containsKey(container) ? htmlWebComponentsMap.get(container) : null);

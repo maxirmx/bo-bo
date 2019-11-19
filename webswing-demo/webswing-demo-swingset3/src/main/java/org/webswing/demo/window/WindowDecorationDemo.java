@@ -9,13 +9,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyVetoException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -26,6 +29,9 @@ import javax.swing.JWindow;
 import javax.swing.border.LineBorder;
 
 import org.webswing.toolkit.api.WebswingUtil;
+import org.webswing.toolkit.api.action.WebActionEvent;
+import org.webswing.toolkit.api.action.WebWindowActionListener;
+import org.webswing.toolkit.api.component.HtmlPanel;
 
 import com.sun.swingset3.DemoProperties;
 
@@ -119,6 +125,7 @@ public class WindowDecorationDemo extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					JDialog dialog = new JDialog();
 					dialog.setTitle("Dialog with web container");
+					dialog.setSize(800, 600);
 					
 					JPanel panel = new JPanel();
 					panel.setPreferredSize(new Dimension(400, 275));
@@ -126,17 +133,27 @@ public class WindowDecorationDemo extends JPanel {
 					panel.add(new JButton("This is a button"));
 					panel.add(new JLabel("This is a label"));
 					panel.add(new JTextField("This is a text field"));
+					
 					JPanel panel2 = new JPanel();
+					panel2.setLayout(new FlowLayout());
 					panel2.setPreferredSize(new Dimension(200, 200));
 					panel2.setBackground(Color.white);
 					panel2.add(new JLabel("This is a label inside panel"));
-					panel.add(panel2);
+					panel2.add(new JTextField("This is a text field inside panel"));
 					
+					JDesktopPane desktopPane = new JDesktopPane();
+					desktopPane.setPreferredSize(new Dimension(400, 300));
+					createHtmlPanelInternalFrame(desktopPane);
+					
+					panel.add(panel2);
+					panel.add(desktopPane);
+					
+					WebswingUtil.getWebswingApi().registerWebContainer(desktopPane);
 					WebswingUtil.getWebswingApi().registerWebContainer(panel);
+					WebswingUtil.getWebswingApi().registerWebContainer(panel2);
 					
 					dialog.getContentPane().add(panel);
 					
-					dialog.pack();
 					dialog.setLocationRelativeTo(null);
 					dialog.setVisible(true);
 				}
@@ -214,6 +231,56 @@ public class WindowDecorationDemo extends JPanel {
 		add(content);
 		setBorder(new LineBorder(Color.BLACK));
 	}
+	
+    private JInternalFrame createHtmlPanelInternalFrame(JDesktopPane desktop) {
+    	JInternalFrame internalFrame = new JInternalFrame();
+
+   		internalFrame.setTitle("Internal Frame");
+
+    	internalFrame.setClosable(true);
+    	internalFrame.setMaximizable(true);
+    	internalFrame.setIconifiable(true);
+    	internalFrame.setResizable(true);
+    	
+    	HtmlPanel htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanelForComponent(desktop, internalFrame);
+    	htmlPanel.setName("window-internalIframe");
+    	htmlPanel.setOpaque(false);
+    	htmlPanel.addWebWindowActionListener(new WebWindowActionListener() {
+			@Override
+			public void actionPerformed(WebActionEvent actionEvent) {
+        		switch (actionEvent.getActionName()) {
+        			case "focus": {
+        				internalFrame.toFront();
+        				try {
+        					internalFrame.setSelected(true);
+        				} catch (PropertyVetoException e) {
+        					e.printStackTrace();
+        				}
+        				internalFrame.requestFocusInWindow();
+        				break;
+        			}
+        		}
+			}
+			
+			@Override
+			public void windowInitialized() {
+			}
+		});
+    	
+    	internalFrame.setBounds(10, 10, 150, 150);
+    	internalFrame.setContentPane(htmlPanel);
+    	
+    	desktop.add(internalFrame, 1);
+    	
+    	try {
+    		internalFrame.setSelected(true);
+    	} catch (java.beans.PropertyVetoException e2) {
+    	}
+
+    	internalFrame.show();
+    	
+    	return internalFrame;
+    }
 
 	private static String getID(Window parent) {
 		if (parent == null) {

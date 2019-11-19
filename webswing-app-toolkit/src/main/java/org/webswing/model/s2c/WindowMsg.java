@@ -18,6 +18,7 @@ public class WindowMsg implements Msg {
 	private Integer width;
 	private Integer height;
 	private boolean html;
+	private boolean internal;
 	private boolean modalBlocked;
 	private String ownerId;
 	private Integer state;
@@ -132,6 +133,14 @@ public class WindowMsg implements Msg {
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public boolean isInternal() {
+		return internal;
+	}
+
+	public void setInternal(boolean internal) {
+		this.internal = internal;
 	}
 
 }

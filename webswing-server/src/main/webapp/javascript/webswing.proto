@@ -112,6 +112,7 @@ message WindowMsgProto{
 	optional bool modalBlocked = 12;
 	optional string ownerId = 13;
 	optional uint32 state = 14;
+	optional bool internal = 15;
 }
 
 message WindowPartialContentMsgProto{

@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.swing.JDesktopPane;
+
 import org.webswing.component.HtmlPanelImpl;
 import org.webswing.component.HtmlPanelImpl.HtmlWindow;
+import org.webswing.component.WebDesktopPaneImpl;
 import org.webswing.dispatch.WebPaintDispatcher;
 import org.webswing.model.Msg;
 import org.webswing.model.c2s.ActionEventMsgIn;
@@ -18,6 +21,7 @@ import org.webswing.toolkit.api.action.WebActionEvent;
 import org.webswing.toolkit.api.action.WebActionListener;
 import org.webswing.toolkit.api.action.WebWindow;
 import org.webswing.toolkit.api.component.HtmlPanel;
+import org.webswing.toolkit.api.component.WebDesktopPane;
 import org.webswing.toolkit.util.DeamonThreadFactory;
 import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Util;
@@ -121,6 +125,11 @@ public class WebswingApiImpl implements WebswingApi {
 	@Override
 	public HtmlPanel createHtmlPanel() {
 		return new HtmlPanelImpl();
+	}
+	
+	@Override
+	public WebDesktopPane createWebDesktopPane(JDesktopPane original) {
+		return new WebDesktopPaneImpl(original);
 	}
 	
 }

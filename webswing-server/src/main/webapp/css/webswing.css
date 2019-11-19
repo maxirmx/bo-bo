@@ -45,3 +45,12 @@ html,body {
 .webswing-element .webswing-iframe-muted-while-dragging{
 	pointer-events: none;
 }
+
+.webswing-element .internal-frames-wrapper {
+	position: absolute;
+	pointer-events: none;
+}
+
+.webswing-element .internal-frames-wrapper canvas {
+	pointer-events: all;
+}

@@ -115,6 +115,8 @@ public class InternalFrameDemo extends JPanel {
 
     private JTextField windowTitleField = null;
     private JLabel windowTitleLabel = null;
+    
+    private WebDesktopPane webDesktopPane;
 
 
     /**
@@ -159,7 +161,12 @@ public class InternalFrameDemo extends JPanel {
         //<snip>Create desktop pane
         // The desktop pane will contain all the internal frames
         desktop = new JDesktopPane();
-        add(desktop, BorderLayout.CENTER);
+        if (WebswingUtil.isWebswing()) {
+        	webDesktopPane = WebswingUtil.getWebswingApi().createWebDesktopPane(desktop);
+        	add(webDesktopPane, BorderLayout.CENTER);
+        } else {
+        	add(desktop, BorderLayout.CENTER);
+        }
         //</snip>
 
         // Create the "frame maker" palette

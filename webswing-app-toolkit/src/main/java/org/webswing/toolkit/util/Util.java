@@ -47,6 +47,7 @@ import javax.swing.SwingUtilities;
 
 import org.webswing.Constants;
 import org.webswing.component.HtmlPanelImpl.HtmlWindow;
+import org.webswing.component.WebJInternalFrame;
 import org.webswing.dispatch.WebPaintDispatcher;
 import org.webswing.model.c2s.KeyboardEventMsgIn;
 import org.webswing.model.c2s.KeyboardEventMsgIn.KeyEventType;
@@ -345,19 +346,19 @@ public class Util {
 				}
 				if (ww.getTarget() instanceof Window) {
 					Window owner = ((Window) ww.getTarget()).getOwner();
-					if (owner != null) {
-						WebWindowPeer peer = (WebWindowPeer) WebToolkit.targetToPeer(owner);
-						if (peer != null && zOrder.contains(peer.getGuid())) {
-							// must be from current z-order windows, otherwise it could be SwingUtilities$SharedOwnerFrame
-							window.setOwnerId(peer.getGuid());
-						}
-					}
+					fillWindowOwner(owner, window, zOrder);
 				}
 				if (ww.getTarget() instanceof Component) {
 					window.setName(((Component) ww.getTarget()).getName());
 				}
 				if (ww.getTarget() instanceof HtmlWindow) {
 					window.setHtml(true);
+				}
+				if (ww.getTarget() instanceof WebJInternalFrame) {
+					window.setInternal(true);
+					WebJInternalFrame internalFrame = (WebJInternalFrame) ww.getTarget();
+					Window owner = SwingUtilities.getWindowAncestor(internalFrame.getOwnerPane());
+					fillWindowOwner(owner, window, zOrder);
 				}
 				window.setModalBlocked(ww.getTarget() instanceof Window && getWebToolkit().getWindowManager().isBlockedByModality((Window) ww.getTarget(), false));
 				
@@ -385,6 +386,19 @@ public class Util {
 			}
 		}
 		return frame;
+	}
+	
+	private static void fillWindowOwner(Window owner, WindowMsg msg, List<String> zOrder) {
+		if (owner == null) {
+			return;
+		}
+
+		WebWindowPeer peer = (WebWindowPeer) WebToolkit.targetToPeer(owner);
+
+		if (peer != null && zOrder.contains(peer.getGuid())) {
+			// must be from current z-order windows, otherwise it could be SwingUtilities$SharedOwnerFrame
+			msg.setOwnerId(peer.getGuid());
+		}
 	}
 
 	public static Map<String, Set<Rectangle>> postponeNonShowingAreas(Map<String, Set<Rectangle>> currentAreasToUpdate, Map<String, Boolean> windowRendered) {

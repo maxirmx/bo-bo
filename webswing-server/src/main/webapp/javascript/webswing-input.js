@@ -568,7 +568,14 @@ export default class InputModule {
         	var winId;
         	if (targetElement && targetElement.matches("canvas.webswing-canvas") && $(targetElement).data("id") && $(targetElement).data("id") != "canvas") {
         		// for a composition canvas window send winId
-        		winId = $(targetElement).data("id");
+            	if ($(targetElement).is(".internal")) {
+            		// internal window must use its parent as mouse events target
+            		if ($(targetElement).data("ownerid")) {
+            			winId = $(targetElement).data("ownerid");
+            		}
+            	} else {
+            		winId = $(targetElement).data("id");
+            	}
         	}
         	
             let mouseX = 0;

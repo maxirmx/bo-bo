@@ -465,6 +465,9 @@ export default class BaseModule {
         			windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name);
         			newWindowOpened = true;
         			$(htmlDiv).attr('data-id', win.id).css("position", "absolute");
+ 					if (win.ownerId) {
+						$(htmlDiv).attr('data-ownerid', win.ownerId);
+					}
 
         			windowOpening(windowImageHolders[win.id]);
         			if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
@@ -500,12 +503,27 @@ export default class BaseModule {
         			var canvas = document.createElement("canvas");
         			canvas.classList.add("webswing-canvas");
         			
-        			windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.name, win.title);
+					if (win.internal) {
+						canvas.classList.add("internal");
+						var wrapper = api.cfg.rootElement.find("div.internal-frames-wrapper");
+						if (!wrapper.length) {
+							wrapper = $("<div class='internal-frames-wrapper' />");
+							api.cfg.rootElement.append(wrapper);
+						}
+					}
+
+        			windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.internal, win.name, win.title);
         			newWindowOpened = true;
         			$(canvas).attr('data-id', win.id).css("position", "absolute");
+					if (win.ownerId) {
+						$(canvas).attr('data-ownerid', win.ownerId);
+					}
         			
         			windowOpening(windowImageHolders[win.id]);
-        			if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
+        			
+					if (win.internal) {
+						api.cfg.rootElement.find("div.internal-frames-wrapper").append(canvas);
+					} else if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
         				windowImageHolders[win.ownerId].element.parentNode.append(canvas);
         			} else {
         				api.cfg.rootElement.append(canvas);
@@ -531,6 +549,22 @@ export default class BaseModule {
         			$(canvas).toggleClass("modal-blocked", win.modalBlocked);
         			windowModalBlockedChanged(windowImageHolders[win.id]);
         		}
+        		
+				if (win.internal) {
+					// FIXME owner window element might not be added to DOM there is a JInternalFrame in first rendered screen and the order of windows from proto is not correct
+					// FIXME what if there are multiple JDesktopPanes and in different windows ?
+					var wrapper = api.cfg.rootElement.find("div.internal-frames-wrapper");
+					if (win.ownerId) {
+						var parent = $(windowImageHolders[win.ownerId].element);
+						wrapper.css({
+							"z-index": parent.css("z-index"),
+							"left": api.cfg.rootElement.css("left"),
+							"top": api.cfg.rootElement.css("top"),
+							"width": api.cfg.rootElement.css("width"),
+							"height": api.cfg.rootElement.css("height")
+						});
+					}
+				}
         		
         		if (newWindowOpened) {
         			windowOpened(windowImageHolders[win.id]);
@@ -635,7 +669,7 @@ export default class BaseModule {
                 }
                 
                 ddPromise.then(function(canvas) {
-                    windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.name, win.title);
+                    windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.internal, win.name, win.title);
                     
                     let dpr = Util.dpr();
                     for ( let x in win.content) {
@@ -688,12 +722,28 @@ export default class BaseModule {
         			
         			if (canvas != null) {
         				if (windowImageHolders[win.id] == null) {
-        					windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.name, win.title);
+        					windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.internal, win.name, win.title);
         					newWindowOpened = true;
+        					
+        					if (win.internal) {
+        						canvas.classList.add("internal");
+        						var wrapper = api.cfg.rootElement.find("div.internal-frames-wrapper");
+        						if (!wrapper.length) {
+        							wrapper = $("<div class='internal-frames-wrapper' />");
+        							api.cfg.rootElement.append(wrapper);
+        						}
+        					}
+        					
         					$(canvas).attr('data-id', win.id).css("position", "absolute");
-
+        					if (win.ownerId) {
+        						$(canvas).attr('data-ownerid', win.ownerId);
+        					}
+        					
         					windowOpening(windowImageHolders[win.id]);
-        					if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
+        					
+        					if (win.internal) {
+        						api.cfg.rootElement.find("div.internal-frames-wrapper").append(canvas);
+        					} else if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
         						windowImageHolders[win.ownerId].element.parentNode.append(canvas);
         					} else {
         						api.cfg.rootElement.append(canvas);
@@ -707,6 +757,9 @@ export default class BaseModule {
         					windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name);
         					newWindowOpened = true;
         					$(htmlDiv).attr('data-id', win.id).css("position", "absolute");
+        					if (win.ownerId) {
+        						$(htmlDiv).attr('data-ownerid', win.ownerId);
+        					}
 
         					windowOpening(windowImageHolders[win.id]);
         					if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
@@ -733,6 +786,22 @@ export default class BaseModule {
         				htmlOrCanvasElement.toggleClass("modal-blocked", win.modalBlocked);
         				windowModalBlockedChanged(windowImageHolders[win.id]);
         			}
+        			
+    				if (win.internal) {
+    					var wrapper = api.cfg.rootElement.find("div.internal-frames-wrapper");
+    					if (win.ownerId) {
+    						// FIXME owner window element might not be added to DOM
+    						// FIXME what if there are multiple JDesktopPanes and in different windows ?
+    						var parent = $(windowImageHolders[win.ownerId].element);
+    						wrapper.css({
+    							"z-index": parent.css("z-index"),
+    							"left": api.cfg.rootElement.css("left"),
+    							"top": api.cfg.rootElement.css("top"),
+    							"width": api.cfg.rootElement.css("width"),
+    							"height": api.cfg.rootElement.css("height")
+    						});
+    					}
+					}
 
                     if (isVisible(htmlOrCanvasWin.element.parentNode)) {
                         $(htmlOrCanvasWin.element).css({"left": win.posX + 'px', "top": win.posY + 'px'});
@@ -852,12 +921,13 @@ export default class BaseModule {
             throw error;
         }
         
-        function CanvasWindow(id, element, name, title) {
+        function CanvasWindow(id, element, internal, name, title) {
         	this.id = id;
         	this.element = element;
         	this.name = name;
         	this.title = title;
         	this.htmlWindow = false;
+        	this.internal = internal;
         	this.state = 0;
         	this.webswingInstance = api.external;
             this.validatePositionAndSize = function(x,y){
@@ -937,6 +1007,7 @@ export default class BaseModule {
         	this.element = element;
         	this.name = name;
         	this.htmlWindow = true;
+        	this.internal = false;
         	this.webswingInstance = api.external;
             this.validatePositionAndSize = function(x,y){
                 validateAndPositionWindow(this,x,y);

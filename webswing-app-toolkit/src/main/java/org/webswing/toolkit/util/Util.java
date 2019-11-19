@@ -367,6 +367,9 @@ public class Util {
 						WindowMsg win = frame.getOrCreateWindowById(wdp.getId());
 						win.setModalBlocked(window.isModalBlocked());
 						win.setOwnerId(window.getId());
+						if (!isDD()) {
+							win.setContent(Collections.emptyList());
+						}
 						
 						fillWebDesktopPaneWindowMsg(wdp, win, frame, currentAreasToUpdate, htmlWebDesktopPanesMap.containsKey(wdp) ? htmlWebDesktopPanesMap.get(wdp) : null);
 					}
@@ -407,6 +410,10 @@ public class Util {
 			cWin.setType(WindowType.internal);
 			cWin.setModalBlocked(window.isModalBlocked());
 			cWin.setOwnerId(window.getId());
+			
+			if (!isDD()) {
+				cWin.setContent(Collections.emptyList());
+			}
 		}
 	}
 	

@@ -393,6 +393,15 @@ export default class BaseModule {
                 		return renderWindow(window, compositingWM ? windowsData.length - index - 1 : index, data.directDraw);
                 	}, errorHandler);
                 }, Promise.resolve()).then(function () {
+            		if (compositingWM) {
+            			// dispose of empty internal-frames-wrappers
+            			$(".internal-frames-wrapper").each(function() {
+            				if ($(this).is(":empty")) {
+            					$(this).remove();
+            				}
+            			});
+            		}
+                	
                 	ack(data);
                 	processNextQueuedFrame();
                 }, errorHandler);

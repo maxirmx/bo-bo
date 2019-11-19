@@ -1,5 +1,6 @@
 package org.webswing.toolkit;
 
+import java.awt.Container;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,11 +8,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
+import javax.swing.JComponent;
 
 import org.webswing.component.HtmlPanelImpl;
-import org.webswing.component.WebDesktopPaneImpl;
 import org.webswing.dispatch.WebPaintDispatcher;
 import org.webswing.model.Msg;
 import org.webswing.model.c2s.ActionEventMsgIn;
@@ -21,7 +20,6 @@ import org.webswing.toolkit.api.action.WebActionEvent;
 import org.webswing.toolkit.api.action.WebActionListener;
 import org.webswing.toolkit.api.action.WebWindow;
 import org.webswing.toolkit.api.component.HtmlPanel;
-import org.webswing.toolkit.api.component.WebDesktopPane;
 import org.webswing.toolkit.util.DeamonThreadFactory;
 import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Util;
@@ -134,33 +132,32 @@ public class WebswingApiImpl implements WebswingApi {
 	}
 	
 	@Override
-	public boolean canCreateWebDesktopPane() {
-		return Util.isCompositingWM();
-	}
-	
-	@Override
-	public HtmlPanel createHtmlPanelForInternalFrame(WebDesktopPane webDesktopPane, JInternalFrame jInternalFrame) {
+
+	public HtmlPanel createHtmlPanelForComponent(Container container, JComponent component) {
 		if (!canCreateHtmlPanel()) {
 			throw new IllegalArgumentException("Not allowed to create HtmlPanel!");
 		}
-		HtmlPanel htmlPanel = new HtmlPanelImpl(webDesktopPane, jInternalFrame);
+		HtmlPanel htmlPanel = new HtmlPanelImpl(container, component);
 		Util.getWebToolkit().getPaintDispatcher().registerHtmlPanel(htmlPanel);
 		return htmlPanel;
 	}
-	
+
 	@Override
 	public boolean canCreateHtmlPanel() {
 		return Util.isCompositingWM();
 	}
-	
+
 	@Override
-	public WebDesktopPane createWebDesktopPane(JDesktopPane jDesktopPane) {
-		if (!canCreateWebDesktopPane()) {
-			throw new IllegalArgumentException("Not allowed to create WebDesktopPane!");
+	public void registerWebContainer(Container container) {
+		if (!canRegisterWebContainer()) {
+			throw new IllegalArgumentException("Not allowed to create web container!");
 		}
-		WebDesktopPane wdp = new WebDesktopPaneImpl(jDesktopPane);
-		Util.getWebToolkit().getPaintDispatcher().registerWebDesktopPane(wdp);
-		return wdp;
+		Util.getWebToolkit().getPaintDispatcher().registerWebContainer(container);
+	}
+
+	@Override
+	public boolean canRegisterWebContainer() {
+		return Util.isCompositingWM();
 	}
 	
 }

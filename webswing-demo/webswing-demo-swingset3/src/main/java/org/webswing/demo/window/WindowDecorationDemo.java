@@ -1,6 +1,7 @@
 package org.webswing.demo.window;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Window;
@@ -9,8 +10,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRootPane;
+import javax.swing.JTextField;
+import javax.swing.JWindow;
 import javax.swing.border.LineBorder;
+
+import org.webswing.toolkit.api.WebswingUtil;
 
 import com.sun.swingset3.DemoProperties;
 
@@ -97,7 +112,37 @@ public class WindowDecorationDemo extends JPanel {
 		JLabel context = new JLabel("Right click for context menu");
 		context.setBorder(BorderFactory.createLineBorder(Color.black));
 		JPopupMenu menu = new JPopupMenu("test");
-		menu.add(new JMenuItem("test"));
+		if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canRegisterWebContainer()) {
+			JMenuItem dialogWithWebContainer = new JMenuItem("Dialog with web container");
+			dialogWithWebContainer.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					JDialog dialog = new JDialog();
+					dialog.setTitle("Dialog with web container");
+					
+					JPanel panel = new JPanel();
+					panel.setPreferredSize(new Dimension(400, 275));
+					panel.setLayout(new FlowLayout());
+					panel.add(new JButton("This is a button"));
+					panel.add(new JLabel("This is a label"));
+					panel.add(new JTextField("This is a text field"));
+					JPanel panel2 = new JPanel();
+					panel2.setPreferredSize(new Dimension(200, 200));
+					panel2.setBackground(Color.white);
+					panel2.add(new JLabel("This is a label inside panel"));
+					panel.add(panel2);
+					
+					WebswingUtil.getWebswingApi().registerWebContainer(panel);
+					
+					dialog.getContentPane().add(panel);
+					
+					dialog.pack();
+					dialog.setLocationRelativeTo(null);
+					dialog.setVisible(true);
+				}
+			});
+			menu.add(dialogWithWebContainer);
+		}
 		menu.add(new JMenuItem("test"));
 		menu.add(new JMenuItem("test"));
 		menu.add(new JMenuItem("test"));

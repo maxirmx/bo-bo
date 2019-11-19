@@ -1,5 +1,6 @@
 package org.webswing.dispatch;
 
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -48,7 +49,6 @@ import org.webswing.toolkit.WebCursor;
 import org.webswing.toolkit.WebToolkit;
 import org.webswing.toolkit.WebWindowPeer;
 import org.webswing.toolkit.api.component.HtmlPanel;
-import org.webswing.toolkit.api.component.WebDesktopPane;
 import org.webswing.toolkit.extra.WebRepaintManager;
 import org.webswing.toolkit.util.DeamonThreadFactory;
 import org.webswing.toolkit.util.ImageComparator;
@@ -74,7 +74,7 @@ public class WebPaintDispatcher {
 
 	private Map<String, BufferedImage> previousWindowImages = new HashMap<String, BufferedImage>();
 	
-	private Map<WebDesktopPane, Window> registeredJDesktopPanes = new WeakHashMap<>();
+	private Map<Container, Window> registeredContainers = new WeakHashMap<>();
 	private Map<HtmlPanel, Window> registeredHtmlPanels = new WeakHashMap<>();
 
 	public WebPaintDispatcher() {
@@ -550,29 +550,29 @@ public class WebPaintDispatcher {
 		windowRendered.put(guid,true);
 	}
 	
-	public void registerWebDesktopPane(WebDesktopPane wdp) {
+	public void registerWebContainer(Container container) {
 		synchronized (WebPaintDispatcher.webPaintLock) {
-			registeredJDesktopPanes.put(wdp, SwingUtilities.getWindowAncestor(wdp));
+			registeredContainers.put(container, SwingUtilities.getWindowAncestor(container));
 		}
 	}
-
-	public Map<Window, List<WebDesktopPane>> getRegisteredWebDesktopPanes() {
-		Map<Window, List<WebDesktopPane>> map = new HashMap<>();
+	
+	public Map<Window, List<Container>> getRegisteredWebContainers() {
+		Map<Window, List<Container>> map = new HashMap<>();
 		
 		synchronized (WebPaintDispatcher.webPaintLock) {
-			Set<WebDesktopPane> keys = registeredJDesktopPanes.keySet();
-			for (WebDesktopPane key : keys) {
-				if (registeredJDesktopPanes.get(key) == null) {
+			Set<Container> keys = registeredContainers.keySet();
+			for (Container key : keys) {
+				if (registeredContainers.get(key) == null) {
 					Window anc = SwingUtilities.getWindowAncestor(key);
 					if (anc != null) {
-						registeredJDesktopPanes.put(key, anc);
+						registeredContainers.put(key, anc);
 						if (!map.containsKey(anc)) {
 							map.put(anc, new ArrayList<>());
 						}
 						map.get(anc).add(key);
 					}
 				} else {
-					Window win = registeredJDesktopPanes.get(key);
+					Window win = registeredContainers.get(key);
 					if (!map.containsKey(win)) {
 						map.put(win, new ArrayList<>());
 					}

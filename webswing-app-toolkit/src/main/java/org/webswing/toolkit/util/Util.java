@@ -42,7 +42,6 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JInternalFrame;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
@@ -60,7 +59,6 @@ import org.webswing.toolkit.WebComponentPeer;
 import org.webswing.toolkit.WebToolkit;
 import org.webswing.toolkit.WebWindowPeer;
 import org.webswing.toolkit.api.component.HtmlPanel;
-import org.webswing.toolkit.api.component.WebDesktopPane;
 import org.webswing.toolkit.extra.WindowManager;
 
 public class Util {
@@ -333,9 +331,9 @@ public class Util {
 	public static AppFrameMsgOut fillWithCompositingWindowsData(Map<String, Set<Rectangle>> currentAreasToUpdate) {
 		AppFrameMsgOut frame = new AppFrameMsgOut();
 		List<String> zOrder = getWebToolkit().getWindowManager().getZOrder();
-		Map<Window, List<WebDesktopPane>> webDesktopPanes = getWebToolkit().getPaintDispatcher().getRegisteredWebDesktopPanes();
+		Map<Window, List<Container>> webContainers = getWebToolkit().getPaintDispatcher().getRegisteredWebContainers();
 		Map<Window, List<HtmlPanel>> htmlPanels = getWebToolkit().getPaintDispatcher().getRegisteredHtmlPanelsAsMap();
-		Map<WebDesktopPane, Map<JInternalFrame, WindowMsg>> htmlWebDesktopPanesMap = new HashMap<>();
+		Map<Container, Map<JComponent, WindowMsg>> htmlWebComponentsMap = new HashMap<>();
 		
 		for (String windowId : zOrder) {
 			WebWindowPeer ww = findWindowPeerById(windowId);
@@ -374,14 +372,14 @@ public class Util {
 					}
 					
 					if (htmlPanel instanceof HtmlPanelImpl) {
-						WebDesktopPane wdp = ((HtmlPanelImpl) htmlPanel).getWebDesktopPane();
-						JInternalFrame jif = ((HtmlPanelImpl) htmlPanel).getjInternalFrame();
-						if (wdp != null && jif != null) {
-							// process later when webDesktopPanes are processed
-							if (!htmlWebDesktopPanesMap.containsKey(wdp)) {
-								htmlWebDesktopPanesMap.put(wdp, new HashMap<>());
+						Container container = ((HtmlPanelImpl) htmlPanel).getWebContainer();
+						JComponent component = ((HtmlPanelImpl) htmlPanel).getWebComponent();
+						if (container != null && component != null) {
+							// process later when web containers are processed
+							if (!htmlWebComponentsMap.containsKey(container)) {
+								htmlWebComponentsMap.put(container, new HashMap<>());
 							}
-							htmlWebDesktopPanesMap.get(wdp).put(jif, htmlWin);
+							htmlWebComponentsMap.get(container).put(component, htmlWin);
 							continue;
 						}
 					}
@@ -390,31 +388,31 @@ public class Util {
 				}
 			}
 			
-			if (webDesktopPanes.containsKey(ww.getTarget())) {
-				for (WebDesktopPane wdp : webDesktopPanes.get(ww.getTarget())) {
-					if (!wdp.isShowing()) {
+			if (webContainers.containsKey(ww.getTarget())) {
+				for (Container container : webContainers.get(ww.getTarget())) {
+					if (!container.isShowing()) {
 						continue;
 					}
 					
-					WindowMsg wdpWin = new WindowMsg();
-					wdpWin.setId(wdp.getId());
-					wdpWin.setModalBlocked(window.isModalBlocked());
-					wdpWin.setOwnerId(window.getId());
-					Point location = wdp.getLocationOnScreen();
-					wdpWin.setPosX(location.x);
-					wdpWin.setPosY(location.y);
-					wdpWin.setWidth(wdp.getBounds().width);
-					wdpWin.setHeight(wdp.getBounds().height);
-					wdpWin.setName(wdp.getName());
-					wdpWin.setType(WindowType.internalWrapper);
+					WindowMsg containerWin = new WindowMsg();
+					containerWin.setId(System.identityHashCode(container) + "");
+					containerWin.setModalBlocked(window.isModalBlocked());
+					containerWin.setOwnerId(window.getId());
+					Point location = container.getLocationOnScreen();
+					containerWin.setPosX(location.x);
+					containerWin.setPosY(location.y);
+					containerWin.setWidth(container.getBounds().width);
+					containerWin.setHeight(container.getBounds().height);
+					containerWin.setName(container.getName());
+					containerWin.setType(WindowType.internalWrapper);
 					if (!isDD()) {
-						wdpWin.setContent(Collections.emptyList());
+						containerWin.setContent(Collections.emptyList());
 					}
 					
 					window.setInternalWindows(new ArrayList<>());
-					window.getInternalWindows().add(wdpWin);
+					window.getInternalWindows().add(containerWin);
 					
-					fillWebDesktopPaneWindowMsg(window, wdpWin, wdp, frame, currentAreasToUpdate, htmlWebDesktopPanesMap.containsKey(wdp) ? htmlWebDesktopPanesMap.get(wdp) : null);
+					fillWebDesktopPaneWindowMsg(window, containerWin, container, frame, currentAreasToUpdate, htmlWebComponentsMap.containsKey(container) ? htmlWebComponentsMap.get(container) : null);
 				}
 			}
 			
@@ -423,33 +421,33 @@ public class Util {
 		return frame;
 	}
 	
-	private static void fillWebDesktopPaneWindowMsg(WindowMsg parentWin, WindowMsg wdpWin, WebDesktopPane wdp, AppFrameMsgOut frame, Map<String, Set<Rectangle>> currentAreasToUpdate, 
-			Map<JInternalFrame, WindowMsg> htmlJInternalFrames) {
-		for (Component c : wdp.getOriginal().getComponents()) {
-			if (htmlJInternalFrames != null && htmlJInternalFrames.containsKey(c)) {
-				WindowMsg htmlWin = htmlJInternalFrames.get(c);
-				htmlWin.setOwnerId(wdpWin.getId());
+	private static void fillWebDesktopPaneWindowMsg(WindowMsg parentWin, WindowMsg containerWin, Container container, AppFrameMsgOut frame, Map<String, Set<Rectangle>> currentAreasToUpdate, 
+			Map<JComponent, WindowMsg> htmlComponents) {
+		for (Component c : container.getComponents()) {
+			if (htmlComponents != null && htmlComponents.containsKey(c)) {
+				WindowMsg htmlWin = htmlComponents.get(c);
+				htmlWin.setOwnerId(containerWin.getId());
 				htmlWin.setType(WindowType.internalHtml);
 				parentWin.getInternalWindows().add(htmlWin);
 			}
 			
-			WindowMsg jifWin = new WindowMsg();
-			jifWin.setId(System.identityHashCode(c) + "");
+			WindowMsg componentWin = new WindowMsg();
+			componentWin.setId(System.identityHashCode(c) + "");
 			
 			Point location = c.getLocationOnScreen();
-			jifWin.setPosX(location.x);
-			jifWin.setPosY(location.y);
-			jifWin.setWidth(c.getBounds().width);
-			jifWin.setHeight(c.getBounds().height);
-			jifWin.setName(c.getName());
-			jifWin.setType(WindowType.internal);
-			jifWin.setModalBlocked(wdpWin.isModalBlocked());
-			jifWin.setOwnerId(wdpWin.getId());
+			componentWin.setPosX(location.x);
+			componentWin.setPosY(location.y);
+			componentWin.setWidth(c.getBounds().width);
+			componentWin.setHeight(c.getBounds().height);
+			componentWin.setName(c.getName());
+			componentWin.setType(WindowType.internal);
+			componentWin.setModalBlocked(containerWin.isModalBlocked());
+			componentWin.setOwnerId(containerWin.getId());
 			if (!isDD()) {
-				jifWin.setContent(Collections.emptyList());
+				componentWin.setContent(Collections.emptyList());
 			}
 			
-			parentWin.getInternalWindows().add(jifWin);
+			parentWin.getInternalWindows().add(componentWin);
 		}
 	}
 	

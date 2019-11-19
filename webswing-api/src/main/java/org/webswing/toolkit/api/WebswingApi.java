@@ -1,12 +1,12 @@
 package org.webswing.toolkit.api;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
+import java.awt.Container;
+
+import javax.swing.JComponent;
 
 import org.webswing.toolkit.api.action.WebActionListener;
 import org.webswing.toolkit.api.action.WebWindow;
 import org.webswing.toolkit.api.component.HtmlPanel;
-import org.webswing.toolkit.api.component.WebDesktopPane;
 
 /**
  * Webswing API used by Swing application for easy integration.  
@@ -35,17 +35,30 @@ public interface WebswingApi {
 
 	/**
 	 * Creates an HtmlPanel component.
+	 * @throws IllegalArgumentException if canCreateHtmlPanel() returns false
 	 */
 	public HtmlPanel createHtmlPanel();
 	
-	public boolean canCreateWebDesktopPane();
-
-	public WebDesktopPane createWebDesktopPane(JDesktopPane jDesktopPane);
 	/**
-	 * Creates an HtmlPanel component which is a part of given JInternalFrame and has a WebDesktopPane parent.
+	 * Creates an HtmlPanel component which is a part of given component and has a container parent.
+	 * @throws IllegalArgumentException if canCreateHtmlPanel() returns false
 	 */
-	public HtmlPanel createHtmlPanelForInternalFrame(WebDesktopPane webDesktopPane, JInternalFrame jInternalFrame);
+	public HtmlPanel createHtmlPanelForComponent(Container container, JComponent component);
 	
+	/**
+	 * Is it allowed to create an HtmlPanel?
+	 */
 	public boolean canCreateHtmlPanel();
+
+	/**
+	 * Registers given container to be a parent web container and all of its child components will be rendered into separate canvases.
+	 * @throws IllegalArgumentException if canRegisterWebContainer() returns false
+	 */
+	public void registerWebContainer(Container container);
 	
+	/**
+	 * Is it allowed to register a web container?
+	 */
+	public boolean canRegisterWebContainer();
+
 }

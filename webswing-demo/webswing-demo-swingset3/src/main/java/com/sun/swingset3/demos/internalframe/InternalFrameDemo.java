@@ -37,18 +37,30 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
-import javax.swing.*;
 
+import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-
-import com.sun.swingset3.DemoProperties;
-import com.sun.swingset3.demos.ResourceManager;
 
 import org.webswing.toolkit.api.WebswingUtil;
 import org.webswing.toolkit.api.action.WebActionEvent;
 import org.webswing.toolkit.api.action.WebWindowActionListener;
 import org.webswing.toolkit.api.component.HtmlPanel;
-import org.webswing.toolkit.api.component.WebDesktopPane;
+
+import com.sun.swingset3.DemoProperties;
+import com.sun.swingset3.demos.ResourceManager;
 
 /**
  * Internal Frames Demo
@@ -101,7 +113,6 @@ public class InternalFrameDemo extends JPanel {
 
     private int windowCount = 0;
     private JDesktopPane desktop = null;
-    private WebDesktopPane webDesktop;
 
     private final ImageIcon icon1;
     private final ImageIcon icon2;
@@ -165,11 +176,9 @@ public class InternalFrameDemo extends JPanel {
         //<snip>Create desktop pane
         // The desktop pane will contain all the internal frames
         desktop = new JDesktopPane();
-        if (isShowHtmlPanelDemo()) {
-        	webDesktop = WebswingUtil.getWebswingApi().createWebDesktopPane(desktop);
-        	add(webDesktop, BorderLayout.CENTER);
-        } else {
-        	add(desktop, BorderLayout.CENTER);
+        add(desktop, BorderLayout.CENTER);
+        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canRegisterWebContainer()) {
+        	WebswingUtil.getWebswingApi().registerWebContainer(desktop);
         }
         //</snip>
 
@@ -234,8 +243,7 @@ public class InternalFrameDemo extends JPanel {
     	if (!windowTitleField.getText().equals(resourceManager.getString("InternalFrameDemo.frame_label"))) {
     		internalFrame.setTitle(windowTitleField.getText() + "  ");
     	} else {
-    		internalFrame = new JInternalFrame(
-    				resourceManager.getString("InternalFrameDemo.frame_label") + " " + windowCount + "  ");
+    		internalFrame.setTitle(resourceManager.getString("InternalFrameDemo.frame_label") + " " + windowCount + "  ");
     	}
     	
     	//<snip>Set internal frame properties
@@ -245,7 +253,7 @@ public class InternalFrameDemo extends JPanel {
     	internalFrame.setResizable(windowResizable.isSelected());
     	//</snip>
     	
-    	HtmlPanel htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanelForInternalFrame(webDesktop, internalFrame);
+    	HtmlPanel htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanelForComponent(desktop, internalFrame);
     	htmlPanel.setName("internalIframe");
     	htmlPanel.setOpaque(false);
     	htmlPanel.addWebWindowActionListener(new WebWindowActionListener() {
@@ -339,7 +347,7 @@ public class InternalFrameDemo extends JPanel {
         p.add(buttons1);
         p.add(Box.createRigidArea(VGAP15));
         p.add(buttons2);
-        if (isShowHtmlPanelDemo()) {
+        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canCreateHtmlPanel() && WebswingUtil.getWebswingApi().canRegisterWebContainer()) {
         	JPanel buttons3 = new JPanel();
         	buttons3.setLayout(new BoxLayout(buttons3, BoxLayout.X_AXIS));
 
@@ -409,10 +417,6 @@ public class InternalFrameDemo extends JPanel {
         palette.pack();
     }
     
-    private boolean isShowHtmlPanelDemo() {
-    	return WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canCreateHtmlPanel() && WebswingUtil.getWebswingApi().canCreateWebDesktopPane();
-    }
-
     private class CreateFrameAction extends AbstractAction {
         final InternalFrameDemo demo;
         final Icon icon;

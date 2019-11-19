@@ -1,14 +1,14 @@
 package org.webswing.component;
 
+import java.awt.Container;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JInternalFrame;
+import javax.swing.JComponent;
 
 import org.webswing.toolkit.api.action.WebActionEvent;
 import org.webswing.toolkit.api.action.WebWindowActionListener;
 import org.webswing.toolkit.api.component.HtmlPanel;
-import org.webswing.toolkit.api.component.WebDesktopPane;
 
 public class HtmlPanelImpl extends HtmlPanel {
 
@@ -17,22 +17,22 @@ public class HtmlPanelImpl extends HtmlPanel {
 	private List<WebWindowActionListener> webActionListeners = new ArrayList<>();
 	
 	/**
-	 * WebDesktopPane parent in case the HtmlPane is included in a JInternalFrame.
+	 * Container parent in case the HtmlPane is included in a Component that should render in own canvas.
 	 */
-	private WebDesktopPane webDesktopPane;
+	private Container container;
 	/**
-	 * JInternalFrame parent in case the HtmlPane is included in it.
+	 * Component parent in case the HtmlPane is included in it and the component should render in own canvas.
 	 */
-	private JInternalFrame jInternalFrame;
+	private JComponent component;
 	
 	public HtmlPanelImpl() {
 	}
 	
-	public HtmlPanelImpl(WebDesktopPane webDesktopPane, JInternalFrame jInternalFrame) {
-		this.webDesktopPane = webDesktopPane;
-		this.jInternalFrame = jInternalFrame;
+	public HtmlPanelImpl(Container container, JComponent component) {
+		this.container = container;
+		this.component = component;
 	}
-	
+
 	@Override
 	public final void handleWebActionEvent(WebActionEvent webActionEvent) {
 		for (WebWindowActionListener listener : webActionListeners) {
@@ -54,13 +54,13 @@ public class HtmlPanelImpl extends HtmlPanel {
 	public void removeWebWindowActionListener(WebWindowActionListener listener) {
 		webActionListeners.remove(listener);
 	}
-	
-	public WebDesktopPane getWebDesktopPane() {
-		return webDesktopPane;
+
+	public Container getWebContainer() {
+		return container;
 	}
-	
-	public JInternalFrame getjInternalFrame() {
-		return jInternalFrame;
+
+	public JComponent getWebComponent() {
+		return component;
 	}
 	
 }

@@ -827,7 +827,6 @@ export default class BaseModule {
         function handleInternalWindow(win, index) {
         	var wrapper = $("div.internal-frames-wrapper#wrapper-" + win.ownerId);
         	if (!wrapper.length) {
-        		// TODO is this ok?
         		// wait for the parent wrapper to be attached first and render this window in next cycle
         		return;
         	}
@@ -849,7 +848,6 @@ export default class BaseModule {
 				// TODO send these events?
 				// windowOpening(windowImageHolders[win.id]);
 				
-				// TODO we probably don't need this, as the parent wrapper should already be properly relocated, needs test
 				wrapper.append(canvas);
 			} else {
 				canvas = windowImageHolders[win.id].element;
@@ -857,7 +855,7 @@ export default class BaseModule {
         	
         	var parentRect = wrapper[0].getBoundingClientRect();
         	$(canvas).css({
-        		"z-index": (compositionBaseZIndex + index + 1), // TODO maybe send a real z-index, with AON resolved
+        		"z-index": (compositionBaseZIndex + index + 1),
         		"left": (win.posX - parentRect.left) + "px",
         		"top": (win.posY - parentRect.top) + "px",
         		"width": win.width + "px",
@@ -882,7 +880,6 @@ export default class BaseModule {
         function handleInternalHtmlWindow(win, index) {
         	var wrapper = $("div.internal-frames-wrapper#wrapper-" + win.ownerId);
         	if (!wrapper.length) {
-        		// TODO is this ok?
         		// wait for the parent wrapper to be attached first and render this window in next cycle
         		return;
         	}
@@ -917,7 +914,7 @@ export default class BaseModule {
         	
         	var parentRect = wrapper[0].getBoundingClientRect();
         	$(htmlDiv).css({
-        		"z-index": (compositionBaseZIndex + index + 1), // TODO maybe send a real z-index, with AON resolved
+        		"z-index": (compositionBaseZIndex + index + 1),
         		"left": (win.posX - parentRect.left) + "px",
         		"top": (win.posY - parentRect.top) + "px",
         		"width": win.width + "px",

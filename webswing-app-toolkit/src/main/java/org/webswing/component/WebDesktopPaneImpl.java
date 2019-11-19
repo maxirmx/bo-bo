@@ -31,23 +31,19 @@ public class WebDesktopPaneImpl extends WebDesktopPane {
 		this.original.addContainerListener(new ContainerListener() {
 			@Override
 			public void componentAdded(ContainerEvent e) {
-				if (e.getChild() instanceof JInternalFrame) {
-					final JInternalFrame frame = (JInternalFrame) e.getChild();
-					SwingUtilities.invokeLater(() -> {
-						WebJInternalFrame htmlJInternalFrame = new WebJInternalFrame(original, frame);
-						internalFrames.put(e.getChild(), htmlJInternalFrame);
-					});
-				}
+				final Component frame = e.getChild();
+				SwingUtilities.invokeLater(() -> {
+					WebJInternalFrame htmlJInternalFrame = new WebJInternalFrame(original, frame);
+					internalFrames.put(e.getChild(), htmlJInternalFrame);
+				});
 			}
 
 			@Override
 			public void componentRemoved(ContainerEvent e) {
-				if (e.getChild() instanceof JInternalFrame) {
-					final JInternalFrame frame = (JInternalFrame) e.getChild();
-					if (internalFrames.containsKey(frame)) {
-						internalFrames.get(frame).setVisible(false);
-						internalFrames.remove(frame);
-					}
+				final Component frame = e.getChild();
+				if (internalFrames.containsKey(frame)) {
+					internalFrames.get(frame).setVisible(false);
+					internalFrames.remove(frame);
 				}
 			}
 		});

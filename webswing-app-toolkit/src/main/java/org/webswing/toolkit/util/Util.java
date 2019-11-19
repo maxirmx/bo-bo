@@ -390,6 +390,9 @@ public class Util {
 			
 			if (webContainers.containsKey(ww.getTarget())) {
 				List<Container> containers = webContainers.get(ww.getTarget());
+				Collections.sort(containers, (o1, o2) -> {
+					return o1.isAncestorOf(o2) ? -1 : (o2.isAncestorOf(o1) ? 1 : 0);
+				});
 				for (Container container : containers) {
 					if (!container.isShowing()) {
 						continue;

@@ -44,6 +44,7 @@ import com.sun.swingset3.DemoProperties;
 import com.sun.swingset3.demos.ResourceManager;
 
 import org.webswing.toolkit.api.WebswingUtil;
+import org.webswing.toolkit.api.component.HtmlPanel;
 import org.webswing.toolkit.api.component.WebDesktopPane;
 
 /**
@@ -222,6 +223,50 @@ public class InternalFrameDemo extends JPanel {
 
         return internalFrame;
     }
+    
+    private JInternalFrame createHtmlPanelInternalFrame() {
+    	//<snip>Create internal frame
+    	JInternalFrame internalFrame = new JInternalFrame();
+    	//</snip>
+
+    	if (!windowTitleField.getText().equals(resourceManager.getString("InternalFrameDemo.frame_label"))) {
+    		internalFrame.setTitle(windowTitleField.getText() + "  ");
+    	} else {
+    		internalFrame = new JInternalFrame(
+    				resourceManager.getString("InternalFrameDemo.frame_label") + " " + windowCount + "  ");
+    	}
+    	
+    	//<snip>Set internal frame properties
+    	internalFrame.setClosable(windowClosable.isSelected());
+    	internalFrame.setMaximizable(windowMaximizable.isSelected());
+    	internalFrame.setIconifiable(windowIconifiable.isSelected());
+    	internalFrame.setResizable(windowResizable.isSelected());
+    	//</snip>
+    	
+    	HtmlPanel htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanelForInternalFrame(webDesktop, internalFrame);
+    	htmlPanel.setName("internalIframe");
+    	
+    	internalFrame.setBounds(FRAME0_X + 20 * (windowCount % 10),
+    			FRAME0_Y + 20 * (windowCount % 10), FRAME_WIDTH, FRAME_HEIGHT);
+    	internalFrame.setContentPane(htmlPanel);
+    	
+    	windowCount++;
+    	
+    	//<snip>Add internal frame to desktop pane
+    	desktop.add(internalFrame, DEMO_FRAME_LAYER);
+    	//</snip>
+    	
+    	//<snip>Set internal frame to be active
+    	try {
+    		internalFrame.setSelected(true);
+    	} catch (java.beans.PropertyVetoException e2) {
+    	}
+    	//</snip>
+    	
+    	internalFrame.show();
+    	
+    	return internalFrame;
+    }
 
     private void createInternalFramePalette() {
         JInternalFrame palette = new JInternalFrame(
@@ -270,6 +315,14 @@ public class InternalFrameDemo extends JPanel {
         p.add(buttons1);
         p.add(Box.createRigidArea(VGAP15));
         p.add(buttons2);
+        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().canCreateHtmlPanel()) {
+        	p.add(Box.createRigidArea(VGAP15));
+        	JButton iframeButton = new JButton("iframe");
+        	iframeButton.addActionListener(e -> {
+        		createHtmlPanelInternalFrame();
+        	});
+        	p.add(iframeButton);
+        }
         p.add(Box.createRigidArea(VGAP10));
 
         palette.getContentPane().add(p, BorderLayout.NORTH);

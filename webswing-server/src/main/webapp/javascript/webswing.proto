@@ -117,7 +117,8 @@ message WindowMsgProto{
     	basic = 1;
 		html = 2;
 		internal = 3;
-		internalWrapper = 4;
+		internalHtml = 4;
+		internalWrapper = 5;
     }
 
 }

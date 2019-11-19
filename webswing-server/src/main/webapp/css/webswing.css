@@ -49,6 +49,7 @@ html,body {
 .webswing-element .internal-frames-wrapper {
 	position: absolute;
 	pointer-events: none;
+	overflow: hidden;
 }
 
 .webswing-element .internal-frames-wrapper canvas {

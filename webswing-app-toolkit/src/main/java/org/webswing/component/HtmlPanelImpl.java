@@ -12,11 +12,13 @@ import java.awt.event.HierarchyListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 
 import org.webswing.toolkit.api.action.WebActionEvent;
 import org.webswing.toolkit.api.action.WebWindowActionListener;
 import org.webswing.toolkit.api.component.HtmlPanel;
+import org.webswing.toolkit.api.component.WebDesktopPane;
 import org.webswing.toolkit.util.Util;
 
 public class HtmlPanelImpl extends HtmlPanel {
@@ -26,8 +28,23 @@ public class HtmlPanelImpl extends HtmlPanel {
 	private HtmlWindow htmlWin;
 	private List<WebWindowActionListener> webActionListeners = new ArrayList<>();
 	
+	/**
+	 * WebDesktopPane parent in case the HtmlPane is included in a JInternalFrame.
+	 */
+	private WebDesktopPane webDesktopPane;
+	/**
+	 * JInternalFrame parent in case the HtmlPane is included in it.
+	 */
+	private JInternalFrame jInternalFrame;
+	
 	public HtmlPanelImpl() {
 		init();
+	}
+	
+	public HtmlPanelImpl(WebDesktopPane webDesktopPane, JInternalFrame jInternalFrame) {
+		this();
+		this.webDesktopPane = webDesktopPane;
+		this.jInternalFrame = jInternalFrame;
 	}
 	
 	private void init() {
@@ -112,6 +129,7 @@ public class HtmlPanelImpl extends HtmlPanel {
 			target.addComponentListener(new ComponentListener() {
 				@Override
 				public void componentShown(ComponentEvent e) {
+					updateBounds();
 				}
 				
 				@Override
@@ -153,6 +171,22 @@ public class HtmlPanelImpl extends HtmlPanel {
 		
 		public HtmlPanel getTarget() {
 			return target;
+		}
+		
+		public WebDesktopPane getWebDesktopPane() {
+			if (target instanceof HtmlPanelImpl) {
+				return ((HtmlPanelImpl) target).webDesktopPane;
+			}
+			
+			return null;
+		}
+		
+		public JInternalFrame getJInternalFrame() {
+			if (target instanceof HtmlPanelImpl) {
+				return ((HtmlPanelImpl) target).jInternalFrame;
+			}
+			
+			return null;
 		}
 		
 		public void updateBounds() {

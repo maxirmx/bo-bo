@@ -12,6 +12,7 @@ public class WindowMsg implements Msg {
 		basic,
 		html,
 		internal,
+		internalHtml,
 		internalWrapper;
 	}
 	

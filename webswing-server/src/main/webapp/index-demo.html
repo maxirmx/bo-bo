@@ -58,6 +58,14 @@
             					win.element.appendChild(resE);
             				}
             			}
+            		} else if (win.htmlWindow && win.name == "testIframe") {
+            			var iframe = document.createElement("iframe");
+            			iframe.src = "iframe.html";
+            			iframe.width = "100%";
+            			iframe.height = "100%";
+            			win.element.appendChild(iframe);
+            			win.element.style.background = "white";
+            			win.element.style.overflow = "hidden";
             		}
             	},
             	windowOpening: function(win) {

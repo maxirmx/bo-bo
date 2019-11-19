@@ -21,6 +21,9 @@ import com.sun.swingset3.DemoProperties;
 public class HtmlElementDemo extends JPanel {
 	private static final long serialVersionUID = 8550928872207603286L;
 
+	private HtmlPanel htmlPanel;
+	private HtmlPanel htmlIframePanel;
+	
 	public HtmlElementDemo() {
 		if (!WebswingUtil.isWebswing()) {
 			add(new JLabel("HtmlElement can only be used when swing is running inside Webswing."));
@@ -29,9 +32,11 @@ public class HtmlElementDemo extends JPanel {
 		
 		setLayout(new BorderLayout());
 		
-		HtmlPanel htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanel();
+		htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanel();
 		htmlPanel.setName("test123");
-		htmlPanel.add(new JLabel("Please enable Compositing Window Manager in application config to see this demo."));
+		if (!WebswingUtil.getWebswingApi().canCreateHtmlPanel()) {
+			htmlPanel.add(new JLabel("Please enable Compositing Window Manager in application config to see this demo."));
+		}
 		add(htmlPanel, BorderLayout.CENTER);
 		
 		htmlPanel.addWebWindowActionListener(new WebWindowActionListener() {
@@ -56,6 +61,41 @@ public class HtmlElementDemo extends JPanel {
 				System.out.println("HtmlPanel initialized!");
 			}
 		});
+		
+		htmlIframePanel = WebswingUtil.getWebswingApi().createHtmlPanel();
+		htmlIframePanel.setName("testIframe");
+		add(htmlIframePanel, BorderLayout.EAST);
+		
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				updateLayout();
+			}
+			
+			@Override
+			public void componentResized(ComponentEvent e) {
+				updateLayout();
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				updateLayout();
+			}
+		});
+
+	}
+	
+	@Override
+	public void doLayout() {
+		super.doLayout();
+		updateLayout();
+	}
+	
+	private void updateLayout() {
+		if (htmlPanel != null && htmlIframePanel != null) {
+			htmlPanel.setPreferredSize(new Dimension(getWidth() / 2, getHeight()));
+			htmlIframePanel.setPreferredSize(new Dimension(getWidth() / 2, getHeight()));
+		}
 	}
 
 	public static void main(String[] args) {

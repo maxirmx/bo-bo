@@ -9,4 +9,8 @@ public abstract class WebDesktopPane extends JPanel {
 
 	public abstract JDesktopPane getOriginal();
 
+	public String getId() {
+		return System.identityHashCode(this) + "";
+	}
+	
 }

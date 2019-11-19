@@ -1,6 +1,7 @@
 package org.webswing.toolkit.api;
 
 import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
 
 import org.webswing.toolkit.api.action.WebActionListener;
 import org.webswing.toolkit.api.action.WebWindow;
@@ -40,5 +41,11 @@ public interface WebswingApi {
 	public boolean canCreateWebDesktopPane();
 
 	public WebDesktopPane createWebDesktopPane(JDesktopPane jDesktopPane);
+	/**
+	 * Creates an HtmlPanel component which is a part of given JInternalFrame and has a WebDesktopPane parent.
+	 */
+	public HtmlPanel createHtmlPanelForInternalFrame(WebDesktopPane webDesktopPane, JInternalFrame jInternalFrame);
+	
+	public boolean canCreateHtmlPanel();
 	
 }

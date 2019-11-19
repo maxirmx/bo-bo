@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
 
 import org.webswing.component.HtmlPanelImpl;
 import org.webswing.component.HtmlPanelImpl.HtmlWindow;
@@ -129,6 +130,16 @@ public class WebswingApiImpl implements WebswingApi {
 	
 	@Override
 	public boolean canCreateWebDesktopPane() {
+		return Util.isCompositingWM();
+	}
+	
+	@Override
+	public HtmlPanel createHtmlPanelForInternalFrame(WebDesktopPane webDesktopPane, JInternalFrame jInternalFrame) {
+		return new HtmlPanelImpl(webDesktopPane, jInternalFrame);
+	}
+	
+	@Override
+	public boolean canCreateHtmlPanel() {
 		return Util.isCompositingWM();
 	}
 	

@@ -560,6 +560,8 @@ export default class BaseModule {
 				handleInternalWrapperWindow(win);
 			} else if (win.type == 'internal') {
 				handleInternalWindow(win, index);
+			} else if (win.type == 'internalHtml') {
+				handleInternalHtmlWindow(win, index);
 			}
         }
         
@@ -705,6 +707,12 @@ export default class BaseModule {
         			
         			if (win.type == 'internal') {
         				handleInternalWindow(win, index);
+        				resolved();
+        				return;
+        			}
+        			
+        			if (win.type == 'internalHtml') {
+        				handleInternalHtmlWindow(win, index);
         				resolved();
         				return;
         			}
@@ -863,6 +871,57 @@ export default class BaseModule {
 				
 				ctx.putImageData(src.getContext("2d").getImageData(win.posX - rect.left, win.posY - rect.top, win.width, win.height), 0, 0);
 			}
+        }
+        
+        function handleInternalHtmlWindow(win, index) {
+        	var wrapper = $("div.internal-frames-wrapper#wrapper-" + win.ownerId);
+        	if (!wrapper.length) {
+        		// TODO is this ok?
+        		// wait for the parent wrapper to be attached first and render this window in next cycle
+        		return;
+        	}
+        	
+        	var htmlDiv;
+        	var newWindowOpened = false;
+        	
+        	if (windowImageHolders[win.id] == null) {
+        		htmlDiv = document.createElement("div");
+				htmlDiv.classList.add("webswing-html-canvas");
+				
+				windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name);
+				newWindowOpened = true;
+				$(htmlDiv).attr('data-id', win.id).css("position", "absolute");
+				if (win.ownerId) {
+					$(htmlDiv).attr('data-ownerid', win.ownerId);
+				}
+
+				windowOpening(windowImageHolders[win.id]);
+
+        		wrapper.append(htmlDiv);
+        	} else {
+        		htmlDiv = windowImageHolders[win.id].element;
+        	}
+        	
+        	if (newWindowOpened) {
+				windowOpened(windowImageHolders[win.id]);
+				if (!api.cfg.mirrorMode) {
+					performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
+				}
+			}
+        	
+        	var parentRect = wrapper[0].getBoundingClientRect();
+        	$(htmlDiv).css({
+        		"z-index": (compositionBaseZIndex + index + 1), // TODO maybe send a real z-index, with AON resolved
+        		"left": (win.posX - parentRect.left) + "px",
+        		"top": (win.posY - parentRect.top) + "px",
+        		"width": win.width + "px",
+        		"height": win.height + "px"
+        	});
+        	$(htmlDiv).attr("width", win.width).attr("height", win.height);
+        	
+        	if ($(htmlDiv).is(".modal-blocked") != win.modalBlocked) {
+        		$(htmlDiv).toggleClass("modal-blocked", win.modalBlocked);
+        	}
         }
 			
         function isVisible(element) {

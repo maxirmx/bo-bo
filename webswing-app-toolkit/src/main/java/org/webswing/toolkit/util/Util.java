@@ -54,6 +54,7 @@ import org.webswing.model.c2s.KeyboardEventMsgIn.KeyEventType;
 import org.webswing.model.c2s.MouseEventMsgIn;
 import org.webswing.model.s2c.AppFrameMsgOut;
 import org.webswing.model.s2c.WindowMsg;
+import org.webswing.model.s2c.WindowMsg.WindowType;
 import org.webswing.model.s2c.WindowPartialContentMsg;
 import org.webswing.toolkit.WebComponentPeer;
 import org.webswing.toolkit.WebToolkit;
@@ -352,10 +353,10 @@ public class Util {
 					window.setName(((Component) ww.getTarget()).getName());
 				}
 				if (ww.getTarget() instanceof HtmlWindow) {
-					window.setHtml(true);
+					window.setType(WindowType.html);
 				}
 				if (ww.getTarget() instanceof WebJInternalFrame) {
-					window.setInternal(true);
+					window.setType(WindowType.internal);
 					WebJInternalFrame internalFrame = (WebJInternalFrame) ww.getTarget();
 					Window owner = SwingUtilities.getWindowAncestor(internalFrame.getOwnerPane());
 					fillWindowOwner(owner, window, zOrder);

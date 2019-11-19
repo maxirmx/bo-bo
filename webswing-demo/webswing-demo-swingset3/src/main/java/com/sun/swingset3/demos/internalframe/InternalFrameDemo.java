@@ -33,6 +33,7 @@ package com.sun.swingset3.demos.internalframe;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -116,7 +117,7 @@ public class InternalFrameDemo extends JPanel {
     private JTextField windowTitleField = null;
     private JLabel windowTitleLabel = null;
     
-    private WebDesktopPane webDesktopPane;
+    private Component webDesktopPane;
 
 
     /**

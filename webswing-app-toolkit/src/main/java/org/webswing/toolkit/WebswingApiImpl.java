@@ -1,5 +1,6 @@
 package org.webswing.toolkit;
 
+import java.awt.Component;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +22,6 @@ import org.webswing.toolkit.api.action.WebActionEvent;
 import org.webswing.toolkit.api.action.WebActionListener;
 import org.webswing.toolkit.api.action.WebWindow;
 import org.webswing.toolkit.api.component.HtmlPanel;
-import org.webswing.toolkit.api.component.WebDesktopPane;
 import org.webswing.toolkit.util.DeamonThreadFactory;
 import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Util;
@@ -128,8 +128,12 @@ public class WebswingApiImpl implements WebswingApi {
 	}
 	
 	@Override
-	public WebDesktopPane createWebDesktopPane(JDesktopPane original) {
-		return new WebDesktopPaneImpl(original);
+	public Component createWebDesktopPane(JDesktopPane original) {
+		if (Util.isCompositingWM()) {
+			return new WebDesktopPaneImpl(original);
+		}
+
+		return original;
 	}
 	
 }

@@ -7,6 +7,14 @@ import org.webswing.model.Msg;
 public class WindowMsg implements Msg {
 
 	private static final long serialVersionUID = -523823816533325842L;
+	
+	public enum WindowType {
+		basic,
+		html,
+		internal,
+		internalWrapper;
+	}
+	
 	private String id;
 	private List<WindowPartialContentMsg> content;
 	private List<SpriteMsg> sprites;
@@ -17,12 +25,11 @@ public class WindowMsg implements Msg {
 	private Integer posY;
 	private Integer width;
 	private Integer height;
-	private boolean html;
-	private boolean internal;
+	private WindowType type = WindowType.basic;
 	private boolean modalBlocked;
 	private String ownerId;
 	private Integer state;
-
+	
 	public String getId() {
 		return id;
 	}
@@ -103,14 +110,6 @@ public class WindowMsg implements Msg {
 		this.sprites = sprites;
 	}
 
-	public boolean isHtml() {
-		return html;
-	}
-
-	public void setHtml(boolean html) {
-		this.html = html;
-	}
-
 	public boolean isModalBlocked() {
 		return modalBlocked;
 	}
@@ -135,12 +134,12 @@ public class WindowMsg implements Msg {
 		this.state = state;
 	}
 
-	public boolean isInternal() {
-		return internal;
+	public WindowType getType() {
+		return type;
 	}
 
-	public void setInternal(boolean internal) {
-		this.internal = internal;
+	public void setType(WindowType type) {
+		this.type = type;
 	}
 
 }

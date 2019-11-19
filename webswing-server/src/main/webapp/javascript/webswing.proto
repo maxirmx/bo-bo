@@ -108,11 +108,18 @@ message WindowMsgProto{
 	optional uint32 width = 8;
 	optional uint32 height = 9;
 	optional string name = 10;
-	optional bool html = 11;
+	optional WindowTypeProto type = 11;
 	optional bool modalBlocked = 12;
 	optional string ownerId = 13;
 	optional uint32 state = 14;
-	optional bool internal = 15;
+	
+    enum WindowTypeProto {
+    	basic = 1;
+		html = 2;
+		internal = 3;
+		internalWrapper = 4;
+    }
+
 }
 
 message WindowPartialContentMsgProto{

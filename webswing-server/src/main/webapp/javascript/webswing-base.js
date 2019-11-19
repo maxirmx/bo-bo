@@ -455,7 +455,7 @@ export default class BaseModule {
         }
         
         function renderPngDrawComposedWindow(win, index) {
-        	if (win.html) {
+        	if (win.type == 'html') {
         		var newWindowOpened = false;
         		
         		if (windowImageHolders[win.id] == null) {
@@ -503,7 +503,7 @@ export default class BaseModule {
         			var canvas = document.createElement("canvas");
         			canvas.classList.add("webswing-canvas");
         			
-					if (win.internal) {
+					if (win.type == 'internal') {
 						canvas.classList.add("internal");
 						var wrapper = api.cfg.rootElement.find("div.internal-frames-wrapper");
 						if (!wrapper.length) {
@@ -512,7 +512,7 @@ export default class BaseModule {
 						}
 					}
 
-        			windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.internal, win.name, win.title);
+        			windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.type == 'internal', win.name, win.title);
         			newWindowOpened = true;
         			$(canvas).attr('data-id', win.id).css("position", "absolute");
 					if (win.ownerId) {
@@ -521,7 +521,7 @@ export default class BaseModule {
         			
         			windowOpening(windowImageHolders[win.id]);
         			
-					if (win.internal) {
+					if (win.type == 'internal') {
 						api.cfg.rootElement.find("div.internal-frames-wrapper").append(canvas);
 					} else if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
         				windowImageHolders[win.ownerId].element.parentNode.append(canvas);
@@ -550,7 +550,7 @@ export default class BaseModule {
         			windowModalBlockedChanged(windowImageHolders[win.id]);
         		}
         		
-				if (win.internal) {
+				if (win.type == 'internal') {
 					// FIXME owner window element might not be added to DOM there is a JInternalFrame in first rendered screen and the order of windows from proto is not correct
 					// FIXME what if there are multiple JDesktopPanes and in different windows ?
 					var wrapper = api.cfg.rootElement.find("div.internal-frames-wrapper");
@@ -669,7 +669,7 @@ export default class BaseModule {
                 }
                 
                 ddPromise.then(function(canvas) {
-                    windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.internal, win.name, win.title);
+                    windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.type == 'internal', win.name, win.title);
                     
                     let dpr = Util.dpr();
                     for ( let x in win.content) {
@@ -702,7 +702,7 @@ export default class BaseModule {
         		var ddPromise;
         		var wih = windowImageHolders[win.id] != null ? windowImageHolders[win.id].element : null;
         		
-        		if (win.html) {
+        		if (win.type == 'html') {
         			// we don't need to draw html window, also do not create canvas
         			ddPromise = Promise.resolve(null);
         		} else if (win.directDraw == null && wih == null) {
@@ -722,10 +722,10 @@ export default class BaseModule {
         			
         			if (canvas != null) {
         				if (windowImageHolders[win.id] == null) {
-        					windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.internal, win.name, win.title);
+        					windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, win.type == 'internal', win.name, win.title);
         					newWindowOpened = true;
         					
-        					if (win.internal) {
+        					if (win.type == 'internal') {
         						canvas.classList.add("internal");
         						var wrapper = api.cfg.rootElement.find("div.internal-frames-wrapper");
         						if (!wrapper.length) {
@@ -741,7 +741,7 @@ export default class BaseModule {
         					
         					windowOpening(windowImageHolders[win.id]);
         					
-        					if (win.internal) {
+        					if (win.type == 'internal') {
         						api.cfg.rootElement.find("div.internal-frames-wrapper").append(canvas);
         					} else if (win.ownerId && windowImageHolders[win.ownerId] != null && windowImageHolders[win.ownerId].isRelocated()) {
         						windowImageHolders[win.ownerId].element.parentNode.append(canvas);
@@ -749,7 +749,7 @@ export default class BaseModule {
         						api.cfg.rootElement.append(canvas);
         					}
         				}
-        			} else if (win.html) {
+        			} else if (win.type == 'html') {
         				if (windowImageHolders[win.id] == null) {
         					var htmlDiv = document.createElement("div");
         					htmlDiv.classList.add("webswing-html-canvas");
@@ -787,7 +787,7 @@ export default class BaseModule {
         				windowModalBlockedChanged(windowImageHolders[win.id]);
         			}
         			
-    				if (win.internal) {
+    				if (win.type == 'internal') {
     					var wrapper = api.cfg.rootElement.find("div.internal-frames-wrapper");
     					if (win.ownerId) {
     						// FIXME owner window element might not be added to DOM

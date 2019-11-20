@@ -235,7 +235,7 @@ export default class InputModule {
             canvasEventHandlerMap['DOMMouseScroll'] = canvasDOMMouseScrollEventHandler;
             Util.bindEvent(document, "DOMMouseScroll", canvasDOMMouseScrollEventHandler, false);
 
-            let canvasContextmenuEventHandler = function (event) {
+            let canvasContextmenuEventHandler = function (evt) {
             	if (isNotValidCanvasTarget(evt)) {
             		return;
             	}

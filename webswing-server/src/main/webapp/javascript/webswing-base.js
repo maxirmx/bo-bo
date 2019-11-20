@@ -856,6 +856,7 @@ export default class BaseModule {
         	}
         	
         	var canvas;
+        	let dpr = Util.dpr();
         	
         	if (windowImageHolders[win.id] == null) {
         		canvas = document.createElement("canvas");
@@ -881,7 +882,7 @@ export default class BaseModule {
         		"width": win.width + "px",
         		"height": win.height + "px"
         	});
-        	$(canvas).attr("width", win.width * util.dpr).attr("height", win.height * util.dpr);
+        	$(canvas).attr("width", win.width * dpr).attr("height", win.height * dpr);
         	
 			if ($(canvas).is(".modal-blocked") != win.modalBlocked) {
 				$(canvas).toggleClass("modal-blocked", win.modalBlocked);
@@ -897,9 +898,9 @@ export default class BaseModule {
 					for (var i=0; i<underlyingHtmlWindows.length; i++) {
 						var int = findWindowIntersection(win, underlyingHtmlWindows[i]);
 						if (int && (int.x2 - int.x1 > 0) && (int.y2 - int.y1 > 0)) {
-							var width = (int.x2 - int.x1) * util.dpr;
-							var height = (int.y2 - int.y1) * util.dpr;
-							ctx.drawImage(src, (int.x1 - pos.left) * util.dpr, (int.y1 - pos.top) * util.dpr, width, height, (int.x1 - pos.left - win.posX) * util.dpr, (int.y1 - pos.top - win.posY) * util.dpr, width, height);
+							var width = (int.x2 - int.x1) * dpr;
+							var height = (int.y2 - int.y1) * dpr;
+							ctx.drawImage(src, (int.x1 - pos.left) * dpr, (int.y1 - pos.top) * dpr, width, height, (win.posX < int.x1 ? (int.x1 - win.posX) : 0) * dpr, (win.posY < int.y1 ? (int.y1 - win.posY) : 0) * dpr, width, height);
 						}
 					}
 				}

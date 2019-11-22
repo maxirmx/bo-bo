@@ -760,6 +760,12 @@ export default class BaseModule {
         					performActionInternal({ actionName: "", eventType: "init", data: "", binaryData: null, windowId: win.id });
         				}
         			}
+
+                    if(canvas.width!=win.width*Util.dpr() && canvas.height!=win.height*Util.dpr()){
+                        canvas.width=win.width*Util.dpr();
+                        canvas.height=win.height*Util.dpr();
+                        drawOutline(canvas);
+                    }
         			
         			var htmlOrCanvasElement = $(windowImageHolders[win.id].element);
         			htmlOrCanvasElement.css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'}).show();
@@ -793,7 +799,15 @@ export default class BaseModule {
         		});
         	});
         }
-        
+        function drawOutline(canvas) {
+            var ctx=canvas.getContext("2d");
+            ctx.save();
+            ctx.strokeStyle = "black";
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.setLineDash([4, 2]);
+            ctx.strokeRect(0.5, 0.5,canvas.width-1, canvas.height-1);
+            ctx.restore();
+        }
         function drawInternalWindows(internalWindows) {
         	if (!internalWindows || internalWindows.length == 0) {
         		return;

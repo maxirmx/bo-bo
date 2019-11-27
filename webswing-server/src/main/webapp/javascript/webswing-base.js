@@ -761,7 +761,7 @@ export default class BaseModule {
         				}
         			}
 
-                    if(canvas.width!=win.width*Util.dpr() && canvas.height!=win.height*Util.dpr()){
+                    if(canvas!=null && (canvas.width!=win.width*Util.dpr() || canvas.height!=win.height*Util.dpr())){
                         canvas.width=win.width*Util.dpr();
                         canvas.height=win.height*Util.dpr();
                         drawOutline(canvas);
@@ -794,9 +794,9 @@ export default class BaseModule {
     				drawInternalWindows(win.internalWindows);
         			
         			resolved();
-        		}, function (error) {
-        			rejected(error);
-        		});
+        		}).catch(function (error) {
+                    rejected(error);
+                });
         	});
         }
         function drawOutline(canvas) {

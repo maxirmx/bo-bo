@@ -964,7 +964,7 @@ export default class BaseModule {
         		"width": win.width + "px",
         		"height": win.height + "px"
         	});
-        	$(htmlDiv).attr("width", win.width).attr("height", win.height);
+        	$(htmlDiv).attr("width", win.width).attr("height", win.height).show();
         	
         	if ($(htmlDiv).is(".modal-blocked") != win.modalBlocked) {
         		$(htmlDiv).toggleClass("modal-blocked", win.modalBlocked);

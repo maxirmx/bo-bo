@@ -89,8 +89,11 @@
             	windowOpening: function(win) {
             		console.log("window " + win.id + " opening");
             	},
-            	windowClosing: function(win) {
+            	windowClosing: function(win, evt) {
             		console.log("window " + win.id + " closing");
+            		if (win.name == "internalIframe") {
+            			evt.preventDefault();
+            		}
             	},
             	windowClosed: function(win) {
             		console.log("window " + win.id + " closed");

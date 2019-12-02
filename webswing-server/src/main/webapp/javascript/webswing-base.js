@@ -380,10 +380,12 @@ export default class BaseModule {
                 if (compositingWM) {
                     // with CWM we always get all the windows, so if an already open window is missing in windowsData we should close it
                     for (var winId in windowImageHolders) {
-                        if (!winMap[winId]) {
-                            console.log("closing obsolete window " + winId);
-                            closeWindow(winId);
-                        }
+                    	var win = windowImageHolders[winId];
+            			
+            			if (!winMap[winId] && win.element && $(win.element).is(":not(.close-prevented)")) {
+            				console.log("closing obsolete window " + winId);
+            				closeWindow(winId);
+            			}
                     }
                 }
 
@@ -426,7 +428,7 @@ export default class BaseModule {
                 }
 
                 if (compositingWM && canvasWindow.htmlWindow && winCloseEvent.isDefaultPrevented()) {
-                    $(canvasWindow.element).hide();
+                    $(canvasWindow.element).addClass("close-prevented");
                 } else {
                     $(canvasWindow.element).remove();
                     delete windowImageHolders[id];
@@ -493,7 +495,8 @@ export default class BaseModule {
         		
         		var htmlDiv = windowImageHolders[win.id].element;
         		
-        		$(htmlDiv).css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'}).show();
+        		$(htmlDiv).css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'});
+        		$(htmlDiv).show().removeClass("close-prevented");
         		if ($(htmlDiv).is(".modal-blocked") != win.modalBlocked) {
         			$(htmlDiv).toggleClass("modal-blocked", win.modalBlocked);
         			windowModalBlockedChanged(windowImageHolders[win.id]);
@@ -768,7 +771,8 @@ export default class BaseModule {
                     }
         			
         			var htmlOrCanvasElement = $(windowImageHolders[win.id].element);
-        			htmlOrCanvasElement.css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'}).show();
+        			htmlOrCanvasElement.css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'});
+        			htmlOrCanvasElement.show().removeClass("close-prevented");
         			if (htmlOrCanvasElement.is(".modal-blocked") != win.modalBlocked) {
         				htmlOrCanvasElement.toggleClass("modal-blocked", win.modalBlocked);
         				windowModalBlockedChanged(windowImageHolders[win.id]);
@@ -964,7 +968,8 @@ export default class BaseModule {
         		"width": win.width + "px",
         		"height": win.height + "px"
         	});
-        	$(htmlDiv).attr("width", win.width).attr("height", win.height).show();
+        	$(htmlDiv).attr("width", win.width).attr("height", win.height);
+        	$(htmlDiv).show().removeClass("close-prevented");
         	
         	if ($(htmlDiv).is(".modal-blocked") != win.modalBlocked) {
         		$(htmlDiv).toggleClass("modal-blocked", win.modalBlocked);

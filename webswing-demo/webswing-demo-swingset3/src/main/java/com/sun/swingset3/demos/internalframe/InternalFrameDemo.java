@@ -49,7 +49,9 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -217,6 +219,21 @@ public class InternalFrameDemo extends JPanel {
                 FRAME0_Y + 20 * (windowCount % 10), width, height);
         internalFrame.setContentPane(new ImageScroller(icon));
 
+        JPopupMenu menu = new JPopupMenu("test");
+        menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		JMenuItem menuItemWithTooltip = new JMenuItem("tooltip");
+		menuItemWithTooltip.setToolTipText("This is a tooltip text for this JMenuItem.");
+		menu.add(menuItemWithTooltip);
+		((ImageScroller) internalFrame.getContentPane()).getIconLabel().setComponentPopupMenu(menu);
+        
         windowCount++;
 
         //<snip>Add internal frame to desktop pane
@@ -437,13 +454,16 @@ public class InternalFrameDemo extends JPanel {
 
     private static class ImageScroller extends JScrollPane {
 
+    	private JLabel iconLabel;
+    	
         public ImageScroller(Icon icon) {
             super();
             JPanel p = new JPanel();
             p.setBackground(Color.white);
             p.setLayout(new BorderLayout());
 
-            p.add(new JLabel(icon), BorderLayout.CENTER);
+            iconLabel = new JLabel(icon);
+            p.add(iconLabel, BorderLayout.CENTER);
 
             getViewport().add(p);
             getHorizontalScrollBar().setUnitIncrement(10);
@@ -454,5 +474,9 @@ public class InternalFrameDemo extends JPanel {
             return new Dimension(25, 25);
         }
 
+        public JLabel getIconLabel() {
+        	return iconLabel;
+        }
+        
     }
 }

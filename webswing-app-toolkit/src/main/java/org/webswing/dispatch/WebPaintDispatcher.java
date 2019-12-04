@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JPopupMenu;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
@@ -160,6 +161,12 @@ public class WebPaintDispatcher {
 
 		};
 		contentSender.scheduleWithFixedDelay(sendUpdate, 33, 33, TimeUnit.MILLISECONDS);
+		
+		if (Util.isCompositingWM()) {
+			// set JPopupMenu to be rendered as heavyweight component to get its own canvas, this is needed when JPopupMenu opens over an HtmlPanel
+			// this must be set prior to JPopupMenu instantiation
+			JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+		}
 	}
 
 	public void clientReadyToReceive() {

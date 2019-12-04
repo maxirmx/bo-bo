@@ -491,11 +491,15 @@ export default class BaseModule {
         			} else {
         				api.cfg.rootElement.append(htmlDiv);
         			}
+        		} else if ($(windowImageHolders[win.id].element).is(".close-prevented")) {
+        			newWindowOpened = true;
+        			windowOpening(windowImageHolders[win.id]);
+        			$(windowImageHolders[win.id].element).show().removeClass("close-prevented");
         		}
         		
         		var htmlDiv = windowImageHolders[win.id].element;
         		
-        		$(htmlDiv).css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'});
+        		$(htmlDiv).css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'}).show();
         		$(htmlDiv).show().removeClass("close-prevented");
         		if ($(htmlDiv).is(".modal-blocked") != win.modalBlocked) {
         			$(htmlDiv).toggleClass("modal-blocked", win.modalBlocked);
@@ -751,6 +755,10 @@ export default class BaseModule {
         					} else {
         						api.cfg.rootElement.append(htmlDiv);
         					}
+        				} else if ($(windowImageHolders[win.id].element).is(".close-prevented")) {
+        					newWindowOpened = true;
+        					windowOpening(windowImageHolders[win.id]);
+        					$(windowImageHolders[win.id].element).show().removeClass("close-prevented");
         				}
         			}
         			
@@ -771,8 +779,7 @@ export default class BaseModule {
                     }
         			
         			var htmlOrCanvasElement = $(windowImageHolders[win.id].element);
-        			htmlOrCanvasElement.css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'});
-        			htmlOrCanvasElement.show().removeClass("close-prevented");
+        			htmlOrCanvasElement.css({"z-index": (compositionBaseZIndex + index + 1), "width": win.width + 'px', "height": win.height + 'px'}).show();
         			if (htmlOrCanvasElement.is(".modal-blocked") != win.modalBlocked) {
         				htmlOrCanvasElement.toggleClass("modal-blocked", win.modalBlocked);
         				windowModalBlockedChanged(windowImageHolders[win.id]);
@@ -951,6 +958,11 @@ export default class BaseModule {
         		wrapper.append(htmlDiv);
         	} else {
         		htmlDiv = windowImageHolders[win.id].element;
+        		if ($(htmlDiv).is(".close-prevented")) {
+        			newWindowOpened = true;
+        			windowOpening(windowImageHolders[win.id]);
+        			$(htmlDiv).removeClass("close-prevented").show();
+        		}
         	}
         	
         	if (newWindowOpened) {
@@ -968,8 +980,7 @@ export default class BaseModule {
         		"width": win.width + "px",
         		"height": win.height + "px"
         	});
-        	$(htmlDiv).attr("width", win.width).attr("height", win.height);
-        	$(htmlDiv).show().removeClass("close-prevented");
+        	$(htmlDiv).attr("width", win.width).attr("height", win.height).show();
         	
         	if ($(htmlDiv).is(".modal-blocked") != win.modalBlocked) {
         		$(htmlDiv).toggleClass("modal-blocked", win.modalBlocked);

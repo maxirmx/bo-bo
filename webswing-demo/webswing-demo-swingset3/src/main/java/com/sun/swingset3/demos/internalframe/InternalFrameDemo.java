@@ -228,10 +228,17 @@ public class InternalFrameDemo extends JPanel {
 		menu.add(new JMenuItem("test"));
 		menu.add(new JMenuItem("test"));
 		menu.add(new JMenuItem("test"));
-		menu.add(new JMenuItem("test"));
+		
+		JMenuItem menuItemHide = new JMenuItem("setVisible(false)");
+		menuItemHide.addActionListener((e) -> {
+			internalFrame.setVisible(false);
+		});
+		menu.add(menuItemHide);
+		
 		JMenuItem menuItemWithTooltip = new JMenuItem("tooltip");
 		menuItemWithTooltip.setToolTipText("This is a tooltip text for this JMenuItem.");
 		menu.add(menuItemWithTooltip);
+		
 		((ImageScroller) internalFrame.getContentPane()).getIconLabel().setComponentPopupMenu(menu);
         
         windowCount++;

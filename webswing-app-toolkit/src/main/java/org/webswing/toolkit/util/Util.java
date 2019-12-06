@@ -447,6 +447,10 @@ public class Util {
 			// handle child components
 			Map<JComponent, WindowMsg> htmlComponents = htmlWebComponentsMap.get(container);
 			for (Component c : container.getComponents()) {
+				if (!c.isShowing()) {
+					continue;
+				}
+				
 				if (htmlComponents != null && htmlComponents.containsKey(c)) {
 					// if component contains a registered HtmlPanel
 					WindowMsg htmlWin = htmlComponents.get(c);

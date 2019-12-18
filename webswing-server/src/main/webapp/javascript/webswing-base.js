@@ -885,7 +885,8 @@ export default class BaseModule {
         	
         	if (windowImageHolders[win.id] == null) {
         		canvas = document.createElement("canvas");
-				canvas.classList.add("webswing-canvas", "internal");
+				canvas.classList.add("webswing-canvas");
+				canvas.classList.add("internal");
         		
 				windowImageHolders[win.id] = new CanvasWindow(win.id, canvas, true, win.name, win.title);
 				

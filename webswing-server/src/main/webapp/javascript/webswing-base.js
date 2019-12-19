@@ -94,7 +94,7 @@ export default class BaseModule {
             api.cfg.hasControl = !isMirror;
             api.cfg.mirrorMode = isMirror;
             api.cfg.applet = applet != null ? applet : api.cfg.applet;
-            handshake();
+            handshake(document.visibilityState === 'visible');
             if (isMirror) {
                 repaint();
             }
@@ -109,7 +109,7 @@ export default class BaseModule {
         function continueSession() {
             api.hideDialog();
             api.cfg.canPaint = true;
-            handshake();
+            handshake(true);
             repaint();
             ack();
             api.fireCallBack({type: 'continueSession'});

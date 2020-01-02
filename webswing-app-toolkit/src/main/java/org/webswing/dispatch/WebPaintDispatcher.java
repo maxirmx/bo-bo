@@ -138,6 +138,10 @@ public class WebPaintDispatcher {
 					}
 					if (Util.isDD()) {
 						Util.encodeWindowWebImages(windowWebImages, json);
+						if (Util.isEmptyDDContent(json)) {
+							clientReadyToReceive = true;
+							return;
+						}
 					} else {
 						//Util.encodeWindowImages(windowImages, json);
 						Map<String, Set<SubImage>> partials = ImageComparator.updateWindowImages(windowImages, previousWindowImages, json);

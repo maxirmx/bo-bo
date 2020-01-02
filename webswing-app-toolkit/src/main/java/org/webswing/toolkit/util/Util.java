@@ -271,6 +271,18 @@ public class Util {
 			}
 		}
 	}
+	
+	public static boolean isEmptyDDContent(AppFrameMsgOut json) {
+		if (json.getWindows().isEmpty()) {
+			return false;
+		}
+		for (WindowMsg window : json.getWindows()) {
+			if (window.getDirectDraw() != null) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	@SuppressWarnings("restriction")
 	public static AppFrameMsgOut fillWithWindowsData(Map<String, Set<Rectangle>> currentAreasToUpdate) {

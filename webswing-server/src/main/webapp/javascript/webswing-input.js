@@ -350,7 +350,7 @@ export default class InputModule {
             		return;
             	}
             	
-            	keyUpHandler(evt);
+            	keyupHandler(evt);
             }
             
             inputEventHandlerMap['keyup'] = keyupHandler;

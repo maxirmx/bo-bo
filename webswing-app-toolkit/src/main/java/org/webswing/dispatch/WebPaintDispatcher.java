@@ -138,7 +138,8 @@ public class WebPaintDispatcher {
 					}
 					if (Util.isDD()) {
 						Util.encodeWindowWebImages(windowWebImages, json);
-						if (Util.isEmptyDDContent(json)) {
+						if (Util.isCompositingWM() && Util.isEmptyDDContent(json)) {
+							// ignore empty render for CWM and DD settings, this fixes a white flash of canvas when screen size changes
 							clientReadyToReceive = true;
 							return;
 						}

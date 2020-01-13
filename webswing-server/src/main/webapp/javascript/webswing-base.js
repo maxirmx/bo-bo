@@ -316,7 +316,21 @@ export default class BaseModule {
                     input.style.left = null;
                     input.style.height = null;
                     input.value = '';
-                    api.getCanvas().focus({preventScroll: true});
+                    var cvs=api.getCanvas();
+                    var temppos = cvs.style.position;
+                    var templeft = cvs.style.left;
+                    var temptop = cvs.style.top;
+                    if(Util.detectIE() && Util.detectIE() <= 11){
+                        cvs.style.position = 'fixed';
+                        cvs.style.left = '0px';
+                        cvs.style.top = '0px'
+                    }
+                    cvs.focus({preventScroll: true});
+                    if(Util.detectIE() && Util.detectIE() <= 11) {
+                        cvs.style.position = temppos;
+                        cvs.style.left = templeft;
+                        cvs.style.top = temptop;
+                    }
                 }
             }
             if (data.cursorChange != null && api.cfg.hasControl && !api.cfg.recordingPlayback) {

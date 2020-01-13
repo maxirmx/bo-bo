@@ -536,11 +536,21 @@ export default class InputModule {
             let sx = window.pageXOffset, sy = window.pageYOffset;
             input.value = ' ';
             // set the style attributes as the focus/select cannot work well in IE
-            input.style.top = sy +'px';
-            input.style.left = sx +'px';
+            var temppos = input.style.position;
+            var templeft = input.style.left;
+            var temptop = input.style.top;
+            if(Util.detectIE() && Util.detectIE() <= 11){
+                input.style.position = 'fixed';
+                input.style.left = '0px';
+                input.style.top = '0px'
+            }
             input.focus({preventScroll: true});
             input.select();
-            window.scrollTo(sx,sy);
+            if(Util.detectIE() && Util.detectIE() <= 11) {
+                input.style.position = temppos;
+                input.style.left = templeft;
+                input.style.top = temptop;
+            }
         }
 
         // 当快速输入多个中文标点的时候，一个标点发送一次拷贝事件，但是webswing里应用程序EDT处理时因为只有一个剪切板，而粘贴处理是先将内容放到剪切板里，

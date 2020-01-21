@@ -1,13 +1,6 @@
 package org.webswing.dispatch;
 
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.Serializable;
@@ -26,11 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JPopupMenu;
-import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import org.webswing.Constants;
 import org.webswing.model.internal.ExitMsgInternal;
@@ -168,9 +157,21 @@ public class WebPaintDispatcher {
 		contentSender.scheduleWithFixedDelay(sendUpdate, 33, 33, TimeUnit.MILLISECONDS);
 		
 		if (Util.isCompositingWM()) {
-			// set JPopupMenu to be rendered as heavyweight component to get its own canvas, this is needed when JPopupMenu opens over an HtmlPanel
+			// set JPopupMenu and JTooltip to be rendered as heavyweight component to get its own canvas, this is needed when JPopupMenu opens over an HtmlPanel
 			// this must be set prior to JPopupMenu instantiation
-			JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+			PopupFactory.setSharedInstance(new PopupFactory(){
+				public Popup getPopup(Component owner, Component contents,
+						int x, int y) throws IllegalArgumentException {
+					try {
+						Field popupTypeField = PopupFactory.class.getDeclaredField("popupType");
+						popupTypeField.setAccessible(true);
+						popupTypeField.set(this,2);
+					} catch (Exception e) {
+						Logger.warn("Failed to force Heavyweight popup for CWM mode.",e);
+					}
+					return super.getPopup(owner, contents, x, y);
+				}
+			});
 		}
 	}
 

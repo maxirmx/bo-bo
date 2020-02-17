@@ -449,17 +449,20 @@ public class WebEventDispatcher {
 
 	public static void dispatchEventInSwing(final Component c, final AWTEvent e, boolean relatedToLastEvent) {
 		Window w = (Window) (c instanceof Window ? c : SwingUtilities.windowForComponent(c));
-		if (e instanceof MouseEvent) {
-			w.setCursor(w.getCursor());// force cursor update
-		}
-		if (((!relatedToLastEvent && Util.isWindowDecorationEvent(w, e)) || WindowManager.getInstance().isLockedToWindowDecorationHandler()) && e instanceof MouseEvent) {
-			Logger.debug("WebEventDispatcher.dispatchEventInSwing:windowManagerHandle", e);
-			WindowManager.getInstance().handleWindowDecorationEvent(w, (MouseEvent) e);
-		} else if (dndHandler.isDndInProgress() && (e instanceof MouseEvent || e instanceof KeyEvent)) {
-			dndHandler.processMouseEvent(w, e);
-		} else {
-			Logger.debug("WebEventDispatcher.dispatchEventInSwing:postSystemQueue", e);
-			Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(e);
+		if(w.isEnabled()) {
+
+			if (e instanceof MouseEvent) {
+				w.setCursor(w.getCursor());// force cursor update
+			}
+			if (((!relatedToLastEvent && Util.isWindowDecorationEvent(w, e)) || WindowManager.getInstance().isLockedToWindowDecorationHandler()) && e instanceof MouseEvent) {
+				Logger.debug("WebEventDispatcher.dispatchEventInSwing:windowManagerHandle", e);
+				WindowManager.getInstance().handleWindowDecorationEvent(w, (MouseEvent) e);
+			} else if (dndHandler.isDndInProgress() && (e instanceof MouseEvent || e instanceof KeyEvent)) {
+				dndHandler.processMouseEvent(w, e);
+			} else {
+				Logger.debug("WebEventDispatcher.dispatchEventInSwing:postSystemQueue", e);
+				Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(e);
+			}
 		}
 	}
 

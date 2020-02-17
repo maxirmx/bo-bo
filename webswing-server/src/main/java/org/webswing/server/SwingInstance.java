@@ -11,6 +11,7 @@ import org.atmosphere.cpr.AtmosphereResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.webswing.Constants;
+import org.webswing.javafx.ToolkitJarMarker;
 import org.webswing.model.MsgIn;
 import org.webswing.model.MsgOut;
 import org.webswing.model.c2s.ConnectionHandshakeMsgIn;
@@ -45,6 +46,7 @@ import main.Main;
 
 public class SwingInstance implements WebSessionListener {
 	private static final Logger log = LoggerFactory.getLogger(SwingInstance.class);
+	private static final String JAVA_FX_PATH = System.getProperty("java.home") + "/lib/ext/jfxrt.jar";
 
 	private SwingProcess app;
 	private String instanceId;
@@ -234,6 +236,12 @@ public class SwingInstance implements WebSessionListener {
 			String webToolkitClass;
 			String webGraphicsEnvClass;
 			String javaVersion = subs.replace(appConfig.getJavaVersion());
+
+			boolean useJFX = appConfig.isJavaFx();
+			if (!new File(JAVA_FX_PATH).exists()) {
+				log.error("Java FX not supported with current java version (Try version 1.8). JavaFx library not found in '" + new File(JAVA_FX_PATH).getCanonicalPath() + "'. ");
+				useJFX = false;
+			}
 			//TODO: to uncomment this after Webtoolkit 6 and 7 can compile
 			/*if (javaVersion.startsWith("1.6")) {
 				webSwingToolkitJarPathSpecific = getClassPathForClass(WebToolkit6.class);
@@ -259,6 +267,9 @@ public class SwingInstance implements WebSessionListener {
 			if (!System.getProperty("os.name", "").startsWith("Windows")) {
 				// filesystem isolation support on non windows systems:
 				bootCp += File.pathSeparatorChar + "\"" + webSwingToolkitJarPath.substring(0, webSwingToolkitJarPath.lastIndexOf(File.separator)) + File.separator + "rt-win-shell.jar" + "\"";
+			}
+			if (useJFX) {
+				bootCp += File.pathSeparator +"\"" + getClassPathForClass(ToolkitJarMarker.class) +"\"" + File.pathSeparator + "\"" + new File(JAVA_FX_PATH).getCanonicalPath() + "\"";
 			}
 			String debug = appConfig.isDebug() && (debugPort != 0) ? " -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=" + debugPort + ",server=y,suspend=y " : "";
 			String aaFonts = appConfig.isAntiAliasText() ? " -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true " : "";
@@ -288,7 +299,13 @@ public class SwingInstance implements WebSessionListener {
 			swing.addProperty("sun.awt.fontconfig", ServerUtil.createFontConfiguration(appConfig, subs));
 			swing.addProperty(Constants.SWING_SCREEN_WIDTH, ((screenWidth == null) ? Constants.SWING_SCREEN_WIDTH_MIN : screenWidth));
 			swing.addProperty(Constants.SWING_SCREEN_HEIGHT, ((screenHeight == null) ? Constants.SWING_SCREEN_HEIGHT_MIN : screenHeight));
-
+			if (useJFX) {
+				swing.addProperty(Constants.SWING_START_SYS_PROP_JFX_TOOLKIT, Constants.SWING_START_SYS_PROP_JFX_TOOLKIT_WEB);
+				swing.addProperty(Constants.SWING_START_SYS_PROP_JFX_PRISM, "sw");//PrismSettings
+				swing.addProperty("prism.text", "t2k");//PrismFontFactory
+				swing.addProperty("prism.lcdtext", "false");//PrismFontFactory
+				swing.addProperty("javafx.live.resize", "false");//QuantumToolkit
+			}
 			if (appConfig instanceof SwingApplicationDescriptor) {
 				SwingApplicationDescriptor application = (SwingApplicationDescriptor) appConfig;
 				swing.setArgs(subs.replace(application.getArgs()));

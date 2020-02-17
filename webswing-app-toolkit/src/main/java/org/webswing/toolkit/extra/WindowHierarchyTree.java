@@ -27,6 +27,9 @@ public class WindowHierarchyTree {
 	private ArrayDeque<Window> modalsStack = new ArrayDeque<>();
 
 	protected void bringToFront(Window w) {
+		if (w != null && !w.isEnabled()) {
+			return;
+		}
 		if (lookup.containsKey(w)) {
 			WindowHierarchyNode node = lookup.get(w);
 			if (node.getParent() == null) {

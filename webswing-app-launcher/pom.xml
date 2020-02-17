@@ -13,6 +13,11 @@
 			<artifactId>webswing-app-toolkit</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.webswing</groupId>
+            <artifactId>webswing-app-toolkit-fx</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<finalName>webswing-app-launcher</finalName>

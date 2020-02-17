@@ -34,6 +34,7 @@ public class SwingDescriptor implements Serializable {
 	private boolean debug = false;
 	private boolean authentication = true;
 	private boolean directdraw = true;
+	private boolean javaFx= false;
 	private boolean compositingWinManager = false;
 	private boolean allowDelete = true;
 	private boolean allowDownload = true;
@@ -270,4 +271,11 @@ public class SwingDescriptor implements Serializable {
 		this.fontConfig = fontConfig;
 	}
 
+	public boolean isJavaFx() {
+		return javaFx;
+	}
+
+	public void setJavaFx(boolean javaFx) {
+		this.javaFx = javaFx;
+	}
 }

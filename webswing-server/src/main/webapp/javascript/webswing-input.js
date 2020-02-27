@@ -95,7 +95,7 @@ export default class InputModule {
             }
             inputEventHandlerMap = null;
             document.removeEventListener('mouseout', mouseOutEventHandler);
-			//api.getCanvas().removeEventListener('mouseover', mouseOverEventHandler);
+			document.removeEventListener('mouseover', mouseOverEventHandler);
         }
 
         let canvasEventHandlerMap = {};
@@ -447,7 +447,7 @@ export default class InputModule {
             Util.bindEvent(input, 'paste', inputPasteEventHandler, false);
 
             Util.bindEvent(document, 'mouseout', mouseOutEventHandler);
-			//Util.bindEvent(document, 'mouseover', mouseOverEventHandler);
+			Util.bindEvent(document, 'mouseover', mouseOverEventHandler);
 
             registered = true;
         }
@@ -512,6 +512,24 @@ export default class InputModule {
             }
             mouseDown = 0;
             resetMouseDownCanvas();
+        }
+        
+        function mouseOverEventHandler(evt) {
+        	var newMouseDown = evt.which <= 1 ? evt.which : Math.pow(2, evt.which);
+        	if (mouseDown != newMouseDown) {
+        		// mouse has been released outside window (iframe)
+        		let mousePos = getMousePos(api.getCanvas(), evt, 'mouseup', evt.target);
+        		// simulate release of previously pressed mouse button
+        		mousePos.mouse.button = mouseDown;
+        		
+        		latestMouseMoveEvent = null;
+        		enqueueInputEvent(mousePos);
+        		
+        		sendInput();
+        		
+        		mouseDown = 0;
+        		resetMouseDownCanvas();
+        	}
         }
 		
 		/*function mouseOverEventHandler(evt) {

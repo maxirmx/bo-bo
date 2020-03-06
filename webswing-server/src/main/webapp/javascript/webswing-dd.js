@@ -543,9 +543,9 @@ export default class WebswingDirectDraw {
 
         function iprtDrawString(ctx, args, fontTransform) {
             let string = args[0].string;
-            var p = args[1].points.points;
-            var x=p[0];
-            var y=p[1];
+            let p = args[1].points.points;
+            let x=p[0];
+            let y=p[1];
             let clip = args[2];
             ctx.save();
             if (path(ctx, clip)) {
@@ -558,7 +558,10 @@ export default class WebswingDirectDraw {
             } else {
                 var currentX=x;
                 for (var i = 0;i<string.length;i++){
-                    var c = string.charAt(i);
+                    if(p[i+2]===0){
+                        continue;
+                    }
+                    let c = getCharGroup(i,string,p);
                     var canvasWidth = ctx.measureText(c).width;
                     ctx.save();
                     var scaleX = p[i+2] / canvasWidth;
@@ -569,6 +572,16 @@ export default class WebswingDirectDraw {
                 }
             }
             ctx.restore();
+        }
+
+        function getCharGroup(i, value, points){
+            let c = value.charAt(i);
+            let currentIndex = i+1;
+            while(value.length>currentIndex && points[currentIndex+2]===0){
+                c+=value.charAt(currentIndex);
+                currentIndex++
+            }
+            return c;
         }
 
         function iprtSetFont(ctx, args) {

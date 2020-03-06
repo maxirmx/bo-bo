@@ -177,6 +177,7 @@ public class DirectDrawUtils {
 		}
 
 		double wI = fm.stringWidth(txtI);
+		wI= wI==0?0.0001:wI;//clip.contains always returns false if wI is 0 (causing accent thai chars not render on top of last char)
 		double xI = xL + wL;
 		if (clip.contains(xI, y, wI, h) || clip.intersects(xI, y, wI, h)) {
 			result.indexVisible = true;

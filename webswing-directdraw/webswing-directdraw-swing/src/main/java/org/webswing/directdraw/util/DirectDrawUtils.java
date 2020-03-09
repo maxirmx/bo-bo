@@ -45,9 +45,8 @@ public class DirectDrawUtils {
 		webFonts.setProperty("Monospaced", "monospace");
 	}
 
-	public static FontInfo getFontInfo(Font font, AffineTransform transform) {
+	public static FontInfo getFontInfo(Font font) {
 		sgHelper.setFont(font);
-		sgHelper.setTransform(transform);
 		return sgHelper.getFontInfo();
 	}
 

@@ -83,8 +83,10 @@ export default class SocketModule {
                     console.error('Webswing: Binary encoding not supported for ' + response.transport + ' transport. Falling back to json encoding.');
                     api.cfg.binarySocket = false;
                     binary = false;
-                    dispose();
-                    connect();
+                    atmosphere.unsubscribe(socket);
+                    socket = null;
+                    uuid = null;
+                    connsect();
                 } else {
                     api.fireCallBack({type: 'webswingWebSocketOpened'});
                 }
@@ -160,7 +162,7 @@ export default class SocketModule {
                     responseHandlers[key] = null;
                 }
             }
-            responseHandlers = null;
+            responseHandlers = {};
         }
 
         function send(message) {

@@ -86,7 +86,7 @@ export default class BaseModule {
         function initialize(clientId, name, applet, isMirror) {
             api.registerInput();
             api.registerTouch();
-            window.addEventListener('beforeunload', beforeUnloadEventHandler);
+            window.addEventListener('unload', beforeUnloadEventHandler);
             resetState();
             api.cfg.clientId = clientId;
             api.cfg.appName = name;

@@ -296,7 +296,7 @@ public class SwingInstance implements WebSessionListener {
 			swing.addProperty("java.awt.headless", "false");
 			swing.addProperty("java.awt.graphicsenv", webGraphicsEnvClass);
 			swing.addProperty("java.awt.printerjob", "org.webswing.toolkit.WebPrinterJob");
-			swing.addProperty("sun.awt.fontconfig", ServerUtil.createFontConfiguration(appConfig, subs));
+			swing.addProperty(Constants.SWING_START_SYS_PROP_FONT_CONFIG, ServerUtil.createFontConfiguration(appConfig, subs));
 			swing.addProperty(Constants.SWING_SCREEN_WIDTH, ((screenWidth == null) ? Constants.SWING_SCREEN_WIDTH_MIN : screenWidth));
 			swing.addProperty(Constants.SWING_SCREEN_HEIGHT, ((screenHeight == null) ? Constants.SWING_SCREEN_HEIGHT_MIN : screenHeight));
 			if (useJFX) {

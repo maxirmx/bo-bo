@@ -26,6 +26,7 @@ public interface Constants {
 	public static final String SWING_START_SYS_PROP_SYNC_TIMEOUT = "webswing.syncCallTimeout";
 	public static final String SWING_START_SYS_PROP_THEME = "webswing.theme";
 	public static final String SWING_START_SYS_PROP_WAIT_FOR_EXIT = "webswing.waitForExit";
+	public static final String SWING_START_SYS_PROP_FONT_CONFIG = "webswing.fontConfig";
 	//javafx startup
 	public static final String SWING_START_SYS_PROP_JFX_TOOLKIT = "glass.platform";
 	public static final String SWING_START_SYS_PROP_JFX_TOOLKIT_WEB = "Web";

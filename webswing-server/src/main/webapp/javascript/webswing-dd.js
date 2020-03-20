@@ -565,8 +565,12 @@ export default class WebswingDirectDraw {
                     var canvasWidth = ctx.measureText(c).width;
                     ctx.save();
                     var scaleX = p[i+2] / canvasWidth;
-                    ctx.scale(scaleX, 1);
-                    ctx.fillText(c, currentX/scaleX, y);
+                    if(scaleX<=1){
+                       ctx.scale(scaleX, 1);
+                       ctx.fillText(c, currentX/scaleX, y);
+                    }else{
+                       ctx.fillText(c, currentX+((p[i+2] - canvasWidth)/2), y);
+                    }
                     ctx.restore();
                     currentX+=p[i+2];
                 }

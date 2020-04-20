@@ -19,6 +19,7 @@ public class CursorChangeEventMsg implements Msg {
 	private byte[] b64img;
 	private int x;
 	private int y;
+	private String winId;
 
 	public CursorChangeEventMsg() {
 	}
@@ -58,5 +59,13 @@ public class CursorChangeEventMsg implements Msg {
 
 	public void setY(int y) {
 		this.y = y;
+	}
+
+	public String getWinId() {
+		return winId;
+	}
+
+	public void setWinId(String winId) {
+		this.winId = winId;
 	}
 }

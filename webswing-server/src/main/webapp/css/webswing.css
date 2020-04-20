@@ -29,3 +29,42 @@ html,body {
 .webswing-version a{
 	color: lightgray;
 }
+
+.webswing-element .webswing-html-canvas.modal-blocked {
+	pointer-events: none;
+}
+
+.webswing-element canvas {
+	z-index: 100;
+}
+
+.webswing-element.composition {
+	position: relative;
+}
+
+.webswing-element .webswing-iframe-muted-while-dragging{
+	pointer-events: none;
+}
+
+.webswing-element .internal-frames-wrapper {
+	position: absolute;
+	pointer-events: none;
+	overflow: hidden;
+}
+
+.webswing-element .internal-frames-wrapper canvas {
+	pointer-events: all;
+}
+
+.webswing-element .internal-frames-wrapper .webswing-html-canvas {
+	pointer-events: all;
+}
+
+.webswing-element .close-prevented {
+	z-index: -1000 !important;
+	top: 0 !important;
+	left: 0 !important;
+	height: 1px !important;
+	width: 1px !important;
+	opacity: 0 !important;
+}

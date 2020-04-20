@@ -4,10 +4,15 @@
 	<parent>
 		<artifactId>webswing</artifactId>
 		<groupId>org.webswing</groupId>
-		<version>2.4.1</version>
+		<version>2.4.2</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<dependencies>
+		<dependency>
+			<groupId>org.webswing</groupId>
+			<artifactId>webswing-api</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.oracle.java</groupId>
 			<artifactId>rt-win-shell</artifactId>

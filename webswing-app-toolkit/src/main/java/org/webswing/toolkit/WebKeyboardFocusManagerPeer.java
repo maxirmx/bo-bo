@@ -84,6 +84,9 @@ public class WebKeyboardFocusManagerPeer implements KeyboardFocusManagerPeer {
 					e.printStackTrace();
 				}
 			}
+			if(o instanceof JPasswordField){
+				msg.setType(FocusEventMsg.FocusEventType.focusPasswordGained);
+			}
 		} else {
 			msg.setType(FocusEventMsg.FocusEventType.focusLost);
 		}

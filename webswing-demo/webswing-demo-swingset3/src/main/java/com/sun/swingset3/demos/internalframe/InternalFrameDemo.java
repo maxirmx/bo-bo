@@ -36,13 +36,33 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import javax.swing.*;
+import java.beans.PropertyVetoException;
 
+import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import org.webswing.toolkit.api.WebswingUtil;
+import org.webswing.toolkit.api.action.WebActionEvent;
+import org.webswing.toolkit.api.action.WebWindowActionListener;
+import org.webswing.toolkit.api.component.HtmlPanel;
 
 import com.sun.swingset3.DemoProperties;
 import com.sun.swingset3.demos.ResourceManager;
-
 
 /**
  * Internal Frames Demo
@@ -80,7 +100,7 @@ public class InternalFrameDemo extends JPanel {
     private static final int PALETTE_Y = 20;
 
     private static final int PALETTE_WIDTH = 250;
-    private static final int PALETTE_HEIGHT = 250;
+    private static final int PALETTE_HEIGHT = 300;
 
     private static final int FRAME0_X = PALETTE_X + PALETTE_WIDTH + 20;
     private static final int FRAME0_Y = 20;
@@ -115,7 +135,6 @@ public class InternalFrameDemo extends JPanel {
 
     private JTextField windowTitleField = null;
     private JLabel windowTitleLabel = null;
-
 
     /**
      * main method allows us to run as a standalone demo.
@@ -160,6 +179,9 @@ public class InternalFrameDemo extends JPanel {
         // The desktop pane will contain all the internal frames
         desktop = new JDesktopPane();
         add(desktop, BorderLayout.CENTER);
+        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().isCompositingWindowManager()) {
+        	WebswingUtil.getWebswingApi().registerWebContainer(desktop);
+        }
         //</snip>
 
         // Create the "frame maker" palette
@@ -183,8 +205,7 @@ public class InternalFrameDemo extends JPanel {
         if (!windowTitleField.getText().equals(resourceManager.getString("InternalFrameDemo.frame_label"))) {
             internalFrame.setTitle(windowTitleField.getText() + "  ");
         } else {
-            internalFrame = new JInternalFrame(
-                    resourceManager.getString("InternalFrameDemo.frame_label") + " " + windowCount + "  ");
+        	internalFrame.setTitle(resourceManager.getString("InternalFrameDemo.frame_label") + " " + windowCount + "  ");
         }
 
         //<snip>Set internal frame properties
@@ -198,6 +219,28 @@ public class InternalFrameDemo extends JPanel {
                 FRAME0_Y + 20 * (windowCount % 10), width, height);
         internalFrame.setContentPane(new ImageScroller(icon));
 
+        JPopupMenu menu = new JPopupMenu("test");
+        menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		menu.add(new JMenuItem("test"));
+		
+		JMenuItem menuItemHide = new JMenuItem("setVisible(false)");
+		menuItemHide.addActionListener((e) -> {
+			internalFrame.setVisible(false);
+		});
+		menu.add(menuItemHide);
+		
+		JMenuItem menuItemWithTooltip = new JMenuItem("tooltip");
+		menuItemWithTooltip.setToolTipText("This is a tooltip text for this JMenuItem.");
+		menu.add(menuItemWithTooltip);
+		
+		((ImageScroller) internalFrame.getContentPane()).getIconLabel().setComponentPopupMenu(menu);
+        
         windowCount++;
 
         //<snip>Add internal frame to desktop pane
@@ -214,6 +257,71 @@ public class InternalFrameDemo extends JPanel {
         internalFrame.show();
 
         return internalFrame;
+    }
+    
+    private JInternalFrame createHtmlPanelInternalFrame() {
+    	//<snip>Create internal frame
+    	JInternalFrame internalFrame = new JInternalFrame();
+    	//</snip>
+
+    	if (!windowTitleField.getText().equals(resourceManager.getString("InternalFrameDemo.frame_label"))) {
+    		internalFrame.setTitle(windowTitleField.getText() + "  ");
+    	} else {
+    		internalFrame.setTitle(resourceManager.getString("InternalFrameDemo.frame_label") + " " + windowCount + "  ");
+    	}
+    	
+    	//<snip>Set internal frame properties
+    	internalFrame.setClosable(windowClosable.isSelected());
+    	internalFrame.setMaximizable(windowMaximizable.isSelected());
+    	internalFrame.setIconifiable(windowIconifiable.isSelected());
+    	internalFrame.setResizable(windowResizable.isSelected());
+    	//</snip>
+    	
+    	HtmlPanel htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanelForComponent(desktop, internalFrame);
+    	htmlPanel.setName("internalIframe");
+    	htmlPanel.setOpaque(false);
+    	htmlPanel.addWebWindowActionListener(new WebWindowActionListener() {
+			@Override
+			public void actionPerformed(WebActionEvent actionEvent) {
+        		switch (actionEvent.getActionName()) {
+        			case "focus": {
+        				internalFrame.toFront();
+        				try {
+        					internalFrame.setSelected(true);
+        				} catch (PropertyVetoException e) {
+        					e.printStackTrace();
+        				}
+        				internalFrame.requestFocusInWindow();
+        				break;
+        			}
+        		}
+			}
+			
+			@Override
+			public void windowInitialized() {
+			}
+		});
+    	
+    	internalFrame.setBounds(FRAME0_X + 20 * (windowCount % 10),
+    			FRAME0_Y + 20 * (windowCount % 10), FRAME_WIDTH, FRAME_HEIGHT);
+    	internalFrame.setContentPane(htmlPanel);
+    	
+    	windowCount++;
+    	
+    	//<snip>Add internal frame to desktop pane
+    	desktop.add(internalFrame, DEMO_FRAME_LAYER);
+    	//</snip>
+    	
+    	//<snip>Set internal frame to be active
+    	try {
+    		internalFrame.setSelected(true);
+    	} catch (java.beans.PropertyVetoException e2) {
+    	}
+    	//</snip>
+    	
+    	internalFrame.show();
+    	
+    	return internalFrame;
     }
 
     private void createInternalFramePalette() {
@@ -263,6 +371,19 @@ public class InternalFrameDemo extends JPanel {
         p.add(buttons1);
         p.add(Box.createRigidArea(VGAP15));
         p.add(buttons2);
+        if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().isCompositingWindowManager()) {
+        	JPanel buttons3 = new JPanel();
+        	buttons3.setLayout(new BoxLayout(buttons3, BoxLayout.X_AXIS));
+
+        	p.add(Box.createRigidArea(VGAP15));
+        	JButton iframeButton = new JButton("iframe");
+        	iframeButton.addActionListener(e -> {
+        		createHtmlPanelInternalFrame();
+        	});
+        	
+        	buttons3.add(iframeButton);
+        	p.add(buttons3);
+        }
         p.add(Box.createRigidArea(VGAP10));
 
         palette.getContentPane().add(p, BorderLayout.NORTH);
@@ -274,10 +395,10 @@ public class InternalFrameDemo extends JPanel {
         p.setBorder(new EmptyBorder(10, 15, 10, 5));
         p.setLayout(new GridLayout(1, 2));
 
-
         Box box = new Box(BoxLayout.Y_AXIS);
         windowResizable = new JCheckBox(resourceManager.getString("InternalFrameDemo.resizable_label"), true);
         windowIconifiable = new JCheckBox(resourceManager.getString("InternalFrameDemo.iconifiable_label"), true);
+        box.setPreferredSize(new Dimension(100, 40));
 
         box.add(Box.createGlue());
         box.add(windowResizable);
@@ -288,6 +409,7 @@ public class InternalFrameDemo extends JPanel {
         box = new Box(BoxLayout.Y_AXIS);
         windowClosable = new JCheckBox(resourceManager.getString("InternalFrameDemo.closable_label"), true);
         windowMaximizable = new JCheckBox(resourceManager.getString("InternalFrameDemo.maximizable_label"), true);
+        box.setPreferredSize(new Dimension(100, 40));
 
         box.add(Box.createGlue());
         box.add(windowClosable);
@@ -316,9 +438,9 @@ public class InternalFrameDemo extends JPanel {
         palette.getContentPane().add(p, BorderLayout.SOUTH);
 
         palette.show();
+        palette.pack();
     }
-
-
+    
     private class CreateFrameAction extends AbstractAction {
         final InternalFrameDemo demo;
         final Icon icon;
@@ -339,13 +461,16 @@ public class InternalFrameDemo extends JPanel {
 
     private static class ImageScroller extends JScrollPane {
 
+    	private JLabel iconLabel;
+    	
         public ImageScroller(Icon icon) {
             super();
             JPanel p = new JPanel();
             p.setBackground(Color.white);
             p.setLayout(new BorderLayout());
 
-            p.add(new JLabel(icon), BorderLayout.CENTER);
+            iconLabel = new JLabel(icon);
+            p.add(iconLabel, BorderLayout.CENTER);
 
             getViewport().add(p);
             getHorizontalScrollBar().setUnitIncrement(10);
@@ -356,5 +481,9 @@ public class InternalFrameDemo extends JPanel {
             return new Dimension(25, 25);
         }
 
+        public JLabel getIconLabel() {
+        	return iconLabel;
+        }
+        
     }
 }

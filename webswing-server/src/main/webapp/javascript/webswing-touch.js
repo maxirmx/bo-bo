@@ -2,7 +2,6 @@ import $ from 'jquery';
 import html from './templates/touch.html';
 import css from './templates/touch.css';
 import Util from './webswing-util';
-import Hammer from 'hammerjs';
 
 export default class TouchModule {
 	constructor() {
@@ -27,41 +26,128 @@ export default class TouchModule {
         module.ready = function() {
         };
 
-        let hammer;
         let touchBar;
         let compositionText = "";
         let composition=false;
+        var tapStarted = 0;
+        var longPressTimeout = null;
+        var tapDelayThreshold = 750;
 
         function register() {
-            let canvas = api.getCanvas();
             // prevent ghost mouse events to be fired
             Util.preventGhosts(api.cfg.rootElement);
 
-            hammer = new Hammer(canvas, {
-                touchAction : 'manipulation'
-            });
-
-            hammer.get('tap').set({
-                threshold : 4
-            });
-            hammer.on('tap', function(ev) {
-                if (ev.pointerType === 'touch') {
-                    let eventMsg = getTouchPos(canvas, ev, 1);
-                    api.send(eventMsg);
-                    display();
-                    canvas.focus();
-                }
-
-            });
-            hammer.on('press', function(ev) {
-                if (ev.pointerType === 'touch') {
-                    let eventMsg = getTouchPos(canvas, ev, 3);
-                    api.send(eventMsg);
-                }
-            });
-
+            document.addEventListener("touchstart", function(evt) {
+            	if (!evt.target || !evt.target.matches("canvas")) {
+            		return;
+            	}
+            	handleStart(evt);
+            }, {passive: false});
+            document.addEventListener("touchend", function(evt) {
+            	if (!evt.target || !evt.target.matches("canvas")) {
+            		return;
+            	}
+            	handleEnd(evt);
+            }, {passive: false});
+            document.addEventListener("touchcancel", function(evt) {
+            	if (!evt.target || !evt.target.matches("canvas")) {
+            		return;
+            	}
+            	handleCancel(evt);
+            }, {passive: false});
+            document.addEventListener("touchleave", function(evt) {
+            	if (!evt.target || !evt.target.matches("canvas")) {
+            		return;
+            	}
+            	handleEnd(evt);
+            }, {passive: false});
+        }
+        
+        function handleStart(evt) {
+        	if (longPressTimeout != null) {
+        		clearTimeout(longPressTimeout);
+        		longPressTimeout = null;
+        	}
+        	
+        	var touches = evt.changedTouches;
+        	   
+        	if (evt.touches.length == 1) {
+        		tapStarted = evt.timeStamp;
+        		var tx = touches[0].clientX;
+        		var ty = touches[0].clientY;
+        		
+        		longPressTimeout = setTimeout(function() {
+        			// handle long press
+        			longPressTimeout = null;
+        			tapStarted = 0;
+        			
+        			var eventMsg = [];
+        			eventMsg.push(createMouseEvent(evt.target, 'mousedown', tx, ty, 3));
+        			eventMsg.push(createMouseEvent(evt.target, 'mouseup', tx, ty, 3));
+        			
+        			api.send({events: eventMsg});
+        			evt.target.focus({preventScroll: true});
+        		}, tapDelayThreshold);
+        	} else {
+        		// cancel tap and long press
+        		tapStarted = 0;
+        		
+        		if (longPressTimeout != null) {
+            		clearTimeout(longPressTimeout);
+            		longPressTimeout = null;
+            	}
+        	}
+        }
+        
+        function handleEnd(evt) {
+        	if (longPressTimeout != null) {
+        		clearTimeout(longPressTimeout);
+        		longPressTimeout = null;
+        	}
+        	
+        	var touches = evt.changedTouches;
+        	
+        	if (tapStarted > 0) {
+        		var duration = evt.timeStamp - tapStarted;
+        		
+        		if (duration <= tapDelayThreshold) {
+        			var x = touches[0].clientX;
+        			var y = touches[0].clientY;
+        			
+        			// tap
+        			var eventMsg = [];
+        			eventMsg.push(createMouseEvent(evt.target, 'mousedown', x, y, 1));
+        			eventMsg.push(createMouseEvent(evt.target, 'mouseup', x, y, 1));
+        			
+        			api.send({events: eventMsg});
+        			
+        			display();
+        		} else {
+        			// long press, already handled by timer
+        		}
+        	}
         }
 
+        function handleCancel(evt) {
+        	if (longPressTimeout != null) {
+        		clearTimeout(longPressTimeout);
+        		longPressTimeout = null;
+        	}
+        }
+        
+        function createMouseEvent(relatedCanvas, type, x, y, button) {
+        	var rect = relatedCanvas.getBoundingClientRect();
+        	
+            return {
+                mouse: {
+                    x: Math.round(x - rect.left),
+                    y: Math.round(y - rect.top),
+                    type: type,
+                    button: button
+                }
+            }
+        }
+        
         function focusInput(input) {
             // In order to ensure that the browser will fire clipboard events, we always need to have something selected
             input.value = ' ';
@@ -187,10 +273,6 @@ export default class TouchModule {
 
         function dispose() {
             close();
-            if (hammer) {
-                hammer.destroy();
-                hammer = null;
-            }
         }
     }
 }

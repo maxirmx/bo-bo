@@ -115,7 +115,7 @@ public class ProgressBarDemo extends JPanel {
         };
         progressBar.getAccessibleContext().setAccessibleName(
                 resourceManager.getString("ProgressBarDemo.accessible_text_loading_progress"));
-
+        progressBar.setIndeterminate(true);
         progressPanel.add(progressBar);
         progressPanel.add(createLoadButton());
         progressPanel.add(createStopButton());

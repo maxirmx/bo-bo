@@ -55,6 +55,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 
 /**
  * This image observer blocks until the image is completely loaded. AWT
@@ -74,7 +75,7 @@ public class WaitingImageObserver implements ImageObserver, Serializable, Clonea
 	private boolean lock;
 
 	/** The image. */
-	private Image image;
+	private WeakReference<Image> image;
 
 	/** A flag that signals an error. */
 	private boolean error;
@@ -89,7 +90,7 @@ public class WaitingImageObserver implements ImageObserver, Serializable, Clonea
 		if (image == null) {
 			throw new NullPointerException();
 		}
-		this.image = image;
+		this.image = new WeakReference<>(image);
 		this.lock = true;
 	}
 
@@ -117,12 +118,12 @@ public class WaitingImageObserver implements ImageObserver, Serializable, Clonea
 			this.lock = false;
 			this.error = false;
 			notifyAll();
-			return false;
+			// return false;
 		} else if ((infoflags & ImageObserver.ABORT) == ImageObserver.ABORT || (infoflags & ImageObserver.ERROR) == ImageObserver.ERROR) {
 			this.lock = false;
 			this.error = true;
 			notifyAll();
-			return false;
+			// return false;
 		}
 		//notifyAll();
 		return true;
@@ -133,8 +134,8 @@ public class WaitingImageObserver implements ImageObserver, Serializable, Clonea
 	 * Graphics-Object and waits for the AWT to load the image.
 	 */
 	public synchronized void waitImageLoaded() {
-
-		if (this.lock == false) {
+		Image thisImage = this.image.get();
+		if (this.lock == false || thisImage==null) {
 			return;
 		}
 
@@ -142,7 +143,7 @@ public class WaitingImageObserver implements ImageObserver, Serializable, Clonea
 		final Graphics g = img.getGraphics();
 
 		while (this.lock) {
-			if (g.drawImage(this.image, 0, 0, img.getWidth(this), img.getHeight(this), this)) {
+			if (g.drawImage(thisImage, 0, 0, img.getWidth(this), img.getHeight(this), this)) {
 				return;
 			}
 

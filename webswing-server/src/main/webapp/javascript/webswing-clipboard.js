@@ -147,7 +147,7 @@ export default class ClipboardModule {
             copyBar = api.cfg.rootElement.find('div[data-id="copyBar"]');
             copyBar.on('click', function(event) {
                 clearTimeout(minimizer);
-                api.getInput().focus();
+                api.getInput().focus({preventScroll: true});
             });
             copyBar.wsEventData = data;
             copyBar.minimized = false;

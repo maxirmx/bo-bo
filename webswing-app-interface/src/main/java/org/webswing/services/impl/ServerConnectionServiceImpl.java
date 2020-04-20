@@ -2,25 +2,14 @@ package org.webswing.services.impl;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.IllegalStateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
-import javax.jms.Connection;
-import javax.jms.ExceptionListener;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
-import javax.jms.Queue;
-import javax.jms.Session;
+import javax.jms.*;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.webswing.Constants;
@@ -51,6 +40,7 @@ public class ServerConnectionServiceImpl implements MessageListener, ServerConne
 	private long lastMessageTimestamp = System.currentTimeMillis();
 	private Runnable watchdog;
 	private ScheduledExecutorService exitScheduler = Executors.newSingleThreadScheduledExecutor(DeamonThreadFactory.getInstance());
+	private ExecutorService jmsSender = Executors.newSingleThreadExecutor(DeamonThreadFactory.getInstance());
 
 	private Map<String, Object> syncCallResposeMap = new HashMap<String, Object>();
 
@@ -149,12 +139,36 @@ public class ServerConnectionServiceImpl implements MessageListener, ServerConne
 		}
 	}
 
+	private void sendJmsMessage(final Serializable o) throws JMSException {
+		try {
+			jmsSender.submit(new Callable<Object>() {
+
+				@Override
+				public Object call() throws Exception {
+					producer.send(session.createObjectMessage(o), DeliveryMode.NON_PERSISTENT, 4, 3000);
+					return null;
+				}
+			}).get(4, TimeUnit.SECONDS);
+		} catch (IllegalStateException e) {
+			Logger.warn("ServerConnectionService.sendJmsMessage: " + e.getMessage());
+		} catch (InterruptedException e) {
+			Logger.error("ServerConnectionService.sendJmsMessage: Sending frame interrupted.", e);
+		} catch (ExecutionException e) {
+			if (e.getCause() instanceof JMSException) {
+				throw (JMSException) e.getCause();
+			} else {
+				Logger.error("ServerConnectionService.sendJmsMessage", e);
+				throw new JMSException(e.getMessage());
+			}
+		} catch (TimeoutException e) {
+			Logger.error("ServerConnectionService.sendJmsMessage: Sending frame timed out.", e);
+		}
+	}
+
 	@Override
 	public void sendObject(Serializable o) {
 		try {
-			synchronized (this) {
-				producer.send(session.createObjectMessage(o));
-			}
+			sendJmsMessage(o);
 		} catch (JMSException e) {
 			Logger.error("ServerConnectionService.sendJsonObject", e);
 		}
@@ -165,9 +179,7 @@ public class ServerConnectionServiceImpl implements MessageListener, ServerConne
 		try {
 			Object syncObject = new Object();
 			syncCallResposeMap.put(correlationId, syncObject);
-			synchronized (this) {
-				producer.send(session.createObjectMessage(o));
-			}
+			sendJmsMessage(o);
 			Object result = null;
 			try {
 				synchronized (syncObject) {

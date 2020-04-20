@@ -42,9 +42,11 @@ export default class PlaybackModule {
             api.cfg.rootElement.append(html);
             playbackBar = api.cfg.rootElement.find('div[data-id="playbackBar"]');
             playbackBar.find('button[data-id="reset"]').on('click', function(e) {
+            	var ctx=api.getCanvas().getContext("2d");
+            	ctx.clearRect(0, 0, api.getCanvas().width, api.getCanvas().height);
+            	$("canvas.webswing-canvas:not([data-id=canvas])").remove();
+            	
                 sendCommand('reset');
-                let ctx=api.getCanvas().getContext("2d");
-                ctx.clearRect(0, 0, api.getCanvas().width, api.getCanvas().height);
             });
             playbackBar.find('button[data-id="play"]').on('click', function(e) {
                 sendCommand('play');

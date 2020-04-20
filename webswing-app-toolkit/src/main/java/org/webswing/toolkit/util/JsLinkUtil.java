@@ -132,7 +132,7 @@ public class JsLinkUtil {
 		if (javaRef != null) {
 			Exception exception = null;
 			List<Method> candidates = new ArrayList<Method>();
-			for (Method m : javaRef.getClass().getMethods()) {
+			for (Method m : javaRef.getClass().getDeclaredMethods()) {
 				int requestParamCount = javaReq.getParams() != null ? javaReq.getParams().size() : 0;
 				if (m.getName().equals(javaReq.getMethod()) && m.getParameterTypes().length == requestParamCount) {
 					candidates.add(m);

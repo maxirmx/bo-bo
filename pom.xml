@@ -12,7 +12,9 @@
 		<module>webswing-server</module>
 		<module>webswing-admin</module>
 		<module>webswing-server-launcher</module>
+		<module>webswing-api</module>
 		<module>webswing-app-toolkit</module>
+		<module>webswing-app-toolkit-fx</module>
 		<module>webswing-app-toolkit-java8</module>
 		<module>webswing-app-launcher</module>
 		<module>webswing-app-interface</module>

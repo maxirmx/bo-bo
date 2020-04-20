@@ -18,6 +18,7 @@ public class MouseEventMsgIn implements MsgIn {
 	private boolean alt;
 	private boolean shift;
 	private boolean meta;
+	private String winId;
 
 	public int getX() {
 		return x;
@@ -89,6 +90,14 @@ public class MouseEventMsgIn implements MsgIn {
 
 	public void setMeta(boolean meta) {
 		this.meta = meta;
+	}
+
+	public String getWinId() {
+		return winId;
+	}
+
+	public void setWinId(String winId) {
+		this.winId = winId;
 	}
 
 }

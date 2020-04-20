@@ -127,6 +127,11 @@
 			<artifactId>webswing-app-toolkit-java8</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.webswing</groupId>
+			<artifactId>webswing-app-toolkit-fx</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 
 		<dependency>
@@ -319,7 +324,7 @@
 						<configuration>
 							<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/server-lib</outputDirectory>
 							<includeArtifactIds>
-								webswing-app-toolkit,webswing-server-launcher,commons-cli,jetty-security,jetty-xml,jetty-servlet,jetty-webapp,jetty-continuation,jetty-server,jetty-http,jetty-io,jetty-util,javax.servlet-api,baseutil,websocket-server,websocket-servlet,websocket-common,websocket-client,websocket-api,jetty-client
+								webswing-app-toolkit,webswing-app-toolkit-fx,webswing-server-launcher,commons-cli,jetty-security,jetty-xml,jetty-servlet,jetty-webapp,jetty-continuation,jetty-server,jetty-http,jetty-io,jetty-util,javax.servlet-api,baseutil,websocket-server,websocket-servlet,websocket-common,websocket-client,websocket-api,jetty-client
 							</includeArtifactIds>
 						</configuration>
 					</execution>

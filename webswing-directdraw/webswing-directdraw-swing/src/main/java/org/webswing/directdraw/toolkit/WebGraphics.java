@@ -126,21 +126,16 @@ public class WebGraphics extends AbstractVectorGraphics {
 		}
 	}
 
-	private static Map<Image,WaitingImageObserver> loadedImgs = new WeakHashMap<>();
+	private static Map<Image,ImageObserver> loadedImgs = new WeakHashMap<>();
 
 	private ImageConvertResult toBufferedImage(Image image, ImageObserver observer) {
 		if (image instanceof BufferedImage) {
 			return new ImageConvertResult(true, (BufferedImage) image);
 		}
+
 		boolean skip= loadedImgs.containsKey(image);
 		if(!skip) {
-			try {
-				WaitingImageObserver wio = new WaitingImageObserver(image);
-				wio.waitImageLoaded();//magic
-				loadedImgs.put(image,wio);
-			} catch (Exception e) {
-				//ignore
-			}
+			loadedImgs.put(image,RenderUtil.waitForImage(image));
 		}
 		BufferedImage bufferedImage = new BufferedImage(image.getWidth(observer), image.getHeight(observer), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = bufferedImage.createGraphics();

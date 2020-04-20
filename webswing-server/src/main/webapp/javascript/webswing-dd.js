@@ -60,6 +60,7 @@ export default class WebswingDirectDraw {
                 newCanvas = targetCanvas;
             } else {
                 newCanvas = document.createElement("canvas");
+                newCanvas.classList.add("webswing-canvas");
                 newCanvas.getContext("2d").scale(config.dpr, config.dpr);
             }
             if (newCanvas.width != image.width * config.dpr || newCanvas.height != image.height * config.dpr) {
@@ -542,7 +543,9 @@ export default class WebswingDirectDraw {
 
         function iprtDrawString(ctx, args, fontTransform) {
             let string = args[0].string;
-            let points = args[1].points.points;
+            let p = args[1].points.points;
+            let x=p[0];
+            let y=p[1];
             let clip = args[2];
             ctx.save();
             if (path(ctx, clip)) {
@@ -550,15 +553,39 @@ export default class WebswingDirectDraw {
             }
             if (fontTransform != null) {
                 let t = fontTransform;
-                ctx.transform(t.m00, t.m10, t.m01, t.m11, t.m02 + points[0], t.m12 + points[1]);
+                ctx.transform(t.m00, t.m10, t.m01, t.m11, t.m02 + x, t.m12 + y);
                 ctx.fillText(string, 0, 0);
             } else {
-                let canvasWidth = ctx.measureText(string).width;
-                let scaleX = points[2] / canvasWidth;
-                ctx.scale(scaleX, 1);
-                ctx.fillText(string, points[0] / scaleX, points[1]);
+                var currentX=x;
+                for (var i = 0;i<string.length;i++){
+                    if(p[i+2]===0){
+                        continue;
+                    }
+                    let c = getCharGroup(i,string,p);
+                    var canvasWidth = ctx.measureText(c).width;
+                    ctx.save();
+                    var scaleX = p[i+2] / canvasWidth;
+                    if(scaleX<=1){
+                       ctx.scale(scaleX, 1);
+                       ctx.fillText(c, currentX/scaleX, y);
+                    }else{
+                       ctx.fillText(c, currentX+((p[i+2] - canvasWidth)/2), y);
+                    }
+                    ctx.restore();
+                    currentX+=p[i+2];
+                }
             }
             ctx.restore();
+        }
+
+        function getCharGroup(i, value, points){
+            let c = value.charAt(i);
+            let currentIndex = i+1;
+            while(value.length>currentIndex && points[currentIndex+2]===0){
+                c+=value.charAt(currentIndex);
+                currentIndex++
+            }
+            return c;
         }
 
         function iprtSetFont(ctx, args) {

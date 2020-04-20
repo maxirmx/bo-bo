@@ -1,5 +1,13 @@
 package org.webswing;
 
+import com.sun.javafx.application.PlatformImpl;
+import org.webswing.applet.AppletContainer;
+import org.webswing.toolkit.util.Logger;
+import org.webswing.toolkit.util.Services;
+
+import javax.swing.SwingUtilities;
+import java.lang.reflect.InvocationTargetException;
+
 import java.applet.Applet;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
@@ -38,6 +46,7 @@ public class SwingMain {
 			} else {
 				startSwingApp(args);
 			}
+
 		} catch (Exception e) {
 			Logger.fatal("SwingMain:main", e);
 			System.exit(1);
@@ -49,6 +58,7 @@ public class SwingMain {
 		Class<?> mainArgType[] = { (new String[0]).getClass() };
 		java.lang.reflect.Method main = clazz.getMethod("main", mainArgType);
 		setupContextClassLoader(swingLibClassLoader);
+		initializeJavaFX();
 		Object argsArray[] = { args };
 		main.invoke(null, argsArray);
 	}
@@ -57,11 +67,31 @@ public class SwingMain {
 		Class<?> appletClazz = swingLibClassLoader.loadClass(System.getProperty(Constants.SWING_START_SYS_PROP_APPLET_CLASS));
 		Map<String, String> props = resolveProps();
 		setupContextClassLoader(swingLibClassLoader);
+		initializeJavaFX();
 		if (Applet.class.isAssignableFrom(appletClazz)) {
 			AppletContainer ac = new AppletContainer(appletClazz, props);
 			ac.start();
 		} else {
 			Logger.error("Error in SwingMain: " + appletClazz.getCanonicalName() + " class is not a subclass of Applet");
+		}
+	}
+
+	public static void initializeJavaFX() throws InvocationTargetException, InterruptedException {
+		if (Constants.SWING_START_SYS_PROP_JFX_TOOLKIT_WEB.equals(System.getProperty(Constants.SWING_START_SYS_PROP_JFX_TOOLKIT))) {
+			//start swing dispatch thread
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					//nothing to do
+				}
+			});
+			//start JavaFx platform
+			PlatformImpl.startup(new Runnable() {
+				@Override
+				public void run() {
+					//nothing to do here
+				}
+			});
 		}
 	}
 

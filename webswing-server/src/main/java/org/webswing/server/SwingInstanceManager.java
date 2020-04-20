@@ -42,10 +42,10 @@ public class SwingInstanceManager {
 	public void connectSwingInstance(AtmosphereResource r, ConnectionHandshakeMsgIn h) {
 		SwingInstance swingInstance = findInstance(r, h);
 		if (swingInstance == null) {// start new swing app
-			if(h.isContinueSession()){
-				ServerUtil.broadcastMessage(r, SimpleEventMsgOut.shutDownNotification.buildMsgOut());
-				return;
-			}
+//			if(h.isContinueSession()){
+//				ServerUtil.broadcastMessage(r, SimpleEventMsgOut.shutDownNotification.buildMsgOut());
+//				return;
+//			}
 
 			SwingDescriptor app;
 			if (h.isApplet()) {
@@ -101,12 +101,14 @@ public class SwingInstanceManager {
 				if (h.getSessionId() != null && h.getSessionId().equals(swingInstance.getSessionId())) {
 					swingInstance.sendToSwing(r, h);
 				} else {
-					boolean result = swingInstance.connectPrimaryWebSession(r);
-					if (result) {
-						ServerUtil.broadcastMessage(r, SimpleEventMsgOut.continueOldSessionAutomatic.buildMsgOut());
-						notifySwingInstanceChanged();
-					} else {
-						ServerUtil.broadcastMessage(r, SimpleEventMsgOut.applicationAlreadyRunning.buildMsgOut());
+					if(h.isContinueSession()) {
+						boolean result = swingInstance.connectPrimaryWebSession(r);
+						if (result) {
+							ServerUtil.broadcastMessage(r, SimpleEventMsgOut.continueOldSessionAutomatic.buildMsgOut());
+							notifySwingInstanceChanged();
+						} else {
+							ServerUtil.broadcastMessage(r, SimpleEventMsgOut.applicationAlreadyRunning.buildMsgOut());
+						}
 					}
 				}
 			}

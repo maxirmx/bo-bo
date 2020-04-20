@@ -1,7 +1,19 @@
 package org.webswing.toolkit.util;
 
 import java.applet.Applet;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Panel;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -18,7 +30,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,15 +46,20 @@ import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
 import org.webswing.Constants;
+import org.webswing.component.HtmlPanelImpl;
 import org.webswing.dispatch.WebPaintDispatcher;
 import org.webswing.model.c2s.KeyboardEventMsgIn;
 import org.webswing.model.c2s.KeyboardEventMsgIn.KeyEventType;
 import org.webswing.model.c2s.MouseEventMsgIn;
 import org.webswing.model.s2c.AppFrameMsgOut;
 import org.webswing.model.s2c.WindowMsg;
+import org.webswing.model.s2c.WindowMsg.WindowType;
 import org.webswing.model.s2c.WindowPartialContentMsg;
+import org.webswing.toolkit.WebComponentPeer;
 import org.webswing.toolkit.WebToolkit;
 import org.webswing.toolkit.WebWindowPeer;
+import org.webswing.toolkit.api.component.HtmlPanel;
+import org.webswing.toolkit.extra.WindowManager;
 
 public class Util {
 
@@ -203,13 +219,15 @@ public class Util {
 		return windowImages;
 	}
 
-	public static Map<String, Image> extractWindowWebImages(AppFrameMsgOut json, Map<String, Image> webImages) {
-		for (Iterator<WindowMsg> i = json.getWindows().iterator(); i.hasNext();) {
-			WindowMsg window = i.next();
-			WebWindowPeer w = findWindowPeerById(window.getId());
-			if (!window.getId().equals(WebToolkit.BACKGROUND_WINDOW_ID)) {
-				Image webimageString = w.extractWebImage();
-				webImages.put(window.getId(), webimageString);
+	public static Map<String, Image> extractWindowWebImages(Set<String> updatedWindows, Map<String, Image> webImages) {
+		for (String windowId : updatedWindows) {
+			if (windowId.equals(WebToolkit.BACKGROUND_WINDOW_ID)) {
+				continue;
+			}
+			WebWindowPeer w = findWindowPeerById(windowId);
+			if (w != null) {
+				Image webimage = w.extractWebImage();
+				webImages.put(windowId, webimage);
 			}
 		}
 		return webImages;
@@ -247,15 +265,29 @@ public class Util {
 
 	public static void encodeWindowWebImages(Map<String, Image> windowWebImages, AppFrameMsgOut json) {
 		for (WindowMsg window : json.getWindows()) {
-			if (!window.getId().equals(WebToolkit.BACKGROUND_WINDOW_ID)) {
-				Image wi = windowWebImages.get(window.getId());
+			Image wi = windowWebImages.get(window.getId());
+			if (wi != null) {
 				window.setDirectDraw(Services.getDirectDrawService().buildWebImage(wi));
 			}
 		}
 	}
+	
+	public static boolean isEmptyDDContent(AppFrameMsgOut json) {
+		if (json.getWindows().isEmpty()) {
+			return false;
+		}
+		for (WindowMsg window : json.getWindows()) {
+			if (window.getDirectDraw() != null) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	@SuppressWarnings("restriction")
-	public static AppFrameMsgOut fillJsonWithWindowsData(Map<String, Set<Rectangle>> currentAreasToUpdate, Map<String, List<Rectangle>> windowNonVisibleAreas) {
+	public static AppFrameMsgOut fillWithWindowsData(Map<String, Set<Rectangle>> currentAreasToUpdate) {
+		Map<String, List<Rectangle>> windowNonVisibleAreas = getWebToolkit().getWindowManager().extractNonVisibleAreas();
+		
 		AppFrameMsgOut json = new AppFrameMsgOut();
 		for (String windowId : currentAreasToUpdate.keySet()) {
 			WebWindowPeer ww = Util.findWindowPeerById(windowId);
@@ -272,6 +304,12 @@ public class Util {
 					window.setPosY(location.y);
 					window.setWidth(ww.getBounds().width);
 					window.setHeight(ww.getBounds().height);
+					if (ww.getTarget() instanceof Frame) {
+						window.setTitle(((Frame) ww.getTarget()).getTitle());
+					}
+					if (ww.getTarget() instanceof Component) {
+						window.setName(((Component) ww.getTarget()).getName());
+					}
 				}
 				List<Rectangle> toPaint = joinRectangles(getGrid(new ArrayList<Rectangle>(currentAreasToUpdate.get(windowId)), windowNonVisibleAreas.get(windowId)));
 				List<WindowPartialContentMsg> partialContentList = new ArrayList<WindowPartialContentMsg>();
@@ -286,20 +324,178 @@ public class Util {
                         int rowSize = (int) Math.ceil(h / (double) rows);
                         for (int col = 0; col < cols; col++) {
                             for (int row = 0; row < rows; row++) {
-						WindowPartialContentMsg content = new WindowPartialContentMsg();
-                                content.setPositionX(r.x + col * colSize);
-                                content.setPositionY(r.y + row * rowSize);
-                                content.setWidth(Math.min(colSize, w - col * colSize));
-                                content.setHeight(Math.min(rowSize, h - row * rowSize));
-						partialContentList.add(content);
-					}
-				}
+								WindowPartialContentMsg content = new WindowPartialContentMsg();
+		                                content.setPositionX(r.x + col * colSize);
+		                                content.setPositionY(r.y + row * rowSize);
+		                                content.setWidth(Math.min(colSize, w - col * colSize));
+		                                content.setHeight(Math.min(rowSize, h - row * rowSize));
+								partialContentList.add(content);
+							}
+						}
                     }
                 }
 				window.setContent(partialContentList);
 			}
 		}
 		return json;
+	}
+	
+	public static AppFrameMsgOut fillWithCompositingWindowsData(Map<String, Set<Rectangle>> currentAreasToUpdate) {
+		AppFrameMsgOut frame = new AppFrameMsgOut();
+		List<String> zOrder = getWebToolkit().getWindowManager().getZOrder();
+		Map<Window, List<Container>> webContainers = getWebToolkit().getPaintDispatcher().getRegisteredWebContainers();
+		Map<Window, List<HtmlPanel>> htmlPanels = getWebToolkit().getPaintDispatcher().getRegisteredHtmlPanelsAsMap();
+		Map<Container, Map<JComponent, WindowMsg>> htmlWebComponentsMap = new HashMap<>();
+		
+		for (String windowId : zOrder) {
+			WebWindowPeer ww = findWindowPeerById(windowId);
+			if (ww == null) {
+				continue;
+			}
+
+			WindowMsg window = new WindowMsg();
+			window.setId(windowId);
+			
+			Point location = ww.getLocationOnScreen();
+			window.setBounds(location.x, location.y, ww.getBounds().width, ww.getBounds().height);
+			if (ww.getTarget() instanceof Frame) {
+				window.setTitle(((Frame) ww.getTarget()).getTitle());
+				window.setState(((Frame) ww.getTarget()).getExtendedState());
+			}
+			if (ww.getTarget() instanceof Component) {
+				window.setName(((Component) ww.getTarget()).getName());
+			}
+			
+			boolean modalBlocked = ww.getTarget() instanceof Window && getWebToolkit().getWindowManager().isBlockedByModality((Window) ww.getTarget(), false);
+			window.setModalBlocked(modalBlocked);
+			
+			if (!isDD()) {
+				Set<Rectangle> rects = currentAreasToUpdate.get(window.getId());
+				window.setContent(Collections.emptyList());
+				
+				if (rects != null) {
+					List<Rectangle> toPaint = joinRectangles(getGrid(new ArrayList<Rectangle>(rects), null));
+					List<WindowPartialContentMsg> partialContentList = new ArrayList<WindowPartialContentMsg>();
+					for (Rectangle r : toPaint) {
+						if (r.x < window.getWidth() && r.y < window.getHeight()) {
+							WindowPartialContentMsg content = new WindowPartialContentMsg(r.x, r.y, Math.min(r.width, window.getWidth() - r.x), Math.min(r.height, window.getHeight() - r.y));
+							partialContentList.add(content);
+						}
+					}
+					window.setContent(partialContentList);
+				}
+			}
+			
+			if (ww.getTarget() instanceof Window) {
+				window.setOwnerId(findWindowOwner(((Window) ww.getTarget()).getOwner(), zOrder));
+			}
+			
+			if (htmlPanels.containsKey(ww.getTarget())) {
+				handleHtmlPanels(htmlPanels, ww, window, frame, htmlWebComponentsMap);
+			}
+			
+			if (webContainers.containsKey(ww.getTarget())) {
+				handleWebContainers(webContainers.get(ww.getTarget()), window, frame, htmlWebComponentsMap);
+			}
+			
+			frame.getWindows().add(window);
+		}
+		return frame;
+	}
+	
+	private static void handleHtmlPanels(Map<Window, List<HtmlPanel>> htmlPanels, WebWindowPeer ww, WindowMsg window, AppFrameMsgOut frame, Map<Container, Map<JComponent, WindowMsg>> htmlWebComponentsMap) {
+		for (HtmlPanel htmlPanel : htmlPanels.get(ww.getTarget())) {
+			if (!htmlPanel.isShowing()) {
+				continue;
+			}
+			
+			WindowMsg htmlWin = new WindowMsg(System.identityHashCode(htmlPanel) + "", htmlPanel.getName(), htmlPanel.getLocationOnScreen(), 
+					htmlPanel.getBounds().width, htmlPanel.getBounds().height, WindowType.html, window.isModalBlocked(), window.getId());
+
+			if (!isDD()) {
+				htmlWin.setContent(Collections.emptyList());
+			}
+			
+			if (htmlPanel instanceof HtmlPanelImpl) {
+				Container container = ((HtmlPanelImpl) htmlPanel).getWebContainer();
+				JComponent component = ((HtmlPanelImpl) htmlPanel).getWebComponent();
+				if (container != null && component != null) {
+					// if HtmlPanel has a registered container, process later when web containers are processed (see handleWebContainers method)
+					if (!htmlWebComponentsMap.containsKey(container)) {
+						htmlWebComponentsMap.put(container, new HashMap<>());
+					}
+					htmlWebComponentsMap.get(container).put(component, htmlWin);
+					continue;
+				}
+			}
+			
+			frame.getWindows().add(htmlWin);
+		}
+	}
+
+	private static void handleWebContainers(List<Container> containers, WindowMsg window, AppFrameMsgOut frame, Map<Container, Map<JComponent, WindowMsg>> htmlWebComponentsMap) {
+		// sort according to hierarchy
+		Collections.sort(containers, (o1, o2) -> {
+			return o1.isAncestorOf(o2) ? -1 : (o2.isAncestorOf(o1) ? 1 : 0);
+		});
+		
+		for (Container container : containers) {
+			if (!container.isShowing()) {
+				continue;
+			}
+			
+			// handle wrapper
+			WindowMsg containerWin = new WindowMsg(System.identityHashCode(container) + "", container.getName(), container.getLocationOnScreen(), 
+					container.getBounds().width, container.getBounds().height, WindowType.internalWrapper, window.isModalBlocked(), window.getId());
+			if (!isDD()) {
+				containerWin.setContent(Collections.emptyList());
+			}
+			
+			if (window.getInternalWindows() == null) {
+				window.setInternalWindows(new ArrayList<>());
+			}
+			window.getInternalWindows().add(containerWin);
+			
+			// handle child components
+			Map<JComponent, WindowMsg> htmlComponents = htmlWebComponentsMap.get(container);
+			for (Component c : container.getComponents()) {
+				if (!c.isShowing()) {
+					continue;
+				}
+				
+				if (htmlComponents != null && htmlComponents.containsKey(c)) {
+					// if component contains a registered HtmlPanel
+					WindowMsg htmlWin = htmlComponents.get(c);
+					htmlWin.setOwnerId(containerWin.getId());
+					htmlWin.setType(WindowType.internalHtml);
+					window.getInternalWindows().add(htmlWin);
+				}
+				
+				WindowMsg componentWin = new WindowMsg(System.identityHashCode(c) + "", c.getName(), c.getLocationOnScreen(), 
+						c.getBounds().width, c.getBounds().height, WindowType.internal, containerWin.isModalBlocked(), containerWin.getId());
+				
+				if (!isDD()) {
+					componentWin.setContent(Collections.emptyList());
+				}
+				
+				window.getInternalWindows().add(componentWin);
+			}
+		}
+	}
+	
+	private static String findWindowOwner(Window owner, List<String> zOrder) {
+		if (owner == null) {
+			return null;
+		}
+		
+		WebWindowPeer peer = (WebWindowPeer) WebToolkit.targetToPeer(owner);
+		
+		if (peer != null && zOrder.contains(peer.getGuid())) {
+			// must be from current z-order windows, otherwise it could be SwingUtilities$SharedOwnerFrame
+			return peer.getGuid();
+		}
+		
+		return null;
 	}
 
 	public static Map<String, Set<Rectangle>> postponeNonShowingAreas(Map<String, Set<Rectangle>> currentAreasToUpdate, Map<String, Boolean> windowRendered) {
@@ -325,6 +521,10 @@ public class Util {
 			currentAreasToUpdate.remove(later);
 		}
 		return forLaterProcessing;
+	}
+	
+	public static boolean isCompositingWM() {
+		return Boolean.valueOf(System.getProperty(Constants.SWING_START_SYS_PROP_COMPOSITING_WM, "false"));
 	}
 
 	public static boolean isWindowDecorationEvent(Window w, AWTEvent e) {
@@ -594,4 +794,52 @@ public class Util {
 		}
 		return false;
 	}
+	
+	public static Window findWindowById(String id) {
+		for (Window w : Window.getWindows()) {
+			Object peer = WebToolkit.targetToPeer(w);
+			if (peer != null && peer instanceof WebWindowPeer) {
+				if (((WebWindowPeer) peer).getGuid().equals(id)) {
+					return w;
+				}
+			
+			}
+		}
+		return null;
+	}
+	
+	public static HtmlPanel findHtmlPanelById(String id) {
+		for (HtmlPanel hp : getWebToolkit().getPaintDispatcher().getRegisteredHtmlPanels()) {
+			if (id.equals(System.identityHashCode(hp) + "")) {
+				return hp;
+			}
+		}
+		return null;
+	}
+
+	public static WebComponentPeer getPeerForTarget(Object paramObject) {
+		WebComponentPeer localWObjectPeer = (WebComponentPeer) WebToolkit.targetToPeer(paramObject);
+		return localWObjectPeer;
+	}
+
+	public static String getCurrentCursor(String winId) {
+		if (isCompositingWM()) {
+			WebWindowPeer peer = findWindowPeerById(winId);
+			return peer == null ? null : peer.getCurrentCursor();
+		} else {
+			return WindowManager.getInstance().getCurrentCursor();
+		}
+	}
+
+	public static void setCurrentCursor(String winId, String cursor) {
+		if (isCompositingWM()) {
+			WebWindowPeer peer = findWindowPeerById(winId);
+			if (peer != null) {
+				peer.setCurrentCursor(cursor);
+			}
+		} else {
+			WindowManager.getInstance().setCurrentCursor(cursor);
+		}
+	}
+		
 }

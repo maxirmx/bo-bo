@@ -23,11 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.webswing.Constants;
 import org.webswing.model.MsgIn;
+import org.webswing.model.c2s.ActionEventMsgIn;
 import org.webswing.model.c2s.CopyEventMsgIn;
 import org.webswing.model.c2s.InputEventMsgIn;
 import org.webswing.model.c2s.InputEventsFrameMsgIn;
 import org.webswing.model.c2s.PasteEventMsgIn;
 import org.webswing.model.c2s.UploadedEventMsgIn;
+import org.webswing.model.c2s.WindowEventMsgIn;
 import org.webswing.model.jslink.JavaEvalRequestMsgIn;
 import org.webswing.model.jslink.JsResultMsg;
 import org.webswing.model.s2c.AppFrameMsgOut;
@@ -108,6 +110,12 @@ abstract public class AbstractAsyncManagedService implements AtmosphereHandler {
 				} else if (frame.getJavaRequest() != null) {
 					JavaEvalRequestMsgIn p = frame.getJavaRequest();
 					send(r, p);
+				} else if (frame.getWindow() != null) {
+					WindowEventMsgIn w = frame.getWindow();
+					send(r, w);
+				} else if (frame.getAction() != null) {
+					ActionEventMsgIn a = frame.getAction();
+					send(r, a);
 				}
 			} else {
 				log.error("Unable to decode message: " + message);

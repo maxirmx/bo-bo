@@ -9,6 +9,11 @@
 	</parent>
 	<dependencies>
 		<dependency>
+			<groupId>org.webswing</groupId>
+			<artifactId>webswing-api</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.oracle.java</groupId>
 			<artifactId>rt-win-shell</artifactId>
 			<version>1.6.0_45</version>

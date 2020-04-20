@@ -1,8 +1,30 @@
 package org.webswing.dispatch;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.*;
+
 import org.webswing.Constants;
 import org.webswing.model.internal.ExitMsgInternal;
 import org.webswing.model.internal.OpenFileResultMsgInternal;
+import org.webswing.model.s2c.ActionEventMsgOut;
 import org.webswing.model.s2c.AppFrameMsgOut;
 import org.webswing.model.s2c.CopyEventMsg;
 import org.webswing.model.s2c.CursorChangeEventMsg;
@@ -16,41 +38,14 @@ import org.webswing.model.s2c.WindowMsg;
 import org.webswing.toolkit.WebCursor;
 import org.webswing.toolkit.WebToolkit;
 import org.webswing.toolkit.WebWindowPeer;
+import org.webswing.toolkit.api.component.HtmlPanel;
 import org.webswing.toolkit.extra.WebRepaintManager;
-import org.webswing.toolkit.extra.WindowManager;
 import org.webswing.toolkit.util.DeamonThreadFactory;
 import org.webswing.toolkit.util.ImageComparator;
 import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Services;
 import org.webswing.toolkit.util.SubImage;
 import org.webswing.toolkit.util.Util;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Window;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class WebPaintDispatcher {
 
@@ -68,6 +63,9 @@ public class WebPaintDispatcher {
 	private ScheduledExecutorService contentSender = Executors.newScheduledThreadPool(1,DeamonThreadFactory.getInstance());
 
 	private Map<String, BufferedImage> previousWindowImages = new HashMap<String, BufferedImage>();
+	
+	private Map<Container, Void> registeredContainers = new WeakHashMap<>();
+	private Map<HtmlPanel, Void> registeredHtmlPanels = new WeakHashMap<>();
 
 	public WebPaintDispatcher() {
 		Runnable sendUpdate = new Runnable() {
@@ -77,20 +75,13 @@ public class WebPaintDispatcher {
 					AppFrameMsgOut json;
 					Map<String, Map<Integer, BufferedImage>> windowImages = null;
 					Map<String, Image> windowWebImages = null;
-					Map<String, List<Rectangle>> windowNonVisibleAreas;
 					Map<String, Set<Rectangle>> currentAreasToUpdate = null;
 					long start= new Date().getTime();
 					synchronized (Util.getWebToolkit().getTreeLock()) {
 						synchronized (webPaintLock) {
-							if (clientReadyToReceive) {
-								if (RepaintManager.currentManager(null) instanceof WebRepaintManager) {
-									((WebRepaintManager) RepaintManager.currentManager(null)).process();
-								}
-								lastReadyStateTime = System.currentTimeMillis();
-							}
-							if ((areasToUpdate.size() == 0 && moveAction == null) || !clientReadyToReceive) {
-								if (!clientReadyToReceive && (System.currentTimeMillis() - lastReadyStateTime) > 2000) {
-									Logger.info("contentSender.readyToReceive re-enabled after timeout");
+							if (!clientReadyToReceive) {
+								if (System.currentTimeMillis() - lastReadyStateTime > 2000) {
+									Logger.debug("contentSender.readyToReceive re-enabled after timeout");
 									if (Util.isDD()) {
 										Services.getDirectDrawService().resetCache();
 									}
@@ -98,19 +89,30 @@ public class WebPaintDispatcher {
 								}
 								return;
 							}
+							
+							if (RepaintManager.currentManager(null) instanceof WebRepaintManager) {
+								((WebRepaintManager) RepaintManager.currentManager(null)).process();
+							}
+							lastReadyStateTime = System.currentTimeMillis();
+							
 							currentAreasToUpdate = areasToUpdate;
 							areasToUpdate = Util.postponeNonShowingAreas(currentAreasToUpdate,windowRendered);
-							if (currentAreasToUpdate.size() == 0 && moveAction == null) {
+							
+							if ((Util.isCompositingWM() && currentAreasToUpdate.isEmpty()) 
+									|| (!Util.isCompositingWM() && currentAreasToUpdate.isEmpty() && moveAction == null)) {
 								return;
 							}
-							windowNonVisibleAreas = WindowManager.getInstance().extractNonVisibleAreas();
-							json = Util.fillJsonWithWindowsData(currentAreasToUpdate, windowNonVisibleAreas);
-							if (Util.isDD()) {
-								windowWebImages = new HashMap<String, Image>();
-								windowWebImages = Util.extractWindowWebImages(json, windowWebImages);
+							
+							if (Util.isCompositingWM()) {
+								json = Util.fillWithCompositingWindowsData(currentAreasToUpdate);
 							} else {
-								windowImages = new HashMap<String, Map<Integer, BufferedImage>>();
-								windowImages = Util.extractWindowImages(json, windowImages);
+								json = Util.fillWithWindowsData(currentAreasToUpdate);
+							}
+							
+							if (Util.isDD()) {
+								windowWebImages = Util.extractWindowWebImages(currentAreasToUpdate.keySet(), new HashMap<>());
+							} else {
+								windowImages = Util.extractWindowImages(json, new HashMap<>());
 							}
 							if (moveAction != null) {
 								json.setMoveAction(moveAction);
@@ -125,6 +127,11 @@ public class WebPaintDispatcher {
 					}
 					if (Util.isDD()) {
 						Util.encodeWindowWebImages(windowWebImages, json);
+						if (Util.isCompositingWM() && Util.isEmptyDDContent(json)) {
+							// ignore empty render for CWM and DD settings, this fixes a white flash of canvas when screen size changes
+							clientReadyToReceive = true;
+							return;
+						}
 					} else {
 						//Util.encodeWindowImages(windowImages, json);
 						Map<String, Set<SubImage>> partials = ImageComparator.updateWindowImages(windowImages, previousWindowImages, json);
@@ -134,6 +141,10 @@ public class WebPaintDispatcher {
 						ImageComparator.mergePartials(previousWindowImages, partials, json);
 
 					}
+					
+					json.setDirectDraw(Util.isDD());
+					json.setCompositingWM(Util.isCompositingWM());
+					
 					Services.getConnectionService().sendObject(json);
 					Logger.trace("frame processed "+ (new Date().getTime()-start)+"ms");
 
@@ -144,6 +155,24 @@ public class WebPaintDispatcher {
 
 		};
 		contentSender.scheduleWithFixedDelay(sendUpdate, 33, 33, TimeUnit.MILLISECONDS);
+		
+		if (Util.isCompositingWM()) {
+			// set JPopupMenu and JTooltip to be rendered as heavyweight component to get its own canvas, this is needed when JPopupMenu opens over an HtmlPanel
+			// this must be set prior to JPopupMenu instantiation
+			PopupFactory.setSharedInstance(new PopupFactory(){
+				public Popup getPopup(Component owner, Component contents,
+						int x, int y) throws IllegalArgumentException {
+					try {
+						Field popupTypeField = PopupFactory.class.getDeclaredField("popupType");
+						popupTypeField.setAccessible(true);
+						popupTypeField.set(this,2);
+					} catch (Exception e) {
+						Logger.warn("Failed to force Heavyweight popup for CWM mode.",e);
+					}
+					return super.getPopup(owner, contents, x, y);
+				}
+			});
+		}
 	}
 
 	public void clientReadyToReceive() {
@@ -264,7 +293,7 @@ public class WebPaintDispatcher {
 				if (peer.getTarget() instanceof JFrame) {
 					JFrame frame = (JFrame) peer.getTarget();
 					//maximized window - auto resize
-					if (frame.getExtendedState() == Frame.MAXIMIZED_BOTH) {
+					if (frame.getExtendedState() == Frame.MAXIMIZED_BOTH && !Util.isCompositingWM()) {
 						w.setLocation(0, 0);
 						w.setBounds(0, 0, current.width, current.height);
 					}
@@ -298,15 +327,19 @@ public class WebPaintDispatcher {
 
 	public void notifyWindowMoved(Window w, Rectangle from, Rectangle to) {
 		synchronized (webPaintLock) {
-			if (moveAction == null) {
-				moveAction = new WindowMoveActionMsg(from.x, from.y, to.x, to.y, from.width, from.height);
-				notifyRepaintOffScreenAreas(w, moveAction);
-			} else if (moveAction.getDx() == from.x && moveAction.getDy() == from.y && moveAction.getWidth() == from.width && moveAction.getHeight() == from.height) {
-				moveAction.setDx(to.x);
-				moveAction.setDy(to.y);
-				notifyRepaintOffScreenAreas(w, moveAction);
+			if (Util.isCompositingWM()) {
+ 				notifyWindowRepaint(w);
 			} else {
-				notifyWindowRepaint(w);
+				if (moveAction == null) {
+					moveAction = new WindowMoveActionMsg(from.x, from.y, to.x, to.y, from.width, from.height);
+					notifyRepaintOffScreenAreas(w, moveAction);
+				} else if (moveAction.getDx() == from.x && moveAction.getDy() == from.y && moveAction.getWidth() == from.width && moveAction.getHeight() == from.height) {
+					moveAction.setDx(to.x);
+					moveAction.setDy(to.y);
+					notifyRepaintOffScreenAreas(w, moveAction);
+				} else {
+					notifyWindowRepaint(w);
+				}
 			}
 		}
 	}
@@ -334,11 +367,11 @@ public class WebPaintDispatcher {
 		}
 	}
 
-	public void notifyCursorUpdate(Cursor cursor) {
-		notifyCursorUpdate(cursor, null);
+	public void notifyCursorUpdate(Cursor cursor,String winId) {
+		notifyCursorUpdate(cursor, null, winId);
 	}
 
-	public void notifyCursorUpdate(Cursor cursor, Cursor overridenCursorName) {
+	public void notifyCursorUpdate(Cursor cursor, Cursor overridenCursorName,String winId) {
 		String webcursorName = null;
 		Cursor webcursor = null;
 		if (overridenCursorName == null) {
@@ -388,9 +421,10 @@ public class WebPaintDispatcher {
 			webcursor = overridenCursorName;
 			webcursorName = overridenCursorName.getName();
 		}
-		if (!WindowManager.getInstance().getCurrentCursor().equals(webcursorName)) {
-			AppFrameMsgOut f = new AppFrameMsgOut();
+		String currentCursor = Util.getCurrentCursor(winId);
+		if ( currentCursor!=null && !currentCursor.equals(webcursorName)) {			AppFrameMsgOut f = new AppFrameMsgOut();
 			CursorChangeEventMsg cursorChange = new CursorChangeEventMsg(webcursorName);
+			cursorChange.setWinId(winId);
 			if (webcursor instanceof WebCursor) {
 				WebCursor c = (WebCursor) webcursor;
 				BufferedImage img = c.getImage();
@@ -399,7 +433,7 @@ public class WebPaintDispatcher {
 				cursorChange.setY(c.getHotSpot() != null ? c.getHotSpot().y : 0);
 			}
 			f.setCursorChange(cursorChange);
-			WindowManager.getInstance().setCurrentCursor(webcursorName);
+			Util.setCurrentCursor(winId, webcursorName);
 			Logger.debug("WebPaintDispatcher:notifyCursorUpdate", f);
 			Services.getConnectionService().sendObject(f);
 		}
@@ -501,6 +535,21 @@ public class WebPaintDispatcher {
 	public void notifyFocusEvent(FocusEventMsg msg) {
 		focusEvent=msg;
 	}
+	
+	public void notifyActionEvent(String windowId, String actionName, String data, byte[] binaryData) {
+		AppFrameMsgOut f = new AppFrameMsgOut();
+		
+		ActionEventMsgOut actionEvent = new ActionEventMsgOut();
+		actionEvent.setWindowId(windowId);
+		actionEvent.setActionName(actionName);
+		actionEvent.setData(data);
+		actionEvent.setBinaryData(binaryData);
+		
+		f.setActionEvent(actionEvent);
+		
+		Logger.debug("WebPaintDispatcher:notifyActionEvent", f);
+		sendObject(f);
+	}
 
 	public void notifyWindowReset(String guid) {
 		windowRendered.put(guid,false);
@@ -513,4 +562,53 @@ public class WebPaintDispatcher {
 	public void notifyWindowRendered(String guid) {
 		windowRendered.put(guid,true);
 	}
+	
+	public void registerWebContainer(Container container) {
+		synchronized (WebPaintDispatcher.webPaintLock) {
+			registeredContainers.put(container, null);
+		}
+	}
+	
+	public Map<Window, List<Container>> getRegisteredWebContainers() {
+		Map<Window, List<Container>> map = new HashMap<>();
+		
+		synchronized (WebPaintDispatcher.webPaintLock) {
+			Set<Container> keys = registeredContainers.keySet();
+			for (Container key : keys) {
+				Window win = SwingUtilities.getWindowAncestor(key);
+				if (!map.containsKey(win)) {
+					map.put(win, new ArrayList<>());
+				}
+				map.get(win).add(key);
+			}
+		}
+		return map;
+	}
+	
+	public void registerHtmlPanel(HtmlPanel hp) {
+		synchronized (WebPaintDispatcher.webPaintLock) {
+			registeredHtmlPanels.put(hp, null);
+		}
+	}
+	
+	public Map<Window, List<HtmlPanel>> getRegisteredHtmlPanelsAsMap() {
+		Map<Window, List<HtmlPanel>> map = new HashMap<>();
+		
+		synchronized (WebPaintDispatcher.webPaintLock) {
+			Set<HtmlPanel> keys = registeredHtmlPanels.keySet();
+			for (HtmlPanel key : keys) {
+				Window win = SwingUtilities.getWindowAncestor(key);
+				if (!map.containsKey(win)) {
+					map.put(win, new ArrayList<>());
+				}
+				map.get(win).add(key);
+			}
+		}
+		return map;
+	}
+	
+	public Set<HtmlPanel> getRegisteredHtmlPanels() {
+		return registeredHtmlPanels.keySet();
+	}
+	
 }

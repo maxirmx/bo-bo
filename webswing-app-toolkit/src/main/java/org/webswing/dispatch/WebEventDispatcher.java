@@ -1,37 +1,10 @@
 package org.webswing.dispatch;
 
-import netscape.javascript.JSObject;
-import org.webswing.Constants;
-import org.webswing.model.MsgIn;
-import org.webswing.model.c2s.ConnectionHandshakeMsgIn;
-import org.webswing.model.c2s.CopyEventMsgIn;
-import org.webswing.model.c2s.KeyboardEventMsgIn;
-import org.webswing.model.c2s.MouseEventMsgIn;
-import org.webswing.model.c2s.MouseEventMsgIn.MouseEventType;
-import org.webswing.model.c2s.PasteEventMsgIn;
-import org.webswing.model.c2s.SimpleEventMsgIn;
-import org.webswing.model.c2s.UploadEventMsgIn;
-import org.webswing.model.c2s.UploadedEventMsgIn;
-import org.webswing.model.internal.OpenFileResultMsgInternal;
-import org.webswing.model.jslink.JSObjectMsg;
-import org.webswing.toolkit.WebClipboard;
-import org.webswing.toolkit.WebClipboardTransferable;
-import org.webswing.toolkit.WebDragSourceContextPeer;
-import org.webswing.toolkit.extra.DndEventHandler;
-import org.webswing.toolkit.extra.WindowManager;
-import org.webswing.toolkit.jslink.WebJSObject;
-import org.webswing.toolkit.util.DeamonThreadFactory;
-import org.webswing.toolkit.util.Logger;
-import org.webswing.toolkit.util.Services;
-import org.webswing.toolkit.util.Util;
-import sun.awt.CausedFocusEvent;
-
-import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
 import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -51,6 +24,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+
+import org.webswing.Constants;
+import org.webswing.model.MsgIn;
+import org.webswing.model.c2s.ActionEventMsgIn;
+import org.webswing.model.c2s.ConnectionHandshakeMsgIn;
+import org.webswing.model.c2s.CopyEventMsgIn;
+import org.webswing.model.c2s.KeyboardEventMsgIn;
+import org.webswing.model.c2s.MouseEventMsgIn;
+import org.webswing.model.c2s.MouseEventMsgIn.MouseEventType;
+import org.webswing.model.c2s.PasteEventMsgIn;
+import org.webswing.model.c2s.SimpleEventMsgIn;
+import org.webswing.model.c2s.UploadEventMsgIn;
+import org.webswing.model.c2s.UploadedEventMsgIn;
+import org.webswing.model.c2s.WindowEventMsgIn;
+import org.webswing.model.internal.OpenFileResultMsgInternal;
+import org.webswing.model.jslink.JSObjectMsg;
+import org.webswing.toolkit.WebClipboard;
+import org.webswing.toolkit.WebClipboardTransferable;
+import org.webswing.toolkit.WebDragSourceContextPeer;
+import org.webswing.toolkit.WebWindowPeer;
+import org.webswing.toolkit.extra.DndEventHandler;
+import org.webswing.toolkit.extra.WindowManager;
+import org.webswing.toolkit.jslink.WebJSObject;
+import org.webswing.toolkit.util.DeamonThreadFactory;
+import org.webswing.toolkit.util.Logger;
+import org.webswing.toolkit.util.Services;
+import org.webswing.toolkit.util.Util;
+
+import netscape.javascript.JSObject;
+import sun.awt.CausedFocusEvent;
 
 @SuppressWarnings("restriction")
 public class WebEventDispatcher {
@@ -138,6 +144,12 @@ public class WebEventDispatcher {
 						}
 					}
 				}
+				if (event instanceof WindowEventMsgIn) {
+					handleWindowEvent((WindowEventMsgIn) event);
+				}
+				if (event instanceof ActionEventMsgIn) {
+					Util.getWebToolkit().processApiEvent(event);
+				}
 			}
 		});
 	}
@@ -216,6 +228,7 @@ public class WebEventDispatcher {
 
 	private void dispatchMouseEvent(MouseEventMsgIn event) {
 		Component c = null;
+		boolean relatedToLastEvent = false;
 		if (WindowManager.getInstance().isLockedToWindowDecorationHandler()) {
 			c = WindowManager.getInstance().getLockedToWindow();
 			if(c != null && c.isShowing() == false)
@@ -224,14 +237,15 @@ public class WebEventDispatcher {
 				c = null;
 			}
 		} else {
-			c = WindowManager.getInstance().getVisibleComponentOnPosition(event.getX(), event.getY());
+			c = WindowManager.getInstance().getVisibleComponentOnPosition(event.getX(), event.getY(), event.getWinId());
 			if (lastMouseEvent != null && (lastMouseEvent.getID() == MouseEvent.MOUSE_DRAGGED || lastMouseEvent.getID() == MouseEvent.MOUSE_PRESSED) && ((event.getType() == MouseEventType.mousemove && event.getButton() == 1) || (event.getType() == MouseEventType.mouseup))) {
 				c = (Component) lastMouseEvent.getSource();
+				relatedToLastEvent=true;
 			}
 		}
 		if (c == null) {
 			if (Util.getWebToolkit().getPaintDispatcher() != null) {
-				Util.getWebToolkit().getPaintDispatcher().notifyCursorUpdate(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				Util.getWebToolkit().getPaintDispatcher().notifyCursorUpdate(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR),null);
 			}
 			return;
 		}
@@ -256,7 +270,7 @@ public class WebEventDispatcher {
 				id = event.getButton() == 1 ? MouseEvent.MOUSE_DRAGGED : MouseEvent.MOUSE_MOVED;
 				e = new MouseEvent(c, id, when, modifiers, x, y, event.getX(), event.getY(), clickcount, false, buttons);
 				lastMouseEvent = e;
-				dispatchEventInSwing(c, e);
+				dispatchEventInSwing(c, e,relatedToLastEvent);
 				break;
 			case mouseup:
 				Logger.debug("webswing event : receive mouse up event");
@@ -268,7 +282,7 @@ public class WebEventDispatcher {
 				if(event.getButton() == 0 && event.getX() == -1 && event.getY() == -1 && event.getType() == MouseEventType.mouseup)
 				{
 					Logger.debug("Event handling for mouse release event");
-					dispatchEventInSwing(c, e);
+					dispatchEventInSwing(c, e,relatedToLastEvent);
 					break;
 				}
 				dispatchEventInSwing(c, e);
@@ -430,18 +444,25 @@ public class WebEventDispatcher {
 	}
 
 	public static void dispatchEventInSwing(final Component c, final AWTEvent e) {
+		dispatchEventInSwing(c, e, false);
+	}
+
+	public static void dispatchEventInSwing(final Component c, final AWTEvent e, boolean relatedToLastEvent) {
 		Window w = (Window) (c instanceof Window ? c : SwingUtilities.windowForComponent(c));
-		if (e instanceof MouseEvent) {
-			w.setCursor(w.getCursor());// force cursor update
-		}
-		if ((Util.isWindowDecorationEvent(w, e) || WindowManager.getInstance().isLockedToWindowDecorationHandler()) && e instanceof MouseEvent) {
-			Logger.debug("WebEventDispatcher.dispatchEventInSwing:windowManagerHandle", e);
-			WindowManager.getInstance().handleWindowDecorationEvent(w, (MouseEvent) e);
-		} else if (dndHandler.isDndInProgress() && (e instanceof MouseEvent || e instanceof KeyEvent)) {
-			dndHandler.processMouseEvent(w, e);
-		} else {
-			Logger.debug("WebEventDispatcher.dispatchEventInSwing:postSystemQueue", e);
-			Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(e);
+		if(w.isEnabled()) {
+
+			if (e instanceof MouseEvent) {
+				w.setCursor(w.getCursor());// force cursor update
+			}
+			if (((!relatedToLastEvent && Util.isWindowDecorationEvent(w, e)) || WindowManager.getInstance().isLockedToWindowDecorationHandler()) && e instanceof MouseEvent) {
+				Logger.debug("WebEventDispatcher.dispatchEventInSwing:windowManagerHandle", e);
+				WindowManager.getInstance().handleWindowDecorationEvent(w, (MouseEvent) e);
+			} else if (dndHandler.isDndInProgress() && (e instanceof MouseEvent || e instanceof KeyEvent)) {
+				dndHandler.processMouseEvent(w, e);
+			} else {
+				Logger.debug("WebEventDispatcher.dispatchEventInSwing:postSystemQueue", e);
+				Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(e);
+			}
 		}
 	}
 
@@ -475,6 +496,30 @@ public class WebEventDispatcher {
 		}
 	}
 
+	public void handleWindowEvent(WindowEventMsgIn windowUpdate) {
+		WebWindowPeer winPeer = Util.findWindowPeerById(windowUpdate.getId());
+
+		if (winPeer == null) {
+			return;
+		}
+		
+		synchronized (Util.getWebToolkit().getTreeLock()) {
+			synchronized (WebPaintDispatcher.webPaintLock) {
+				final Window win = ((Window) winPeer.getTarget());
+				if (windowUpdate.isClose()) {
+					if (winPeer.getTarget() instanceof Window) {
+						win.setVisible(false);
+					}
+				} else {
+					SwingUtilities.invokeLater(()->{
+						win.setBounds(windowUpdate.getX(), windowUpdate.getY(), windowUpdate.getWidth(), windowUpdate.getHeight());
+						WindowManager.getInstance().requestRepaintAfterMove(win, new Rectangle(windowUpdate.getX(), windowUpdate.getY(), windowUpdate.getWidth(), windowUpdate.getY()));
+					});
+				}
+			}
+		}
+	}
+	
 	public static boolean isDndInProgress() {
 		return dndHandler.isDndInProgress();
 	}

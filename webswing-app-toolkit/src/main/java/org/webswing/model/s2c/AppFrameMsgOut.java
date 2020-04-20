@@ -16,7 +16,7 @@ public class AppFrameMsgOut implements MsgOut {
 	private CursorChangeEventMsg cursorChange;
 	private CopyEventMsg copyEvent;
 	private FileDialogEventMsg fileDialogEvent;
-	private List<WindowMsg> windows;
+	private List<WindowMsg> windows = new ArrayList<>();
 	private WindowMsg closedWindow;
 	private SimpleEventMsgOut event;
 	private JsEvalRequestMsgOut jsRequest;
@@ -24,16 +24,15 @@ public class AppFrameMsgOut implements MsgOut {
 	private FocusEventMsg focusEvent;
 	private PlaybackInfoMsg playback;
 	private String sessionId;
+	private ActionEventMsgOut actionEvent;
+	private boolean directDraw;
+	private boolean compositingWM;
 
 	public WindowMsg getOrCreateWindowById(String guid) {
-		if (windows != null) {
-			for (WindowMsg w : windows) {
-				if (w.getId().equals(guid)) {
-					return w;
-				}
+		for (WindowMsg w : windows) {
+			if (w.getId().equals(guid)) {
+				return w;
 			}
-		} else {
-			windows = new ArrayList<WindowMsg>();
 		}
 		WindowMsg window = new WindowMsg();
 		window.setId(guid);
@@ -152,4 +151,29 @@ public class AppFrameMsgOut implements MsgOut {
 	public void setFocusEvent(FocusEventMsg focusEvent) {
 		this.focusEvent = focusEvent;
 	}
+
+	public ActionEventMsgOut getActionEvent() {
+		return actionEvent;
+	}
+
+	public void setActionEvent(ActionEventMsgOut actionEvent) {
+		this.actionEvent = actionEvent;
+	}
+
+	public boolean isDirectDraw() {
+		return directDraw;
+	}
+
+	public void setDirectDraw(boolean directDraw) {
+		this.directDraw = directDraw;
+	}
+
+	public boolean isCompositingWM() {
+		return compositingWM;
+	}
+
+	public void setCompositingWM(boolean compositingWM) {
+		this.compositingWM = compositingWM;
+	}
+	
 }

@@ -1,6 +1,7 @@
 package org.webswing.demo.window;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Window;
@@ -8,19 +9,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyVetoException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JRootPane;
+import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.border.LineBorder;
+
+import org.webswing.toolkit.api.WebswingUtil;
+import org.webswing.toolkit.api.action.WebActionEvent;
+import org.webswing.toolkit.api.action.WebWindowActionListener;
+import org.webswing.toolkit.api.component.HtmlPanel;
 
 import com.sun.swingset3.DemoProperties;
 
@@ -107,7 +118,48 @@ public class WindowDecorationDemo extends JPanel {
 		JLabel context = new JLabel("Right click for context menu");
 		context.setBorder(BorderFactory.createLineBorder(Color.black));
 		JPopupMenu menu = new JPopupMenu("test");
-		menu.add(new JMenuItem("test"));
+		if (WebswingUtil.isWebswing() && WebswingUtil.getWebswingApi().isCompositingWindowManager()) {
+			JMenuItem dialogWithWebContainer = new JMenuItem("Dialog with web container");
+			dialogWithWebContainer.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					JDialog dialog = new JDialog();
+					dialog.setTitle("Dialog with web container");
+					dialog.setSize(800, 600);
+					
+					JPanel panel = new JPanel();
+					panel.setPreferredSize(new Dimension(400, 275));
+					panel.setLayout(new FlowLayout());
+					panel.add(new JButton("This is a button"));
+					panel.add(new JLabel("This is a label"));
+					panel.add(new JTextField("This is a text field"));
+					
+					JPanel panel2 = new JPanel();
+					panel2.setLayout(new FlowLayout());
+					panel2.setPreferredSize(new Dimension(200, 200));
+					panel2.setBackground(Color.white);
+					panel2.add(new JLabel("This is a label inside panel"));
+					panel2.add(new JTextField("This is a text field inside panel"));
+					
+					JDesktopPane desktopPane = new JDesktopPane();
+					desktopPane.setPreferredSize(new Dimension(400, 300));
+					createHtmlPanelInternalFrame(desktopPane);
+					
+					panel.add(panel2);
+					panel.add(desktopPane);
+					
+					WebswingUtil.getWebswingApi().registerWebContainer(desktopPane);
+					WebswingUtil.getWebswingApi().registerWebContainer(panel);
+					WebswingUtil.getWebswingApi().registerWebContainer(panel2);
+					
+					dialog.getContentPane().add(panel);
+					
+					dialog.setLocationRelativeTo(null);
+					dialog.setVisible(true);
+				}
+			});
+			menu.add(dialogWithWebContainer);
+		}
 		menu.add(new JMenuItem("test"));
 		menu.add(new JMenuItem("test"));
 		menu.add(new JMenuItem("test"));
@@ -179,6 +231,56 @@ public class WindowDecorationDemo extends JPanel {
 		add(content);
 		setBorder(new LineBorder(Color.BLACK));
 	}
+	
+    private JInternalFrame createHtmlPanelInternalFrame(JDesktopPane desktop) {
+    	JInternalFrame internalFrame = new JInternalFrame();
+
+   		internalFrame.setTitle("Internal Frame");
+
+    	internalFrame.setClosable(true);
+    	internalFrame.setMaximizable(true);
+    	internalFrame.setIconifiable(true);
+    	internalFrame.setResizable(true);
+    	
+    	HtmlPanel htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanelForComponent(desktop, internalFrame);
+    	htmlPanel.setName("window-internalIframe");
+    	htmlPanel.setOpaque(false);
+    	htmlPanel.addWebWindowActionListener(new WebWindowActionListener() {
+			@Override
+			public void actionPerformed(WebActionEvent actionEvent) {
+        		switch (actionEvent.getActionName()) {
+        			case "focus": {
+        				internalFrame.toFront();
+        				try {
+        					internalFrame.setSelected(true);
+        				} catch (PropertyVetoException e) {
+        					e.printStackTrace();
+        				}
+        				internalFrame.requestFocusInWindow();
+        				break;
+        			}
+        		}
+			}
+			
+			@Override
+			public void windowInitialized() {
+			}
+		});
+    	
+    	internalFrame.setBounds(10, 10, 150, 150);
+    	internalFrame.setContentPane(htmlPanel);
+    	
+    	desktop.add(internalFrame, 1);
+    	
+    	try {
+    		internalFrame.setSelected(true);
+    	} catch (java.beans.PropertyVetoException e2) {
+    	}
+
+    	internalFrame.show();
+    	
+    	return internalFrame;
+    }
 
 	private static String getID(Window parent) {
 		if (parent == null) {
@@ -210,6 +312,9 @@ public class WindowDecorationDemo extends JPanel {
 		frame.setLocation(position);
 		frame.setAlwaysOnTop(ontop);
 		frame.setUndecorated(undecorated);
+		if(undecorated){
+			frame.getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+		}
 		WindowDecorationDemo panel = new WindowDecorationDemo(frame, null, position, undecorated, ontop);
 		frame.getContentPane().add(panel);
 
@@ -228,6 +333,9 @@ public class WindowDecorationDemo extends JPanel {
 		frame.setModal(modal);
 		frame.setAlwaysOnTop(ontop);
 		frame.setUndecorated(undecorated);
+		if(undecorated){
+			frame.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
+		}
 		WindowDecorationDemo panel = new WindowDecorationDemo(frame, owner, position, undecorated, ontop);
 		frame.getContentPane().add(panel);
 		frame.setLocation(position);

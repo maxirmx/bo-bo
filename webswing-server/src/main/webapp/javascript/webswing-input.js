@@ -499,7 +499,7 @@ export default class InputModule {
             // canvas会铺满整个界面
             // 当鼠标移除document范围后，鼠标松开的事件需要监听在document之上。
             // 中文输入的时候，承载中文输入的input空间也会触发本事件，需忽略
-            if (api.cfg.hasControl && api.cfg.canPaint && !api.cfg.mirrorMode && !compositionInput
+            if (mouseDown!==0 && api.cfg.hasControl && api.cfg.canPaint && !api.cfg.mirrorMode && !compositionInput
 					&& document.activeElement.getAttribute('data-id') === "input-handler") {
                 let mousePos = getMousePos(api.getCanvas(), evt, 'mouseup', evt.target);
                 //when an new web page pops after user click, mouseup will send twice

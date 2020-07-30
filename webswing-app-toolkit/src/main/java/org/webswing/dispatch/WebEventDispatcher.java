@@ -57,6 +57,7 @@ import org.webswing.toolkit.util.Util;
 
 import netscape.javascript.JSObject;
 import sun.awt.CausedFocusEvent;
+import sun.awt.UngrabEvent;
 
 @SuppressWarnings("restriction")
 public class WebEventDispatcher {
@@ -456,6 +457,9 @@ public class WebEventDispatcher {
 			}
 			if (((!relatedToLastEvent && Util.isWindowDecorationEvent(w, e)) || WindowManager.getInstance().isLockedToWindowDecorationHandler()) && e instanceof MouseEvent) {
 				Logger.debug("WebEventDispatcher.dispatchEventInSwing:windowManagerHandle", e);
+				if(e.getID()==MouseEvent.MOUSE_PRESSED) {
+					Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new UngrabEvent(c));
+				}
 				WindowManager.getInstance().handleWindowDecorationEvent(w, (MouseEvent) e);
 			} else if (dndHandler.isDndInProgress() && (e instanceof MouseEvent || e instanceof KeyEvent)) {
 				dndHandler.processMouseEvent(w, e);

@@ -150,7 +150,7 @@ public class DrawInstructionFactory {
 		} else if (s instanceof Arc2D) {
 			return new ArcConst(ctx, (Arc2D) s);
 		} else {
-			return new PathConst(ctx, s);
+			return new SegmentedPathConst(ctx,s);
 		}
 	}
 

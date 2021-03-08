@@ -1,3 +1,4 @@
+import './path2d-polyfill'
 import webswingProto from './directdraw.proto';
 const ProtoBuf = require('protobufjs');
 import Util from './webswing-util';
@@ -17,7 +18,7 @@ export default class WebswingDirectDraw {
 		let proto = webswingProto!=null? ProtoBuf.loadProto(webswingProto,"directdraw.proto"):ProtoBuf.loadProtoFile("/directdraw.proto");
 		let WebImageProto = proto.build("org.webswing.directdraw.proto.WebImageProto");
 		let InstructionProto = proto.build("org.webswing.directdraw.proto.DrawInstructionProto.InstructionProto");
-		let SegmentTypeProto = proto.build("org.webswing.directdraw.proto.PathProto.SegmentTypeProto");
+		let SegmentTypeProto = proto.build("org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto");
 		let ArcTypeProto = proto.build("org.webswing.directdraw.proto.ArcProto.ArcTypeProto");
 		let CyclicMethodProto = proto.build("org.webswing.directdraw.proto.CyclicMethodProto");
 		let StrokeJoinProto = proto.build("org.webswing.directdraw.proto.StrokeProto.StrokeJoinProto");
@@ -106,7 +107,10 @@ export default class WebswingDirectDraw {
 			let images = [];
 			constants.forEach(function(constant) {
 				constantPoolCache[constant.id] = constant;
-				if (constant.image != null) {
+                if (constant.partialPath) {
+                    let p2d = constant.partialPath.path2d = new Path2D();
+                    parsePath(constant.partialPath,p2d,0,0);
+                } else if (constant.image != null) {
 					images.push(constant.image);
 				} else if (constant.texture != null) {
 					images.push(constant.texture.image);
@@ -293,9 +297,9 @@ export default class WebswingDirectDraw {
                 };
 
                 let fillOriginal = ctx.fill;
-                ctx.fill = function () {
+                ctx.fill = function (path) {
                     this.setBoundingBox();
-                    return fillOriginal.call(this);
+                    return fillOriginal.call(this, path);
                 };
 
                 let drawImageOriginal = ctx.drawImage;
@@ -308,9 +312,9 @@ export default class WebswingDirectDraw {
                 };
 
                 let strokeOriginal = ctx.stroke;
-                ctx.stroke = function () {
+                ctx.stroke = function (path) {
                     this.setBoundingBox(this.lineWidth / 2 + 3);
-                    return strokeOriginal.call(this);
+                    return strokeOriginal.call(this, path);
                 }
 
                 ctx.setBoundingBox = function (excess) {
@@ -420,21 +424,21 @@ export default class WebswingDirectDraw {
 
         function iprtDraw(ctx, args, transform) {
             ctx.save();
-            if (path(ctx, args[1])) {
-                ctx.clip(fillRule(args[1]));
+            clip(ctx, args[1]);
+            let p = path(ctx, args[0], true, transform);
+            if(p){
+                ctx.stroke(p);
             }
-            path(ctx, args[0], true, transform);
-            ctx.stroke();
             ctx.restore();
         }
 
         function iprtFill(ctx, args) {
             ctx.save();
-            if (path(ctx, args[1])) {
-                ctx.clip(fillRule(args[1]));
+            clip(ctx, args[1]);
+            let p = path(ctx, args[0]);
+            if(p){
+                ctx.fill(p,fillRule(args[0]));
             }
-            path(ctx, args[0]);
-            ctx.fill(fillRule(args[0]));
             ctx.restore();
         }
 
@@ -444,23 +448,20 @@ export default class WebswingDirectDraw {
             let transform = args[1];
             let crop = args[2];
             let bgcolor = args[3];
-            let clip = args[4];
 
-            if (path(ctx, clip)) {
-                ctx.clip(fillRule(clip));
-            }
+            clip(ctx, args[4]);
             if (transform != null) {
                 iprtTransform(ctx, [transform]);
             }
             if (bgcolor != null) {
                 ctx.fillStyle = parseColor(bgcolor.color.rgba);
-                ctx.beginPath();
+                let path = new Path2D();
                 if (crop == null) {
-                    ctx.rect(0, 0, image.width, image.height);
+                    path.rect(0, 0, image.width, image.height);
                 } else {
-                    ctx.rect(0, 0, crop.rectangle.w, crop.rectangle.h);
+                    path.rect(0, 0, crop.rectangle.w, crop.rectangle.h);
                 }
-                ctx.fill();
+                ctx.fill(path);
             }
             if (crop == null) {
                 ctx.drawImage(image, 0, 0);
@@ -475,27 +476,24 @@ export default class WebswingDirectDraw {
             let transform = args[0];
             let crop = args[1];
             let bgcolor = args[2];
-            let clip = args[3];
 
             let buffer = canvasBuffer.pop();
             return drawBin(webImageData, buffer).then(function (imageCanvas) {
                 ctx.save();
                 let dpr = config.dpr;
-                if (path(ctx, clip)) {
-                    ctx.clip(fillRule(clip));
-                }
+                clip(ctx,args[3]);
                 if (transform != null) {
                     iprtTransform(ctx, [transform]);
                 }
                 if (bgcolor != null) {
                     ctx.fillStyle = parseColor(bgcolor.color.rgba);
-                    ctx.beginPath();
+                    let path = new Path2D();
                     if (crop == null) {
-                        ctx.rect(0, 0, imageCanvas.width / dpr, imageCanvas.height / dpr);
+                        path.rect(0, 0, imageCanvas.width / dpr, imageCanvas.height / dpr);
                     } else {
-                        ctx.rect(0, 0, crop.rectangle.w, crop.rectangle.h);
+                        path.rect(0, 0, crop.rectangle.w, crop.rectangle.h);
                     }
-                    ctx.fill();
+                    ctx.fill(path);
                 }
                 if (crop == null) {
                     ctx.drawImage(imageCanvas, 0, 0, imageCanvas.width, imageCanvas.height, 0, 0, imageCanvas.width / dpr, imageCanvas.height / dpr);
@@ -515,11 +513,8 @@ export default class WebswingDirectDraw {
             let size = combinedArgs[0].points;
             let points = combinedArgs[1].points;
             let glyphs = combinedArgs.slice(2);
-            let clip = args[1];
             ctx.save();
-            if (path(ctx, clip)) {
-                ctx.clip(fillRule(clip));
-            }
+            clip(ctx, args[1]);
             if (glyphs.length > 0) {
                 let buffer = document.createElement("canvas");
                 buffer.width = size.points[2];
@@ -546,11 +541,8 @@ export default class WebswingDirectDraw {
             let p = args[1].points.points;
             let x=p[0];
             let y=p[1];
-            let clip = args[2];
             ctx.save();
-            if (path(ctx, clip)) {
-                ctx.clip(fillRule(clip));
-            }
+            clip(ctx, args[2]);
             if (fontTransform != null) {
                 let t = fontTransform;
                 ctx.transform(t.m00, t.m10, t.m01, t.m11, t.m02 + x, t.m12 + y);
@@ -618,17 +610,15 @@ export default class WebswingDirectDraw {
 
         function iprtCopyArea(ctx, args) {
             let p = args[0].points.points;
-            let clip = args[1];
             let dpr = config.dpr;
             ctx.save();
 
-            if (path(ctx, clip)) {
-                ctx.clip(fillRule(clip));
-            }
+            clip(ctx,args[1]);
             ctx.beginPath();
             ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.rect(p[0] * dpr, p[1] * dpr, p[2] * dpr, p[3] * dpr);
-            ctx.clip();
+            let path = new Path2D();
+            path.rect(p[0] * dpr, p[1] * dpr, p[2] * dpr, p[3] * dpr);
+            ctx.clip(path);
             ctx.translate(p[4] * dpr, p[5] * dpr);
             ctx.drawImage(ctx.canvas, 0, 0);
             ctx.restore();
@@ -892,73 +882,62 @@ export default class WebswingDirectDraw {
             }
         }
 
+        function clip(ctx, arg) {
+            let p = path(ctx,arg);
+            if(p){
+                ctx.clip(p, fillRule(arg));
+            }
+        }
+
         function path(ctx, arg, biased, transform) {
             if (arg == null) {
-                return false;
+                return null;
             }
 
             let bias = calculateBias(ctx, biased, transform);
-
+            let path = new Path2D();
             if (arg.rectangle != null) {
                 ctx.beginPath();
-                pathRectangle(ctx, arg.rectangle, bias);
-                return true;
+                pathRectangle(path, arg.rectangle, bias);
+                return path;
             }
 
             if (arg.roundRectangle != null) {
                 ctx.beginPath();
-                pathRoundRectangle(ctx, arg.roundRectangle, bias);
-                return true;
+                pathRoundRectangle(path, arg.roundRectangle, bias);
+                return path;
             }
 
             if (arg.ellipse != null) {
                 ctx.beginPath();
-                pathEllipse(ctx, arg.ellipse, bias);
-                return true;
+                pathEllipse(path, arg.ellipse, bias);
+                return path;
             }
 
             if (arg.arc != null) {
                 ctx.beginPath();
-                pathArc(ctx, arg.arc, bias);
-                return true;
+                pathArc(path, arg.arc, bias);
+                return path;
             }
 
             // generic path
-            if (arg.path != null) {
-                ctx.beginPath();
-                let path = arg.path;
-                let off = 0;
-                path.type.forEach(function (type, index) {
-                    switch (type) {
-                        case SegmentTypeProto.MOVE:
-                            ctx.moveTo(path.points[off + 0] + bias.x, path.points[off + 1] + bias.y);
-                            off += 2;
-                            break;
-                        case SegmentTypeProto.LINE:
-                            ctx.lineTo(path.points[off + 0] + bias.x, path.points[off + 1] + bias.y);
-                            off += 2;
-                            break;
-                        case SegmentTypeProto.QUAD:
-                            ctx.quadraticCurveTo(path.points[off + 0] + bias.x, path.points[off + 1] + bias.y,
-                                path.points[off + 2] + bias.x, path.points[off + 3] + bias.y);
-                            off += 4;
-                            break;
-                        case SegmentTypeProto.CUBIC:
-                            ctx.bezierCurveTo(path.points[off + 0] + bias.x, path.points[off + 1] + bias.y,
-                                path.points[off + 2] + bias.x, path.points[off + 3] + bias.y,
-                                path.points[off + 4] + bias.x, path.points[off + 5] + bias.y);
-                            off += 6;
-                            break;
-                        case SegmentTypeProto.CLOSE:
-                            ctx.closePath();
-                            break;
-                        default:
-                            console.log("segment.type:" + segment.type + " not recognized");
-                    }
-                });
-                return true;
+            if (arg.combined != null) {
+                let combinedArgs = resolveArgs(arg.combined.ids, constantPoolCache);
+                let compositePath = combinedArgs[0].path;
+                let partials = combinedArgs.slice(1);
+                let xOffsets = compositePath.xOffsets;
+                let yOffsets = compositePath.yOffsets;
+
+                let matrix = new DOMMatrix([1, 0, 0, 1, 0, 0]);
+                for (let i = 0; i < partials.length; i++) {
+                    let partial = partials[i].partialPath;
+                    matrix.e = xOffsets[i];
+                    matrix.f = yOffsets[i];
+                    path.addPath(partial.path2d, matrix);
+                }
+                return path;
             }
-            return false;
+            return null;
         }
 
         function pathRectangle(ctx, rect, bias) {
@@ -1082,6 +1061,38 @@ export default class WebswingDirectDraw {
                     x: (ctx.lineWidth * transform[0]) & 1 ? 0.5 / transform[0] : 0,
                     y: (ctx.lineWidth * transform[3]) & 1 ? 0.5 / transform[3] : 0
                 }
+            }
+        }
+
+        function parsePath(pathProto, p2d, dx, dy) {
+            const path = pathProto;
+            let off = 0;
+            if (path.type) {
+                path.type.forEach((type) => {
+                    switch (type) {
+                        case SegmentTypeProto.MOVE:
+                            p2d.moveTo(path.points[off + 0]+ dx, path.points[off + 1]+ dy);
+                            off += 2;
+                            break;
+                        case SegmentTypeProto.LINE:
+                            p2d.lineTo(path.points[off + 0]+ dx, path.points[off + 1]+ dy);
+                            off += 2;
+                            break;
+                        case SegmentTypeProto.QUAD:
+                            p2d.quadraticCurveTo(path.points[off + 2]+ dx, path.points[off + 3]+ dy, path.points[off + 0]+ dx, path.points[off + 1]+ dy);
+                            off += 4;
+                            break;
+                        case SegmentTypeProto.CUBIC:
+                            p2d.bezierCurveTo(path.points[off + 4]+ dx, path.points[off + 5]+ dy, path.points[off + 2]+ dx, path.points[off + 3]+ dy, path.points[off + 0]+ dx, path.points[off + 1]+ dy);
+                            off += 6;
+                            break;
+                        case SegmentTypeProto.CLOSE:
+                            p2d.closePath();
+                            break;
+                        default:
+                            console.warn("segment.type:" + path.type + " not recognized");
+                    }
+                });
             }
         }
 

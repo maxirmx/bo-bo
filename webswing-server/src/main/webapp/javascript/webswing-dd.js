@@ -541,6 +541,7 @@ export default class WebswingDirectDraw {
             let p = args[1].points.points;
             let x=p[0];
             let y=p[1];
+            let normalizeScale = p[2]/p[3];
             ctx.save();
             clip(ctx, args[2]);
             if (fontTransform != null) {
@@ -548,24 +549,37 @@ export default class WebswingDirectDraw {
                 ctx.transform(t.m00, t.m10, t.m01, t.m11, t.m02 + x, t.m12 + y);
                 ctx.fillText(string, 0, 0);
             } else {
-                var currentX=x;
+                var currentX=x/normalizeScale;
+                var font = toFontString(ctx.fontObj);
+                var normalizedFont = toFontString({style:ctx.fontObj.style,family:ctx.fontObj.family, size:26});
+                var allignedChars=[];
+
+                ctx.font=normalizedFont;
                 for (var i = 0;i<string.length;i++){
-                    if(p[i+2]===0){
+                    if(p[i+4]===0){
                         continue;
                     }
                     let c = getCharGroup(i,string,p);
                     var canvasWidth = ctx.measureText(c).width;
-                    ctx.save();
-                    var scaleX = p[i+2] / canvasWidth;
-                    if(scaleX<=1){
-                       ctx.scale(scaleX, 1);
-                       ctx.fillText(c, currentX/scaleX, y);
-                    }else{
-                       ctx.fillText(c, currentX+((p[i+2] - canvasWidth)/2), y);
-                    }
-                    ctx.restore();
-                    currentX+=p[i+2];
+                    var scaleX = p[i+4] / canvasWidth;
+
+                    allignedChars.push({
+                        c:c,
+                        scaleX:scaleX,
+                        x:(scaleX<=1 ? (currentX/scaleX) : (currentX+((p[i+4] - canvasWidth)/2)))*normalizeScale,
+                    });
+                    currentX+=p[i+4];
                 }
+
+                ctx.font=font;
+                allignedChars.forEach(charDef=>{
+                    ctx.save();
+                    if(charDef.scaleX<=1){
+                        ctx.scale(charDef.scaleX, 1);
+                    }
+                    ctx.fillText(charDef.c, charDef.x, y);
+                    ctx.restore();
+                })
             }
             ctx.restore();
         }
@@ -585,6 +599,12 @@ export default class WebswingDirectDraw {
                 return ctx.font;
             }
             let font = args[0].font;
+            ctx.font = toFontString(font);
+            ctx.fontObj= font;
+            return font.transform;
+        }
+
+        function toFontString(font){
             let style = '';
             switch (font.style) {
                 case StyleProto.NORMAL:
@@ -604,8 +624,7 @@ export default class WebswingDirectDraw {
             if (font.family !== 'sans-serif' && font.family !== 'serif' && font.family !== 'monospace') {
                 fontFamily = "\"" + ctxId + font.family + "\"";
             }
-            ctx.font = style + " " + font.size + "px " + fontFamily;
-            return font.transform;
+            return style + " " + font.size + "px " + fontFamily;
         }
 
         function iprtCopyArea(ctx, args) {

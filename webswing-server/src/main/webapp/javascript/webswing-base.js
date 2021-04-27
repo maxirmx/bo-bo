@@ -64,7 +64,7 @@ export default class BaseModule {
         let timer1, timer2, timer3;
         let drawingLock;
         let drawingQ = [];
-
+        let initialized = false;
         let windowImageHolders = {}; // <id> : <CanvasWindow/HtmlWindow>
         var closedWindows = {}; // <id> : <boolean>, map of windows requested to be closed, rendering of windows in this map will be ignored, until message about closed window is received
         let directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: Util.dpr});
@@ -98,6 +98,7 @@ export default class BaseModule {
             if (isMirror) {
                 repaint();
             }
+            initialized=true;
             //api.showDialog(api.startingDialog);
             api.fireCallBack({type: 'webswingInitialied'});
         }
@@ -177,6 +178,7 @@ export default class BaseModule {
         }
 
         function dispose() {
+            initialized=false;
             clearInterval(timer1);
             clearInterval(timer2);
             clearInterval(timer3);
@@ -212,8 +214,12 @@ export default class BaseModule {
             if (data.playback != null) {
                 api.playbackInfo(data);
             }
-            if (data.applications != null && data.applications.length != 0) {
-                api.showSelector(data.applications);
+            if (data.applications != null && data.applications.length != 0 ) {
+                if(!initialized){
+                    api.showSelector(data.applications);
+                }else{
+                    continueSession();
+                }
             }
             if (data.event != null && !api.cfg.recordingPlayback) {
                 if (data.event == "shutDownNotification") {

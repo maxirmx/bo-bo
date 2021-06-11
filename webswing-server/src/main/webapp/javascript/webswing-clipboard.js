@@ -132,6 +132,7 @@ export default class ClipboardModule {
         }
 
         function displayCopyBar(data) { // trigered by swing app
+
         	let onlyOtherData=false;
             if (copyBar != null) {
                 close();
@@ -143,6 +144,20 @@ export default class ClipboardModule {
                 	onlyOtherData=true;
                 }
             }
+
+            if(data.text && navigator.clipboard && navigator.clipboard.writeText){
+                navigator.clipboard.writeText(data.text).then(function() {
+                   return;
+                }, function() {
+                    showCopyBar(data);
+                });
+            }else {
+                showCopyBar(data);
+            }
+
+        }
+
+        function showCopyBar(data){
             api.cfg.rootElement.append(html);
             copyBar = api.cfg.rootElement.find('div[data-id="copyBar"]');
             copyBar.on('click', function(event) {
@@ -239,13 +254,13 @@ export default class ClipboardModule {
                 minimize();
             });
 
-            
+
             if (onlyOtherData) {
                 copyBar.find('div[data-id="contentBar"]').hide();
                 copyBar.find('div[data-id="minimizedInfoBar"]').show();
                 copyBar.minimized = true;
             }else{
-            	let minimizer = setTimeout(function() {
+                let minimizer = setTimeout(function() {
                     minimize();
                 }, 2000);
             }

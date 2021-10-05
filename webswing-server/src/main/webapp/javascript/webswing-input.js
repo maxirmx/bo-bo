@@ -33,6 +33,7 @@ export default class InputModule {
         var mouseDownCanvas = null;
         let inputEvtQueue = [];
         let compositionInput = false;
+        let exitFocusTraversalOnNextTabKey =false
 
         function sendInput(message) {
             enqueueInputEvent();
@@ -282,10 +283,21 @@ export default class InputModule {
                 let keyevt = getKBKey('keydown', canvas, event);
                 // hanle paste event
                 if (!(keyevt.key.ctrl && (keyevt.key.character == 88 || keyevt.key.character == 67 || keyevt.key.character == 86))) { // cut copy
+
+                    if(keyevt.key.ctrl && keyevt.key.shift && keyevt.key.character == 81){//ctrl + shift + q  to exit webswing focus traversal
+                        exitFocusTraversalOnNextTabKey=true;
+                    }
+                    if( keyevt.key.character == 9 &&  exitFocusTraversalOnNextTabKey){ // if exitFocusTraversalOnNextTabKey was triggered, let browser handle the next tab key
+                        if(document.activeElement){document.activeElement.blur();}
+                        exitFocusTraversalOnNextTabKey =false;
+                        return true
+                    }
+
                     // default action prevented
                     if (keyevt.key.ctrl && !keyevt.key.alt && !keyevt.key.altgr) {
                         event.preventDefault();
                     }
+
                     if(isHotKeyBehavoir(keyevt)){
                         convertHotKey(keyevt);
                     }
@@ -311,7 +323,8 @@ export default class InputModule {
                 if (!(keyevt.key.ctrl && (keyevt.key.character == 120 || keyevt.key.character == 24 || keyevt.key.character == 99
                         || keyevt.key.character == 118 || keyevt.key.character == 22))) { // cut copy paste handled separately
                     event.preventDefault();
-                    event.stopPropagation();
+                    event.stopPropagation()
+
                     if(isHotKeyBehavoir(keyevt)){
                         convertHotKey(keyevt);
                     }

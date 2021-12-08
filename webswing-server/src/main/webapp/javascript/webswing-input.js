@@ -241,10 +241,17 @@ export default class InputModule {
             		return;
             	}
             	
+                handleContextMenu(evt);
+            };
+
+            let handleContextMenu = function (evt) {
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
             };
+
+            inputEventHandlerMap['contextmenu'] = handleContextMenu;
+            Util.bindEvent(input, 'contextmenu', handleContextMenu, false);
             canvasEventHandlerMap['contextmenu'] = canvasContextmenuEventHandler;
             Util.bindEvent(document, 'contextmenu', canvasContextmenuEventHandler);
 

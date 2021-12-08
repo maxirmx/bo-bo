@@ -31,12 +31,14 @@ message FocusEventMsgProto {
     optional sint32 caretX = 6;
     optional sint32 caretY = 7;
     optional sint32 caretH = 8;
+    optional string windowId = 9;
 
     enum FocusEventTypeProto {
         focusLost = 1;
         focusGained = 2;
         focusWithCarretGained = 3;
         focusPasswordGained = 4;
+        htmlPanelFocused = 5;
     }
 }
 

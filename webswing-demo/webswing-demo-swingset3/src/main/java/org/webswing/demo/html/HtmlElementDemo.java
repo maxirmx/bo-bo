@@ -1,12 +1,15 @@
 package org.webswing.demo.html;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,6 +29,21 @@ public class HtmlElementDemo extends JPanel {
 
 	private HtmlPanel htmlPanel;
 	private HtmlPanel htmlIframePanel;
+	private FocusListener buttonFocusListener = new FocusListener() {
+		@Override
+		public void focusLost(FocusEvent e) {
+			if (e.getComponent() instanceof JButton) {
+				e.getComponent().setBackground(null);
+			}
+		}
+		
+		@Override
+		public void focusGained(FocusEvent e) {
+			if (e.getComponent() instanceof JButton) {
+				e.getComponent().setBackground(Color.yellow);
+			}
+		}
+	};
 	
 	public HtmlElementDemo() {
 		if (!WebswingUtil.isWebswing()) {
@@ -33,14 +51,27 @@ public class HtmlElementDemo extends JPanel {
 			return;
 		}
 		
-		setLayout(new BorderLayout());
+		JPanel contentPanel = new JPanel();
+		BoxLayout boxLayout = new BoxLayout(contentPanel, BoxLayout.Y_AXIS);
+		contentPanel.setLayout(boxLayout);
+		add(contentPanel, BorderLayout.CENTER);
+		
+		JButton btn1 = new JButton("Button 1");
+		btn1.setFocusPainted(false);
+		btn1.addFocusListener(buttonFocusListener);
+		JButton btn2 = new JButton("Button 2");
+		btn2.setFocusPainted(false);
+		btn2.addFocusListener(buttonFocusListener);
+		JButton btn3 = new JButton("Button 3");
+		btn3.setFocusPainted(false);
+		btn3.addFocusListener(buttonFocusListener);
 		
 		htmlPanel = WebswingUtil.getWebswingApi().createHtmlPanel();
 		htmlPanel.setName("test123");
+		htmlPanel.setPreferredSize(new Dimension(300, 200));
 		if (!WebswingUtil.getWebswingApi().isCompositingWindowManager()) {
 			htmlPanel.add(new JLabel("Please enable Compositing Window Manager in application config to see this demo."));
 		}
-		add(htmlPanel, BorderLayout.CENTER);
 		
 		htmlPanel.addWebWindowActionListener(new WebWindowActionListener() {
 			@Override
@@ -67,42 +98,15 @@ public class HtmlElementDemo extends JPanel {
 		
 		htmlIframePanel = WebswingUtil.getWebswingApi().createHtmlPanel();
 		htmlIframePanel.setName("testIframe");
-		add(htmlIframePanel, BorderLayout.EAST);
+		htmlIframePanel.setPreferredSize(new Dimension(300, 200));
 		
-		addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentShown(ComponentEvent e) {
-				updateLayout();
-			}
-			
-			@Override
-			public void componentResized(ComponentEvent e) {
-				updateLayout();
-			}
-			
-			@Override
-			public void componentMoved(ComponentEvent e) {
-				updateLayout();
-			}
-		});
-
+		contentPanel.add(btn1);
+		contentPanel.add(htmlPanel);
+		contentPanel.add(btn2);
+		contentPanel.add(htmlIframePanel);
+		contentPanel.add(btn3);
 	}
 	
-	@Override
-	public void doLayout() {
-		super.doLayout();
-		updateLayout();
-	}
-	
-	private void updateLayout() {
-		if (htmlPanel != null && htmlIframePanel != null) {
-			htmlPanel.setPreferredSize(new Dimension(getWidth() / 2, getHeight()));
-			htmlIframePanel.setPreferredSize(new Dimension(getWidth() / 2, getHeight()));
-			htmlPanel.revalidate();
-			htmlIframePanel.revalidate();
-		}
-	}
-
 	public static void main(String[] args) {
 		final JFrame f = new JFrame("Html Element Example");
 		f.getContentPane().add(new HtmlElementDemo());

@@ -317,6 +317,14 @@ export default class BaseModule {
                     input.style.left = (data.focusEvent.x + data.focusEvent.caretX) + 'px';
                     input.style.height = data.focusEvent.caretH + 'px';
                     api.focusInput();
+                } else if(data.focusEvent.type === 'htmlPanelFocused'){
+					var htmlPanelId = data.focusEvent.windowId;
+	                if (htmlPanelId != null) {
+	                    var htmlPanel = getWindowById(htmlPanelId);
+	                    if (htmlPanel && htmlPanel.element) {
+	                        focusFocusableElementInside(htmlPanel.element);
+	                    }
+	                }
                 } else {
                     input.style.top = null;
                     input.style.left = null;
@@ -432,6 +440,28 @@ export default class BaseModule {
             }
         }
 
+    	function focusFocusableElementInside(container) {
+        	if (document.activeElement != null && container.contains(document.activeElement)) {
+         	   return;
+        	}
+
+	        var focusableEl = container.querySelector("a[href]:not([tabindex='-1']), area[href]:not([tabindex='-1']), input:not([disabled]):not([type='hidden']):not([tabindex='-1']), "
+    	            + "select:not([disabled]):not([tabindex='-1']), textarea:not([disabled]):not([tabindex='-1']), button:not([disabled]):not([tabindex='-1']), "
+        	        + "iframe:not([tabindex='-1']), [tabindex]:not([tabindex='-1']), [contentEditable=true]:not([tabindex='-1'])");
+        
+        	if (focusableEl != null) {
+	            if (focusableEl.tagName.toLowerCase() === "iframe") {
+	                container.focus();
+    	            return;
+        	    }
+
+	            focusableEl.focus();
+    	        return;
+        	}
+
+	        container.focus();
+    	}
+
         function closeWindow(id) {
             var canvasWindow = windowImageHolders[id];
 
@@ -497,6 +527,7 @@ export default class BaseModule {
         		if (windowImageHolders[win.id] == null) {
         			var htmlDiv = document.createElement("div");
         			htmlDiv.classList.add("webswing-html-canvas");
+					htmlDiv.setAttribute("tabindex", "0");
         			
         			windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name);
         			newWindowOpened = true;
@@ -761,6 +792,7 @@ export default class BaseModule {
         				if (windowImageHolders[win.id] == null) {
         					var htmlDiv = document.createElement("div");
         					htmlDiv.classList.add("webswing-html-canvas");
+							htmlDiv.setAttribute("tabindex", "0");
         					
         					windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name);
         					newWindowOpened = true;
@@ -966,6 +998,7 @@ export default class BaseModule {
         	if (windowImageHolders[win.id] == null) {
         		htmlDiv = document.createElement("div");
 				htmlDiv.classList.add("webswing-html-canvas");
+				htmlDiv.setAttribute("tabindex", "0");
 				
 				windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name);
 				newWindowOpened = true;

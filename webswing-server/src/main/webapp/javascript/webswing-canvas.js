@@ -102,9 +102,9 @@ export default class CanvasModule {
         
         function getDesktopSize() {
         	if (api.cfg.rootElement.is(".composition")) {
-        		return {width: width(), height: height()};
+        		return {width: Math.floor(width()), height: Math.floor(height())};
         	}
-        	return {width: get().offsetWidth, height: get().offsetHeight};
+        	return {width: Math.floor(get().offsetWidth), height: Math.floor(get().offsetHeight)};
         }
         
     }

@@ -70,6 +70,7 @@ export default class BaseModule {
         let directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: Util.dpr});
         var compositingWM = false;
         var compositionBaseZIndex = 100;
+		var lastDpr = 1;
         const JFRAME_MAXIMIZED_STATE = 6;
         
         function startApplication(name, applet, alwaysReset) {
@@ -593,11 +594,17 @@ export default class BaseModule {
         		
         		var canvas = windowImageHolders[win.id].element;
         		var canvasWin = windowImageHolders[win.id];
-        		
+				let dpr = Util.dpr();        		
+
         		if ($(canvas).width() != win.width || $(canvas).height() != win.height) {
         			$(canvas).css({"width": win.width + 'px', "height": win.height + 'px'});
-        			$(canvas).attr("width", win.width).attr("height", win.height);
+        			$(canvas).attr("width", win.width * dpr).attr("height", win.height * dpr);
         		}
+
+				if (lastDpr != dpr) {
+					lastDpr = dpr;
+        			$(canvas).attr("width", win.width * dpr).attr("height", win.height * dpr);
+				}
 
                 if (isVisible(canvasWin.element.parentNode)) {
                     $(canvasWin.element).css({"left": win.posX + 'px', "top": win.posY + 'px'});

@@ -598,12 +598,9 @@ export default class BaseModule {
 
         		if ($(canvas).width() != win.width || $(canvas).height() != win.height) {
         			$(canvas).css({"width": win.width + 'px', "height": win.height + 'px'});
-        			$(canvas).attr("width", win.width * dpr).attr("height", win.height * dpr);
         		}
-
-				if (lastDpr != dpr) {
-					lastDpr = dpr;
-        			$(canvas).attr("width", win.width * dpr).attr("height", win.height * dpr);
+				if ($(canvas).attr("width") != Math.floor(win.width * dpr) || $(canvas).attr("height") != Math.floor(win.height * dpr)) {
+	    			$(canvas).attr("width", Math.floor(win.width * dpr)).attr("height", Math.floor(win.height * dpr));
 				}
 
                 if (isVisible(canvasWin.element.parentNode)) {
@@ -967,7 +964,7 @@ export default class BaseModule {
         		"width": win.width + "px",
         		"height": win.height + "px"
         	});
-        	$(canvas).attr("width", win.width * dpr).attr("height", win.height * dpr);
+        	$(canvas).attr("width", Math.floor(win.width * dpr)).attr("height", Math.floor(win.height * dpr));
         	
 			if ($(canvas).is(".modal-blocked") != win.modalBlocked) {
 				$(canvas).toggleClass("modal-blocked", win.modalBlocked);

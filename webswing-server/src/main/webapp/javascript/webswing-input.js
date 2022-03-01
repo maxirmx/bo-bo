@@ -19,7 +19,8 @@ export default class InputModule {
             register : register,
             sendInput : sendInput,
             focusInput : focusInput,
-            dispose : dispose
+            dispose : dispose,
+            setupEventHandlingForDocument : setupEventHandlingForDocument
         };
 
         module.ready = function() {
@@ -86,12 +87,14 @@ export default class InputModule {
             for (let key in canvasEventHandlerMap) {
                 if (canvasEventHandlerMap.hasOwnProperty(key)) {
                     document.removeEventListener(key, canvasEventHandlerMap[key]);
+                    iframeDocuments.forEach(function(ifdoc){ifdoc.removeEventListener(key, canvasEventHandlerMap[key]);})
                 }
             }
             canvasEventHandlerMap = null;
             for (let key in inputEventHandlerMap) {
                 if (inputEventHandlerMap.hasOwnProperty(key)) {
                     api.getInput().removeEventListener(key, inputEventHandlerMap[key]);
+                    iframeDocuments.forEach(function(ifdoc){ ifdoc.webswingIfameInput.removeEventListener(key, inputEventHandlerMap[key]);})
                 }
             }
             inputEventHandlerMap = null;
@@ -101,6 +104,22 @@ export default class InputModule {
 
         let canvasEventHandlerMap = {};
         let inputEventHandlerMap = {};
+        let iframeDocuments = []
+
+        function setupEventHandlingForDocument(iframeDocument){
+            if(iframeDocuments.indexOf(iframeDocument)<0){
+                $(iframeDocument.body).append('<input data-id="input-handler" class="input-hidden" type="text" value="" />');
+                iframeDocument.webswingIfameInput = $(iframeDocument.body).find('input[data-id="input-handler"]');
+
+                Object.keys(canvasEventHandlerMap).forEach(function(eventType){
+                    Util.bindEvent(iframeDocument, 'mousedown', canvasEventHandlerMap[eventType], false);
+                })
+                Object.keys(inputEventHandlerMap).forEach(function(eventType){
+                    Util.bindEvent( iframeDocument.webswingIfameInput, 'mousedown', inputEventHandlerMap[eventType], false);
+                })
+                iframeDocuments.push(iframeDocument);
+            }
+        }
 
         function register() {
             if (registered) {

@@ -45,7 +45,8 @@ export default class BaseModule {
             processJsLink : 'jslink.process',
             playbackInfo : 'playback.playbackInfo',
             performAction: 'base.performAction',
-            handleActionEvent: 'base.handleActionEvent'
+            handleActionEvent: 'base.handleActionEvent',
+            setupEventHandlingForDocument: 'input.setupEventHandlingForDocument'
         };
         module.provides = {
             startApplication : startApplication,
@@ -1167,6 +1168,7 @@ export default class BaseModule {
         function CanvasWindow(id, element, internal, name, title) {
         	this.id = id;
         	this.element = element;
+        	this.ownerDocument = element.ownerDocument;
         	this.name = name;
         	this.title = title;
         	this.htmlWindow = false;
@@ -1212,6 +1214,11 @@ export default class BaseModule {
     		}
     		
     		if (parent) {
+
+    		    if(this.ownerDocument!==parent.ownerDocument){
+                    api.setupEventHandlingForDocument(parent.ownerDocument);
+                }
+
     			parent.append(this.element);
     			var rect = this.element.getBoundingClientRect();
     			if (pos) {

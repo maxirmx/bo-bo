@@ -314,7 +314,12 @@ export default class InputModule {
                         exitFocusTraversalOnNextTabKey=true;
                     }
                     if( keyevt.key.character == 9 &&  exitFocusTraversalOnNextTabKey){ // if exitFocusTraversalOnNextTabKey was triggered, let browser handle the next tab key
-                        if(document.activeElement){document.activeElement.blur();}
+                        if(document.activeElement){
+                            document.activeElement.blur();
+                        }
+                        if(window.top && window.top.document.activeElement){
+                            window.top.document.activeElement.blur();
+                        }
                         exitFocusTraversalOnNextTabKey =false;
                         return true
                     }

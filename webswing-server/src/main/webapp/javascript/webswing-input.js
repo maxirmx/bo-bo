@@ -310,15 +310,21 @@ export default class InputModule {
                 // hanle paste event
                 if (!(keyevt.key.ctrl && (keyevt.key.character == 88 || keyevt.key.character == 67 || keyevt.key.character == 86))) { // cut copy
 
-                    if(keyevt.key.ctrl && keyevt.key.shift && keyevt.key.character == 81){//ctrl + shift + q  to exit webswing focus traversal
+                    if(keyevt.key.ctrl && keyevt.key.shift && keyevt.key.character == 90){//ctrl + shift + z  to exit webswing focus traversal
                         exitFocusTraversalOnNextTabKey=true;
                     }
                     if( keyevt.key.character == 9 &&  exitFocusTraversalOnNextTabKey){ // if exitFocusTraversalOnNextTabKey was triggered, let browser handle the next tab key
+                        var focusHelper= document.createElement("div");
+                        focusHelper.tabIndex="0";
                         if(document.activeElement){
-                            document.activeElement.blur();
+                            document.activeElement.after(focusHelper);
+                            focusHelper.focus();
+                            focusHelper.remove();
                         }
                         if(window.top && window.top.document.activeElement){
-                            window.top.document.activeElement.blur();
+                            window.top.document.activeElement.after(focusHelper);
+                            focusHelper.focus();
+                            focusHelper.remove();
                         }
                         exitFocusTraversalOnNextTabKey =false;
                         return true

@@ -52,20 +52,22 @@ public class DrawInstructionFactory {
 		return new DrawInstruction(image, transformConst, cropConst, bgConst, toPathConst(clip));
 	}
 
-	public DrawInstruction drawString(String s, double x, double y, Shape clip, FontMetrics fm) {
+	public DrawInstruction drawString(String s, double x, double y, Shape clip, FontMetrics fm,FontMetrics fmNormalized) {
 		int firstIndex= DirectDrawUtils.findFirstVisibleIndex(s, x, y, clip,fm);
 		int lastIndex = DirectDrawUtils.findLastVisibleIndex(firstIndex,s, x, y, clip,fm);
 		int offset = fm.stringWidth(s.substring(0,firstIndex));
 		String visibleString = s.substring(firstIndex,lastIndex);
-		int[] widths = new int[visibleString.length()+2];
+		int[] widths = new int[visibleString.length()+4];
 		int tmpwidth=0;
 		String tmp ="";
 		widths[0]=(int)x+offset;
 		widths[1]=(int)y;
+		widths[2]=fm.stringWidth(visibleString);;
+		widths[3]=fmNormalized.stringWidth(visibleString);
 		for (int i = 0 ;i<visibleString.length();i++){
 			tmp+=visibleString.charAt(i);
-			int nextTmpWidth = fm.stringWidth(tmp);
-			widths[i+2]=nextTmpWidth-tmpwidth;
+			int nextTmpWidth = fmNormalized.stringWidth(tmp);
+			widths[i+4]=nextTmpWidth-tmpwidth;
 			tmpwidth=nextTmpWidth;
 		}
 		return new DrawInstruction(InstructionProto.DRAW_STRING, new StringConst(ctx, visibleString), new PointsConst(ctx, widths), toPathConst(clip));
@@ -150,7 +152,7 @@ public class DrawInstructionFactory {
 		} else if (s instanceof Arc2D) {
 			return new ArcConst(ctx, (Arc2D) s);
 		} else {
-			return new PathConst(ctx, s);
+			return new SegmentedPathConst(ctx,s);
 		}
 	}
 

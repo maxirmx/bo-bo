@@ -1,3 +1,4 @@
+syntax = "proto2";
 package org.webswing.directdraw.proto;
 
 message WebImageProto {
@@ -38,20 +39,21 @@ message DrawConstantProto {
 	optional ImageProto image = 3;
 	optional TransformProto transform = 4;
 	optional string string = 5;
-	optional PathProto path = 6;
-	optional FontProto font = 7;
-	optional LinearGradientProto linearGrad = 8;
-	optional RadialGradientProto radialGrad = 9;
-	optional PointsProto points = 10;
-	optional RectangleProto rectangle = 11;
-	optional EllipseProto ellipse = 12;
-	optional RoundRectangleProto roundRectangle = 13;
-	optional ArcProto arc = 14;
-	optional StrokeProto stroke = 15;
-	optional CompositeProto composite = 16;
-	optional TextureProto texture = 17;
-	optional GlyphProto glyph = 18; 
-	optional CombinedProto combined = 19;
+	optional PartialPathProto partialPath = 6;
+	optional CompositePathProto path = 7;
+	optional FontProto font = 8;
+	optional LinearGradientProto linearGrad = 9;
+	optional RadialGradientProto radialGrad = 10;
+	optional PointsProto points = 11;
+	optional RectangleProto rectangle = 12;
+	optional EllipseProto ellipse = 13;
+	optional RoundRectangleProto roundRectangle = 14;
+	optional ArcProto arc = 15;
+	optional StrokeProto stroke = 16;
+	optional CompositeProto composite = 17;
+	optional TextureProto texture = 18;
+	optional GlyphProto glyph = 19;
+	optional CombinedProto combined = 20;
 }
 
 message FontFaceProto {
@@ -70,14 +72,14 @@ message ImageProto {
 
 message TransformProto {
 	optional float m00 = 1 [default = 1];
-	optional float m10 = 2;
-	optional float m01 = 3;
+	optional float m10 = 2 [default = 0];
+	optional float m01 = 3 [default = 0];
 	optional float m11 = 4 [default = 1];
-	optional float m02 = 5;
-	optional float m12 = 6;
+	optional float m02 = 5 [default = 0];
+	optional float m12 = 6 [default = 0];
 }
 
-message CombinedProto{
+message CombinedProto {
 	repeated uint32 ids = 1;
 }
 
@@ -124,10 +126,9 @@ message ArcProto {
 	}
 }
 
-message PathProto {
-	required bool windingOdd = 1;
-	repeated SegmentTypeProto type = 2;
-	repeated float points = 3;
+message PartialPathProto {
+	repeated SegmentTypeProto type = 1;
+	repeated float points = 2;
 
 	enum SegmentTypeProto {
 		MOVE = 0;
@@ -136,6 +137,12 @@ message PathProto {
 		CUBIC = 3;
 		CLOSE = 4;
 	}
+}
+
+message CompositePathProto {
+	required bool windingOdd = 1;
+	repeated float xOffsets = 2;
+	repeated float yOffsets = 3;
 }
 
 message FontProto {

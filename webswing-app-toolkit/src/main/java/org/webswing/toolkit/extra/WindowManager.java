@@ -54,7 +54,7 @@ public class WindowManager {
 					activeWindow = w;
 					if (activeWindow != null) {
 						WindowEvent gainedFocusWindowEvent = new WindowEvent(activeWindow, WindowEvent.WINDOW_GAINED_FOCUS, activeWindow, 0, 0);
-						WebEventDispatcher.dispatchEventInSwing(activeWindow, gainedFocusWindowEvent);
+						Util.getWebToolkit().getEventDispatcher().dispatchEventInSwing(activeWindow, gainedFocusWindowEvent);
 						WebComponentPeer activeWindowPeer = (WebComponentPeer) WebToolkit.targetToPeer(activeWindow);
 						activeWindowPeer.updateWindowDecorationImage();
 						Util.getWebToolkit().getPaintDispatcher().notifyWindowRepaint(activeWindow);

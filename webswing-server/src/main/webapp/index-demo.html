@@ -41,6 +41,13 @@
             				win.performAction({actionName: "openConfirmDialog"});
             			});
             			win.element.appendChild(button);
+            			
+            			var input = document.createElement("input");
+            			input.value = "this is a text";
+            			input.style.margin = "10px";
+            			input.classList.add("focusable");
+            			win.element.appendChild(input);
+            			
             			win.element.style.background = "white";
             			win.element.style.textAlign = "center";
             			win.element.style.overflow = "hidden";

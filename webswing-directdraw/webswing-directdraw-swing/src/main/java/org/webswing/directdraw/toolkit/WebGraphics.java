@@ -16,6 +16,7 @@ import java.util.WeakHashMap;
 
 public class WebGraphics extends AbstractVectorGraphics {
 
+	private static final float NORMALIZED_FONT_SIZE = 26;
 	WebImage thisImage;
 	private DrawInstructionFactory dif;
 	private boolean disposed = false;
@@ -153,7 +154,7 @@ public class WebGraphics extends AbstractVectorGraphics {
 		}
 		Font font = getFont();
 		if (thisImage.getContext().requestFont(font)) {
-			thisImage.addInstruction(this, dif.drawString(string, x, y, getClip(),getFontMetrics()));
+			thisImage.addInstruction(this, dif.drawString(string, x, y, getClip(),getFontMetrics(),getFontMetrics(font.deriveFont(NORMALIZED_FONT_SIZE))));
 		} else {
 			thisImage.addInstruction(this, dif.drawGlyphList(string, font, x, y, getTransform(), getClip()));
 		}

@@ -2637,199 +2637,213 @@ public final class Directdraw {
     com.google.protobuf.ByteString
         getStringBytes();
 
-    // optional .org.webswing.directdraw.proto.PathProto path = 6;
+    // optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;
     /**
-     * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+     * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
+     */
+    boolean hasPartialPath();
+    /**
+     * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
+     */
+    org.webswing.directdraw.proto.Directdraw.PartialPathProto getPartialPath();
+    /**
+     * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
+     */
+    org.webswing.directdraw.proto.Directdraw.PartialPathProtoOrBuilder getPartialPathOrBuilder();
+
+    // optional .org.webswing.directdraw.proto.CompositePathProto path = 7;
+    /**
+     * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
      */
     boolean hasPath();
     /**
-     * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+     * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
      */
-    org.webswing.directdraw.proto.Directdraw.PathProto getPath();
+    org.webswing.directdraw.proto.Directdraw.CompositePathProto getPath();
     /**
-     * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+     * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
      */
-    org.webswing.directdraw.proto.Directdraw.PathProtoOrBuilder getPathOrBuilder();
+    org.webswing.directdraw.proto.Directdraw.CompositePathProtoOrBuilder getPathOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.FontProto font = 7;
+    // optional .org.webswing.directdraw.proto.FontProto font = 8;
     /**
-     * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+     * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
      */
     boolean hasFont();
     /**
-     * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+     * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
      */
     org.webswing.directdraw.proto.Directdraw.FontProto getFont();
     /**
-     * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+     * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
      */
     org.webswing.directdraw.proto.Directdraw.FontProtoOrBuilder getFontOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;
+    // optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;
     /**
-     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
      */
     boolean hasLinearGrad();
     /**
-     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
      */
     org.webswing.directdraw.proto.Directdraw.LinearGradientProto getLinearGrad();
     /**
-     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
      */
     org.webswing.directdraw.proto.Directdraw.LinearGradientProtoOrBuilder getLinearGradOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;
+    // optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;
     /**
-     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
      */
     boolean hasRadialGrad();
     /**
-     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
      */
     org.webswing.directdraw.proto.Directdraw.RadialGradientProto getRadialGrad();
     /**
-     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
      */
     org.webswing.directdraw.proto.Directdraw.RadialGradientProtoOrBuilder getRadialGradOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.PointsProto points = 10;
+    // optional .org.webswing.directdraw.proto.PointsProto points = 11;
     /**
-     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
      */
     boolean hasPoints();
     /**
-     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
      */
     org.webswing.directdraw.proto.Directdraw.PointsProto getPoints();
     /**
-     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
      */
     org.webswing.directdraw.proto.Directdraw.PointsProtoOrBuilder getPointsOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;
+    // optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;
     /**
-     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
      */
     boolean hasRectangle();
     /**
-     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
      */
     org.webswing.directdraw.proto.Directdraw.RectangleProto getRectangle();
     /**
-     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
      */
     org.webswing.directdraw.proto.Directdraw.RectangleProtoOrBuilder getRectangleOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;
+    // optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;
     /**
-     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
      */
     boolean hasEllipse();
     /**
-     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
      */
     org.webswing.directdraw.proto.Directdraw.EllipseProto getEllipse();
     /**
-     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
      */
     org.webswing.directdraw.proto.Directdraw.EllipseProtoOrBuilder getEllipseOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;
+    // optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;
     /**
-     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
      */
     boolean hasRoundRectangle();
     /**
-     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
      */
     org.webswing.directdraw.proto.Directdraw.RoundRectangleProto getRoundRectangle();
     /**
-     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
      */
     org.webswing.directdraw.proto.Directdraw.RoundRectangleProtoOrBuilder getRoundRectangleOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.ArcProto arc = 14;
+    // optional .org.webswing.directdraw.proto.ArcProto arc = 15;
     /**
-     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
      */
     boolean hasArc();
     /**
-     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
      */
     org.webswing.directdraw.proto.Directdraw.ArcProto getArc();
     /**
-     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
      */
     org.webswing.directdraw.proto.Directdraw.ArcProtoOrBuilder getArcOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;
+    // optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;
     /**
-     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
      */
     boolean hasStroke();
     /**
-     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
      */
     org.webswing.directdraw.proto.Directdraw.StrokeProto getStroke();
     /**
-     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
      */
     org.webswing.directdraw.proto.Directdraw.StrokeProtoOrBuilder getStrokeOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.CompositeProto composite = 16;
+    // optional .org.webswing.directdraw.proto.CompositeProto composite = 17;
     /**
-     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
      */
     boolean hasComposite();
     /**
-     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
      */
     org.webswing.directdraw.proto.Directdraw.CompositeProto getComposite();
     /**
-     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
      */
     org.webswing.directdraw.proto.Directdraw.CompositeProtoOrBuilder getCompositeOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.TextureProto texture = 17;
+    // optional .org.webswing.directdraw.proto.TextureProto texture = 18;
     /**
-     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
      */
     boolean hasTexture();
     /**
-     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
      */
     org.webswing.directdraw.proto.Directdraw.TextureProto getTexture();
     /**
-     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
      */
     org.webswing.directdraw.proto.Directdraw.TextureProtoOrBuilder getTextureOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;
+    // optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;
     /**
-     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
      */
     boolean hasGlyph();
     /**
-     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
      */
     org.webswing.directdraw.proto.Directdraw.GlyphProto getGlyph();
     /**
-     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
      */
     org.webswing.directdraw.proto.Directdraw.GlyphProtoOrBuilder getGlyphOrBuilder();
 
-    // optional .org.webswing.directdraw.proto.CombinedProto combined = 19;
+    // optional .org.webswing.directdraw.proto.CombinedProto combined = 20;
     /**
-     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
      */
     boolean hasCombined();
     /**
-     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
      */
     org.webswing.directdraw.proto.Directdraw.CombinedProto getCombined();
     /**
-     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
      */
     org.webswing.directdraw.proto.Directdraw.CombinedProtoOrBuilder getCombinedOrBuilder();
   }
@@ -2934,21 +2948,34 @@ public final class Directdraw {
               break;
             }
             case 50: {
-              org.webswing.directdraw.proto.Directdraw.PathProto.Builder subBuilder = null;
+              org.webswing.directdraw.proto.Directdraw.PartialPathProto.Builder subBuilder = null;
               if (((bitField0_ & 0x00000020) == 0x00000020)) {
-                subBuilder = path_.toBuilder();
+                subBuilder = partialPath_.toBuilder();
               }
-              path_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.PathProto.PARSER, extensionRegistry);
+              partialPath_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.PartialPathProto.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(path_);
-                path_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(partialPath_);
+                partialPath_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000020;
               break;
             }
             case 58: {
-              org.webswing.directdraw.proto.Directdraw.FontProto.Builder subBuilder = null;
+              org.webswing.directdraw.proto.Directdraw.CompositePathProto.Builder subBuilder = null;
               if (((bitField0_ & 0x00000040) == 0x00000040)) {
+                subBuilder = path_.toBuilder();
+              }
+              path_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.CompositePathProto.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(path_);
+                path_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000040;
+              break;
+            }
+            case 66: {
+              org.webswing.directdraw.proto.Directdraw.FontProto.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000080) == 0x00000080)) {
                 subBuilder = font_.toBuilder();
               }
               font_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.FontProto.PARSER, extensionRegistry);
@@ -2956,12 +2983,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(font_);
                 font_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000080;
               break;
             }
-            case 66: {
+            case 74: {
               org.webswing.directdraw.proto.Directdraw.LinearGradientProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000080) == 0x00000080)) {
+              if (((bitField0_ & 0x00000100) == 0x00000100)) {
                 subBuilder = linearGrad_.toBuilder();
               }
               linearGrad_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.LinearGradientProto.PARSER, extensionRegistry);
@@ -2969,12 +2996,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(linearGrad_);
                 linearGrad_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000080;
+              bitField0_ |= 0x00000100;
               break;
             }
-            case 74: {
+            case 82: {
               org.webswing.directdraw.proto.Directdraw.RadialGradientProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000100) == 0x00000100)) {
+              if (((bitField0_ & 0x00000200) == 0x00000200)) {
                 subBuilder = radialGrad_.toBuilder();
               }
               radialGrad_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.RadialGradientProto.PARSER, extensionRegistry);
@@ -2982,12 +3009,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(radialGrad_);
                 radialGrad_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000100;
+              bitField0_ |= 0x00000200;
               break;
             }
-            case 82: {
+            case 90: {
               org.webswing.directdraw.proto.Directdraw.PointsProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000200) == 0x00000200)) {
+              if (((bitField0_ & 0x00000400) == 0x00000400)) {
                 subBuilder = points_.toBuilder();
               }
               points_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.PointsProto.PARSER, extensionRegistry);
@@ -2995,12 +3022,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(points_);
                 points_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000200;
+              bitField0_ |= 0x00000400;
               break;
             }
-            case 90: {
+            case 98: {
               org.webswing.directdraw.proto.Directdraw.RectangleProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000400) == 0x00000400)) {
+              if (((bitField0_ & 0x00000800) == 0x00000800)) {
                 subBuilder = rectangle_.toBuilder();
               }
               rectangle_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.RectangleProto.PARSER, extensionRegistry);
@@ -3008,12 +3035,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(rectangle_);
                 rectangle_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000400;
+              bitField0_ |= 0x00000800;
               break;
             }
-            case 98: {
+            case 106: {
               org.webswing.directdraw.proto.Directdraw.EllipseProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000800) == 0x00000800)) {
+              if (((bitField0_ & 0x00001000) == 0x00001000)) {
                 subBuilder = ellipse_.toBuilder();
               }
               ellipse_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.EllipseProto.PARSER, extensionRegistry);
@@ -3021,12 +3048,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(ellipse_);
                 ellipse_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000800;
+              bitField0_ |= 0x00001000;
               break;
             }
-            case 106: {
+            case 114: {
               org.webswing.directdraw.proto.Directdraw.RoundRectangleProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00001000) == 0x00001000)) {
+              if (((bitField0_ & 0x00002000) == 0x00002000)) {
                 subBuilder = roundRectangle_.toBuilder();
               }
               roundRectangle_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.RoundRectangleProto.PARSER, extensionRegistry);
@@ -3034,12 +3061,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(roundRectangle_);
                 roundRectangle_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00001000;
+              bitField0_ |= 0x00002000;
               break;
             }
-            case 114: {
+            case 122: {
               org.webswing.directdraw.proto.Directdraw.ArcProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00002000) == 0x00002000)) {
+              if (((bitField0_ & 0x00004000) == 0x00004000)) {
                 subBuilder = arc_.toBuilder();
               }
               arc_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.ArcProto.PARSER, extensionRegistry);
@@ -3047,12 +3074,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(arc_);
                 arc_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00002000;
+              bitField0_ |= 0x00004000;
               break;
             }
-            case 122: {
+            case 130: {
               org.webswing.directdraw.proto.Directdraw.StrokeProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00004000) == 0x00004000)) {
+              if (((bitField0_ & 0x00008000) == 0x00008000)) {
                 subBuilder = stroke_.toBuilder();
               }
               stroke_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.StrokeProto.PARSER, extensionRegistry);
@@ -3060,12 +3087,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(stroke_);
                 stroke_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00004000;
+              bitField0_ |= 0x00008000;
               break;
             }
-            case 130: {
+            case 138: {
               org.webswing.directdraw.proto.Directdraw.CompositeProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00008000) == 0x00008000)) {
+              if (((bitField0_ & 0x00010000) == 0x00010000)) {
                 subBuilder = composite_.toBuilder();
               }
               composite_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.CompositeProto.PARSER, extensionRegistry);
@@ -3073,12 +3100,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(composite_);
                 composite_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00008000;
+              bitField0_ |= 0x00010000;
               break;
             }
-            case 138: {
+            case 146: {
               org.webswing.directdraw.proto.Directdraw.TextureProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00010000) == 0x00010000)) {
+              if (((bitField0_ & 0x00020000) == 0x00020000)) {
                 subBuilder = texture_.toBuilder();
               }
               texture_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.TextureProto.PARSER, extensionRegistry);
@@ -3086,12 +3113,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(texture_);
                 texture_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00010000;
+              bitField0_ |= 0x00020000;
               break;
             }
-            case 146: {
+            case 154: {
               org.webswing.directdraw.proto.Directdraw.GlyphProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00020000) == 0x00020000)) {
+              if (((bitField0_ & 0x00040000) == 0x00040000)) {
                 subBuilder = glyph_.toBuilder();
               }
               glyph_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.GlyphProto.PARSER, extensionRegistry);
@@ -3099,12 +3126,12 @@ public final class Directdraw {
                 subBuilder.mergeFrom(glyph_);
                 glyph_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00020000;
+              bitField0_ |= 0x00040000;
               break;
             }
-            case 154: {
+            case 162: {
               org.webswing.directdraw.proto.Directdraw.CombinedProto.Builder subBuilder = null;
-              if (((bitField0_ & 0x00040000) == 0x00040000)) {
+              if (((bitField0_ & 0x00080000) == 0x00080000)) {
                 subBuilder = combined_.toBuilder();
               }
               combined_ = input.readMessage(org.webswing.directdraw.proto.Directdraw.CombinedProto.PARSER, extensionRegistry);
@@ -3112,7 +3139,7 @@ public final class Directdraw {
                 subBuilder.mergeFrom(combined_);
                 combined_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00040000;
+              bitField0_ |= 0x00080000;
               break;
             }
           }
@@ -3280,309 +3307,331 @@ public final class Directdraw {
       }
     }
 
-    // optional .org.webswing.directdraw.proto.PathProto path = 6;
-    public static final int PATH_FIELD_NUMBER = 6;
-    private org.webswing.directdraw.proto.Directdraw.PathProto path_;
+    // optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;
+    public static final int PARTIALPATH_FIELD_NUMBER = 6;
+    private org.webswing.directdraw.proto.Directdraw.PartialPathProto partialPath_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+     * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
      */
-    public boolean hasPath() {
+    public boolean hasPartialPath() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+     * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
      */
-    public org.webswing.directdraw.proto.Directdraw.PathProto getPath() {
-      return path_;
+    public org.webswing.directdraw.proto.Directdraw.PartialPathProto getPartialPath() {
+      return partialPath_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+     * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
      */
-    public org.webswing.directdraw.proto.Directdraw.PathProtoOrBuilder getPathOrBuilder() {
-      return path_;
+    public org.webswing.directdraw.proto.Directdraw.PartialPathProtoOrBuilder getPartialPathOrBuilder() {
+      return partialPath_;
     }
 
-    // optional .org.webswing.directdraw.proto.FontProto font = 7;
-    public static final int FONT_FIELD_NUMBER = 7;
-    private org.webswing.directdraw.proto.Directdraw.FontProto font_;
+    // optional .org.webswing.directdraw.proto.CompositePathProto path = 7;
+    public static final int PATH_FIELD_NUMBER = 7;
+    private org.webswing.directdraw.proto.Directdraw.CompositePathProto path_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+     * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
      */
-    public boolean hasFont() {
+    public boolean hasPath() {
       return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+     * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
+     */
+    public org.webswing.directdraw.proto.Directdraw.CompositePathProto getPath() {
+      return path_;
+    }
+    /**
+     * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
+     */
+    public org.webswing.directdraw.proto.Directdraw.CompositePathProtoOrBuilder getPathOrBuilder() {
+      return path_;
+    }
+
+    // optional .org.webswing.directdraw.proto.FontProto font = 8;
+    public static final int FONT_FIELD_NUMBER = 8;
+    private org.webswing.directdraw.proto.Directdraw.FontProto font_;
+    /**
+     * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
+     */
+    public boolean hasFont() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.FontProto getFont() {
       return font_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+     * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.FontProtoOrBuilder getFontOrBuilder() {
       return font_;
     }
 
-    // optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;
-    public static final int LINEARGRAD_FIELD_NUMBER = 8;
+    // optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;
+    public static final int LINEARGRAD_FIELD_NUMBER = 9;
     private org.webswing.directdraw.proto.Directdraw.LinearGradientProto linearGrad_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
      */
     public boolean hasLinearGrad() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
+      return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.LinearGradientProto getLinearGrad() {
       return linearGrad_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+     * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.LinearGradientProtoOrBuilder getLinearGradOrBuilder() {
       return linearGrad_;
     }
 
-    // optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;
-    public static final int RADIALGRAD_FIELD_NUMBER = 9;
+    // optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;
+    public static final int RADIALGRAD_FIELD_NUMBER = 10;
     private org.webswing.directdraw.proto.Directdraw.RadialGradientProto radialGrad_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
      */
     public boolean hasRadialGrad() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
+      return ((bitField0_ & 0x00000200) == 0x00000200);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.RadialGradientProto getRadialGrad() {
       return radialGrad_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+     * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.RadialGradientProtoOrBuilder getRadialGradOrBuilder() {
       return radialGrad_;
     }
 
-    // optional .org.webswing.directdraw.proto.PointsProto points = 10;
-    public static final int POINTS_FIELD_NUMBER = 10;
+    // optional .org.webswing.directdraw.proto.PointsProto points = 11;
+    public static final int POINTS_FIELD_NUMBER = 11;
     private org.webswing.directdraw.proto.Directdraw.PointsProto points_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
      */
     public boolean hasPoints() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
+      return ((bitField0_ & 0x00000400) == 0x00000400);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.PointsProto getPoints() {
       return points_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+     * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.PointsProtoOrBuilder getPointsOrBuilder() {
       return points_;
     }
 
-    // optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;
-    public static final int RECTANGLE_FIELD_NUMBER = 11;
+    // optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;
+    public static final int RECTANGLE_FIELD_NUMBER = 12;
     private org.webswing.directdraw.proto.Directdraw.RectangleProto rectangle_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
      */
     public boolean hasRectangle() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
+      return ((bitField0_ & 0x00000800) == 0x00000800);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.RectangleProto getRectangle() {
       return rectangle_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+     * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.RectangleProtoOrBuilder getRectangleOrBuilder() {
       return rectangle_;
     }
 
-    // optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;
-    public static final int ELLIPSE_FIELD_NUMBER = 12;
+    // optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;
+    public static final int ELLIPSE_FIELD_NUMBER = 13;
     private org.webswing.directdraw.proto.Directdraw.EllipseProto ellipse_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
      */
     public boolean hasEllipse() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
+      return ((bitField0_ & 0x00001000) == 0x00001000);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.EllipseProto getEllipse() {
       return ellipse_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+     * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.EllipseProtoOrBuilder getEllipseOrBuilder() {
       return ellipse_;
     }
 
-    // optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;
-    public static final int ROUNDRECTANGLE_FIELD_NUMBER = 13;
+    // optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;
+    public static final int ROUNDRECTANGLE_FIELD_NUMBER = 14;
     private org.webswing.directdraw.proto.Directdraw.RoundRectangleProto roundRectangle_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
      */
     public boolean hasRoundRectangle() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
+      return ((bitField0_ & 0x00002000) == 0x00002000);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.RoundRectangleProto getRoundRectangle() {
       return roundRectangle_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+     * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.RoundRectangleProtoOrBuilder getRoundRectangleOrBuilder() {
       return roundRectangle_;
     }
 
-    // optional .org.webswing.directdraw.proto.ArcProto arc = 14;
-    public static final int ARC_FIELD_NUMBER = 14;
+    // optional .org.webswing.directdraw.proto.ArcProto arc = 15;
+    public static final int ARC_FIELD_NUMBER = 15;
     private org.webswing.directdraw.proto.Directdraw.ArcProto arc_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
      */
     public boolean hasArc() {
-      return ((bitField0_ & 0x00002000) == 0x00002000);
+      return ((bitField0_ & 0x00004000) == 0x00004000);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.ArcProto getArc() {
       return arc_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+     * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.ArcProtoOrBuilder getArcOrBuilder() {
       return arc_;
     }
 
-    // optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;
-    public static final int STROKE_FIELD_NUMBER = 15;
+    // optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;
+    public static final int STROKE_FIELD_NUMBER = 16;
     private org.webswing.directdraw.proto.Directdraw.StrokeProto stroke_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
      */
     public boolean hasStroke() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
+      return ((bitField0_ & 0x00008000) == 0x00008000);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.StrokeProto getStroke() {
       return stroke_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+     * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.StrokeProtoOrBuilder getStrokeOrBuilder() {
       return stroke_;
     }
 
-    // optional .org.webswing.directdraw.proto.CompositeProto composite = 16;
-    public static final int COMPOSITE_FIELD_NUMBER = 16;
+    // optional .org.webswing.directdraw.proto.CompositeProto composite = 17;
+    public static final int COMPOSITE_FIELD_NUMBER = 17;
     private org.webswing.directdraw.proto.Directdraw.CompositeProto composite_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
      */
     public boolean hasComposite() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
+      return ((bitField0_ & 0x00010000) == 0x00010000);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.CompositeProto getComposite() {
       return composite_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+     * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.CompositeProtoOrBuilder getCompositeOrBuilder() {
       return composite_;
     }
 
-    // optional .org.webswing.directdraw.proto.TextureProto texture = 17;
-    public static final int TEXTURE_FIELD_NUMBER = 17;
+    // optional .org.webswing.directdraw.proto.TextureProto texture = 18;
+    public static final int TEXTURE_FIELD_NUMBER = 18;
     private org.webswing.directdraw.proto.Directdraw.TextureProto texture_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
      */
     public boolean hasTexture() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
+      return ((bitField0_ & 0x00020000) == 0x00020000);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.TextureProto getTexture() {
       return texture_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+     * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.TextureProtoOrBuilder getTextureOrBuilder() {
       return texture_;
     }
 
-    // optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;
-    public static final int GLYPH_FIELD_NUMBER = 18;
+    // optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;
+    public static final int GLYPH_FIELD_NUMBER = 19;
     private org.webswing.directdraw.proto.Directdraw.GlyphProto glyph_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
      */
     public boolean hasGlyph() {
-      return ((bitField0_ & 0x00020000) == 0x00020000);
+      return ((bitField0_ & 0x00040000) == 0x00040000);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.GlyphProto getGlyph() {
       return glyph_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+     * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.GlyphProtoOrBuilder getGlyphOrBuilder() {
       return glyph_;
     }
 
-    // optional .org.webswing.directdraw.proto.CombinedProto combined = 19;
-    public static final int COMBINED_FIELD_NUMBER = 19;
+    // optional .org.webswing.directdraw.proto.CombinedProto combined = 20;
+    public static final int COMBINED_FIELD_NUMBER = 20;
     private org.webswing.directdraw.proto.Directdraw.CombinedProto combined_;
     /**
-     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
      */
     public boolean hasCombined() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
+      return ((bitField0_ & 0x00080000) == 0x00080000);
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.CombinedProto getCombined() {
       return combined_;
     }
     /**
-     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+     * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
      */
     public org.webswing.directdraw.proto.Directdraw.CombinedProtoOrBuilder getCombinedOrBuilder() {
       return combined_;
@@ -3594,7 +3643,8 @@ public final class Directdraw {
       image_ = org.webswing.directdraw.proto.Directdraw.ImageProto.getDefaultInstance();
       transform_ = org.webswing.directdraw.proto.Directdraw.TransformProto.getDefaultInstance();
       string_ = "";
-      path_ = org.webswing.directdraw.proto.Directdraw.PathProto.getDefaultInstance();
+      partialPath_ = org.webswing.directdraw.proto.Directdraw.PartialPathProto.getDefaultInstance();
+      path_ = org.webswing.directdraw.proto.Directdraw.CompositePathProto.getDefaultInstance();
       font_ = org.webswing.directdraw.proto.Directdraw.FontProto.getDefaultInstance();
       linearGrad_ = org.webswing.directdraw.proto.Directdraw.LinearGradientProto.getDefaultInstance();
       radialGrad_ = org.webswing.directdraw.proto.Directdraw.RadialGradientProto.getDefaultInstance();
@@ -3719,46 +3769,49 @@ public final class Directdraw {
         output.writeBytes(5, getStringBytes());
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeMessage(6, path_);
+        output.writeMessage(6, partialPath_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeMessage(7, font_);
+        output.writeMessage(7, path_);
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeMessage(8, linearGrad_);
+        output.writeMessage(8, font_);
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeMessage(9, radialGrad_);
+        output.writeMessage(9, linearGrad_);
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        output.writeMessage(10, points_);
+        output.writeMessage(10, radialGrad_);
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        output.writeMessage(11, rectangle_);
+        output.writeMessage(11, points_);
       }
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        output.writeMessage(12, ellipse_);
+        output.writeMessage(12, rectangle_);
       }
       if (((bitField0_ & 0x00001000) == 0x00001000)) {
-        output.writeMessage(13, roundRectangle_);
+        output.writeMessage(13, ellipse_);
       }
       if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        output.writeMessage(14, arc_);
+        output.writeMessage(14, roundRectangle_);
       }
       if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        output.writeMessage(15, stroke_);
+        output.writeMessage(15, arc_);
       }
       if (((bitField0_ & 0x00008000) == 0x00008000)) {
-        output.writeMessage(16, composite_);
+        output.writeMessage(16, stroke_);
       }
       if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        output.writeMessage(17, texture_);
+        output.writeMessage(17, composite_);
       }
       if (((bitField0_ & 0x00020000) == 0x00020000)) {
-        output.writeMessage(18, glyph_);
+        output.writeMessage(18, texture_);
       }
       if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        output.writeMessage(19, combined_);
+        output.writeMessage(19, glyph_);
+      }
+      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+        output.writeMessage(20, combined_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3791,59 +3844,63 @@ public final class Directdraw {
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, path_);
+          .computeMessageSize(6, partialPath_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, font_);
+          .computeMessageSize(7, path_);
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, linearGrad_);
+          .computeMessageSize(8, font_);
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, radialGrad_);
+          .computeMessageSize(9, linearGrad_);
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(10, points_);
+          .computeMessageSize(10, radialGrad_);
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(11, rectangle_);
+          .computeMessageSize(11, points_);
       }
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(12, ellipse_);
+          .computeMessageSize(12, rectangle_);
       }
       if (((bitField0_ & 0x00001000) == 0x00001000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, roundRectangle_);
+          .computeMessageSize(13, ellipse_);
       }
       if (((bitField0_ & 0x00002000) == 0x00002000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(14, arc_);
+          .computeMessageSize(14, roundRectangle_);
       }
       if (((bitField0_ & 0x00004000) == 0x00004000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(15, stroke_);
+          .computeMessageSize(15, arc_);
       }
       if (((bitField0_ & 0x00008000) == 0x00008000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(16, composite_);
+          .computeMessageSize(16, stroke_);
       }
       if (((bitField0_ & 0x00010000) == 0x00010000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(17, texture_);
+          .computeMessageSize(17, composite_);
       }
       if (((bitField0_ & 0x00020000) == 0x00020000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(18, glyph_);
+          .computeMessageSize(18, texture_);
       }
       if (((bitField0_ & 0x00040000) == 0x00040000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(19, combined_);
+          .computeMessageSize(19, glyph_);
+      }
+      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(20, combined_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3956,6 +4013,7 @@ public final class Directdraw {
           getColorFieldBuilder();
           getImageFieldBuilder();
           getTransformFieldBuilder();
+          getPartialPathFieldBuilder();
           getPathFieldBuilder();
           getFontFieldBuilder();
           getLinearGradFieldBuilder();
@@ -4000,90 +4058,96 @@ public final class Directdraw {
         bitField0_ = (bitField0_ & ~0x00000008);
         string_ = "";
         bitField0_ = (bitField0_ & ~0x00000010);
+        if (partialPathBuilder_ == null) {
+          partialPath_ = org.webswing.directdraw.proto.Directdraw.PartialPathProto.getDefaultInstance();
+        } else {
+          partialPathBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
         if (pathBuilder_ == null) {
-          path_ = org.webswing.directdraw.proto.Directdraw.PathProto.getDefaultInstance();
+          path_ = org.webswing.directdraw.proto.Directdraw.CompositePathProto.getDefaultInstance();
         } else {
           pathBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000040);
         if (fontBuilder_ == null) {
           font_ = org.webswing.directdraw.proto.Directdraw.FontProto.getDefaultInstance();
         } else {
           fontBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         if (linearGradBuilder_ == null) {
           linearGrad_ = org.webswing.directdraw.proto.Directdraw.LinearGradientProto.getDefaultInstance();
         } else {
           linearGradBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000100);
         if (radialGradBuilder_ == null) {
           radialGrad_ = org.webswing.directdraw.proto.Directdraw.RadialGradientProto.getDefaultInstance();
         } else {
           radialGradBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000200);
         if (pointsBuilder_ == null) {
           points_ = org.webswing.directdraw.proto.Directdraw.PointsProto.getDefaultInstance();
         } else {
           pointsBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000400);
         if (rectangleBuilder_ == null) {
           rectangle_ = org.webswing.directdraw.proto.Directdraw.RectangleProto.getDefaultInstance();
         } else {
           rectangleBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000400);
+        bitField0_ = (bitField0_ & ~0x00000800);
         if (ellipseBuilder_ == null) {
           ellipse_ = org.webswing.directdraw.proto.Directdraw.EllipseProto.getDefaultInstance();
         } else {
           ellipseBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000800);
+        bitField0_ = (bitField0_ & ~0x00001000);
         if (roundRectangleBuilder_ == null) {
           roundRectangle_ = org.webswing.directdraw.proto.Directdraw.RoundRectangleProto.getDefaultInstance();
         } else {
           roundRectangleBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00001000);
+        bitField0_ = (bitField0_ & ~0x00002000);
         if (arcBuilder_ == null) {
           arc_ = org.webswing.directdraw.proto.Directdraw.ArcProto.getDefaultInstance();
         } else {
           arcBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00002000);
+        bitField0_ = (bitField0_ & ~0x00004000);
         if (strokeBuilder_ == null) {
           stroke_ = org.webswing.directdraw.proto.Directdraw.StrokeProto.getDefaultInstance();
         } else {
           strokeBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00004000);
+        bitField0_ = (bitField0_ & ~0x00008000);
         if (compositeBuilder_ == null) {
           composite_ = org.webswing.directdraw.proto.Directdraw.CompositeProto.getDefaultInstance();
         } else {
           compositeBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00008000);
+        bitField0_ = (bitField0_ & ~0x00010000);
         if (textureBuilder_ == null) {
           texture_ = org.webswing.directdraw.proto.Directdraw.TextureProto.getDefaultInstance();
         } else {
           textureBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00010000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         if (glyphBuilder_ == null) {
           glyph_ = org.webswing.directdraw.proto.Directdraw.GlyphProto.getDefaultInstance();
         } else {
           glyphBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00040000);
         if (combinedBuilder_ == null) {
           combined_ = org.webswing.directdraw.proto.Directdraw.CombinedProto.getDefaultInstance();
         } else {
           combinedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00080000);
         return this;
       }
 
@@ -4147,109 +4211,117 @@ public final class Directdraw {
         if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
           to_bitField0_ |= 0x00000020;
         }
+        if (partialPathBuilder_ == null) {
+          result.partialPath_ = partialPath_;
+        } else {
+          result.partialPath_ = partialPathBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
         if (pathBuilder_ == null) {
           result.path_ = path_;
         } else {
           result.path_ = pathBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
         }
         if (fontBuilder_ == null) {
           result.font_ = font_;
         } else {
           result.font_ = fontBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
         }
         if (linearGradBuilder_ == null) {
           result.linearGrad_ = linearGrad_;
         } else {
           result.linearGrad_ = linearGradBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000200;
         }
         if (radialGradBuilder_ == null) {
           result.radialGrad_ = radialGrad_;
         } else {
           result.radialGrad_ = radialGradBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000200;
+        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
+          to_bitField0_ |= 0x00000400;
         }
         if (pointsBuilder_ == null) {
           result.points_ = points_;
         } else {
           result.points_ = pointsBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000400;
+        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
+          to_bitField0_ |= 0x00000800;
         }
         if (rectangleBuilder_ == null) {
           result.rectangle_ = rectangle_;
         } else {
           result.rectangle_ = rectangleBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000800;
+        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
+          to_bitField0_ |= 0x00001000;
         }
         if (ellipseBuilder_ == null) {
           result.ellipse_ = ellipse_;
         } else {
           result.ellipse_ = ellipseBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00001000;
+        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
+          to_bitField0_ |= 0x00002000;
         }
         if (roundRectangleBuilder_ == null) {
           result.roundRectangle_ = roundRectangle_;
         } else {
           result.roundRectangle_ = roundRectangleBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00002000;
+        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
+          to_bitField0_ |= 0x00004000;
         }
         if (arcBuilder_ == null) {
           result.arc_ = arc_;
         } else {
           result.arc_ = arcBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
-          to_bitField0_ |= 0x00004000;
+        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
+          to_bitField0_ |= 0x00008000;
         }
         if (strokeBuilder_ == null) {
           result.stroke_ = stroke_;
         } else {
           result.stroke_ = strokeBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00008000;
+        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
+          to_bitField0_ |= 0x00010000;
         }
         if (compositeBuilder_ == null) {
           result.composite_ = composite_;
         } else {
           result.composite_ = compositeBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00010000;
+        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
+          to_bitField0_ |= 0x00020000;
         }
         if (textureBuilder_ == null) {
           result.texture_ = texture_;
         } else {
           result.texture_ = textureBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00020000;
+        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
+          to_bitField0_ |= 0x00040000;
         }
         if (glyphBuilder_ == null) {
           result.glyph_ = glyph_;
         } else {
           result.glyph_ = glyphBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00040000;
+        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
+          to_bitField0_ |= 0x00080000;
         }
         if (combinedBuilder_ == null) {
           result.combined_ = combined_;
@@ -4288,6 +4360,9 @@ public final class Directdraw {
           bitField0_ |= 0x00000010;
           string_ = other.string_;
           onChanged();
+        }
+        if (other.hasPartialPath()) {
+          mergePartialPath(other.getPartialPath());
         }
         if (other.hasPath()) {
           mergePath(other.getPath());
@@ -4898,20 +4973,137 @@ public final class Directdraw {
         return this;
       }
 
-      // optional .org.webswing.directdraw.proto.PathProto path = 6;
-      private org.webswing.directdraw.proto.Directdraw.PathProto path_ = org.webswing.directdraw.proto.Directdraw.PathProto.getDefaultInstance();
+      // optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;
+      private org.webswing.directdraw.proto.Directdraw.PartialPathProto partialPath_ = org.webswing.directdraw.proto.Directdraw.PartialPathProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          org.webswing.directdraw.proto.Directdraw.PathProto, org.webswing.directdraw.proto.Directdraw.PathProto.Builder, org.webswing.directdraw.proto.Directdraw.PathProtoOrBuilder> pathBuilder_;
+          org.webswing.directdraw.proto.Directdraw.PartialPathProto, org.webswing.directdraw.proto.Directdraw.PartialPathProto.Builder, org.webswing.directdraw.proto.Directdraw.PartialPathProtoOrBuilder> partialPathBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+       * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
        */
-      public boolean hasPath() {
+      public boolean hasPartialPath() {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+       * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
        */
-      public org.webswing.directdraw.proto.Directdraw.PathProto getPath() {
+      public org.webswing.directdraw.proto.Directdraw.PartialPathProto getPartialPath() {
+        if (partialPathBuilder_ == null) {
+          return partialPath_;
+        } else {
+          return partialPathBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
+       */
+      public Builder setPartialPath(org.webswing.directdraw.proto.Directdraw.PartialPathProto value) {
+        if (partialPathBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          partialPath_ = value;
+          onChanged();
+        } else {
+          partialPathBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      /**
+       * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
+       */
+      public Builder setPartialPath(
+          org.webswing.directdraw.proto.Directdraw.PartialPathProto.Builder builderForValue) {
+        if (partialPathBuilder_ == null) {
+          partialPath_ = builderForValue.build();
+          onChanged();
+        } else {
+          partialPathBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      /**
+       * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
+       */
+      public Builder mergePartialPath(org.webswing.directdraw.proto.Directdraw.PartialPathProto value) {
+        if (partialPathBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) == 0x00000020) &&
+              partialPath_ != org.webswing.directdraw.proto.Directdraw.PartialPathProto.getDefaultInstance()) {
+            partialPath_ =
+              org.webswing.directdraw.proto.Directdraw.PartialPathProto.newBuilder(partialPath_).mergeFrom(value).buildPartial();
+          } else {
+            partialPath_ = value;
+          }
+          onChanged();
+        } else {
+          partialPathBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      /**
+       * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
+       */
+      public Builder clearPartialPath() {
+        if (partialPathBuilder_ == null) {
+          partialPath_ = org.webswing.directdraw.proto.Directdraw.PartialPathProto.getDefaultInstance();
+          onChanged();
+        } else {
+          partialPathBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
+        return this;
+      }
+      /**
+       * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
+       */
+      public org.webswing.directdraw.proto.Directdraw.PartialPathProto.Builder getPartialPathBuilder() {
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return getPartialPathFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
+       */
+      public org.webswing.directdraw.proto.Directdraw.PartialPathProtoOrBuilder getPartialPathOrBuilder() {
+        if (partialPathBuilder_ != null) {
+          return partialPathBuilder_.getMessageOrBuilder();
+        } else {
+          return partialPath_;
+        }
+      }
+      /**
+       * <code>optional .org.webswing.directdraw.proto.PartialPathProto partialPath = 6;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          org.webswing.directdraw.proto.Directdraw.PartialPathProto, org.webswing.directdraw.proto.Directdraw.PartialPathProto.Builder, org.webswing.directdraw.proto.Directdraw.PartialPathProtoOrBuilder> 
+          getPartialPathFieldBuilder() {
+        if (partialPathBuilder_ == null) {
+          partialPathBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              org.webswing.directdraw.proto.Directdraw.PartialPathProto, org.webswing.directdraw.proto.Directdraw.PartialPathProto.Builder, org.webswing.directdraw.proto.Directdraw.PartialPathProtoOrBuilder>(
+                  partialPath_,
+                  getParentForChildren(),
+                  isClean());
+          partialPath_ = null;
+        }
+        return partialPathBuilder_;
+      }
+
+      // optional .org.webswing.directdraw.proto.CompositePathProto path = 7;
+      private org.webswing.directdraw.proto.Directdraw.CompositePathProto path_ = org.webswing.directdraw.proto.Directdraw.CompositePathProto.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          org.webswing.directdraw.proto.Directdraw.CompositePathProto, org.webswing.directdraw.proto.Directdraw.CompositePathProto.Builder, org.webswing.directdraw.proto.Directdraw.CompositePathProtoOrBuilder> pathBuilder_;
+      /**
+       * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
+       */
+      public boolean hasPath() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
+       */
+      public org.webswing.directdraw.proto.Directdraw.CompositePathProto getPath() {
         if (pathBuilder_ == null) {
           return path_;
         } else {
@@ -4919,9 +5111,9 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
        */
-      public Builder setPath(org.webswing.directdraw.proto.Directdraw.PathProto value) {
+      public Builder setPath(org.webswing.directdraw.proto.Directdraw.CompositePathProto value) {
         if (pathBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4931,32 +5123,32 @@ public final class Directdraw {
         } else {
           pathBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
        */
       public Builder setPath(
-          org.webswing.directdraw.proto.Directdraw.PathProto.Builder builderForValue) {
+          org.webswing.directdraw.proto.Directdraw.CompositePathProto.Builder builderForValue) {
         if (pathBuilder_ == null) {
           path_ = builderForValue.build();
           onChanged();
         } else {
           pathBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
        */
-      public Builder mergePath(org.webswing.directdraw.proto.Directdraw.PathProto value) {
+      public Builder mergePath(org.webswing.directdraw.proto.Directdraw.CompositePathProto value) {
         if (pathBuilder_ == null) {
-          if (((bitField0_ & 0x00000020) == 0x00000020) &&
-              path_ != org.webswing.directdraw.proto.Directdraw.PathProto.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000040) == 0x00000040) &&
+              path_ != org.webswing.directdraw.proto.Directdraw.CompositePathProto.getDefaultInstance()) {
             path_ =
-              org.webswing.directdraw.proto.Directdraw.PathProto.newBuilder(path_).mergeFrom(value).buildPartial();
+              org.webswing.directdraw.proto.Directdraw.CompositePathProto.newBuilder(path_).mergeFrom(value).buildPartial();
           } else {
             path_ = value;
           }
@@ -4964,34 +5156,34 @@ public final class Directdraw {
         } else {
           pathBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
        */
       public Builder clearPath() {
         if (pathBuilder_ == null) {
-          path_ = org.webswing.directdraw.proto.Directdraw.PathProto.getDefaultInstance();
+          path_ = org.webswing.directdraw.proto.Directdraw.CompositePathProto.getDefaultInstance();
           onChanged();
         } else {
           pathBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
        */
-      public org.webswing.directdraw.proto.Directdraw.PathProto.Builder getPathBuilder() {
-        bitField0_ |= 0x00000020;
+      public org.webswing.directdraw.proto.Directdraw.CompositePathProto.Builder getPathBuilder() {
+        bitField0_ |= 0x00000040;
         onChanged();
         return getPathFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
        */
-      public org.webswing.directdraw.proto.Directdraw.PathProtoOrBuilder getPathOrBuilder() {
+      public org.webswing.directdraw.proto.Directdraw.CompositePathProtoOrBuilder getPathOrBuilder() {
         if (pathBuilder_ != null) {
           return pathBuilder_.getMessageOrBuilder();
         } else {
@@ -4999,14 +5191,14 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PathProto path = 6;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositePathProto path = 7;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          org.webswing.directdraw.proto.Directdraw.PathProto, org.webswing.directdraw.proto.Directdraw.PathProto.Builder, org.webswing.directdraw.proto.Directdraw.PathProtoOrBuilder> 
+          org.webswing.directdraw.proto.Directdraw.CompositePathProto, org.webswing.directdraw.proto.Directdraw.CompositePathProto.Builder, org.webswing.directdraw.proto.Directdraw.CompositePathProtoOrBuilder> 
           getPathFieldBuilder() {
         if (pathBuilder_ == null) {
           pathBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              org.webswing.directdraw.proto.Directdraw.PathProto, org.webswing.directdraw.proto.Directdraw.PathProto.Builder, org.webswing.directdraw.proto.Directdraw.PathProtoOrBuilder>(
+              org.webswing.directdraw.proto.Directdraw.CompositePathProto, org.webswing.directdraw.proto.Directdraw.CompositePathProto.Builder, org.webswing.directdraw.proto.Directdraw.CompositePathProtoOrBuilder>(
                   path_,
                   getParentForChildren(),
                   isClean());
@@ -5015,18 +5207,18 @@ public final class Directdraw {
         return pathBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.FontProto font = 7;
+      // optional .org.webswing.directdraw.proto.FontProto font = 8;
       private org.webswing.directdraw.proto.Directdraw.FontProto font_ = org.webswing.directdraw.proto.Directdraw.FontProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.FontProto, org.webswing.directdraw.proto.Directdraw.FontProto.Builder, org.webswing.directdraw.proto.Directdraw.FontProtoOrBuilder> fontBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+       * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
        */
       public boolean hasFont() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+       * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.FontProto getFont() {
         if (fontBuilder_ == null) {
@@ -5036,7 +5228,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+       * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
        */
       public Builder setFont(org.webswing.directdraw.proto.Directdraw.FontProto value) {
         if (fontBuilder_ == null) {
@@ -5048,11 +5240,11 @@ public final class Directdraw {
         } else {
           fontBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+       * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
        */
       public Builder setFont(
           org.webswing.directdraw.proto.Directdraw.FontProto.Builder builderForValue) {
@@ -5062,15 +5254,15 @@ public final class Directdraw {
         } else {
           fontBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+       * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
        */
       public Builder mergeFont(org.webswing.directdraw.proto.Directdraw.FontProto value) {
         if (fontBuilder_ == null) {
-          if (((bitField0_ & 0x00000040) == 0x00000040) &&
+          if (((bitField0_ & 0x00000080) == 0x00000080) &&
               font_ != org.webswing.directdraw.proto.Directdraw.FontProto.getDefaultInstance()) {
             font_ =
               org.webswing.directdraw.proto.Directdraw.FontProto.newBuilder(font_).mergeFrom(value).buildPartial();
@@ -5081,11 +5273,11 @@ public final class Directdraw {
         } else {
           fontBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+       * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
        */
       public Builder clearFont() {
         if (fontBuilder_ == null) {
@@ -5094,19 +5286,19 @@ public final class Directdraw {
         } else {
           fontBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+       * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.FontProto.Builder getFontBuilder() {
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         onChanged();
         return getFontFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+       * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.FontProtoOrBuilder getFontOrBuilder() {
         if (fontBuilder_ != null) {
@@ -5116,7 +5308,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.FontProto font = 7;</code>
+       * <code>optional .org.webswing.directdraw.proto.FontProto font = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.FontProto, org.webswing.directdraw.proto.Directdraw.FontProto.Builder, org.webswing.directdraw.proto.Directdraw.FontProtoOrBuilder> 
@@ -5132,18 +5324,18 @@ public final class Directdraw {
         return fontBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;
+      // optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;
       private org.webswing.directdraw.proto.Directdraw.LinearGradientProto linearGrad_ = org.webswing.directdraw.proto.Directdraw.LinearGradientProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.LinearGradientProto, org.webswing.directdraw.proto.Directdraw.LinearGradientProto.Builder, org.webswing.directdraw.proto.Directdraw.LinearGradientProtoOrBuilder> linearGradBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
        */
       public boolean hasLinearGrad() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
+        return ((bitField0_ & 0x00000100) == 0x00000100);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.LinearGradientProto getLinearGrad() {
         if (linearGradBuilder_ == null) {
@@ -5153,7 +5345,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
        */
       public Builder setLinearGrad(org.webswing.directdraw.proto.Directdraw.LinearGradientProto value) {
         if (linearGradBuilder_ == null) {
@@ -5165,11 +5357,11 @@ public final class Directdraw {
         } else {
           linearGradBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000100;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
        */
       public Builder setLinearGrad(
           org.webswing.directdraw.proto.Directdraw.LinearGradientProto.Builder builderForValue) {
@@ -5179,15 +5371,15 @@ public final class Directdraw {
         } else {
           linearGradBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000100;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
        */
       public Builder mergeLinearGrad(org.webswing.directdraw.proto.Directdraw.LinearGradientProto value) {
         if (linearGradBuilder_ == null) {
-          if (((bitField0_ & 0x00000080) == 0x00000080) &&
+          if (((bitField0_ & 0x00000100) == 0x00000100) &&
               linearGrad_ != org.webswing.directdraw.proto.Directdraw.LinearGradientProto.getDefaultInstance()) {
             linearGrad_ =
               org.webswing.directdraw.proto.Directdraw.LinearGradientProto.newBuilder(linearGrad_).mergeFrom(value).buildPartial();
@@ -5198,11 +5390,11 @@ public final class Directdraw {
         } else {
           linearGradBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000100;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
        */
       public Builder clearLinearGrad() {
         if (linearGradBuilder_ == null) {
@@ -5211,19 +5403,19 @@ public final class Directdraw {
         } else {
           linearGradBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.LinearGradientProto.Builder getLinearGradBuilder() {
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000100;
         onChanged();
         return getLinearGradFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.LinearGradientProtoOrBuilder getLinearGradOrBuilder() {
         if (linearGradBuilder_ != null) {
@@ -5233,7 +5425,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 8;</code>
+       * <code>optional .org.webswing.directdraw.proto.LinearGradientProto linearGrad = 9;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.LinearGradientProto, org.webswing.directdraw.proto.Directdraw.LinearGradientProto.Builder, org.webswing.directdraw.proto.Directdraw.LinearGradientProtoOrBuilder> 
@@ -5249,18 +5441,18 @@ public final class Directdraw {
         return linearGradBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;
+      // optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;
       private org.webswing.directdraw.proto.Directdraw.RadialGradientProto radialGrad_ = org.webswing.directdraw.proto.Directdraw.RadialGradientProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.RadialGradientProto, org.webswing.directdraw.proto.Directdraw.RadialGradientProto.Builder, org.webswing.directdraw.proto.Directdraw.RadialGradientProtoOrBuilder> radialGradBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
        */
       public boolean hasRadialGrad() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
+        return ((bitField0_ & 0x00000200) == 0x00000200);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.RadialGradientProto getRadialGrad() {
         if (radialGradBuilder_ == null) {
@@ -5270,7 +5462,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
        */
       public Builder setRadialGrad(org.webswing.directdraw.proto.Directdraw.RadialGradientProto value) {
         if (radialGradBuilder_ == null) {
@@ -5282,11 +5474,11 @@ public final class Directdraw {
         } else {
           radialGradBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
        */
       public Builder setRadialGrad(
           org.webswing.directdraw.proto.Directdraw.RadialGradientProto.Builder builderForValue) {
@@ -5296,15 +5488,15 @@ public final class Directdraw {
         } else {
           radialGradBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
        */
       public Builder mergeRadialGrad(org.webswing.directdraw.proto.Directdraw.RadialGradientProto value) {
         if (radialGradBuilder_ == null) {
-          if (((bitField0_ & 0x00000100) == 0x00000100) &&
+          if (((bitField0_ & 0x00000200) == 0x00000200) &&
               radialGrad_ != org.webswing.directdraw.proto.Directdraw.RadialGradientProto.getDefaultInstance()) {
             radialGrad_ =
               org.webswing.directdraw.proto.Directdraw.RadialGradientProto.newBuilder(radialGrad_).mergeFrom(value).buildPartial();
@@ -5315,11 +5507,11 @@ public final class Directdraw {
         } else {
           radialGradBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
        */
       public Builder clearRadialGrad() {
         if (radialGradBuilder_ == null) {
@@ -5328,19 +5520,19 @@ public final class Directdraw {
         } else {
           radialGradBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.RadialGradientProto.Builder getRadialGradBuilder() {
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
         onChanged();
         return getRadialGradFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.RadialGradientProtoOrBuilder getRadialGradOrBuilder() {
         if (radialGradBuilder_ != null) {
@@ -5350,7 +5542,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 9;</code>
+       * <code>optional .org.webswing.directdraw.proto.RadialGradientProto radialGrad = 10;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.RadialGradientProto, org.webswing.directdraw.proto.Directdraw.RadialGradientProto.Builder, org.webswing.directdraw.proto.Directdraw.RadialGradientProtoOrBuilder> 
@@ -5366,18 +5558,18 @@ public final class Directdraw {
         return radialGradBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.PointsProto points = 10;
+      // optional .org.webswing.directdraw.proto.PointsProto points = 11;
       private org.webswing.directdraw.proto.Directdraw.PointsProto points_ = org.webswing.directdraw.proto.Directdraw.PointsProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.PointsProto, org.webswing.directdraw.proto.Directdraw.PointsProto.Builder, org.webswing.directdraw.proto.Directdraw.PointsProtoOrBuilder> pointsBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
        */
       public boolean hasPoints() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
+        return ((bitField0_ & 0x00000400) == 0x00000400);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.PointsProto getPoints() {
         if (pointsBuilder_ == null) {
@@ -5387,7 +5579,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
        */
       public Builder setPoints(org.webswing.directdraw.proto.Directdraw.PointsProto value) {
         if (pointsBuilder_ == null) {
@@ -5399,11 +5591,11 @@ public final class Directdraw {
         } else {
           pointsBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
        */
       public Builder setPoints(
           org.webswing.directdraw.proto.Directdraw.PointsProto.Builder builderForValue) {
@@ -5413,15 +5605,15 @@ public final class Directdraw {
         } else {
           pointsBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
        */
       public Builder mergePoints(org.webswing.directdraw.proto.Directdraw.PointsProto value) {
         if (pointsBuilder_ == null) {
-          if (((bitField0_ & 0x00000200) == 0x00000200) &&
+          if (((bitField0_ & 0x00000400) == 0x00000400) &&
               points_ != org.webswing.directdraw.proto.Directdraw.PointsProto.getDefaultInstance()) {
             points_ =
               org.webswing.directdraw.proto.Directdraw.PointsProto.newBuilder(points_).mergeFrom(value).buildPartial();
@@ -5432,11 +5624,11 @@ public final class Directdraw {
         } else {
           pointsBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
        */
       public Builder clearPoints() {
         if (pointsBuilder_ == null) {
@@ -5445,19 +5637,19 @@ public final class Directdraw {
         } else {
           pointsBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000400);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.PointsProto.Builder getPointsBuilder() {
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
         onChanged();
         return getPointsFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.PointsProtoOrBuilder getPointsOrBuilder() {
         if (pointsBuilder_ != null) {
@@ -5467,7 +5659,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 10;</code>
+       * <code>optional .org.webswing.directdraw.proto.PointsProto points = 11;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.PointsProto, org.webswing.directdraw.proto.Directdraw.PointsProto.Builder, org.webswing.directdraw.proto.Directdraw.PointsProtoOrBuilder> 
@@ -5483,18 +5675,18 @@ public final class Directdraw {
         return pointsBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;
+      // optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;
       private org.webswing.directdraw.proto.Directdraw.RectangleProto rectangle_ = org.webswing.directdraw.proto.Directdraw.RectangleProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.RectangleProto, org.webswing.directdraw.proto.Directdraw.RectangleProto.Builder, org.webswing.directdraw.proto.Directdraw.RectangleProtoOrBuilder> rectangleBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
        */
       public boolean hasRectangle() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
+        return ((bitField0_ & 0x00000800) == 0x00000800);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.RectangleProto getRectangle() {
         if (rectangleBuilder_ == null) {
@@ -5504,7 +5696,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
        */
       public Builder setRectangle(org.webswing.directdraw.proto.Directdraw.RectangleProto value) {
         if (rectangleBuilder_ == null) {
@@ -5516,11 +5708,11 @@ public final class Directdraw {
         } else {
           rectangleBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
        */
       public Builder setRectangle(
           org.webswing.directdraw.proto.Directdraw.RectangleProto.Builder builderForValue) {
@@ -5530,15 +5722,15 @@ public final class Directdraw {
         } else {
           rectangleBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
        */
       public Builder mergeRectangle(org.webswing.directdraw.proto.Directdraw.RectangleProto value) {
         if (rectangleBuilder_ == null) {
-          if (((bitField0_ & 0x00000400) == 0x00000400) &&
+          if (((bitField0_ & 0x00000800) == 0x00000800) &&
               rectangle_ != org.webswing.directdraw.proto.Directdraw.RectangleProto.getDefaultInstance()) {
             rectangle_ =
               org.webswing.directdraw.proto.Directdraw.RectangleProto.newBuilder(rectangle_).mergeFrom(value).buildPartial();
@@ -5549,11 +5741,11 @@ public final class Directdraw {
         } else {
           rectangleBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
        */
       public Builder clearRectangle() {
         if (rectangleBuilder_ == null) {
@@ -5562,19 +5754,19 @@ public final class Directdraw {
         } else {
           rectangleBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000400);
+        bitField0_ = (bitField0_ & ~0x00000800);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.RectangleProto.Builder getRectangleBuilder() {
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         onChanged();
         return getRectangleFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.RectangleProtoOrBuilder getRectangleOrBuilder() {
         if (rectangleBuilder_ != null) {
@@ -5584,7 +5776,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 11;</code>
+       * <code>optional .org.webswing.directdraw.proto.RectangleProto rectangle = 12;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.RectangleProto, org.webswing.directdraw.proto.Directdraw.RectangleProto.Builder, org.webswing.directdraw.proto.Directdraw.RectangleProtoOrBuilder> 
@@ -5600,18 +5792,18 @@ public final class Directdraw {
         return rectangleBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;
+      // optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;
       private org.webswing.directdraw.proto.Directdraw.EllipseProto ellipse_ = org.webswing.directdraw.proto.Directdraw.EllipseProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.EllipseProto, org.webswing.directdraw.proto.Directdraw.EllipseProto.Builder, org.webswing.directdraw.proto.Directdraw.EllipseProtoOrBuilder> ellipseBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
        */
       public boolean hasEllipse() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
+        return ((bitField0_ & 0x00001000) == 0x00001000);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.EllipseProto getEllipse() {
         if (ellipseBuilder_ == null) {
@@ -5621,7 +5813,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
        */
       public Builder setEllipse(org.webswing.directdraw.proto.Directdraw.EllipseProto value) {
         if (ellipseBuilder_ == null) {
@@ -5633,11 +5825,11 @@ public final class Directdraw {
         } else {
           ellipseBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
        */
       public Builder setEllipse(
           org.webswing.directdraw.proto.Directdraw.EllipseProto.Builder builderForValue) {
@@ -5647,15 +5839,15 @@ public final class Directdraw {
         } else {
           ellipseBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
        */
       public Builder mergeEllipse(org.webswing.directdraw.proto.Directdraw.EllipseProto value) {
         if (ellipseBuilder_ == null) {
-          if (((bitField0_ & 0x00000800) == 0x00000800) &&
+          if (((bitField0_ & 0x00001000) == 0x00001000) &&
               ellipse_ != org.webswing.directdraw.proto.Directdraw.EllipseProto.getDefaultInstance()) {
             ellipse_ =
               org.webswing.directdraw.proto.Directdraw.EllipseProto.newBuilder(ellipse_).mergeFrom(value).buildPartial();
@@ -5666,11 +5858,11 @@ public final class Directdraw {
         } else {
           ellipseBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
        */
       public Builder clearEllipse() {
         if (ellipseBuilder_ == null) {
@@ -5679,19 +5871,19 @@ public final class Directdraw {
         } else {
           ellipseBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000800);
+        bitField0_ = (bitField0_ & ~0x00001000);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.EllipseProto.Builder getEllipseBuilder() {
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         onChanged();
         return getEllipseFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.EllipseProtoOrBuilder getEllipseOrBuilder() {
         if (ellipseBuilder_ != null) {
@@ -5701,7 +5893,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 12;</code>
+       * <code>optional .org.webswing.directdraw.proto.EllipseProto ellipse = 13;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.EllipseProto, org.webswing.directdraw.proto.Directdraw.EllipseProto.Builder, org.webswing.directdraw.proto.Directdraw.EllipseProtoOrBuilder> 
@@ -5717,18 +5909,18 @@ public final class Directdraw {
         return ellipseBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;
+      // optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;
       private org.webswing.directdraw.proto.Directdraw.RoundRectangleProto roundRectangle_ = org.webswing.directdraw.proto.Directdraw.RoundRectangleProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.RoundRectangleProto, org.webswing.directdraw.proto.Directdraw.RoundRectangleProto.Builder, org.webswing.directdraw.proto.Directdraw.RoundRectangleProtoOrBuilder> roundRectangleBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
        */
       public boolean hasRoundRectangle() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
+        return ((bitField0_ & 0x00002000) == 0x00002000);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.RoundRectangleProto getRoundRectangle() {
         if (roundRectangleBuilder_ == null) {
@@ -5738,7 +5930,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
        */
       public Builder setRoundRectangle(org.webswing.directdraw.proto.Directdraw.RoundRectangleProto value) {
         if (roundRectangleBuilder_ == null) {
@@ -5750,11 +5942,11 @@ public final class Directdraw {
         } else {
           roundRectangleBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00001000;
+        bitField0_ |= 0x00002000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
        */
       public Builder setRoundRectangle(
           org.webswing.directdraw.proto.Directdraw.RoundRectangleProto.Builder builderForValue) {
@@ -5764,15 +5956,15 @@ public final class Directdraw {
         } else {
           roundRectangleBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00001000;
+        bitField0_ |= 0x00002000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
        */
       public Builder mergeRoundRectangle(org.webswing.directdraw.proto.Directdraw.RoundRectangleProto value) {
         if (roundRectangleBuilder_ == null) {
-          if (((bitField0_ & 0x00001000) == 0x00001000) &&
+          if (((bitField0_ & 0x00002000) == 0x00002000) &&
               roundRectangle_ != org.webswing.directdraw.proto.Directdraw.RoundRectangleProto.getDefaultInstance()) {
             roundRectangle_ =
               org.webswing.directdraw.proto.Directdraw.RoundRectangleProto.newBuilder(roundRectangle_).mergeFrom(value).buildPartial();
@@ -5783,11 +5975,11 @@ public final class Directdraw {
         } else {
           roundRectangleBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00001000;
+        bitField0_ |= 0x00002000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
        */
       public Builder clearRoundRectangle() {
         if (roundRectangleBuilder_ == null) {
@@ -5796,19 +5988,19 @@ public final class Directdraw {
         } else {
           roundRectangleBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00001000);
+        bitField0_ = (bitField0_ & ~0x00002000);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.RoundRectangleProto.Builder getRoundRectangleBuilder() {
-        bitField0_ |= 0x00001000;
+        bitField0_ |= 0x00002000;
         onChanged();
         return getRoundRectangleFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.RoundRectangleProtoOrBuilder getRoundRectangleOrBuilder() {
         if (roundRectangleBuilder_ != null) {
@@ -5818,7 +6010,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 13;</code>
+       * <code>optional .org.webswing.directdraw.proto.RoundRectangleProto roundRectangle = 14;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.RoundRectangleProto, org.webswing.directdraw.proto.Directdraw.RoundRectangleProto.Builder, org.webswing.directdraw.proto.Directdraw.RoundRectangleProtoOrBuilder> 
@@ -5834,18 +6026,18 @@ public final class Directdraw {
         return roundRectangleBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.ArcProto arc = 14;
+      // optional .org.webswing.directdraw.proto.ArcProto arc = 15;
       private org.webswing.directdraw.proto.Directdraw.ArcProto arc_ = org.webswing.directdraw.proto.Directdraw.ArcProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.ArcProto, org.webswing.directdraw.proto.Directdraw.ArcProto.Builder, org.webswing.directdraw.proto.Directdraw.ArcProtoOrBuilder> arcBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
        */
       public boolean hasArc() {
-        return ((bitField0_ & 0x00002000) == 0x00002000);
+        return ((bitField0_ & 0x00004000) == 0x00004000);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.ArcProto getArc() {
         if (arcBuilder_ == null) {
@@ -5855,7 +6047,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
        */
       public Builder setArc(org.webswing.directdraw.proto.Directdraw.ArcProto value) {
         if (arcBuilder_ == null) {
@@ -5867,11 +6059,11 @@ public final class Directdraw {
         } else {
           arcBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
        */
       public Builder setArc(
           org.webswing.directdraw.proto.Directdraw.ArcProto.Builder builderForValue) {
@@ -5881,15 +6073,15 @@ public final class Directdraw {
         } else {
           arcBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
        */
       public Builder mergeArc(org.webswing.directdraw.proto.Directdraw.ArcProto value) {
         if (arcBuilder_ == null) {
-          if (((bitField0_ & 0x00002000) == 0x00002000) &&
+          if (((bitField0_ & 0x00004000) == 0x00004000) &&
               arc_ != org.webswing.directdraw.proto.Directdraw.ArcProto.getDefaultInstance()) {
             arc_ =
               org.webswing.directdraw.proto.Directdraw.ArcProto.newBuilder(arc_).mergeFrom(value).buildPartial();
@@ -5900,11 +6092,11 @@ public final class Directdraw {
         } else {
           arcBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
        */
       public Builder clearArc() {
         if (arcBuilder_ == null) {
@@ -5913,19 +6105,19 @@ public final class Directdraw {
         } else {
           arcBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00002000);
+        bitField0_ = (bitField0_ & ~0x00004000);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.ArcProto.Builder getArcBuilder() {
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         onChanged();
         return getArcFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.ArcProtoOrBuilder getArcOrBuilder() {
         if (arcBuilder_ != null) {
@@ -5935,7 +6127,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 14;</code>
+       * <code>optional .org.webswing.directdraw.proto.ArcProto arc = 15;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.ArcProto, org.webswing.directdraw.proto.Directdraw.ArcProto.Builder, org.webswing.directdraw.proto.Directdraw.ArcProtoOrBuilder> 
@@ -5951,18 +6143,18 @@ public final class Directdraw {
         return arcBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;
+      // optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;
       private org.webswing.directdraw.proto.Directdraw.StrokeProto stroke_ = org.webswing.directdraw.proto.Directdraw.StrokeProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.StrokeProto, org.webswing.directdraw.proto.Directdraw.StrokeProto.Builder, org.webswing.directdraw.proto.Directdraw.StrokeProtoOrBuilder> strokeBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
        */
       public boolean hasStroke() {
-        return ((bitField0_ & 0x00004000) == 0x00004000);
+        return ((bitField0_ & 0x00008000) == 0x00008000);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.StrokeProto getStroke() {
         if (strokeBuilder_ == null) {
@@ -5972,7 +6164,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
        */
       public Builder setStroke(org.webswing.directdraw.proto.Directdraw.StrokeProto value) {
         if (strokeBuilder_ == null) {
@@ -5984,11 +6176,11 @@ public final class Directdraw {
         } else {
           strokeBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
        */
       public Builder setStroke(
           org.webswing.directdraw.proto.Directdraw.StrokeProto.Builder builderForValue) {
@@ -5998,15 +6190,15 @@ public final class Directdraw {
         } else {
           strokeBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
        */
       public Builder mergeStroke(org.webswing.directdraw.proto.Directdraw.StrokeProto value) {
         if (strokeBuilder_ == null) {
-          if (((bitField0_ & 0x00004000) == 0x00004000) &&
+          if (((bitField0_ & 0x00008000) == 0x00008000) &&
               stroke_ != org.webswing.directdraw.proto.Directdraw.StrokeProto.getDefaultInstance()) {
             stroke_ =
               org.webswing.directdraw.proto.Directdraw.StrokeProto.newBuilder(stroke_).mergeFrom(value).buildPartial();
@@ -6017,11 +6209,11 @@ public final class Directdraw {
         } else {
           strokeBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
        */
       public Builder clearStroke() {
         if (strokeBuilder_ == null) {
@@ -6030,19 +6222,19 @@ public final class Directdraw {
         } else {
           strokeBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00004000);
+        bitField0_ = (bitField0_ & ~0x00008000);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.StrokeProto.Builder getStrokeBuilder() {
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         onChanged();
         return getStrokeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.StrokeProtoOrBuilder getStrokeOrBuilder() {
         if (strokeBuilder_ != null) {
@@ -6052,7 +6244,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 15;</code>
+       * <code>optional .org.webswing.directdraw.proto.StrokeProto stroke = 16;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.StrokeProto, org.webswing.directdraw.proto.Directdraw.StrokeProto.Builder, org.webswing.directdraw.proto.Directdraw.StrokeProtoOrBuilder> 
@@ -6068,18 +6260,18 @@ public final class Directdraw {
         return strokeBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.CompositeProto composite = 16;
+      // optional .org.webswing.directdraw.proto.CompositeProto composite = 17;
       private org.webswing.directdraw.proto.Directdraw.CompositeProto composite_ = org.webswing.directdraw.proto.Directdraw.CompositeProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.CompositeProto, org.webswing.directdraw.proto.Directdraw.CompositeProto.Builder, org.webswing.directdraw.proto.Directdraw.CompositeProtoOrBuilder> compositeBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
        */
       public boolean hasComposite() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
+        return ((bitField0_ & 0x00010000) == 0x00010000);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.CompositeProto getComposite() {
         if (compositeBuilder_ == null) {
@@ -6089,7 +6281,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
        */
       public Builder setComposite(org.webswing.directdraw.proto.Directdraw.CompositeProto value) {
         if (compositeBuilder_ == null) {
@@ -6101,11 +6293,11 @@ public final class Directdraw {
         } else {
           compositeBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00010000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
        */
       public Builder setComposite(
           org.webswing.directdraw.proto.Directdraw.CompositeProto.Builder builderForValue) {
@@ -6115,15 +6307,15 @@ public final class Directdraw {
         } else {
           compositeBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00010000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
        */
       public Builder mergeComposite(org.webswing.directdraw.proto.Directdraw.CompositeProto value) {
         if (compositeBuilder_ == null) {
-          if (((bitField0_ & 0x00008000) == 0x00008000) &&
+          if (((bitField0_ & 0x00010000) == 0x00010000) &&
               composite_ != org.webswing.directdraw.proto.Directdraw.CompositeProto.getDefaultInstance()) {
             composite_ =
               org.webswing.directdraw.proto.Directdraw.CompositeProto.newBuilder(composite_).mergeFrom(value).buildPartial();
@@ -6134,11 +6326,11 @@ public final class Directdraw {
         } else {
           compositeBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00010000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
        */
       public Builder clearComposite() {
         if (compositeBuilder_ == null) {
@@ -6147,19 +6339,19 @@ public final class Directdraw {
         } else {
           compositeBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00008000);
+        bitField0_ = (bitField0_ & ~0x00010000);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.CompositeProto.Builder getCompositeBuilder() {
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00010000;
         onChanged();
         return getCompositeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.CompositeProtoOrBuilder getCompositeOrBuilder() {
         if (compositeBuilder_ != null) {
@@ -6169,7 +6361,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 16;</code>
+       * <code>optional .org.webswing.directdraw.proto.CompositeProto composite = 17;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.CompositeProto, org.webswing.directdraw.proto.Directdraw.CompositeProto.Builder, org.webswing.directdraw.proto.Directdraw.CompositeProtoOrBuilder> 
@@ -6185,18 +6377,18 @@ public final class Directdraw {
         return compositeBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.TextureProto texture = 17;
+      // optional .org.webswing.directdraw.proto.TextureProto texture = 18;
       private org.webswing.directdraw.proto.Directdraw.TextureProto texture_ = org.webswing.directdraw.proto.Directdraw.TextureProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.TextureProto, org.webswing.directdraw.proto.Directdraw.TextureProto.Builder, org.webswing.directdraw.proto.Directdraw.TextureProtoOrBuilder> textureBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
        */
       public boolean hasTexture() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
+        return ((bitField0_ & 0x00020000) == 0x00020000);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.TextureProto getTexture() {
         if (textureBuilder_ == null) {
@@ -6206,7 +6398,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
        */
       public Builder setTexture(org.webswing.directdraw.proto.Directdraw.TextureProto value) {
         if (textureBuilder_ == null) {
@@ -6218,11 +6410,11 @@ public final class Directdraw {
         } else {
           textureBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00010000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
        */
       public Builder setTexture(
           org.webswing.directdraw.proto.Directdraw.TextureProto.Builder builderForValue) {
@@ -6232,15 +6424,15 @@ public final class Directdraw {
         } else {
           textureBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00010000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
        */
       public Builder mergeTexture(org.webswing.directdraw.proto.Directdraw.TextureProto value) {
         if (textureBuilder_ == null) {
-          if (((bitField0_ & 0x00010000) == 0x00010000) &&
+          if (((bitField0_ & 0x00020000) == 0x00020000) &&
               texture_ != org.webswing.directdraw.proto.Directdraw.TextureProto.getDefaultInstance()) {
             texture_ =
               org.webswing.directdraw.proto.Directdraw.TextureProto.newBuilder(texture_).mergeFrom(value).buildPartial();
@@ -6251,11 +6443,11 @@ public final class Directdraw {
         } else {
           textureBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00010000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
        */
       public Builder clearTexture() {
         if (textureBuilder_ == null) {
@@ -6264,19 +6456,19 @@ public final class Directdraw {
         } else {
           textureBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00010000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.TextureProto.Builder getTextureBuilder() {
-        bitField0_ |= 0x00010000;
+        bitField0_ |= 0x00020000;
         onChanged();
         return getTextureFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.TextureProtoOrBuilder getTextureOrBuilder() {
         if (textureBuilder_ != null) {
@@ -6286,7 +6478,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 17;</code>
+       * <code>optional .org.webswing.directdraw.proto.TextureProto texture = 18;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.TextureProto, org.webswing.directdraw.proto.Directdraw.TextureProto.Builder, org.webswing.directdraw.proto.Directdraw.TextureProtoOrBuilder> 
@@ -6302,18 +6494,18 @@ public final class Directdraw {
         return textureBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;
+      // optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;
       private org.webswing.directdraw.proto.Directdraw.GlyphProto glyph_ = org.webswing.directdraw.proto.Directdraw.GlyphProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.GlyphProto, org.webswing.directdraw.proto.Directdraw.GlyphProto.Builder, org.webswing.directdraw.proto.Directdraw.GlyphProtoOrBuilder> glyphBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
        */
       public boolean hasGlyph() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
+        return ((bitField0_ & 0x00040000) == 0x00040000);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.GlyphProto getGlyph() {
         if (glyphBuilder_ == null) {
@@ -6323,7 +6515,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
        */
       public Builder setGlyph(org.webswing.directdraw.proto.Directdraw.GlyphProto value) {
         if (glyphBuilder_ == null) {
@@ -6335,11 +6527,11 @@ public final class Directdraw {
         } else {
           glyphBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00040000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
        */
       public Builder setGlyph(
           org.webswing.directdraw.proto.Directdraw.GlyphProto.Builder builderForValue) {
@@ -6349,15 +6541,15 @@ public final class Directdraw {
         } else {
           glyphBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00040000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
        */
       public Builder mergeGlyph(org.webswing.directdraw.proto.Directdraw.GlyphProto value) {
         if (glyphBuilder_ == null) {
-          if (((bitField0_ & 0x00020000) == 0x00020000) &&
+          if (((bitField0_ & 0x00040000) == 0x00040000) &&
               glyph_ != org.webswing.directdraw.proto.Directdraw.GlyphProto.getDefaultInstance()) {
             glyph_ =
               org.webswing.directdraw.proto.Directdraw.GlyphProto.newBuilder(glyph_).mergeFrom(value).buildPartial();
@@ -6368,11 +6560,11 @@ public final class Directdraw {
         } else {
           glyphBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00040000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
        */
       public Builder clearGlyph() {
         if (glyphBuilder_ == null) {
@@ -6381,19 +6573,19 @@ public final class Directdraw {
         } else {
           glyphBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00040000);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.GlyphProto.Builder getGlyphBuilder() {
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00040000;
         onChanged();
         return getGlyphFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.GlyphProtoOrBuilder getGlyphOrBuilder() {
         if (glyphBuilder_ != null) {
@@ -6403,7 +6595,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 18;</code>
+       * <code>optional .org.webswing.directdraw.proto.GlyphProto glyph = 19;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.GlyphProto, org.webswing.directdraw.proto.Directdraw.GlyphProto.Builder, org.webswing.directdraw.proto.Directdraw.GlyphProtoOrBuilder> 
@@ -6419,18 +6611,18 @@ public final class Directdraw {
         return glyphBuilder_;
       }
 
-      // optional .org.webswing.directdraw.proto.CombinedProto combined = 19;
+      // optional .org.webswing.directdraw.proto.CombinedProto combined = 20;
       private org.webswing.directdraw.proto.Directdraw.CombinedProto combined_ = org.webswing.directdraw.proto.Directdraw.CombinedProto.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.CombinedProto, org.webswing.directdraw.proto.Directdraw.CombinedProto.Builder, org.webswing.directdraw.proto.Directdraw.CombinedProtoOrBuilder> combinedBuilder_;
       /**
-       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
        */
       public boolean hasCombined() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
+        return ((bitField0_ & 0x00080000) == 0x00080000);
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.CombinedProto getCombined() {
         if (combinedBuilder_ == null) {
@@ -6440,7 +6632,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
        */
       public Builder setCombined(org.webswing.directdraw.proto.Directdraw.CombinedProto value) {
         if (combinedBuilder_ == null) {
@@ -6452,11 +6644,11 @@ public final class Directdraw {
         } else {
           combinedBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00080000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
        */
       public Builder setCombined(
           org.webswing.directdraw.proto.Directdraw.CombinedProto.Builder builderForValue) {
@@ -6466,15 +6658,15 @@ public final class Directdraw {
         } else {
           combinedBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00080000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
        */
       public Builder mergeCombined(org.webswing.directdraw.proto.Directdraw.CombinedProto value) {
         if (combinedBuilder_ == null) {
-          if (((bitField0_ & 0x00040000) == 0x00040000) &&
+          if (((bitField0_ & 0x00080000) == 0x00080000) &&
               combined_ != org.webswing.directdraw.proto.Directdraw.CombinedProto.getDefaultInstance()) {
             combined_ =
               org.webswing.directdraw.proto.Directdraw.CombinedProto.newBuilder(combined_).mergeFrom(value).buildPartial();
@@ -6485,11 +6677,11 @@ public final class Directdraw {
         } else {
           combinedBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00080000;
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
        */
       public Builder clearCombined() {
         if (combinedBuilder_ == null) {
@@ -6498,19 +6690,19 @@ public final class Directdraw {
         } else {
           combinedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00080000);
         return this;
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.CombinedProto.Builder getCombinedBuilder() {
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00080000;
         onChanged();
         return getCombinedFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
        */
       public org.webswing.directdraw.proto.Directdraw.CombinedProtoOrBuilder getCombinedOrBuilder() {
         if (combinedBuilder_ != null) {
@@ -6520,7 +6712,7 @@ public final class Directdraw {
         }
       }
       /**
-       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 19;</code>
+       * <code>optional .org.webswing.directdraw.proto.CombinedProto combined = 20;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           org.webswing.directdraw.proto.Directdraw.CombinedProto, org.webswing.directdraw.proto.Directdraw.CombinedProto.Builder, org.webswing.directdraw.proto.Directdraw.CombinedProtoOrBuilder> 
@@ -8098,23 +8290,23 @@ public final class Directdraw {
      */
     float getM00();
 
-    // optional float m10 = 2;
+    // optional float m10 = 2 [default = 0];
     /**
-     * <code>optional float m10 = 2;</code>
+     * <code>optional float m10 = 2 [default = 0];</code>
      */
     boolean hasM10();
     /**
-     * <code>optional float m10 = 2;</code>
+     * <code>optional float m10 = 2 [default = 0];</code>
      */
     float getM10();
 
-    // optional float m01 = 3;
+    // optional float m01 = 3 [default = 0];
     /**
-     * <code>optional float m01 = 3;</code>
+     * <code>optional float m01 = 3 [default = 0];</code>
      */
     boolean hasM01();
     /**
-     * <code>optional float m01 = 3;</code>
+     * <code>optional float m01 = 3 [default = 0];</code>
      */
     float getM01();
 
@@ -8128,23 +8320,23 @@ public final class Directdraw {
      */
     float getM11();
 
-    // optional float m02 = 5;
+    // optional float m02 = 5 [default = 0];
     /**
-     * <code>optional float m02 = 5;</code>
+     * <code>optional float m02 = 5 [default = 0];</code>
      */
     boolean hasM02();
     /**
-     * <code>optional float m02 = 5;</code>
+     * <code>optional float m02 = 5 [default = 0];</code>
      */
     float getM02();
 
-    // optional float m12 = 6;
+    // optional float m12 = 6 [default = 0];
     /**
-     * <code>optional float m12 = 6;</code>
+     * <code>optional float m12 = 6 [default = 0];</code>
      */
     boolean hasM12();
     /**
-     * <code>optional float m12 = 6;</code>
+     * <code>optional float m12 = 6 [default = 0];</code>
      */
     float getM12();
   }
@@ -8285,33 +8477,33 @@ public final class Directdraw {
       return m00_;
     }
 
-    // optional float m10 = 2;
+    // optional float m10 = 2 [default = 0];
     public static final int M10_FIELD_NUMBER = 2;
     private float m10_;
     /**
-     * <code>optional float m10 = 2;</code>
+     * <code>optional float m10 = 2 [default = 0];</code>
      */
     public boolean hasM10() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional float m10 = 2;</code>
+     * <code>optional float m10 = 2 [default = 0];</code>
      */
     public float getM10() {
       return m10_;
     }
 
-    // optional float m01 = 3;
+    // optional float m01 = 3 [default = 0];
     public static final int M01_FIELD_NUMBER = 3;
     private float m01_;
     /**
-     * <code>optional float m01 = 3;</code>
+     * <code>optional float m01 = 3 [default = 0];</code>
      */
     public boolean hasM01() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional float m01 = 3;</code>
+     * <code>optional float m01 = 3 [default = 0];</code>
      */
     public float getM01() {
       return m01_;
@@ -8333,33 +8525,33 @@ public final class Directdraw {
       return m11_;
     }
 
-    // optional float m02 = 5;
+    // optional float m02 = 5 [default = 0];
     public static final int M02_FIELD_NUMBER = 5;
     private float m02_;
     /**
-     * <code>optional float m02 = 5;</code>
+     * <code>optional float m02 = 5 [default = 0];</code>
      */
     public boolean hasM02() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional float m02 = 5;</code>
+     * <code>optional float m02 = 5 [default = 0];</code>
      */
     public float getM02() {
       return m02_;
     }
 
-    // optional float m12 = 6;
+    // optional float m12 = 6 [default = 0];
     public static final int M12_FIELD_NUMBER = 6;
     private float m12_;
     /**
-     * <code>optional float m12 = 6;</code>
+     * <code>optional float m12 = 6 [default = 0];</code>
      */
     public boolean hasM12() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>optional float m12 = 6;</code>
+     * <code>optional float m12 = 6 [default = 0];</code>
      */
     public float getM12() {
       return m12_;
@@ -8710,22 +8902,22 @@ public final class Directdraw {
         return this;
       }
 
-      // optional float m10 = 2;
+      // optional float m10 = 2 [default = 0];
       private float m10_ ;
       /**
-       * <code>optional float m10 = 2;</code>
+       * <code>optional float m10 = 2 [default = 0];</code>
        */
       public boolean hasM10() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional float m10 = 2;</code>
+       * <code>optional float m10 = 2 [default = 0];</code>
        */
       public float getM10() {
         return m10_;
       }
       /**
-       * <code>optional float m10 = 2;</code>
+       * <code>optional float m10 = 2 [default = 0];</code>
        */
       public Builder setM10(float value) {
         bitField0_ |= 0x00000002;
@@ -8734,7 +8926,7 @@ public final class Directdraw {
         return this;
       }
       /**
-       * <code>optional float m10 = 2;</code>
+       * <code>optional float m10 = 2 [default = 0];</code>
        */
       public Builder clearM10() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -8743,22 +8935,22 @@ public final class Directdraw {
         return this;
       }
 
-      // optional float m01 = 3;
+      // optional float m01 = 3 [default = 0];
       private float m01_ ;
       /**
-       * <code>optional float m01 = 3;</code>
+       * <code>optional float m01 = 3 [default = 0];</code>
        */
       public boolean hasM01() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional float m01 = 3;</code>
+       * <code>optional float m01 = 3 [default = 0];</code>
        */
       public float getM01() {
         return m01_;
       }
       /**
-       * <code>optional float m01 = 3;</code>
+       * <code>optional float m01 = 3 [default = 0];</code>
        */
       public Builder setM01(float value) {
         bitField0_ |= 0x00000004;
@@ -8767,7 +8959,7 @@ public final class Directdraw {
         return this;
       }
       /**
-       * <code>optional float m01 = 3;</code>
+       * <code>optional float m01 = 3 [default = 0];</code>
        */
       public Builder clearM01() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -8809,22 +9001,22 @@ public final class Directdraw {
         return this;
       }
 
-      // optional float m02 = 5;
+      // optional float m02 = 5 [default = 0];
       private float m02_ ;
       /**
-       * <code>optional float m02 = 5;</code>
+       * <code>optional float m02 = 5 [default = 0];</code>
        */
       public boolean hasM02() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional float m02 = 5;</code>
+       * <code>optional float m02 = 5 [default = 0];</code>
        */
       public float getM02() {
         return m02_;
       }
       /**
-       * <code>optional float m02 = 5;</code>
+       * <code>optional float m02 = 5 [default = 0];</code>
        */
       public Builder setM02(float value) {
         bitField0_ |= 0x00000010;
@@ -8833,7 +9025,7 @@ public final class Directdraw {
         return this;
       }
       /**
-       * <code>optional float m02 = 5;</code>
+       * <code>optional float m02 = 5 [default = 0];</code>
        */
       public Builder clearM02() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -8842,22 +9034,22 @@ public final class Directdraw {
         return this;
       }
 
-      // optional float m12 = 6;
+      // optional float m12 = 6 [default = 0];
       private float m12_ ;
       /**
-       * <code>optional float m12 = 6;</code>
+       * <code>optional float m12 = 6 [default = 0];</code>
        */
       public boolean hasM12() {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional float m12 = 6;</code>
+       * <code>optional float m12 = 6 [default = 0];</code>
        */
       public float getM12() {
         return m12_;
       }
       /**
-       * <code>optional float m12 = 6;</code>
+       * <code>optional float m12 = 6 [default = 0];</code>
        */
       public Builder setM12(float value) {
         bitField0_ |= 0x00000020;
@@ -8866,7 +9058,7 @@ public final class Directdraw {
         return this;
       }
       /**
-       * <code>optional float m12 = 6;</code>
+       * <code>optional float m12 = 6 [default = 0];</code>
        */
       public Builder clearM12() {
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -12943,66 +13135,56 @@ public final class Directdraw {
     // @@protoc_insertion_point(class_scope:org.webswing.directdraw.proto.ArcProto)
   }
 
-  public interface PathProtoOrBuilder
+  public interface PartialPathProtoOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required bool windingOdd = 1;
+    // repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;
     /**
-     * <code>required bool windingOdd = 1;</code>
+     * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
      */
-    boolean hasWindingOdd();
+    java.util.List<org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto> getTypeList();
     /**
-     * <code>required bool windingOdd = 1;</code>
-     */
-    boolean getWindingOdd();
-
-    // repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;
-    /**
-     * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
-     */
-    java.util.List<org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto> getTypeList();
-    /**
-     * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
+     * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
      */
     int getTypeCount();
     /**
-     * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
+     * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
      */
-    org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto getType(int index);
+    org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto getType(int index);
 
-    // repeated float points = 3;
+    // repeated float points = 2;
     /**
-     * <code>repeated float points = 3;</code>
+     * <code>repeated float points = 2;</code>
      */
     java.util.List<java.lang.Float> getPointsList();
     /**
-     * <code>repeated float points = 3;</code>
+     * <code>repeated float points = 2;</code>
      */
     int getPointsCount();
     /**
-     * <code>repeated float points = 3;</code>
+     * <code>repeated float points = 2;</code>
      */
     float getPoints(int index);
   }
   /**
-   * Protobuf type {@code org.webswing.directdraw.proto.PathProto}
+   * Protobuf type {@code org.webswing.directdraw.proto.PartialPathProto}
    */
-  public static final class PathProto extends
+  public static final class PartialPathProto extends
       com.google.protobuf.GeneratedMessage
-      implements PathProtoOrBuilder {
-    // Use PathProto.newBuilder() to construct.
-    private PathProto(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      implements PartialPathProtoOrBuilder {
+    // Use PartialPathProto.newBuilder() to construct.
+    private PartialPathProto(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
       this.unknownFields = builder.getUnknownFields();
     }
-    private PathProto(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+    private PartialPathProto(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
 
-    private static final PathProto defaultInstance;
-    public static PathProto getDefaultInstance() {
+    private static final PartialPathProto defaultInstance;
+    public static PartialPathProto getDefaultInstance() {
       return defaultInstance;
     }
 
-    public PathProto getDefaultInstanceForType() {
+    public PartialPathProto getDefaultInstanceForType() {
       return defaultInstance;
     }
 
@@ -13012,7 +13194,7 @@ public final class Directdraw {
         getUnknownFields() {
       return this.unknownFields;
     }
-    private PathProto(
+    private PartialPathProto(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -13036,36 +13218,31 @@ public final class Directdraw {
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
-              windingOdd_ = input.readBool();
-              break;
-            }
-            case 16: {
               int rawValue = input.readEnum();
-              org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto value = org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto.valueOf(rawValue);
+              org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto value = org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto.valueOf(rawValue);
               if (value == null) {
-                unknownFields.mergeVarintField(2, rawValue);
+                unknownFields.mergeVarintField(1, rawValue);
               } else {
-                if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                  type_ = new java.util.ArrayList<org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto>();
-                  mutable_bitField0_ |= 0x00000002;
+                if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                  type_ = new java.util.ArrayList<org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto>();
+                  mutable_bitField0_ |= 0x00000001;
                 }
                 type_.add(value);
               }
               break;
             }
-            case 18: {
+            case 10: {
               int length = input.readRawVarint32();
               int oldLimit = input.pushLimit(length);
               while(input.getBytesUntilLimit() > 0) {
                 int rawValue = input.readEnum();
-                org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto value = org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto.valueOf(rawValue);
+                org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto value = org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto.valueOf(rawValue);
                 if (value == null) {
-                  unknownFields.mergeVarintField(2, rawValue);
+                  unknownFields.mergeVarintField(1, rawValue);
                 } else {
-                  if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                    type_ = new java.util.ArrayList<org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto>();
-                    mutable_bitField0_ |= 0x00000002;
+                  if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                    type_ = new java.util.ArrayList<org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto>();
+                    mutable_bitField0_ |= 0x00000001;
                   }
                   type_.add(value);
                 }
@@ -13073,20 +13250,20 @@ public final class Directdraw {
               input.popLimit(oldLimit);
               break;
             }
-            case 29: {
-              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+            case 21: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
                 points_ = new java.util.ArrayList<java.lang.Float>();
-                mutable_bitField0_ |= 0x00000004;
+                mutable_bitField0_ |= 0x00000002;
               }
               points_.add(input.readFloat());
               break;
             }
-            case 26: {
+            case 18: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004) && input.getBytesUntilLimit() > 0) {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
                 points_ = new java.util.ArrayList<java.lang.Float>();
-                mutable_bitField0_ |= 0x00000004;
+                mutable_bitField0_ |= 0x00000002;
               }
               while (input.getBytesUntilLimit() > 0) {
                 points_.add(input.readFloat());
@@ -13102,10 +13279,10 @@ public final class Directdraw {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           type_ = java.util.Collections.unmodifiableList(type_);
         }
-        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           points_ = java.util.Collections.unmodifiableList(points_);
         }
         this.unknownFields = unknownFields.build();
@@ -13114,33 +13291,33 @@ public final class Directdraw {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_PathProto_descriptor;
+      return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_PartialPathProto_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_PathProto_fieldAccessorTable
+      return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_PartialPathProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.webswing.directdraw.proto.Directdraw.PathProto.class, org.webswing.directdraw.proto.Directdraw.PathProto.Builder.class);
+              org.webswing.directdraw.proto.Directdraw.PartialPathProto.class, org.webswing.directdraw.proto.Directdraw.PartialPathProto.Builder.class);
     }
 
-    public static com.google.protobuf.Parser<PathProto> PARSER =
-        new com.google.protobuf.AbstractParser<PathProto>() {
-      public PathProto parsePartialFrom(
+    public static com.google.protobuf.Parser<PartialPathProto> PARSER =
+        new com.google.protobuf.AbstractParser<PartialPathProto>() {
+      public PartialPathProto parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new PathProto(input, extensionRegistry);
+        return new PartialPathProto(input, extensionRegistry);
       }
     };
 
     @java.lang.Override
-    public com.google.protobuf.Parser<PathProto> getParserForType() {
+    public com.google.protobuf.Parser<PartialPathProto> getParserForType() {
       return PARSER;
     }
 
     /**
-     * Protobuf enum {@code org.webswing.directdraw.proto.PathProto.SegmentTypeProto}
+     * Protobuf enum {@code org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto}
      */
     public enum SegmentTypeProto
         implements com.google.protobuf.ProtocolMessageEnum {
@@ -13223,7 +13400,7 @@ public final class Directdraw {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return org.webswing.directdraw.proto.Directdraw.PathProto.getDescriptor().getEnumTypes().get(0);
+        return org.webswing.directdraw.proto.Directdraw.PartialPathProto.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final SegmentTypeProto[] VALUES = values();
@@ -13245,73 +13422,55 @@ public final class Directdraw {
         this.value = value;
       }
 
-      // @@protoc_insertion_point(enum_scope:org.webswing.directdraw.proto.PathProto.SegmentTypeProto)
+      // @@protoc_insertion_point(enum_scope:org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto)
     }
 
-    private int bitField0_;
-    // required bool windingOdd = 1;
-    public static final int WINDINGODD_FIELD_NUMBER = 1;
-    private boolean windingOdd_;
+    // repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private java.util.List<org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto> type_;
     /**
-     * <code>required bool windingOdd = 1;</code>
+     * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
      */
-    public boolean hasWindingOdd() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required bool windingOdd = 1;</code>
-     */
-    public boolean getWindingOdd() {
-      return windingOdd_;
-    }
-
-    // repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;
-    public static final int TYPE_FIELD_NUMBER = 2;
-    private java.util.List<org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto> type_;
-    /**
-     * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
-     */
-    public java.util.List<org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto> getTypeList() {
+    public java.util.List<org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto> getTypeList() {
       return type_;
     }
     /**
-     * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
+     * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
      */
     public int getTypeCount() {
       return type_.size();
     }
     /**
-     * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
+     * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
      */
-    public org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto getType(int index) {
+    public org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto getType(int index) {
       return type_.get(index);
     }
 
-    // repeated float points = 3;
-    public static final int POINTS_FIELD_NUMBER = 3;
+    // repeated float points = 2;
+    public static final int POINTS_FIELD_NUMBER = 2;
     private java.util.List<java.lang.Float> points_;
     /**
-     * <code>repeated float points = 3;</code>
+     * <code>repeated float points = 2;</code>
      */
     public java.util.List<java.lang.Float>
         getPointsList() {
       return points_;
     }
     /**
-     * <code>repeated float points = 3;</code>
+     * <code>repeated float points = 2;</code>
      */
     public int getPointsCount() {
       return points_.size();
     }
     /**
-     * <code>repeated float points = 3;</code>
+     * <code>repeated float points = 2;</code>
      */
     public float getPoints(int index) {
       return points_.get(index);
     }
 
     private void initFields() {
-      windingOdd_ = false;
       type_ = java.util.Collections.emptyList();
       points_ = java.util.Collections.emptyList();
     }
@@ -13320,10 +13479,6 @@ public final class Directdraw {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
-      if (!hasWindingOdd()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -13331,14 +13486,11 @@ public final class Directdraw {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBool(1, windingOdd_);
-      }
       for (int i = 0; i < type_.size(); i++) {
-        output.writeEnum(2, type_.get(i).getNumber());
+        output.writeEnum(1, type_.get(i).getNumber());
       }
       for (int i = 0; i < points_.size(); i++) {
-        output.writeFloat(3, points_.get(i));
+        output.writeFloat(2, points_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -13349,10 +13501,6 @@ public final class Directdraw {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(1, windingOdd_);
-      }
       {
         int dataSize = 0;
         for (int i = 0; i < type_.size(); i++) {
@@ -13380,53 +13528,53 @@ public final class Directdraw {
       return super.writeReplace();
     }
 
-    public static org.webswing.directdraw.proto.Directdraw.PathProto parseFrom(
+    public static org.webswing.directdraw.proto.Directdraw.PartialPathProto parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.webswing.directdraw.proto.Directdraw.PathProto parseFrom(
+    public static org.webswing.directdraw.proto.Directdraw.PartialPathProto parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.webswing.directdraw.proto.Directdraw.PathProto parseFrom(byte[] data)
+    public static org.webswing.directdraw.proto.Directdraw.PartialPathProto parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.webswing.directdraw.proto.Directdraw.PathProto parseFrom(
+    public static org.webswing.directdraw.proto.Directdraw.PartialPathProto parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.webswing.directdraw.proto.Directdraw.PathProto parseFrom(java.io.InputStream input)
+    public static org.webswing.directdraw.proto.Directdraw.PartialPathProto parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.webswing.directdraw.proto.Directdraw.PathProto parseFrom(
+    public static org.webswing.directdraw.proto.Directdraw.PartialPathProto parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static org.webswing.directdraw.proto.Directdraw.PathProto parseDelimitedFrom(java.io.InputStream input)
+    public static org.webswing.directdraw.proto.Directdraw.PartialPathProto parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static org.webswing.directdraw.proto.Directdraw.PathProto parseDelimitedFrom(
+    public static org.webswing.directdraw.proto.Directdraw.PartialPathProto parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static org.webswing.directdraw.proto.Directdraw.PathProto parseFrom(
+    public static org.webswing.directdraw.proto.Directdraw.PartialPathProto parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.webswing.directdraw.proto.Directdraw.PathProto parseFrom(
+    public static org.webswing.directdraw.proto.Directdraw.PartialPathProto parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -13435,7 +13583,7 @@ public final class Directdraw {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(org.webswing.directdraw.proto.Directdraw.PathProto prototype) {
+    public static Builder newBuilder(org.webswing.directdraw.proto.Directdraw.PartialPathProto prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -13447,24 +13595,694 @@ public final class Directdraw {
       return builder;
     }
     /**
-     * Protobuf type {@code org.webswing.directdraw.proto.PathProto}
+     * Protobuf type {@code org.webswing.directdraw.proto.PartialPathProto}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.webswing.directdraw.proto.Directdraw.PathProtoOrBuilder {
+       implements org.webswing.directdraw.proto.Directdraw.PartialPathProtoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_PathProto_descriptor;
+        return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_PartialPathProto_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_PathProto_fieldAccessorTable
+        return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_PartialPathProto_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.webswing.directdraw.proto.Directdraw.PathProto.class, org.webswing.directdraw.proto.Directdraw.PathProto.Builder.class);
+                org.webswing.directdraw.proto.Directdraw.PartialPathProto.class, org.webswing.directdraw.proto.Directdraw.PartialPathProto.Builder.class);
       }
 
-      // Construct using org.webswing.directdraw.proto.Directdraw.PathProto.newBuilder()
+      // Construct using org.webswing.directdraw.proto.Directdraw.PartialPathProto.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        type_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        points_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_PartialPathProto_descriptor;
+      }
+
+      public org.webswing.directdraw.proto.Directdraw.PartialPathProto getDefaultInstanceForType() {
+        return org.webswing.directdraw.proto.Directdraw.PartialPathProto.getDefaultInstance();
+      }
+
+      public org.webswing.directdraw.proto.Directdraw.PartialPathProto build() {
+        org.webswing.directdraw.proto.Directdraw.PartialPathProto result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public org.webswing.directdraw.proto.Directdraw.PartialPathProto buildPartial() {
+        org.webswing.directdraw.proto.Directdraw.PartialPathProto result = new org.webswing.directdraw.proto.Directdraw.PartialPathProto(this);
+        int from_bitField0_ = bitField0_;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          type_ = java.util.Collections.unmodifiableList(type_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.type_ = type_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          points_ = java.util.Collections.unmodifiableList(points_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.points_ = points_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof org.webswing.directdraw.proto.Directdraw.PartialPathProto) {
+          return mergeFrom((org.webswing.directdraw.proto.Directdraw.PartialPathProto)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.webswing.directdraw.proto.Directdraw.PartialPathProto other) {
+        if (other == org.webswing.directdraw.proto.Directdraw.PartialPathProto.getDefaultInstance()) return this;
+        if (!other.type_.isEmpty()) {
+          if (type_.isEmpty()) {
+            type_ = other.type_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureTypeIsMutable();
+            type_.addAll(other.type_);
+          }
+          onChanged();
+        }
+        if (!other.points_.isEmpty()) {
+          if (points_.isEmpty()) {
+            points_ = other.points_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensurePointsIsMutable();
+            points_.addAll(other.points_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        org.webswing.directdraw.proto.Directdraw.PartialPathProto parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (org.webswing.directdraw.proto.Directdraw.PartialPathProto) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;
+      private java.util.List<org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto> type_ =
+        java.util.Collections.emptyList();
+      private void ensureTypeIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          type_ = new java.util.ArrayList<org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto>(type_);
+          bitField0_ |= 0x00000001;
+        }
+      }
+      /**
+       * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
+       */
+      public java.util.List<org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto> getTypeList() {
+        return java.util.Collections.unmodifiableList(type_);
+      }
+      /**
+       * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
+       */
+      public int getTypeCount() {
+        return type_.size();
+      }
+      /**
+       * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
+       */
+      public org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto getType(int index) {
+        return type_.get(index);
+      }
+      /**
+       * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
+       */
+      public Builder setType(
+          int index, org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureTypeIsMutable();
+        type_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
+       */
+      public Builder addType(org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureTypeIsMutable();
+        type_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
+       */
+      public Builder addAllType(
+          java.lang.Iterable<? extends org.webswing.directdraw.proto.Directdraw.PartialPathProto.SegmentTypeProto> values) {
+        ensureTypeIsMutable();
+        super.addAll(values, type_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .org.webswing.directdraw.proto.PartialPathProto.SegmentTypeProto type = 1;</code>
+       */
+      public Builder clearType() {
+        type_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+
+      // repeated float points = 2;
+      private java.util.List<java.lang.Float> points_ = java.util.Collections.emptyList();
+      private void ensurePointsIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          points_ = new java.util.ArrayList<java.lang.Float>(points_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      /**
+       * <code>repeated float points = 2;</code>
+       */
+      public java.util.List<java.lang.Float>
+          getPointsList() {
+        return java.util.Collections.unmodifiableList(points_);
+      }
+      /**
+       * <code>repeated float points = 2;</code>
+       */
+      public int getPointsCount() {
+        return points_.size();
+      }
+      /**
+       * <code>repeated float points = 2;</code>
+       */
+      public float getPoints(int index) {
+        return points_.get(index);
+      }
+      /**
+       * <code>repeated float points = 2;</code>
+       */
+      public Builder setPoints(
+          int index, float value) {
+        ensurePointsIsMutable();
+        points_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated float points = 2;</code>
+       */
+      public Builder addPoints(float value) {
+        ensurePointsIsMutable();
+        points_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated float points = 2;</code>
+       */
+      public Builder addAllPoints(
+          java.lang.Iterable<? extends java.lang.Float> values) {
+        ensurePointsIsMutable();
+        super.addAll(values, points_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated float points = 2;</code>
+       */
+      public Builder clearPoints() {
+        points_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:org.webswing.directdraw.proto.PartialPathProto)
+    }
+
+    static {
+      defaultInstance = new PartialPathProto(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:org.webswing.directdraw.proto.PartialPathProto)
+  }
+
+  public interface CompositePathProtoOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+
+    // required bool windingOdd = 1;
+    /**
+     * <code>required bool windingOdd = 1;</code>
+     */
+    boolean hasWindingOdd();
+    /**
+     * <code>required bool windingOdd = 1;</code>
+     */
+    boolean getWindingOdd();
+
+    // repeated float xOffsets = 2;
+    /**
+     * <code>repeated float xOffsets = 2;</code>
+     */
+    java.util.List<java.lang.Float> getXOffsetsList();
+    /**
+     * <code>repeated float xOffsets = 2;</code>
+     */
+    int getXOffsetsCount();
+    /**
+     * <code>repeated float xOffsets = 2;</code>
+     */
+    float getXOffsets(int index);
+
+    // repeated float yOffsets = 3;
+    /**
+     * <code>repeated float yOffsets = 3;</code>
+     */
+    java.util.List<java.lang.Float> getYOffsetsList();
+    /**
+     * <code>repeated float yOffsets = 3;</code>
+     */
+    int getYOffsetsCount();
+    /**
+     * <code>repeated float yOffsets = 3;</code>
+     */
+    float getYOffsets(int index);
+  }
+  /**
+   * Protobuf type {@code org.webswing.directdraw.proto.CompositePathProto}
+   */
+  public static final class CompositePathProto extends
+      com.google.protobuf.GeneratedMessage
+      implements CompositePathProtoOrBuilder {
+    // Use CompositePathProto.newBuilder() to construct.
+    private CompositePathProto(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private CompositePathProto(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final CompositePathProto defaultInstance;
+    public static CompositePathProto getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public CompositePathProto getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private CompositePathProto(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              windingOdd_ = input.readBool();
+              break;
+            }
+            case 21: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                xOffsets_ = new java.util.ArrayList<java.lang.Float>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              xOffsets_.add(input.readFloat());
+              break;
+            }
+            case 18: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
+                xOffsets_ = new java.util.ArrayList<java.lang.Float>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                xOffsets_.add(input.readFloat());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 29: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                yOffsets_ = new java.util.ArrayList<java.lang.Float>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              yOffsets_.add(input.readFloat());
+              break;
+            }
+            case 26: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004) && input.getBytesUntilLimit() > 0) {
+                yOffsets_ = new java.util.ArrayList<java.lang.Float>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                yOffsets_.add(input.readFloat());
+              }
+              input.popLimit(limit);
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          xOffsets_ = java.util.Collections.unmodifiableList(xOffsets_);
+        }
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          yOffsets_ = java.util.Collections.unmodifiableList(yOffsets_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_CompositePathProto_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_CompositePathProto_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.webswing.directdraw.proto.Directdraw.CompositePathProto.class, org.webswing.directdraw.proto.Directdraw.CompositePathProto.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<CompositePathProto> PARSER =
+        new com.google.protobuf.AbstractParser<CompositePathProto>() {
+      public CompositePathProto parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new CompositePathProto(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CompositePathProto> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    // required bool windingOdd = 1;
+    public static final int WINDINGODD_FIELD_NUMBER = 1;
+    private boolean windingOdd_;
+    /**
+     * <code>required bool windingOdd = 1;</code>
+     */
+    public boolean hasWindingOdd() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required bool windingOdd = 1;</code>
+     */
+    public boolean getWindingOdd() {
+      return windingOdd_;
+    }
+
+    // repeated float xOffsets = 2;
+    public static final int XOFFSETS_FIELD_NUMBER = 2;
+    private java.util.List<java.lang.Float> xOffsets_;
+    /**
+     * <code>repeated float xOffsets = 2;</code>
+     */
+    public java.util.List<java.lang.Float>
+        getXOffsetsList() {
+      return xOffsets_;
+    }
+    /**
+     * <code>repeated float xOffsets = 2;</code>
+     */
+    public int getXOffsetsCount() {
+      return xOffsets_.size();
+    }
+    /**
+     * <code>repeated float xOffsets = 2;</code>
+     */
+    public float getXOffsets(int index) {
+      return xOffsets_.get(index);
+    }
+
+    // repeated float yOffsets = 3;
+    public static final int YOFFSETS_FIELD_NUMBER = 3;
+    private java.util.List<java.lang.Float> yOffsets_;
+    /**
+     * <code>repeated float yOffsets = 3;</code>
+     */
+    public java.util.List<java.lang.Float>
+        getYOffsetsList() {
+      return yOffsets_;
+    }
+    /**
+     * <code>repeated float yOffsets = 3;</code>
+     */
+    public int getYOffsetsCount() {
+      return yOffsets_.size();
+    }
+    /**
+     * <code>repeated float yOffsets = 3;</code>
+     */
+    public float getYOffsets(int index) {
+      return yOffsets_.get(index);
+    }
+
+    private void initFields() {
+      windingOdd_ = false;
+      xOffsets_ = java.util.Collections.emptyList();
+      yOffsets_ = java.util.Collections.emptyList();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (!hasWindingOdd()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBool(1, windingOdd_);
+      }
+      for (int i = 0; i < xOffsets_.size(); i++) {
+        output.writeFloat(2, xOffsets_.get(i));
+      }
+      for (int i = 0; i < yOffsets_.size(); i++) {
+        output.writeFloat(3, yOffsets_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, windingOdd_);
+      }
+      {
+        int dataSize = 0;
+        dataSize = 4 * getXOffsetsList().size();
+        size += dataSize;
+        size += 1 * getXOffsetsList().size();
+      }
+      {
+        int dataSize = 0;
+        dataSize = 4 * getYOffsetsList().size();
+        size += dataSize;
+        size += 1 * getYOffsetsList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static org.webswing.directdraw.proto.Directdraw.CompositePathProto parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.webswing.directdraw.proto.Directdraw.CompositePathProto parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.webswing.directdraw.proto.Directdraw.CompositePathProto parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.webswing.directdraw.proto.Directdraw.CompositePathProto parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.webswing.directdraw.proto.Directdraw.CompositePathProto parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static org.webswing.directdraw.proto.Directdraw.CompositePathProto parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static org.webswing.directdraw.proto.Directdraw.CompositePathProto parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static org.webswing.directdraw.proto.Directdraw.CompositePathProto parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static org.webswing.directdraw.proto.Directdraw.CompositePathProto parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static org.webswing.directdraw.proto.Directdraw.CompositePathProto parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(org.webswing.directdraw.proto.Directdraw.CompositePathProto prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code org.webswing.directdraw.proto.CompositePathProto}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements org.webswing.directdraw.proto.Directdraw.CompositePathProtoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_CompositePathProto_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_CompositePathProto_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.webswing.directdraw.proto.Directdraw.CompositePathProto.class, org.webswing.directdraw.proto.Directdraw.CompositePathProto.Builder.class);
+      }
+
+      // Construct using org.webswing.directdraw.proto.Directdraw.CompositePathProto.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -13486,9 +14304,9 @@ public final class Directdraw {
         super.clear();
         windingOdd_ = false;
         bitField0_ = (bitField0_ & ~0x00000001);
-        type_ = java.util.Collections.emptyList();
+        xOffsets_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
-        points_ = java.util.Collections.emptyList();
+        yOffsets_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -13499,23 +14317,23 @@ public final class Directdraw {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_PathProto_descriptor;
+        return org.webswing.directdraw.proto.Directdraw.internal_static_org_webswing_directdraw_proto_CompositePathProto_descriptor;
       }
 
-      public org.webswing.directdraw.proto.Directdraw.PathProto getDefaultInstanceForType() {
-        return org.webswing.directdraw.proto.Directdraw.PathProto.getDefaultInstance();
+      public org.webswing.directdraw.proto.Directdraw.CompositePathProto getDefaultInstanceForType() {
+        return org.webswing.directdraw.proto.Directdraw.CompositePathProto.getDefaultInstance();
       }
 
-      public org.webswing.directdraw.proto.Directdraw.PathProto build() {
-        org.webswing.directdraw.proto.Directdraw.PathProto result = buildPartial();
+      public org.webswing.directdraw.proto.Directdraw.CompositePathProto build() {
+        org.webswing.directdraw.proto.Directdraw.CompositePathProto result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.webswing.directdraw.proto.Directdraw.PathProto buildPartial() {
-        org.webswing.directdraw.proto.Directdraw.PathProto result = new org.webswing.directdraw.proto.Directdraw.PathProto(this);
+      public org.webswing.directdraw.proto.Directdraw.CompositePathProto buildPartial() {
+        org.webswing.directdraw.proto.Directdraw.CompositePathProto result = new org.webswing.directdraw.proto.Directdraw.CompositePathProto(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -13523,51 +14341,51 @@ public final class Directdraw {
         }
         result.windingOdd_ = windingOdd_;
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          type_ = java.util.Collections.unmodifiableList(type_);
+          xOffsets_ = java.util.Collections.unmodifiableList(xOffsets_);
           bitField0_ = (bitField0_ & ~0x00000002);
         }
-        result.type_ = type_;
+        result.xOffsets_ = xOffsets_;
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          points_ = java.util.Collections.unmodifiableList(points_);
+          yOffsets_ = java.util.Collections.unmodifiableList(yOffsets_);
           bitField0_ = (bitField0_ & ~0x00000004);
         }
-        result.points_ = points_;
+        result.yOffsets_ = yOffsets_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.webswing.directdraw.proto.Directdraw.PathProto) {
-          return mergeFrom((org.webswing.directdraw.proto.Directdraw.PathProto)other);
+        if (other instanceof org.webswing.directdraw.proto.Directdraw.CompositePathProto) {
+          return mergeFrom((org.webswing.directdraw.proto.Directdraw.CompositePathProto)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.webswing.directdraw.proto.Directdraw.PathProto other) {
-        if (other == org.webswing.directdraw.proto.Directdraw.PathProto.getDefaultInstance()) return this;
+      public Builder mergeFrom(org.webswing.directdraw.proto.Directdraw.CompositePathProto other) {
+        if (other == org.webswing.directdraw.proto.Directdraw.CompositePathProto.getDefaultInstance()) return this;
         if (other.hasWindingOdd()) {
           setWindingOdd(other.getWindingOdd());
         }
-        if (!other.type_.isEmpty()) {
-          if (type_.isEmpty()) {
-            type_ = other.type_;
+        if (!other.xOffsets_.isEmpty()) {
+          if (xOffsets_.isEmpty()) {
+            xOffsets_ = other.xOffsets_;
             bitField0_ = (bitField0_ & ~0x00000002);
           } else {
-            ensureTypeIsMutable();
-            type_.addAll(other.type_);
+            ensureXOffsetsIsMutable();
+            xOffsets_.addAll(other.xOffsets_);
           }
           onChanged();
         }
-        if (!other.points_.isEmpty()) {
-          if (points_.isEmpty()) {
-            points_ = other.points_;
+        if (!other.yOffsets_.isEmpty()) {
+          if (yOffsets_.isEmpty()) {
+            yOffsets_ = other.yOffsets_;
             bitField0_ = (bitField0_ & ~0x00000004);
           } else {
-            ensurePointsIsMutable();
-            points_.addAll(other.points_);
+            ensureYOffsetsIsMutable();
+            yOffsets_.addAll(other.yOffsets_);
           }
           onChanged();
         }
@@ -13587,11 +14405,11 @@ public final class Directdraw {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.webswing.directdraw.proto.Directdraw.PathProto parsedMessage = null;
+        org.webswing.directdraw.proto.Directdraw.CompositePathProto parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.webswing.directdraw.proto.Directdraw.PathProto) e.getUnfinishedMessage();
+          parsedMessage = (org.webswing.directdraw.proto.Directdraw.CompositePathProto) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -13635,153 +14453,147 @@ public final class Directdraw {
         return this;
       }
 
-      // repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;
-      private java.util.List<org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto> type_ =
-        java.util.Collections.emptyList();
-      private void ensureTypeIsMutable() {
+      // repeated float xOffsets = 2;
+      private java.util.List<java.lang.Float> xOffsets_ = java.util.Collections.emptyList();
+      private void ensureXOffsetsIsMutable() {
         if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-          type_ = new java.util.ArrayList<org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto>(type_);
+          xOffsets_ = new java.util.ArrayList<java.lang.Float>(xOffsets_);
           bitField0_ |= 0x00000002;
-        }
+         }
       }
       /**
-       * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
+       * <code>repeated float xOffsets = 2;</code>
        */
-      public java.util.List<org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto> getTypeList() {
-        return java.util.Collections.unmodifiableList(type_);
+      public java.util.List<java.lang.Float>
+          getXOffsetsList() {
+        return java.util.Collections.unmodifiableList(xOffsets_);
       }
       /**
-       * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
+       * <code>repeated float xOffsets = 2;</code>
        */
-      public int getTypeCount() {
-        return type_.size();
+      public int getXOffsetsCount() {
+        return xOffsets_.size();
       }
       /**
-       * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
+       * <code>repeated float xOffsets = 2;</code>
        */
-      public org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto getType(int index) {
-        return type_.get(index);
+      public float getXOffsets(int index) {
+        return xOffsets_.get(index);
       }
       /**
-       * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
+       * <code>repeated float xOffsets = 2;</code>
        */
-      public Builder setType(
-          int index, org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureTypeIsMutable();
-        type_.set(index, value);
+      public Builder setXOffsets(
+          int index, float value) {
+        ensureXOffsetsIsMutable();
+        xOffsets_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
+       * <code>repeated float xOffsets = 2;</code>
        */
-      public Builder addType(org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureTypeIsMutable();
-        type_.add(value);
+      public Builder addXOffsets(float value) {
+        ensureXOffsetsIsMutable();
+        xOffsets_.add(value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
+       * <code>repeated float xOffsets = 2;</code>
        */
-      public Builder addAllType(
-          java.lang.Iterable<? extends org.webswing.directdraw.proto.Directdraw.PathProto.SegmentTypeProto> values) {
-        ensureTypeIsMutable();
-        super.addAll(values, type_);
+      public Builder addAllXOffsets(
+          java.lang.Iterable<? extends java.lang.Float> values) {
+        ensureXOffsetsIsMutable();
+        super.addAll(values, xOffsets_);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated .org.webswing.directdraw.proto.PathProto.SegmentTypeProto type = 2;</code>
+       * <code>repeated float xOffsets = 2;</code>
        */
-      public Builder clearType() {
-        type_ = java.util.Collections.emptyList();
+      public Builder clearXOffsets() {
+        xOffsets_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
       }
 
-      // repeated float points = 3;
-      private java.util.List<java.lang.Float> points_ = java.util.Collections.emptyList();
-      private void ensurePointsIsMutable() {
+      // repeated float yOffsets = 3;
+      private java.util.List<java.lang.Float> yOffsets_ = java.util.Collections.emptyList();
+      private void ensureYOffsetsIsMutable() {
         if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-          points_ = new java.util.ArrayList<java.lang.Float>(points_);
+          yOffsets_ = new java.util.ArrayList<java.lang.Float>(yOffsets_);
           bitField0_ |= 0x00000004;
          }
       }
       /**
-       * <code>repeated float points = 3;</code>
+       * <code>repeated float yOffsets = 3;</code>
        */
       public java.util.List<java.lang.Float>
-          getPointsList() {
-        return java.util.Collections.unmodifiableList(points_);
+          getYOffsetsList() {
+        return java.util.Collections.unmodifiableList(yOffsets_);
       }
       /**
-       * <code>repeated float points = 3;</code>
+       * <code>repeated float yOffsets = 3;</code>
        */
-      public int getPointsCount() {
-        return points_.size();
+      public int getYOffsetsCount() {
+        return yOffsets_.size();
       }
       /**
-       * <code>repeated float points = 3;</code>
+       * <code>repeated float yOffsets = 3;</code>
        */
-      public float getPoints(int index) {
-        return points_.get(index);
+      public float getYOffsets(int index) {
+        return yOffsets_.get(index);
       }
       /**
-       * <code>repeated float points = 3;</code>
+       * <code>repeated float yOffsets = 3;</code>
        */
-      public Builder setPoints(
+      public Builder setYOffsets(
           int index, float value) {
-        ensurePointsIsMutable();
-        points_.set(index, value);
+        ensureYOffsetsIsMutable();
+        yOffsets_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated float points = 3;</code>
+       * <code>repeated float yOffsets = 3;</code>
        */
-      public Builder addPoints(float value) {
-        ensurePointsIsMutable();
-        points_.add(value);
+      public Builder addYOffsets(float value) {
+        ensureYOffsetsIsMutable();
+        yOffsets_.add(value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated float points = 3;</code>
+       * <code>repeated float yOffsets = 3;</code>
        */
-      public Builder addAllPoints(
+      public Builder addAllYOffsets(
           java.lang.Iterable<? extends java.lang.Float> values) {
-        ensurePointsIsMutable();
-        super.addAll(values, points_);
+        ensureYOffsetsIsMutable();
+        super.addAll(values, yOffsets_);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated float points = 3;</code>
+       * <code>repeated float yOffsets = 3;</code>
        */
-      public Builder clearPoints() {
-        points_ = java.util.Collections.emptyList();
+      public Builder clearYOffsets() {
+        yOffsets_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:org.webswing.directdraw.proto.PathProto)
+      // @@protoc_insertion_point(builder_scope:org.webswing.directdraw.proto.CompositePathProto)
     }
 
     static {
-      defaultInstance = new PathProto(true);
+      defaultInstance = new CompositePathProto(true);
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:org.webswing.directdraw.proto.PathProto)
+    // @@protoc_insertion_point(class_scope:org.webswing.directdraw.proto.CompositePathProto)
   }
 
   public interface FontProtoOrBuilder
@@ -20073,10 +20885,15 @@ public final class Directdraw {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_webswing_directdraw_proto_ArcProto_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_org_webswing_directdraw_proto_PathProto_descriptor;
+    internal_static_org_webswing_directdraw_proto_PartialPathProto_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_org_webswing_directdraw_proto_PathProto_fieldAccessorTable;
+      internal_static_org_webswing_directdraw_proto_PartialPathProto_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_webswing_directdraw_proto_CompositePathProto_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_org_webswing_directdraw_proto_CompositePathProto_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_org_webswing_directdraw_proto_FontProto_descriptor;
   private static
@@ -20139,95 +20956,99 @@ public final class Directdraw {
       "\023\n\017GRAPHICS_CREATE\020\010\022\r\n\tTRANSFORM\020\t\022\r\n\tS" +
       "ET_PAINT\020\n\022\014\n\010SET_FONT\020\013\022\016\n\nSET_STROKE\020\014" +
       "\022\021\n\rSET_COMPOSITE\020\r\022\023\n\017DRAW_GLYPH_LIST\020\016" +
-      "\"\331\010\n\021DrawConstantProto\022\n\n\002id\030\001 \002(\r\0228\n\005co" +
+      "\"\250\t\n\021DrawConstantProto\022\n\n\002id\030\001 \002(\r\0228\n\005co" +
       "lor\030\002 \001(\0132).org.webswing.directdraw.prot",
       "o.ColorProto\0228\n\005image\030\003 \001(\0132).org.webswi" +
       "ng.directdraw.proto.ImageProto\022@\n\ttransf" +
       "orm\030\004 \001(\0132-.org.webswing.directdraw.prot" +
-      "o.TransformProto\022\016\n\006string\030\005 \001(\t\0226\n\004path" +
-      "\030\006 \001(\0132(.org.webswing.directdraw.proto.P" +
-      "athProto\0226\n\004font\030\007 \001(\0132(.org.webswing.di" +
-      "rectdraw.proto.FontProto\022F\n\nlinearGrad\030\010" +
-      " \001(\01322.org.webswing.directdraw.proto.Lin" +
-      "earGradientProto\022F\n\nradialGrad\030\t \001(\01322.o" +
-      "rg.webswing.directdraw.proto.RadialGradi",
-      "entProto\022:\n\006points\030\n \001(\0132*.org.webswing." +
-      "directdraw.proto.PointsProto\022@\n\trectangl" +
-      "e\030\013 \001(\0132-.org.webswing.directdraw.proto." +
-      "RectangleProto\022<\n\007ellipse\030\014 \001(\0132+.org.we" +
-      "bswing.directdraw.proto.EllipseProto\022J\n\016" +
-      "roundRectangle\030\r \001(\01322.org.webswing.dire" +
-      "ctdraw.proto.RoundRectangleProto\0224\n\003arc\030" +
-      "\016 \001(\0132\'.org.webswing.directdraw.proto.Ar" +
-      "cProto\022:\n\006stroke\030\017 \001(\0132*.org.webswing.di" +
-      "rectdraw.proto.StrokeProto\022@\n\tcomposite\030",
-      "\020 \001(\0132-.org.webswing.directdraw.proto.Co" +
-      "mpositeProto\022<\n\007texture\030\021 \001(\0132+.org.webs" +
-      "wing.directdraw.proto.TextureProto\0228\n\005gl" +
-      "yph\030\022 \001(\0132).org.webswing.directdraw.prot" +
-      "o.GlyphProto\022>\n\010combined\030\023 \001(\0132,.org.web" +
-      "swing.directdraw.proto.CombinedProto\":\n\r" +
-      "FontFaceProto\022\014\n\004name\030\001 \002(\t\022\014\n\004font\030\002 \002(" +
-      "\014\022\r\n\005style\030\003 \001(\t\"\032\n\nColorProto\022\014\n\004rgba\030\001" +
-      " \002(\007\"\032\n\nImageProto\022\014\n\004data\030\001 \002(\014\"d\n\016Tran" +
-      "sformProto\022\016\n\003m00\030\001 \001(\002:\0011\022\013\n\003m10\030\002 \001(\002\022",
-      "\013\n\003m01\030\003 \001(\002\022\016\n\003m11\030\004 \001(\002:\0011\022\013\n\003m02\030\005 \001(" +
-      "\002\022\013\n\003m12\030\006 \001(\002\"\034\n\rCombinedProto\022\013\n\003ids\030\001" +
-      " \003(\r\"\032\n\nGlyphProto\022\014\n\004data\030\001 \001(\014\"<\n\016Rect" +
-      "angleProto\022\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002 \002(\002\022\t\n\001w\030\003 " +
-      "\002(\002\022\t\n\001h\030\004 \002(\002\":\n\014EllipseProto\022\t\n\001x\030\001 \002(" +
-      "\002\022\t\n\001y\030\002 \002(\002\022\t\n\001w\030\003 \002(\002\022\t\n\001h\030\004 \002(\002\"]\n\023Ro" +
-      "undRectangleProto\022\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002 \002(\002\022" +
-      "\t\n\001w\030\003 \002(\002\022\t\n\001h\030\004 \002(\002\022\014\n\004arcW\030\005 \001(\002\022\014\n\004a" +
-      "rcH\030\006 \001(\002\"\307\001\n\010ArcProto\022\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002" +
-      " \002(\002\022\t\n\001w\030\003 \002(\002\022\t\n\001h\030\004 \002(\002\022\r\n\005start\030\005 \001(",
-      "\002\022\016\n\006extent\030\006 \001(\002\022B\n\004type\030\007 \001(\01624.org.we" +
-      "bswing.directdraw.proto.ArcProto.ArcType" +
-      "Proto\",\n\014ArcTypeProto\022\010\n\004OPEN\020\000\022\t\n\005CHORD" +
-      "\020\001\022\007\n\003PIE\020\002\"\300\001\n\tPathProto\022\022\n\nwindingOdd\030" +
-      "\001 \002(\010\022G\n\004type\030\002 \003(\01629.org.webswing.direc" +
-      "tdraw.proto.PathProto.SegmentTypeProto\022\016" +
-      "\n\006points\030\003 \003(\002\"F\n\020SegmentTypeProto\022\010\n\004MO" +
-      "VE\020\000\022\010\n\004LINE\020\001\022\010\n\004QUAD\020\002\022\t\n\005CUBIC\020\003\022\t\n\005C" +
-      "LOSE\020\004\"\365\001\n\tFontProto\022\016\n\006family\030\001 \002(\t\022B\n\005" +
-      "style\030\002 \001(\01623.org.webswing.directdraw.pr",
-      "oto.FontProto.StyleProto\022\014\n\004size\030\003 \001(\r\022@" +
-      "\n\ttransform\030\004 \001(\0132-.org.webswing.directd" +
-      "raw.proto.TransformProto\"D\n\nStyleProto\022\n" +
-      "\n\006NORMAL\020\000\022\013\n\007OBLIQUE\020\001\022\n\n\006ITALIC\020\002\022\021\n\rB" +
-      "OLDANDITALIC\020\003\"\346\002\n\013StrokeProto\022\r\n\005width\030" +
-      "\001 \002(\002\022\022\n\nmiterLimit\030\002 \001(\002\022H\n\004join\030\003 \001(\0162" +
-      ":.org.webswing.directdraw.proto.StrokePr" +
-      "oto.StrokeJoinProto\022F\n\003cap\030\004 \001(\01629.org.w" +
-      "ebswing.directdraw.proto.StrokeProto.Str" +
-      "okeCapProto\022\014\n\004dash\030\005 \003(\002\022\022\n\ndashOffset\030",
-      "\006 \001(\002\"A\n\017StrokeJoinProto\022\016\n\nJOIN_MITER\020\000" +
-      "\022\016\n\nJOIN_ROUND\020\001\022\016\n\nJOIN_BEVEL\020\002\"=\n\016Stro" +
-      "keCapProto\022\014\n\010CAP_BUTT\020\000\022\r\n\tCAP_ROUND\020\001\022" +
-      "\016\n\nCAP_SQUARE\020\002\"\266\001\n\023LinearGradientProto\022" +
-      "\016\n\006xStart\030\001 \002(\021\022\016\n\006yStart\030\002 \002(\021\022\014\n\004xEnd\030" +
-      "\003 \002(\021\022\014\n\004yEnd\030\004 \002(\021\022\016\n\006colors\030\005 \003(\007\022\021\n\tf" +
-      "ractions\030\006 \003(\002\022@\n\006repeat\030\007 \002(\01620.org.web" +
-      "swing.directdraw.proto.CyclicMethodProto" +
-      "\"\314\001\n\023RadialGradientProto\022\017\n\007xCenter\030\001 \002(" +
-      "\021\022\017\n\007yCenter\030\002 \002(\021\022\016\n\006xFocus\030\003 \002(\021\022\016\n\006yF",
-      "ocus\030\004 \002(\021\022\016\n\006radius\030\005 \002(\021\022\016\n\006colors\030\006 \003" +
-      "(\007\022\021\n\tfractions\030\007 \003(\002\022@\n\006repeat\030\010 \002(\01620." +
-      "org.webswing.directdraw.proto.CyclicMeth" +
-      "odProto\"\035\n\013PointsProto\022\016\n\006points\030\001 \003(\021\"\266" +
-      "\002\n\016CompositeProto\022N\n\004type\030\001 \002(\0162@.org.we" +
-      "bswing.directdraw.proto.CompositeProto.C" +
-      "ompositeTypeProto\022\020\n\005alpha\030\002 \001(\002:\0011\022\r\n\005c" +
-      "olor\030\003 \001(\007\"\262\001\n\022CompositeTypeProto\022\t\n\005CLE" +
-      "AR\020\001\022\007\n\003SRC\020\002\022\007\n\003DST\020\t\022\014\n\010SRC_OVER\020\003\022\014\n\010" +
-      "DST_OVER\020\004\022\n\n\006SRC_IN\020\005\022\n\n\006DST_IN\020\006\022\013\n\007SR",
-      "C_OUT\020\007\022\013\n\007DST_OUT\020\010\022\014\n\010SRC_ATOP\020\n\022\014\n\010DS" +
-      "T_ATOP\020\013\022\007\n\003XOR\020\014\022\014\n\010XOR_MODE\020\r\"\207\001\n\014Text" +
-      "ureProto\0228\n\005image\030\001 \002(\0132).org.webswing.d" +
-      "irectdraw.proto.ImageProto\022=\n\006anchor\030\002 \002" +
-      "(\0132-.org.webswing.directdraw.proto.Recta" +
-      "ngleProto*:\n\021CyclicMethodProto\022\014\n\010NO_CYC" +
-      "LE\020\000\022\013\n\007REFLECT\020\001\022\n\n\006REPEAT\020\002"
+      "o.TransformProto\022\016\n\006string\030\005 \001(\t\022D\n\013part" +
+      "ialPath\030\006 \001(\0132/.org.webswing.directdraw." +
+      "proto.PartialPathProto\022?\n\004path\030\007 \001(\01321.o" +
+      "rg.webswing.directdraw.proto.CompositePa" +
+      "thProto\0226\n\004font\030\010 \001(\0132(.org.webswing.dir" +
+      "ectdraw.proto.FontProto\022F\n\nlinearGrad\030\t " +
+      "\001(\01322.org.webswing.directdraw.proto.Line",
+      "arGradientProto\022F\n\nradialGrad\030\n \001(\01322.or" +
+      "g.webswing.directdraw.proto.RadialGradie" +
+      "ntProto\022:\n\006points\030\013 \001(\0132*.org.webswing.d" +
+      "irectdraw.proto.PointsProto\022@\n\trectangle" +
+      "\030\014 \001(\0132-.org.webswing.directdraw.proto.R" +
+      "ectangleProto\022<\n\007ellipse\030\r \001(\0132+.org.web" +
+      "swing.directdraw.proto.EllipseProto\022J\n\016r" +
+      "oundRectangle\030\016 \001(\01322.org.webswing.direc" +
+      "tdraw.proto.RoundRectangleProto\0224\n\003arc\030\017" +
+      " \001(\0132\'.org.webswing.directdraw.proto.Arc",
+      "Proto\022:\n\006stroke\030\020 \001(\0132*.org.webswing.dir" +
+      "ectdraw.proto.StrokeProto\022@\n\tcomposite\030\021" +
+      " \001(\0132-.org.webswing.directdraw.proto.Com" +
+      "positeProto\022<\n\007texture\030\022 \001(\0132+.org.websw" +
+      "ing.directdraw.proto.TextureProto\0228\n\005gly" +
+      "ph\030\023 \001(\0132).org.webswing.directdraw.proto" +
+      ".GlyphProto\022>\n\010combined\030\024 \001(\0132,.org.webs" +
+      "wing.directdraw.proto.CombinedProto\":\n\rF" +
+      "ontFaceProto\022\014\n\004name\030\001 \002(\t\022\014\n\004font\030\002 \002(\014" +
+      "\022\r\n\005style\030\003 \001(\t\"\032\n\nColorProto\022\014\n\004rgba\030\001 ",
+      "\002(\007\"\032\n\nImageProto\022\014\n\004data\030\001 \002(\014\"p\n\016Trans" +
+      "formProto\022\016\n\003m00\030\001 \001(\002:\0011\022\016\n\003m10\030\002 \001(\002:\001" +
+      "0\022\016\n\003m01\030\003 \001(\002:\0010\022\016\n\003m11\030\004 \001(\002:\0011\022\016\n\003m02" +
+      "\030\005 \001(\002:\0010\022\016\n\003m12\030\006 \001(\002:\0010\"\034\n\rCombinedPro" +
+      "to\022\013\n\003ids\030\001 \003(\r\"\032\n\nGlyphProto\022\014\n\004data\030\001 " +
+      "\001(\014\"<\n\016RectangleProto\022\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002 " +
+      "\002(\002\022\t\n\001w\030\003 \002(\002\022\t\n\001h\030\004 \002(\002\":\n\014EllipseProt" +
+      "o\022\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002 \002(\002\022\t\n\001w\030\003 \002(\002\022\t\n\001h\030" +
+      "\004 \002(\002\"]\n\023RoundRectangleProto\022\t\n\001x\030\001 \002(\002\022" +
+      "\t\n\001y\030\002 \002(\002\022\t\n\001w\030\003 \002(\002\022\t\n\001h\030\004 \002(\002\022\014\n\004arcW",
+      "\030\005 \001(\002\022\014\n\004arcH\030\006 \001(\002\"\307\001\n\010ArcProto\022\t\n\001x\030\001" +
+      " \002(\002\022\t\n\001y\030\002 \002(\002\022\t\n\001w\030\003 \002(\002\022\t\n\001h\030\004 \002(\002\022\r\n" +
+      "\005start\030\005 \001(\002\022\016\n\006extent\030\006 \001(\002\022B\n\004type\030\007 \001" +
+      "(\01624.org.webswing.directdraw.proto.ArcPr" +
+      "oto.ArcTypeProto\",\n\014ArcTypeProto\022\010\n\004OPEN" +
+      "\020\000\022\t\n\005CHORD\020\001\022\007\n\003PIE\020\002\"\272\001\n\020PartialPathPr" +
+      "oto\022N\n\004type\030\001 \003(\0162@.org.webswing.directd" +
+      "raw.proto.PartialPathProto.SegmentTypePr" +
+      "oto\022\016\n\006points\030\002 \003(\002\"F\n\020SegmentTypeProto\022" +
+      "\010\n\004MOVE\020\000\022\010\n\004LINE\020\001\022\010\n\004QUAD\020\002\022\t\n\005CUBIC\020\003",
+      "\022\t\n\005CLOSE\020\004\"L\n\022CompositePathProto\022\022\n\nwin" +
+      "dingOdd\030\001 \002(\010\022\020\n\010xOffsets\030\002 \003(\002\022\020\n\010yOffs" +
+      "ets\030\003 \003(\002\"\365\001\n\tFontProto\022\016\n\006family\030\001 \002(\t\022" +
+      "B\n\005style\030\002 \001(\01623.org.webswing.directdraw" +
+      ".proto.FontProto.StyleProto\022\014\n\004size\030\003 \001(" +
+      "\r\022@\n\ttransform\030\004 \001(\0132-.org.webswing.dire" +
+      "ctdraw.proto.TransformProto\"D\n\nStyleProt" +
+      "o\022\n\n\006NORMAL\020\000\022\013\n\007OBLIQUE\020\001\022\n\n\006ITALIC\020\002\022\021" +
+      "\n\rBOLDANDITALIC\020\003\"\346\002\n\013StrokeProto\022\r\n\005wid" +
+      "th\030\001 \002(\002\022\022\n\nmiterLimit\030\002 \001(\002\022H\n\004join\030\003 \001",
+      "(\0162:.org.webswing.directdraw.proto.Strok" +
+      "eProto.StrokeJoinProto\022F\n\003cap\030\004 \001(\01629.or" +
+      "g.webswing.directdraw.proto.StrokeProto." +
+      "StrokeCapProto\022\014\n\004dash\030\005 \003(\002\022\022\n\ndashOffs" +
+      "et\030\006 \001(\002\"A\n\017StrokeJoinProto\022\016\n\nJOIN_MITE" +
+      "R\020\000\022\016\n\nJOIN_ROUND\020\001\022\016\n\nJOIN_BEVEL\020\002\"=\n\016S" +
+      "trokeCapProto\022\014\n\010CAP_BUTT\020\000\022\r\n\tCAP_ROUND" +
+      "\020\001\022\016\n\nCAP_SQUARE\020\002\"\266\001\n\023LinearGradientPro" +
+      "to\022\016\n\006xStart\030\001 \002(\021\022\016\n\006yStart\030\002 \002(\021\022\014\n\004xE" +
+      "nd\030\003 \002(\021\022\014\n\004yEnd\030\004 \002(\021\022\016\n\006colors\030\005 \003(\007\022\021",
+      "\n\tfractions\030\006 \003(\002\022@\n\006repeat\030\007 \002(\01620.org." +
+      "webswing.directdraw.proto.CyclicMethodPr" +
+      "oto\"\314\001\n\023RadialGradientProto\022\017\n\007xCenter\030\001" +
+      " \002(\021\022\017\n\007yCenter\030\002 \002(\021\022\016\n\006xFocus\030\003 \002(\021\022\016\n" +
+      "\006yFocus\030\004 \002(\021\022\016\n\006radius\030\005 \002(\021\022\016\n\006colors\030" +
+      "\006 \003(\007\022\021\n\tfractions\030\007 \003(\002\022@\n\006repeat\030\010 \002(\016" +
+      "20.org.webswing.directdraw.proto.CyclicM" +
+      "ethodProto\"\035\n\013PointsProto\022\016\n\006points\030\001 \003(" +
+      "\021\"\266\002\n\016CompositeProto\022N\n\004type\030\001 \002(\0162@.org" +
+      ".webswing.directdraw.proto.CompositeProt",
+      "o.CompositeTypeProto\022\020\n\005alpha\030\002 \001(\002:\0011\022\r" +
+      "\n\005color\030\003 \001(\007\"\262\001\n\022CompositeTypeProto\022\t\n\005" +
+      "CLEAR\020\001\022\007\n\003SRC\020\002\022\007\n\003DST\020\t\022\014\n\010SRC_OVER\020\003\022" +
+      "\014\n\010DST_OVER\020\004\022\n\n\006SRC_IN\020\005\022\n\n\006DST_IN\020\006\022\013\n" +
+      "\007SRC_OUT\020\007\022\013\n\007DST_OUT\020\010\022\014\n\010SRC_ATOP\020\n\022\014\n" +
+      "\010DST_ATOP\020\013\022\007\n\003XOR\020\014\022\014\n\010XOR_MODE\020\r\"\207\001\n\014T" +
+      "extureProto\0228\n\005image\030\001 \002(\0132).org.webswin" +
+      "g.directdraw.proto.ImageProto\022=\n\006anchor\030" +
+      "\002 \002(\0132-.org.webswing.directdraw.proto.Re" +
+      "ctangleProto*:\n\021CyclicMethodProto\022\014\n\010NO_",
+      "CYCLE\020\000\022\013\n\007REFLECT\020\001\022\n\n\006REPEAT\020\002"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -20251,7 +21072,7 @@ public final class Directdraw {
           internal_static_org_webswing_directdraw_proto_DrawConstantProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_webswing_directdraw_proto_DrawConstantProto_descriptor,
-              new java.lang.String[] { "Id", "Color", "Image", "Transform", "String", "Path", "Font", "LinearGrad", "RadialGrad", "Points", "Rectangle", "Ellipse", "RoundRectangle", "Arc", "Stroke", "Composite", "Texture", "Glyph", "Combined", });
+              new java.lang.String[] { "Id", "Color", "Image", "Transform", "String", "PartialPath", "Path", "Font", "LinearGrad", "RadialGrad", "Points", "Rectangle", "Ellipse", "RoundRectangle", "Arc", "Stroke", "Composite", "Texture", "Glyph", "Combined", });
           internal_static_org_webswing_directdraw_proto_FontFaceProto_descriptor =
             getDescriptor().getMessageTypes().get(3);
           internal_static_org_webswing_directdraw_proto_FontFaceProto_fieldAccessorTable = new
@@ -20312,50 +21133,56 @@ public final class Directdraw {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_webswing_directdraw_proto_ArcProto_descriptor,
               new java.lang.String[] { "X", "Y", "W", "H", "Start", "Extent", "Type", });
-          internal_static_org_webswing_directdraw_proto_PathProto_descriptor =
+          internal_static_org_webswing_directdraw_proto_PartialPathProto_descriptor =
             getDescriptor().getMessageTypes().get(13);
-          internal_static_org_webswing_directdraw_proto_PathProto_fieldAccessorTable = new
+          internal_static_org_webswing_directdraw_proto_PartialPathProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_org_webswing_directdraw_proto_PathProto_descriptor,
-              new java.lang.String[] { "WindingOdd", "Type", "Points", });
-          internal_static_org_webswing_directdraw_proto_FontProto_descriptor =
+              internal_static_org_webswing_directdraw_proto_PartialPathProto_descriptor,
+              new java.lang.String[] { "Type", "Points", });
+          internal_static_org_webswing_directdraw_proto_CompositePathProto_descriptor =
             getDescriptor().getMessageTypes().get(14);
+          internal_static_org_webswing_directdraw_proto_CompositePathProto_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_org_webswing_directdraw_proto_CompositePathProto_descriptor,
+              new java.lang.String[] { "WindingOdd", "XOffsets", "YOffsets", });
+          internal_static_org_webswing_directdraw_proto_FontProto_descriptor =
+            getDescriptor().getMessageTypes().get(15);
           internal_static_org_webswing_directdraw_proto_FontProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_webswing_directdraw_proto_FontProto_descriptor,
               new java.lang.String[] { "Family", "Style", "Size", "Transform", });
           internal_static_org_webswing_directdraw_proto_StrokeProto_descriptor =
-            getDescriptor().getMessageTypes().get(15);
+            getDescriptor().getMessageTypes().get(16);
           internal_static_org_webswing_directdraw_proto_StrokeProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_webswing_directdraw_proto_StrokeProto_descriptor,
               new java.lang.String[] { "Width", "MiterLimit", "Join", "Cap", "Dash", "DashOffset", });
           internal_static_org_webswing_directdraw_proto_LinearGradientProto_descriptor =
-            getDescriptor().getMessageTypes().get(16);
+            getDescriptor().getMessageTypes().get(17);
           internal_static_org_webswing_directdraw_proto_LinearGradientProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_webswing_directdraw_proto_LinearGradientProto_descriptor,
               new java.lang.String[] { "XStart", "YStart", "XEnd", "YEnd", "Colors", "Fractions", "Repeat", });
           internal_static_org_webswing_directdraw_proto_RadialGradientProto_descriptor =
-            getDescriptor().getMessageTypes().get(17);
+            getDescriptor().getMessageTypes().get(18);
           internal_static_org_webswing_directdraw_proto_RadialGradientProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_webswing_directdraw_proto_RadialGradientProto_descriptor,
               new java.lang.String[] { "XCenter", "YCenter", "XFocus", "YFocus", "Radius", "Colors", "Fractions", "Repeat", });
           internal_static_org_webswing_directdraw_proto_PointsProto_descriptor =
-            getDescriptor().getMessageTypes().get(18);
+            getDescriptor().getMessageTypes().get(19);
           internal_static_org_webswing_directdraw_proto_PointsProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_webswing_directdraw_proto_PointsProto_descriptor,
               new java.lang.String[] { "Points", });
           internal_static_org_webswing_directdraw_proto_CompositeProto_descriptor =
-            getDescriptor().getMessageTypes().get(19);
+            getDescriptor().getMessageTypes().get(20);
           internal_static_org_webswing_directdraw_proto_CompositeProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_webswing_directdraw_proto_CompositeProto_descriptor,
               new java.lang.String[] { "Type", "Alpha", "Color", });
           internal_static_org_webswing_directdraw_proto_TextureProto_descriptor =
-            getDescriptor().getMessageTypes().get(20);
+            getDescriptor().getMessageTypes().get(21);
           internal_static_org_webswing_directdraw_proto_TextureProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_webswing_directdraw_proto_TextureProto_descriptor,

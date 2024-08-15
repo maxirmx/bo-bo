@@ -12,4 +12,9 @@ public abstract class HtmlPanel extends JPanel implements WebWindow {
 	public abstract void addWebWindowActionListener(WebWindowActionListener listener);
 	public abstract void removeWebWindowActionListener(WebWindowActionListener listener);
 	
+	@Override
+	public boolean isFocusTraversable() {
+		return true; // when html panel's content is interacted with switch swing focus to this component
+	}
+	
 }

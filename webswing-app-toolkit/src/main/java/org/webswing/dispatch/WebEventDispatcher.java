@@ -57,6 +57,7 @@ import org.webswing.toolkit.util.Util;
 
 import netscape.javascript.JSObject;
 import sun.awt.CausedFocusEvent;
+import sun.awt.UngrabEvent;
 
 @SuppressWarnings("restriction")
 public class WebEventDispatcher {
@@ -66,6 +67,7 @@ public class WebEventDispatcher {
 	private long lastTime = 0;
 	private long intervalTime = 0;
 	private Point lastMousePosition = new Point();
+	private Component lastEnteredWindow;
 	private static final DndEventHandler dndHandler = new DndEventHandler();
 	private HashMap<String, String> uploadMap = new HashMap<String, String>();
 	private ExecutorService eventDispatcher = Executors.newSingleThreadExecutor(DeamonThreadFactory.getInstance());
@@ -438,16 +440,24 @@ public class WebEventDispatcher {
 	public Point getLastMousePosition() {
 		return lastMousePosition;
 	}
+	
+	protected Component getLastEnteredWindow() {
+		return lastEnteredWindow;
+	}
+
+	protected void setLastEnteredWindow(Component lastEnteredWindow) {
+		this.lastEnteredWindow = lastEnteredWindow;
+	}
 
 	public void dragStart(WebDragSourceContextPeer peer, Transferable transferable, int actions, long[] formats) {
 		dndHandler.dragStart(peer, transferable, actions, formats);
 	}
 
-	public static void dispatchEventInSwing(final Component c, final AWTEvent e) {
+	public void dispatchEventInSwing(final Component c, final AWTEvent e) {
 		dispatchEventInSwing(c, e, false);
 	}
 
-	public static void dispatchEventInSwing(final Component c, final AWTEvent e, boolean relatedToLastEvent) {
+	public void dispatchEventInSwing(final Component c, final AWTEvent e, boolean relatedToLastEvent) {
 		Window w = (Window) (c instanceof Window ? c : SwingUtilities.windowForComponent(c));
 		if(w.isEnabled()) {
 
@@ -456,13 +466,37 @@ public class WebEventDispatcher {
 			}
 			if (((!relatedToLastEvent && Util.isWindowDecorationEvent(w, e)) || WindowManager.getInstance().isLockedToWindowDecorationHandler()) && e instanceof MouseEvent) {
 				Logger.debug("WebEventDispatcher.dispatchEventInSwing:windowManagerHandle", e);
+				if(e.getID()==MouseEvent.MOUSE_PRESSED) {
+					Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new UngrabEvent(c));
+				}
 				WindowManager.getInstance().handleWindowDecorationEvent(w, (MouseEvent) e);
 			} else if (dndHandler.isDndInProgress() && (e instanceof MouseEvent || e instanceof KeyEvent)) {
 				dndHandler.processMouseEvent(w, e);
 			} else {
 				Logger.debug("WebEventDispatcher.dispatchEventInSwing:postSystemQueue", e);
+				dispatchEnterExitEvents(w, e);
 				Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(e);
 			}
+		}
+	}
+	
+	private void dispatchEnterExitEvents(Window w, AWTEvent e) {
+		if (e instanceof MouseEvent && getLastEnteredWindow() != w) {
+			MouseEvent oe = (MouseEvent) e;
+			dispatchExitEvent(oe.getWhen(), oe.getModifiersEx() | oe.getModifiers(), oe.getX(), oe.getY(), oe.getXOnScreen(), oe.getYOnScreen());
+			if (w != null) {
+				MouseEvent enterEvent = new MouseEvent(w, MouseEvent.MOUSE_ENTERED, oe.getWhen(), oe.getModifiersEx() | oe.getModifiers(), oe.getX(), oe.getY(), oe.getXOnScreen(), oe.getYOnScreen(), oe.getClickCount(), oe.isPopupTrigger(), oe.getButton());
+				Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(enterEvent);
+			}
+			setLastEnteredWindow(w);
+		}
+	}
+
+	protected void dispatchExitEvent(long when, int mod, int x, int y, int absX, int absY) {
+		if (getLastEnteredWindow() != null && getLastEnteredWindow().isShowing()) {
+			MouseEvent exitEvent = new MouseEvent(getLastEnteredWindow(), MouseEvent.MOUSE_EXITED, when, mod, x, y, absX, absY, 0, false, 0);
+			Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(exitEvent);
+			setLastEnteredWindow(null);
 		}
 	}
 

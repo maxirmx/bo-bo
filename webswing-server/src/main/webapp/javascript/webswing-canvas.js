@@ -19,10 +19,11 @@ export default class CanvasModule {
         let resizeCheck;
         var lastRootWidth = 0;
         var lastRootHeight = 0;
+		var dpr = 1;
 
         function create() {
             if (canvas == null) {
-                var dpr = Util.dpr();
+                dpr = Util.dpr();
                 api.cfg.rootElement.append('<canvas data-id="canvas" style="display:block; width:' + width() + 'px;height:' + height() + 'px;" width="' + width() * dpr + '" height="' + height() * dpr + '" tabindex="-1"/>');
                 api.cfg.rootElement.append('<input data-id="input-handler" class="input-hidden" type="text" value="" />');
                 canvas = api.cfg.rootElement.find('canvas[data-id="canvas"]');
@@ -33,9 +34,10 @@ export default class CanvasModule {
             }
             if (resizeCheck == null) {
                 resizeCheck = setInterval(function () {
-                    dpr = Util.dpr();
+					var dprChanged = dpr != Util.dpr();
                     // 只有当当前页是激活态且非mirror模式下，才发送handshake告知尺寸变化，否则会导致非激活态的tab页变成激活态，而激活态的tab变成stolen
-                    if (api.cfg.canPaint && !api.cfg.mirror && (canvas.width() !== width() || canvas.height() !== height())) {
+                    if (api.cfg.canPaint && !api.cfg.mirror && (canvas.width() !== width() || canvas.height() !== height() || dprChanged)) {
+						dpr = Util.dpr();
                     	if (api.cfg.rootElement.is(".composition")) {
                     		// when using compositing window manager, the root canvas has 0 size
                     		// we need to do a handshake only if the root element has changed size
@@ -102,9 +104,9 @@ export default class CanvasModule {
         
         function getDesktopSize() {
         	if (api.cfg.rootElement.is(".composition")) {
-        		return {width: width(), height: height()};
+        		return {width: Math.floor(width()), height: Math.floor(height())};
         	}
-        	return {width: get().offsetWidth, height: get().offsetHeight};
+        	return {width: Math.floor(get().offsetWidth), height: Math.floor(get().offsetHeight)};
         }
         
     }

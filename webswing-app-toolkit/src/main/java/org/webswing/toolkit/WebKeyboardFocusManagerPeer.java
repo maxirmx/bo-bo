@@ -5,6 +5,7 @@ import java.awt.peer.KeyboardFocusManagerPeer;
 import java.lang.reflect.Method;
 
 import org.webswing.model.s2c.FocusEventMsg;
+import org.webswing.toolkit.api.component.HtmlPanel;
 import org.webswing.toolkit.extra.WindowManager;
 import org.webswing.toolkit.util.Logger;
 
@@ -61,35 +62,45 @@ public class WebKeyboardFocusManagerPeer implements KeyboardFocusManagerPeer {
 	private static FocusEventMsg getFocusEvent(){
 		Component o = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
 		FocusEventMsg msg = new FocusEventMsg();
-		if (o != null && o.isShowing()) {
-			msg.setType(FocusEventMsg.FocusEventType.focusGained);
-			Point l = o.getLocationOnScreen();
-			msg.setX(l.x);
-			msg.setY(l.y);
-			Rectangle b = o.getBounds();
-			msg.setW(b.width);
-			msg.setH(b.height);
-			if (o instanceof JTextComponent) {
-				JTextComponent tc = (JTextComponent) o;
-				int position = tc.getCaretPosition();
-				try {
-					Rectangle location = tc.modelToView(position);
-					if (location != null) {
-						msg.setType(FocusEventMsg.FocusEventType.focusWithCarretGained);
-						msg.setCaretX(location.x);
-						msg.setCaretY(location.y);
-						msg.setCaretH(location.height);
-					}
-				} catch (BadLocationException e) {
-					e.printStackTrace();
-				}
-			}
-			if(o instanceof JPasswordField){
-				msg.setType(FocusEventMsg.FocusEventType.focusPasswordGained);
-			}
-		} else {
+		
+		if (o == null || !o.isShowing()) {
 			msg.setType(FocusEventMsg.FocusEventType.focusLost);
+			return msg;
 		}
+		
+		if (o instanceof HtmlPanel) {
+			msg.setType(FocusEventMsg.FocusEventType.htmlPanelFocused);
+			msg.setWindowId(System.identityHashCode(o) + "");
+			return msg;
+		}
+		
+		msg.setType(FocusEventMsg.FocusEventType.focusGained);
+		Point l = o.getLocationOnScreen();
+		msg.setX(l.x);
+		msg.setY(l.y);
+		Rectangle b = o.getBounds();
+		msg.setW(b.width);
+		msg.setH(b.height);
+		if (o instanceof JTextComponent) {
+			JTextComponent tc = (JTextComponent) o;
+			int position = tc.getCaretPosition();
+			try {
+				Rectangle location = tc.modelToView(position);
+				if (location != null) {
+					msg.setType(FocusEventMsg.FocusEventType.focusWithCarretGained);
+					msg.setCaretX(location.x);
+					msg.setCaretY(location.y);
+					msg.setCaretH(location.height);
+				}
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (o instanceof JPasswordField) {
+			msg.setType(FocusEventMsg.FocusEventType.focusPasswordGained);
+		}
+		
 		return msg;
 	}
 

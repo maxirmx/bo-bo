@@ -45,7 +45,8 @@ export default class BaseModule {
             processJsLink : 'jslink.process',
             playbackInfo : 'playback.playbackInfo',
             performAction: 'base.performAction',
-            handleActionEvent: 'base.handleActionEvent'
+            handleActionEvent: 'base.handleActionEvent',
+            setupEventHandlingForDocument: 'input.setupEventHandlingForDocument'
         };
         module.provides = {
             startApplication : startApplication,
@@ -64,12 +65,13 @@ export default class BaseModule {
         let timer1, timer2, timer3;
         let drawingLock;
         let drawingQ = [];
-
+        let initialized = false;
         let windowImageHolders = {}; // <id> : <CanvasWindow/HtmlWindow>
         var closedWindows = {}; // <id> : <boolean>, map of windows requested to be closed, rendering of windows in this map will be ignored, until message about closed window is received
         let directDraw = new WebswingDirectDraw({logDebug:api.cfg.debugLog, ieVersion:api.cfg.ieVersion, dpr: Util.dpr});
         var compositingWM = false;
         var compositionBaseZIndex = 100;
+		var lastDpr = 1;
         const JFRAME_MAXIMIZED_STATE = 6;
         
         function startApplication(name, applet, alwaysReset) {
@@ -98,6 +100,7 @@ export default class BaseModule {
             if (isMirror) {
                 repaint();
             }
+            initialized=true;
             //api.showDialog(api.startingDialog);
             api.fireCallBack({type: 'webswingInitialied'});
         }
@@ -177,6 +180,7 @@ export default class BaseModule {
         }
 
         function dispose() {
+            initialized=false;
             clearInterval(timer1);
             clearInterval(timer2);
             clearInterval(timer3);
@@ -212,8 +216,12 @@ export default class BaseModule {
             if (data.playback != null) {
                 api.playbackInfo(data);
             }
-            if (data.applications != null && data.applications.length != 0) {
-                api.showSelector(data.applications);
+            if (data.applications != null && data.applications.length != 0 ) {
+                if(!initialized){
+                    api.showSelector(data.applications);
+                }else{
+                    continueSession();
+                }
             }
             if (data.event != null && !api.cfg.recordingPlayback) {
                 if (data.event == "shutDownNotification") {
@@ -311,6 +319,14 @@ export default class BaseModule {
                     input.style.left = (data.focusEvent.x + data.focusEvent.caretX) + 'px';
                     input.style.height = data.focusEvent.caretH + 'px';
                     api.focusInput();
+                } else if(data.focusEvent.type === 'htmlPanelFocused'){
+					var htmlPanelId = data.focusEvent.windowId;
+	                if (htmlPanelId != null) {
+	                    var htmlPanel = getWindowById(htmlPanelId);
+	                    if (htmlPanel && htmlPanel.element) {
+	                        focusFocusableElementInside(htmlPanel.element);
+	                    }
+	                }
                 } else {
                     input.style.top = null;
                     input.style.left = null;
@@ -426,6 +442,28 @@ export default class BaseModule {
             }
         }
 
+    	function focusFocusableElementInside(container) {
+        	if (document.activeElement != null && container.contains(document.activeElement)) {
+         	   return;
+        	}
+
+	        var focusableEl = container.querySelector("a[href]:not([tabindex='-1']), area[href]:not([tabindex='-1']), input:not([disabled]):not([type='hidden']):not([tabindex='-1']), "
+    	            + "select:not([disabled]):not([tabindex='-1']), textarea:not([disabled]):not([tabindex='-1']), button:not([disabled]):not([tabindex='-1']), "
+        	        + "iframe:not([tabindex='-1']), [tabindex]:not([tabindex='-1']), [contentEditable=true]:not([tabindex='-1'])");
+        
+        	if (focusableEl != null) {
+	            if (focusableEl.tagName.toLowerCase() === "iframe") {
+	                container.focus();
+    	            return;
+        	    }
+
+	            focusableEl.focus();
+    	        return;
+        	}
+
+	        container.focus();
+    	}
+
         function closeWindow(id) {
             var canvasWindow = windowImageHolders[id];
 
@@ -491,6 +529,7 @@ export default class BaseModule {
         		if (windowImageHolders[win.id] == null) {
         			var htmlDiv = document.createElement("div");
         			htmlDiv.classList.add("webswing-html-canvas");
+					htmlDiv.setAttribute("tabindex", "0");
         			
         			windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name);
         			newWindowOpened = true;
@@ -556,11 +595,14 @@ export default class BaseModule {
         		
         		var canvas = windowImageHolders[win.id].element;
         		var canvasWin = windowImageHolders[win.id];
-        		
+				let dpr = Util.dpr();        		
+
         		if ($(canvas).width() != win.width || $(canvas).height() != win.height) {
         			$(canvas).css({"width": win.width + 'px', "height": win.height + 'px'});
-        			$(canvas).attr("width", win.width).attr("height", win.height);
         		}
+				if ($(canvas).attr("width") != Math.floor(win.width * dpr) || $(canvas).attr("height") != Math.floor(win.height * dpr)) {
+	    			$(canvas).attr("width", Math.floor(win.width * dpr)).attr("height", Math.floor(win.height * dpr));
+				}
 
                 if (isVisible(canvasWin.element.parentNode)) {
                     $(canvasWin.element).css({"left": win.posX + 'px', "top": win.posY + 'px'});
@@ -755,6 +797,7 @@ export default class BaseModule {
         				if (windowImageHolders[win.id] == null) {
         					var htmlDiv = document.createElement("div");
         					htmlDiv.classList.add("webswing-html-canvas");
+							htmlDiv.setAttribute("tabindex", "0");
         					
         					windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name);
         					newWindowOpened = true;
@@ -922,7 +965,7 @@ export default class BaseModule {
         		"width": win.width + "px",
         		"height": win.height + "px"
         	});
-        	$(canvas).attr("width", win.width * dpr).attr("height", win.height * dpr);
+        	$(canvas).attr("width", Math.floor(win.width * dpr)).attr("height", Math.floor(win.height * dpr));
         	
 			if ($(canvas).is(".modal-blocked") != win.modalBlocked) {
 				$(canvas).toggleClass("modal-blocked", win.modalBlocked);
@@ -960,6 +1003,7 @@ export default class BaseModule {
         	if (windowImageHolders[win.id] == null) {
         		htmlDiv = document.createElement("div");
 				htmlDiv.classList.add("webswing-html-canvas");
+				htmlDiv.setAttribute("tabindex", "0");
 				
 				windowImageHolders[win.id] = new HtmlWindow(win.id, htmlDiv, win.name);
 				newWindowOpened = true;
@@ -1124,6 +1168,7 @@ export default class BaseModule {
         function CanvasWindow(id, element, internal, name, title) {
         	this.id = id;
         	this.element = element;
+        	this.ownerDocument = element.ownerDocument;
         	this.name = name;
         	this.title = title;
         	this.htmlWindow = false;
@@ -1169,6 +1214,11 @@ export default class BaseModule {
     		}
     		
     		if (parent) {
+
+    		    if(this.ownerDocument!==parent.ownerDocument){
+                    api.setupEventHandlingForDocument(parent.ownerDocument);
+                }
+
     			parent.append(this.element);
     			var rect = this.element.getBoundingClientRect();
     			if (pos) {

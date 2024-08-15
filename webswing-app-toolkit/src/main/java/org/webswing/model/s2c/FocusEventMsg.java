@@ -7,11 +7,13 @@ public class FocusEventMsg implements MsgOut{
 		focusLost,
 		focusGained,
 		focusWithCarretGained,
-		focusPasswordGained;
+		focusPasswordGained,
+		htmlPanelFocused;
 	}
 
 	FocusEventType type;
 	int x, y, w, h, caretX, caretY, caretH;
+	String windowId;
 
 	public FocusEventType getType() {
 		return type;
@@ -76,4 +78,13 @@ public class FocusEventMsg implements MsgOut{
 	public void setCaretH(int caretH) {
 		this.caretH = caretH;
 	}
+
+	public String getWindowId() {
+		return windowId;
+	}
+
+	public void setWindowId(String windowId) {
+		this.windowId = windowId;
+	}
+	
 }

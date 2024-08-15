@@ -19,7 +19,8 @@ export default class InputModule {
             register : register,
             sendInput : sendInput,
             focusInput : focusInput,
-            dispose : dispose
+            dispose : dispose,
+            setupEventHandlingForDocument : setupEventHandlingForDocument
         };
 
         module.ready = function() {
@@ -33,6 +34,7 @@ export default class InputModule {
         var mouseDownCanvas = null;
         let inputEvtQueue = [];
         let compositionInput = false;
+        let exitFocusTraversalOnNextTabKey =false
 
         function sendInput(message) {
             enqueueInputEvent();
@@ -85,12 +87,14 @@ export default class InputModule {
             for (let key in canvasEventHandlerMap) {
                 if (canvasEventHandlerMap.hasOwnProperty(key)) {
                     document.removeEventListener(key, canvasEventHandlerMap[key]);
+                    iframeDocuments.forEach(function(ifdoc){ifdoc.removeEventListener(key, canvasEventHandlerMap[key]);})
                 }
             }
             canvasEventHandlerMap = null;
             for (let key in inputEventHandlerMap) {
                 if (inputEventHandlerMap.hasOwnProperty(key)) {
                     api.getInput().removeEventListener(key, inputEventHandlerMap[key]);
+                    iframeDocuments.forEach(function(ifdoc){ ifdoc.webswingIfameInput.removeEventListener(key, inputEventHandlerMap[key]);})
                 }
             }
             inputEventHandlerMap = null;
@@ -100,6 +104,22 @@ export default class InputModule {
 
         let canvasEventHandlerMap = {};
         let inputEventHandlerMap = {};
+        let iframeDocuments = []
+
+        function setupEventHandlingForDocument(iframeDocument){
+            if(iframeDocuments.indexOf(iframeDocument)<0){
+                $(iframeDocument.body).append('<input data-id="input-handler" class="input-hidden" type="text" value="" />');
+                iframeDocument.webswingIfameInput = $(iframeDocument.body).find('input[data-id="input-handler"]');
+
+                Object.keys(canvasEventHandlerMap).forEach(function(eventType){
+                    Util.bindEvent(iframeDocument, 'mousedown', canvasEventHandlerMap[eventType], false);
+                })
+                Object.keys(inputEventHandlerMap).forEach(function(eventType){
+                    Util.bindEvent( iframeDocument.webswingIfameInput, 'mousedown', inputEventHandlerMap[eventType], false);
+                })
+                iframeDocuments.push(iframeDocument);
+            }
+        }
 
         function register() {
             if (registered) {
@@ -240,10 +260,17 @@ export default class InputModule {
             		return;
             	}
             	
+                handleContextMenu(evt);
+            };
+
+            let handleContextMenu = function (evt) {
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
             };
+
+            inputEventHandlerMap['contextmenu'] = handleContextMenu;
+            Util.bindEvent(input, 'contextmenu', handleContextMenu, false);
             canvasEventHandlerMap['contextmenu'] = canvasContextmenuEventHandler;
             Util.bindEvent(document, 'contextmenu', canvasContextmenuEventHandler);
 
@@ -282,10 +309,32 @@ export default class InputModule {
                 let keyevt = getKBKey('keydown', canvas, event);
                 // hanle paste event
                 if (!(keyevt.key.ctrl && (keyevt.key.character == 88 || keyevt.key.character == 67 || keyevt.key.character == 86))) { // cut copy
+
+                    if(keyevt.key.ctrl && keyevt.key.shift && keyevt.key.character == 90){//ctrl + shift + z  to exit webswing focus traversal
+                        exitFocusTraversalOnNextTabKey=true;
+                    }
+                    if( keyevt.key.character == 9 &&  exitFocusTraversalOnNextTabKey){ // if exitFocusTraversalOnNextTabKey was triggered, let browser handle the next tab key
+                        var focusHelper= document.createElement("div");
+                        focusHelper.tabIndex="0";
+                        if(document.activeElement){
+                            document.activeElement.after(focusHelper);
+                            focusHelper.focus();
+                            focusHelper.remove();
+                        }
+                        if(window.top && window.top.document.activeElement){
+                            window.top.document.activeElement.after(focusHelper);
+                            focusHelper.focus();
+                            focusHelper.remove();
+                        }
+                        exitFocusTraversalOnNextTabKey =false;
+                        return true
+                    }
+
                     // default action prevented
                     if (keyevt.key.ctrl && !keyevt.key.alt && !keyevt.key.altgr) {
                         event.preventDefault();
                     }
+
                     if(isHotKeyBehavoir(keyevt)){
                         convertHotKey(keyevt);
                     }
@@ -311,7 +360,8 @@ export default class InputModule {
                 if (!(keyevt.key.ctrl && (keyevt.key.character == 120 || keyevt.key.character == 24 || keyevt.key.character == 99
                         || keyevt.key.character == 118 || keyevt.key.character == 22))) { // cut copy paste handled separately
                     event.preventDefault();
-                    event.stopPropagation();
+                    event.stopPropagation()
+
                     if(isHotKeyBehavoir(keyevt)){
                         convertHotKey(keyevt);
                     }
@@ -499,7 +549,7 @@ export default class InputModule {
             // canvas会铺满整个界面
             // 当鼠标移除document范围后，鼠标松开的事件需要监听在document之上。
             // 中文输入的时候，承载中文输入的input空间也会触发本事件，需忽略
-            if (api.cfg.hasControl && api.cfg.canPaint && !api.cfg.mirrorMode && !compositionInput
+            if (mouseDown!==0 && api.cfg.hasControl && api.cfg.canPaint && !api.cfg.mirrorMode && !compositionInput
 					&& document.activeElement.getAttribute('data-id') === "input-handler") {
                 let mousePos = getMousePos(api.getCanvas(), evt, 'mouseup', evt.target);
                 //when an new web page pops after user click, mouseup will send twice

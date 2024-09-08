@@ -1657,7 +1657,7 @@ public class Xpm
 
 		int parse, parseend;
 		int width, height,colcount,charsperpixel;
-		Hashtable colorlookup = new Hashtable();
+		Hashtable<Integer, Integer> colorlookup = new Hashtable<>();
 		// add default val for "transparent"
 		// the initial 0xff should mean it should not show up
 		
@@ -1828,7 +1828,15 @@ public class Xpm
 					}
 					
 				}
-				imageb[bytecount++]=pixval.intValue();
+				if (pixval != null) {
+					imageb[bytecount++] = pixval.intValue();
+				} else {
+					// Handle the case when pixval is null
+					// You can choose to skip this pixel or assign a default value
+					// For example:
+					// imageb[bytecount++] = 0x00000000; // Assigning a default value of black
+					imageb[bytecount++] = 0x00000000; 
+				}			
 			}
 
 			parse=xpm.indexOf('"', parseend+1);

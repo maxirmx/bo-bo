@@ -283,7 +283,7 @@ public class PlayerPane extends Region {
                     playTime.setText(formatTime(currentTime, duration));
                     timeSlider.setDisable(duration.isUnknown());
                     if (!timeSlider.isDisabled() && duration.greaterThan(Duration.ZERO) && !timeSlider.isValueChanging()) {
-                        timeSlider.setValue(currentTime.divide(duration).toMillis() * 100.0);
+                        timeSlider.setValue(currentTime.toMillis() / duration.toMillis() * 100.0);
                     }
                     if (!volumeSlider.isValueChanging()) {
                         volumeSlider.setValue((int) Math.round(mp.getVolume() * 100));

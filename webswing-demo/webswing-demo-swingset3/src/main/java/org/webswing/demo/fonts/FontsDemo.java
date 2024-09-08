@@ -14,7 +14,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
-import javax.swing.BorderFactory;
+// import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -36,7 +36,7 @@ public class FontsDemo extends JPanel {
 	private static final long serialVersionUID = 6309330628696876261L;
 	private JPanel content;
 	private Font comboFont = UIManager.getFont("ComboBox.font");
-	private JComboBox familyCombo;
+	private JComboBox<?> familyCombo;
 	private String html;
 
 	public FontsDemo() {
@@ -56,7 +56,7 @@ public class FontsDemo extends JPanel {
 		for (int i = 0; i < fonts.length; i++) {
 			fonts[i] = new Font(families[i], Font.PLAIN, comboFontSize);
 		}
-		familyCombo = new JComboBox(fonts);
+		familyCombo = new JComboBox<Font>(fonts);
 		final JToggleButton toggle = new JToggleButton("Toggle Rendering mode");
 		familyCombo.setToolTipText("Font family");
 		familyCombo.setRenderer(new FontListCellRenderer());
@@ -106,7 +106,7 @@ public class FontsDemo extends JPanel {
 			BufferedImage img = new BufferedImage(600, 300, BufferedImage.TYPE_INT_ARGB);
 			Graphics g = img.getGraphics();
 			panel.setSize(new Dimension(600,300));
-			panel.layout();
+			panel.doLayout();
 			panel.paint(g);
 			g.dispose();
 			JLabel jLabel = new JLabel(new ImageIcon(img));
@@ -150,7 +150,7 @@ public class FontsDemo extends JPanel {
 		}
 
 		@Override
-		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			Font font = (Font) value;
 			setText(font.getName());
 			if (isSelected) {

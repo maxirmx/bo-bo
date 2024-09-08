@@ -42,7 +42,7 @@ import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.ConditionalFeature;
-import javafx.beans.value.ChangeListener;
+// import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -184,6 +184,7 @@ public class SampleInfo {
         return label;
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public SampleRuntimeInfo buildSampleNode() {
         try {
             Method play = null;
@@ -368,7 +369,7 @@ public class SampleInfo {
         }
         return image;
     }
-
+    @SuppressWarnings({ "rawtypes" })
     public static class SampleRuntimeInfo {
         private final Parent sampleNode;
         private final Object app;

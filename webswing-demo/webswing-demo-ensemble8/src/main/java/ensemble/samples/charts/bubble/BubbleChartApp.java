@@ -124,7 +124,8 @@ public class BubbleChartApp extends Application {
             series2.getData().add(
                     new XYChart.Data<Number, Number>(Math.random() * 100, Math.random() * 100, (Math.random() * 10)));
         }
-        bc.getData().addAll(series1, series2);
+        bc.getData().add(series1);
+        bc.getData().add(series2);
         return bc;
     }
 

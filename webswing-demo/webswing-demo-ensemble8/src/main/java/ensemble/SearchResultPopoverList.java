@@ -37,7 +37,7 @@ import ensemble.search.DocumentType;
 import ensemble.search.SearchResult;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+// import java.util.Comparator;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -197,8 +197,9 @@ public class SearchResultPopoverList extends PopoverTreeList<SearchResult> imple
                     return enumsLine;
                 case DOC:
                     return documentationLine;
+                default:
+                    return null;
             }
-            return null;
         }
 
         @Override protected void layoutChildren() {
@@ -275,12 +276,12 @@ public class SearchResultPopoverList extends PopoverTreeList<SearchResult> imple
     }
 
 
-    private class SearchResultListCell extends ListCell<SearchResult> implements Skin<SearchResultListCell>, EventHandler {
+    private class SearchResultListCell extends ListCell<SearchResult> implements Skin<SearchResultListCell>, EventHandler<Event> {
         private static final int TEXT_GAP = 6;
         private ImageView arrow = new ImageView(RIGHT_ARROW);
         private Label title = new Label();
         private Label details = new Label();
-        private int cellIndex;
+        // private int cellIndex;
         private Rectangle topLine = new Rectangle(0,0,1,1);
 
         private SearchResultListCell() {
@@ -360,7 +361,7 @@ public class SearchResultPopoverList extends PopoverTreeList<SearchResult> imple
             final double left = insets.getLeft();
             final double top = insets.getTop();
             final double w = getWidth() - left - insets.getRight();
-            final double h = getHeight() - top - insets.getBottom();
+            // final double h = getHeight() - top - insets.getBottom();
             final double titleHeight = title.prefHeight(w);
             title.setLayoutX(left);
             title.setLayoutY(top);

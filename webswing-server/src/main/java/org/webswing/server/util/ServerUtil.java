@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -408,7 +409,7 @@ public class ServerUtil {
 
 			String tempDir = System.getProperty(Constants.TEMP_DIR_PATH);
 			File configfile = new File(URI.create(tempDir + URLEncoder.encode(subs.replace("fontconfig-${clientId}.properties"), "UTF-8")));
-			FileUtils.writeStringToFile(configfile, fontConfig.toString());
+			FileUtils.writeStringToFile(configfile, fontConfig.toString(), StandardCharsets.UTF_8);
 
 			return configfile.getAbsolutePath();
 		} else {

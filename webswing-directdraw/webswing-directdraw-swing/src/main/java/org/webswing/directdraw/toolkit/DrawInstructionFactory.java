@@ -83,8 +83,8 @@ public class DrawInstructionFactory {
 
 	public DrawInstruction createGraphics(WebGraphics g) {
 		DrawConstant<?> id = new IntegerConst(g.getId());
-		DrawConstant<?> transformConst = new TransformConst(ctx, g.getTransform());
-		DrawConstant<?> compositeConst =new CompositeConst(ctx,g.getComposite());
+		TransformConst transformConst = new TransformConst(ctx, g.getTransform());
+		DrawConstant<?> compositeConst = new CompositeConst(ctx,g.getComposite());
 		DrawConstant<?> strokeConst = g.getStroke() instanceof BasicStroke ? new StrokeConst(ctx, (BasicStroke) g.getStroke()) : DrawConstant.nullConst;
 		DrawConstant<?> paintConst;
 		try{

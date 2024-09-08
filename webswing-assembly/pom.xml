@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>webswing</artifactId>
 		<groupId>org.webswing</groupId>
-		<version>2.4.4-SNAPSHOT</version>
+		<version>101.0.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>webswing-assembly</artifactId>
@@ -88,7 +88,7 @@
 				<configuration>
 					<finalName>webswing-${project.version}</finalName>
 					<outputDirectory>dist</outputDirectory>
-					<descriptor>src/main/assembly/dist.xml</descriptor>
+					<descriptors>src/main/assembly/dist.xml</descriptors>
 				</configuration>
 			</plugin>
             <plugin>
@@ -112,7 +112,7 @@
 						<configuration>
 							<finalName>webswing</finalName>
 							<outputDirectory>dist/docker</outputDirectory>
-							<descriptor>src/main/assembly/dist.xml</descriptor>
+							<descriptors>src/main/assembly/dist.xml</descriptors>
 						</configuration>
 					</plugin>
 					<plugin>

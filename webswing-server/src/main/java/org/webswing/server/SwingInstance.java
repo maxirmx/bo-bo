@@ -6,7 +6,7 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.util.Date;
 
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -221,7 +221,7 @@ public class SwingInstance implements WebSessionListener {
 	private SwingProcess start(final SwingDescriptor appConfig, final ConnectionHandshakeMsgIn handshake) throws Exception {
 		final Integer screenWidth = handshake.getDesktopWidth();
 		final Integer screenHeight = handshake.getDesktopHeight();
-		final StrSubstitutor subs = ServerUtil.getConfigSubstitutor(user, clientId, clientIp, handshake.getLocale(), customArgs);
+		final StringSubstitutor subs = ServerUtil.getConfigSubstitutor(user, clientId, clientIp, handshake.getLocale(), customArgs);
 		SwingProcess swing = null;
 		try {
 			swing = new SwingProcess(clientId);
@@ -349,7 +349,7 @@ public class SwingInstance implements WebSessionListener {
 		return cp;
 	}
 
-	private File getHomeDir(final SwingDescriptor appConfig, StrSubstitutor subs) {
+	private File getHomeDir(final SwingDescriptor appConfig, StringSubstitutor subs) {
 		String dirString = subs.replace(appConfig.getHomeDir());
 		File homeDir;
 		if (dirString.startsWith("/") || dirString.startsWith("\\") || dirString.contains(":/") || dirString.contains(":\\")) {

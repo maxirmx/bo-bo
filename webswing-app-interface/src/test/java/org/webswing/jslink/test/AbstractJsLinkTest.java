@@ -78,7 +78,7 @@ public abstract class AbstractJsLinkTest {
 		engine.eval("var cfg={javaCallTimeout:0}");
 		engine.eval("var send=function(obj){result=obj;return result;}");
 		engine.eval("var awaitResponse=function(callback, request, timeout){sendJava.send(JSON.stringify(request.javaRequest));callback(data.javaResponse);}");
-		engine.eval("var jslModule=new JsLink();");
+		engine.eval("var jslModule=new JsLinkModule();");
 		engine.eval("jslModule.injects.cfg=cfg;");
 		engine.eval("jslModule.injects.external={};");
 		engine.eval("jslModule.injects.send=send;");

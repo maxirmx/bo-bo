@@ -196,7 +196,7 @@ public class DirectDrawUtils {
 		public boolean indexVisible;
 	}
 
-	private static class GraphicsStatus {
+	public static class GraphicsStatus {
 		AffineTransform tx;
 		DrawConstant<?> stroke;
 		DrawConstant<?> composite;

@@ -12,7 +12,6 @@
 			<groupId>org.webswing</groupId>
 			<artifactId>webswing-api</artifactId>
 			<version>${project.parent.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jdesktop</groupId>

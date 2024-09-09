@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>webswing-directdraw</artifactId>
 		<groupId>org.webswing</groupId>
-		<version>101.0.0</version>
+		<version>102.0.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>webswing-directdraw-server</artifactId>

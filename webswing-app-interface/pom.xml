@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>webswing</artifactId>
 		<groupId>org.webswing</groupId>
-		<version>101.0.0</version>
+		<version>102.0.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<dependencies>
@@ -94,7 +94,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.8</source>
+					<source>11</source>
 					<target>1.8</target>
 				</configuration>
 			</plugin>		

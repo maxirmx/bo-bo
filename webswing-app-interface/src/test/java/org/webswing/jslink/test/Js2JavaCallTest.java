@@ -20,11 +20,11 @@ public class Js2JavaCallTest extends AbstractJsLinkTest {
 
 	@Test
 	public void testBasicMethodCall() throws ScriptException, InterruptedException {
-		engine.eval("window.testObject.echo('test').then(function(r){evalValue= r;})");
+		engine.eval("window.testObject.echo('test').then(function(r){ evalValue = r;})");
 		assertEquals("test", engine.eval("evalValue"));
 	}
 
-	@Test
+ 	@Test
 	public void testNullParam() throws ScriptException, InterruptedException {
 		engine.eval("window.testObject.echo(null).then(function(r){evalValue= r;})");
 		assertEquals(null, engine.eval("evalValue"));

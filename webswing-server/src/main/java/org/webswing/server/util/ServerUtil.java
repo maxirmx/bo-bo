@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -24,9 +25,9 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 import org.apache.shiro.subject.Subject;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
@@ -124,7 +125,7 @@ public class ServerUtil {
 		Map<String, SwingAppletDescriptor> applets = ConfigurationManager.getInstance().getApplets();
 
 		List<ApplicationInfoMsg> apps = new ArrayList<ApplicationInfoMsg>();
-		StrSubstitutor subs = getConfigSubstitutor(getUserName(r), null, ServerUtil.getClientIp(r.getRequest()), null, null);
+		StringSubstitutor subs = getConfigSubstitutor(getUserName(r), null, ServerUtil.getClientIp(r.getRequest()), null, null);
 		if (applications.size() == 0) {
 			return null;
 		} else {
@@ -155,7 +156,7 @@ public class ServerUtil {
 		return apps;
 	}
 
-	public static ApplicationInfoMsg toApplicationInfoMsg(SwingDescriptor swingDesc, StrSubstitutor subs) {
+	public static ApplicationInfoMsg toApplicationInfoMsg(SwingDescriptor swingDesc, StringSubstitutor subs) {
 		ApplicationInfoMsg app = new ApplicationInfoMsg();
 		app.setName(swingDesc.getName());
 		app.setAlwaysRestart(swingDesc.getSwingSessionTimeout() == 0);
@@ -344,8 +345,8 @@ public class ServerUtil {
 		return result;
 	}
 
-	public static StrSubstitutor getConfigSubstitutor(String user, String sessionId, String clientIp, String locale, String customArgs) {
-		return new StrSubstitutor(getConfigSubstitutorMap(user, sessionId, clientIp, locale, customArgs));
+	public static StringSubstitutor getConfigSubstitutor(String user, String sessionId, String clientIp, String locale, String customArgs) {
+		return new StringSubstitutor(getConfigSubstitutorMap(user, sessionId, clientIp, locale, customArgs));
 	}
 
 	public static void broadcastMessage(AtmosphereResource r, EncodedMessage o) {
@@ -379,7 +380,7 @@ public class ServerUtil {
 	private static List<String> styles = Arrays.asList("bolditalic", "italic", "bold", "plain");
 	private static String defaultChargroup = SystemUtils.IS_OS_WINDOWS ? "alpbabet" : "latin-1";
 
-	public static String createFontConfiguration(SwingDescriptor appConfig, StrSubstitutor subs) throws IOException {
+	public static String createFontConfiguration(SwingDescriptor appConfig, StringSubstitutor subs) throws IOException {
 		if (appConfig.getFontConfig() != null && appConfig.getFontConfig().size() > 0) {
 			StringBuilder fontConfig = new StringBuilder("version=1\n");
 			StringBuilder metadata = new StringBuilder();
@@ -408,7 +409,7 @@ public class ServerUtil {
 
 			String tempDir = System.getProperty(Constants.TEMP_DIR_PATH);
 			File configfile = new File(URI.create(tempDir + URLEncoder.encode(subs.replace("fontconfig-${clientId}.properties"), "UTF-8")));
-			FileUtils.writeStringToFile(configfile, fontConfig.toString());
+			FileUtils.writeStringToFile(configfile, fontConfig.toString(), StandardCharsets.UTF_8);
 
 			return configfile.getAbsolutePath();
 		} else {
@@ -427,7 +428,7 @@ public class ServerUtil {
 		return defaultFont;
 	}
 
-	private static Map<String, File> buildFontMap(Map<String, String> fontConfig, StrSubstitutor subs) {
+	private static Map<String, File> buildFontMap(Map<String, String> fontConfig, StringSubstitutor subs) {
 		Map<String, File> result = new HashMap<String, File>();
 		for (String key : fontConfig.keySet()) {
 			String keyValue = subs.replace(key).toLowerCase().trim();

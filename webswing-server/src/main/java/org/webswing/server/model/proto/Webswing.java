@@ -3860,6 +3860,21 @@ public final class Webswing {
      * <code>optional sint32 caretH = 8;</code>
      */
     int getCaretH();
+
+    // optional string windowId = 9;
+    /**
+     * <code>optional string windowId = 9;</code>
+     */
+    boolean hasWindowId();
+    /**
+     * <code>optional string windowId = 9;</code>
+     */
+    java.lang.String getWindowId();
+    /**
+     * <code>optional string windowId = 9;</code>
+     */
+    com.google.protobuf.ByteString
+        getWindowIdBytes();
   }
   /**
    * Protobuf type {@code org.webswing.server.model.proto.FocusEventMsgProto}
@@ -3958,6 +3973,11 @@ public final class Webswing {
               caretH_ = input.readSInt32();
               break;
             }
+            case 74: {
+              bitField0_ |= 0x00000100;
+              windowId_ = input.readBytes();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -4018,6 +4038,10 @@ public final class Webswing {
        * <code>focusPasswordGained = 4;</code>
        */
       focusPasswordGained(3, 4),
+      /**
+       * <code>htmlPanelFocused = 5;</code>
+       */
+      htmlPanelFocused(4, 5),
       ;
 
       /**
@@ -4036,6 +4060,10 @@ public final class Webswing {
        * <code>focusPasswordGained = 4;</code>
        */
       public static final int focusPasswordGained_VALUE = 4;
+      /**
+       * <code>htmlPanelFocused = 5;</code>
+       */
+      public static final int htmlPanelFocused_VALUE = 5;
 
 
       public final int getNumber() { return value; }
@@ -4046,6 +4074,7 @@ public final class Webswing {
           case 2: return focusGained;
           case 3: return focusWithCarretGained;
           case 4: return focusPasswordGained;
+          case 5: return htmlPanelFocused;
           default: return null;
         }
       }
@@ -4226,6 +4255,49 @@ public final class Webswing {
       return caretH_;
     }
 
+    // optional string windowId = 9;
+    public static final int WINDOWID_FIELD_NUMBER = 9;
+    private java.lang.Object windowId_;
+    /**
+     * <code>optional string windowId = 9;</code>
+     */
+    public boolean hasWindowId() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>optional string windowId = 9;</code>
+     */
+    public java.lang.String getWindowId() {
+      java.lang.Object ref = windowId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          windowId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string windowId = 9;</code>
+     */
+    public com.google.protobuf.ByteString
+        getWindowIdBytes() {
+      java.lang.Object ref = windowId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        windowId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       type_ = org.webswing.server.model.proto.Webswing.FocusEventMsgProto.FocusEventTypeProto.focusLost;
       x_ = 0;
@@ -4235,6 +4307,7 @@ public final class Webswing {
       caretX_ = 0;
       caretY_ = 0;
       caretH_ = 0;
+      windowId_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -4276,6 +4349,9 @@ public final class Webswing {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeSInt32(8, caretH_);
       }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeBytes(9, getWindowIdBytes());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -4316,6 +4392,10 @@ public final class Webswing {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
           .computeSInt32Size(8, caretH_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(9, getWindowIdBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4449,6 +4529,8 @@ public final class Webswing {
         bitField0_ = (bitField0_ & ~0x00000040);
         caretH_ = 0;
         bitField0_ = (bitField0_ & ~0x00000080);
+        windowId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
 
@@ -4509,6 +4591,10 @@ public final class Webswing {
           to_bitField0_ |= 0x00000080;
         }
         result.caretH_ = caretH_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.windowId_ = windowId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4548,6 +4634,11 @@ public final class Webswing {
         }
         if (other.hasCaretH()) {
           setCaretH(other.getCaretH());
+        }
+        if (other.hasWindowId()) {
+          bitField0_ |= 0x00000100;
+          windowId_ = other.windowId_;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -4843,6 +4934,80 @@ public final class Webswing {
       public Builder clearCaretH() {
         bitField0_ = (bitField0_ & ~0x00000080);
         caretH_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // optional string windowId = 9;
+      private java.lang.Object windowId_ = "";
+      /**
+       * <code>optional string windowId = 9;</code>
+       */
+      public boolean hasWindowId() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <code>optional string windowId = 9;</code>
+       */
+      public java.lang.String getWindowId() {
+        java.lang.Object ref = windowId_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          windowId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string windowId = 9;</code>
+       */
+      public com.google.protobuf.ByteString
+          getWindowIdBytes() {
+        java.lang.Object ref = windowId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          windowId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string windowId = 9;</code>
+       */
+      public Builder setWindowId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        windowId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string windowId = 9;</code>
+       */
+      public Builder clearWindowId() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        windowId_ = getDefaultInstance().getWindowId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string windowId = 9;</code>
+       */
+      public Builder setWindowIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        windowId_ = value;
         onChanged();
         return this;
       }
@@ -35676,17 +35841,18 @@ public final class Webswing {
       "l.proto.FocusEventMsgProto\022\022\n\ndirectDraw" +
       "\030\024 \001(\010\022L\n\013actionEvent\030\025 \001(\01327.org.webswi" +
       "ng.server.model.proto.ActionEventMsgOutP" +
-      "roto\022\025\n\rcompositingWM\030\026 \001(\010\"\262\002\n\022FocusEve",
+      "roto\022\025\n\rcompositingWM\030\026 \001(\010\"\332\002\n\022FocusEve",
       "ntMsgProto\022U\n\004type\030\001 \002(\0162G.org.webswing." +
       "server.model.proto.FocusEventMsgProto.Fo" +
       "cusEventTypeProto\022\t\n\001x\030\002 \001(\021\022\t\n\001y\030\003 \001(\021\022" +
       "\t\n\001w\030\004 \001(\r\022\t\n\001h\030\005 \001(\r\022\016\n\006caretX\030\006 \001(\021\022\016\n" +
-      "\006caretY\030\007 \001(\021\022\016\n\006caretH\030\010 \001(\021\"i\n\023FocusEv" +
-      "entTypeProto\022\r\n\tfocusLost\020\001\022\017\n\013focusGain" +
-      "ed\020\002\022\031\n\025focusWithCarretGained\020\003\022\027\n\023focus" +
-      "PasswordGained\020\004\"b\n\027ApplicationInfoMsgPr" +
-      "oto\022\014\n\004name\030\001 \002(\t\022\022\n\nbase64Icon\030\002 \001(\014\022\016\n" +
-      "\006applet\030\003 \001(\010\022\025\n\ralwaysRestart\030\004 \001(\010\"\257\001\n",
+      "\006caretY\030\007 \001(\021\022\016\n\006caretH\030\010 \001(\021\022\020\n\010windowI" +
+      "d\030\t \001(\t\"\177\n\023FocusEventTypeProto\022\r\n\tfocusL" +
+      "ost\020\001\022\017\n\013focusGained\020\002\022\031\n\025focusWithCarre" +
+      "tGained\020\003\022\027\n\023focusPasswordGained\020\004\022\024\n\020ht" +
+      "mlPanelFocused\020\005\"b\n\027ApplicationInfoMsgPr" +
+      "oto\022\014\n\004name\030\001 \002(\t\022\022\n\nbase64Icon\030\002 \001(\014\022\016\n",
+      "\006applet\030\003 \001(\010\022\025\n\ralwaysRestart\030\004 \001(\010\"\257\001\n" +
       "\022LinkActionMsgProto\022W\n\006action\030\001 \002(\0162G.or" +
       "g.webswing.server.model.proto.LinkAction" +
       "MsgProto.LinkActionTypeProto\022\013\n\003src\030\002 \002(" +
@@ -35695,8 +35861,8 @@ public final class Webswing {
       "to\022\n\n\002sx\030\001 \001(\021\022\n\n\002sy\030\002 \001(\021\022\n\n\002dx\030\003 \001(\021\022\n" +
       "\n\002dy\030\004 \001(\021\022\r\n\005width\030\005 \001(\r\022\016\n\006height\030\006 \001(" +
       "\r\"`\n\031CursorChangeEventMsgProto\022\016\n\006cursor" +
-      "\030\001 \002(\t\022\016\n\006b64img\030\002 \001(\014\022\t\n\001x\030\003 \001(\021\022\t\n\001y\030\004" +
-      " \001(\021\022\r\n\005winId\030\005 \001(\t\"Z\n\021CopyEventMsgProto",
+      "\030\001 \002(\t\022\016\n\006b64img\030\002 \001(\014\022\t\n\001x\030\003 \001(\021\022\t\n\001y\030\004",
+      " \001(\021\022\r\n\005winId\030\005 \001(\t\"Z\n\021CopyEventMsgProto" +
       "\022\014\n\004text\030\001 \001(\t\022\014\n\004html\030\002 \001(\t\022\013\n\003img\030\003 \001(" +
       "\014\022\r\n\005files\030\004 \003(\t\022\r\n\005other\030\005 \001(\010\"\233\002\n\027File" +
       "DialogEventMsgProto\022d\n\teventType\030\001 \002(\0162Q" +
@@ -35705,8 +35871,8 @@ public final class Webswing {
       "o\022\025\n\rallowDownload\030\002 \001(\010\022\023\n\013allowUpload\030" +
       "\003 \001(\010\022\023\n\013allowDelete\030\004 \001(\010\022\016\n\006filter\030\005 \001" +
       "(\t\022\030\n\020isMultiSelection\030\006 \001(\010\"/\n\030FileDial" +
-      "ogEventTypeProto\022\010\n\004Open\020\000\022\t\n\005Close\020\001\"\306\004" +
-      "\n\016WindowMsgProto\022\n\n\002id\030\001 \002(\t\022N\n\007content\030",
+      "ogEventTypeProto\022\010\n\004Open\020\000\022\t\n\005Close\020\001\"\306\004",
+      "\n\016WindowMsgProto\022\n\n\002id\030\001 \002(\t\022N\n\007content\030" +
       "\002 \003(\0132=.org.webswing.server.model.proto." +
       "WindowPartialContentMsgProto\022@\n\007sprites\030" +
       "\003 \003(\0132/.org.webswing.server.model.proto." +
@@ -35715,8 +35881,8 @@ public final class Webswing {
       "\005width\030\010 \001(\r\022\016\n\006height\030\t \001(\r\022\014\n\004name\030\n \001" +
       "(\t\022M\n\004type\030\013 \001(\0162?.org.webswing.server.m" +
       "odel.proto.WindowMsgProto.WindowTypeProt" +
-      "o\022\024\n\014modalBlocked\030\014 \001(\010\022\017\n\007ownerId\030\r \001(\t" +
-      "\022\r\n\005state\030\016 \001(\r\022H\n\017internalWindows\030\017 \003(\013",
+      "o\022\024\n\014modalBlocked\030\014 \001(\010\022\017\n\007ownerId\030\r \001(\t",
+      "\022\r\n\005state\030\016 \001(\r\022H\n\017internalWindows\030\017 \003(\013" +
       "2/.org.webswing.server.model.proto.Windo" +
       "wMsgProto\"[\n\017WindowTypeProto\022\t\n\005basic\020\001\022" +
       "\010\n\004html\020\002\022\014\n\010internal\020\003\022\020\n\014internalHtml\020" +
@@ -35725,8 +35891,8 @@ public final class Webswing {
       "itionY\030\002 \001(\021\022\r\n\005width\030\003 \001(\r\022\016\n\006height\030\004 " +
       "\001(\r\022\025\n\rbase64Content\030\005 \001(\014\"w\n\016SpriteMsgP" +
       "roto\022\017\n\007spriteX\030\001 \001(\021\022\017\n\007spriteY\030\002 \001(\021\022\021" +
-      "\n\tpositionX\030\003 \001(\021\022\021\n\tpositionY\030\004 \001(\021\022\r\n\005" +
-      "width\030\005 \001(\r\022\016\n\006height\030\006 \001(\r\"\211\003\n\030JsEvalRe",
+      "\n\tpositionX\030\003 \001(\021\022\021\n\tpositionY\030\004 \001(\021\022\r\n\005",
+      "width\030\005 \001(\r\022\016\n\006height\030\006 \001(\r\"\211\003\n\030JsEvalRe" +
       "questMsgOutProto\022\025\n\rcorrelationId\030\001 \001(\t\022" +
       "\024\n\014thisObjectId\030\002 \001(\t\022^\n\004type\030\003 \001(\0162P.or" +
       "g.webswing.server.model.proto.JsEvalRequ" +
@@ -35735,8 +35901,8 @@ public final class Webswing {
       "webswing.server.model.proto.JsParamMsgPr" +
       "oto\022\022\n\ngarbageIds\030\006 \003(\t\"v\n\026JsEvalRequest" +
       "TypeProto\022\010\n\004eval\020\000\022\010\n\004call\020\001\022\r\n\tsetMemb" +
-      "er\020\002\022\r\n\tgetMember\020\003\022\020\n\014deleteMember\020\004\022\013\n" +
-      "\007setSlot\020\005\022\013\n\007getSlot\020\006\"\366\001\n\017JsParamMsgPr",
+      "er\020\002\022\r\n\tgetMember\020\003\022\020\n\014deleteMember\020\004\022\013\n",
+      "\007setSlot\020\005\022\013\n\007getSlot\020\006\"\366\001\n\017JsParamMsgPr" +
       "oto\022\021\n\tprimitive\030\001 \001(\t\022C\n\010jsObject\030\002 \001(\013" +
       "21.org.webswing.server.model.proto.JSObj" +
       "ectMsgProto\022J\n\njavaObject\030\003 \001(\01326.org.we" +
@@ -35745,8 +35911,8 @@ public final class Webswing {
       "rver.model.proto.JsParamMsgProto\"\036\n\020JSOb" +
       "jectMsgProto\022\n\n\002id\030\001 \001(\t\"4\n\025JavaObjectRe" +
       "fMsgProto\022\n\n\002id\030\001 \001(\t\022\017\n\007methods\030\002 \003(\t\"y" +
-      "\n\020JsResultMsgProto\022\025\n\rcorrelationId\030\001 \001(" +
-      "\t\022\r\n\005error\030\002 \001(\t\022?\n\005value\030\003 \001(\01320.org.we",
+      "\n\020JsResultMsgProto\022\025\n\rcorrelationId\030\001 \001(",
+      "\t\022\r\n\005error\030\002 \001(\t\022?\n\005value\030\003 \001(\01320.org.we" +
       "bswing.server.model.proto.JsParamMsgProt" +
       "o\"6\n\024PlaybackInfoMsgProto\022\017\n\007current\030\001 \001" +
       "(\r\022\r\n\005total\030\002 \001(\r\"\367\005\n\032InputEventsFrameMs" +
@@ -35755,8 +35921,8 @@ public final class Webswing {
       "D\n\005paste\030\002 \001(\01325.org.webswing.server.mod" +
       "el.proto.PasteEventMsgInProto\022B\n\004copy\030\003 " +
       "\001(\01324.org.webswing.server.model.proto.Co" +
-      "pyEventMsgInProto\022F\n\006upload\030\004 \001(\01326.org." +
-      "webswing.server.model.proto.UploadEventM",
+      "pyEventMsgInProto\022F\n\006upload\030\004 \001(\01326.org.",
+      "webswing.server.model.proto.UploadEventM" +
       "sgInProto\022J\n\010uploaded\030\005 \001(\01328.org.webswi" +
       "ng.server.model.proto.UploadedEventMsgIn" +
       "Proto\022E\n\njsResponse\030\006 \001(\01321.org.webswing" +
@@ -35765,8 +35931,8 @@ public final class Webswing {
       "model.proto.JavaEvalRequestMsgInProto\022L\n" +
       "\010playback\030\010 \001(\0132:.org.webswing.server.mo" +
       "del.proto.PlaybackCommandMsgInProto\022F\n\006w" +
-      "indow\030\n \001(\01326.org.webswing.server.model." +
-      "proto.WindowEventMsgInProto\022F\n\006action\030\013 ",
+      "indow\030\n \001(\01326.org.webswing.server.model.",
+      "proto.WindowEventMsgInProto\022F\n\006action\030\013 " +
       "\001(\01326.org.webswing.server.model.proto.Ac" +
       "tionEventMsgInProto\"\275\002\n\024InputEventMsgInP" +
       "roto\022Q\n\thandshake\030\001 \001(\0132>.org.webswing.s" +
@@ -35775,8 +35941,8 @@ public final class Webswing {
       "er.model.proto.KeyboardEventMsgInProto\022D" +
       "\n\005mouse\030\003 \001(\01325.org.webswing.server.mode" +
       "l.proto.MouseEventMsgInProto\022E\n\005event\030\004 " +
-      "\001(\01326.org.webswing.server.model.proto.Si" +
-      "mpleEventMsgInProto\"\330\002\n\035ConnectionHandsh",
+      "\001(\01326.org.webswing.server.model.proto.Si",
+      "mpleEventMsgInProto\"\330\002\n\035ConnectionHandsh" +
       "akeMsgInProto\022\020\n\010clientId\030\001 \001(\t\022\021\n\tsessi" +
       "onId\030\002 \001(\t\022\016\n\006viewId\030\003 \001(\t\022\024\n\014desktopWid" +
       "th\030\004 \001(\r\022\025\n\rdesktopHeight\030\005 \001(\r\022\027\n\017appli" +
@@ -35785,8 +35951,8 @@ public final class Webswing {
       "\024\n\014documentBase\030\n \001(\t\022>\n\006params\030\013 \003(\0132.." +
       "org.webswing.server.model.proto.ParamMsg" +
       "Proto\022\016\n\006locale\030\014 \001(\t\022\027\n\017continueSession" +
-      "\030\r \001(\010\",\n\rParamMsgProto\022\014\n\004name\030\001 \001(\t\022\r\n" +
-      "\005value\030\002 \001(\t\"\212\002\n\027KeyboardEventMsgInProto",
+      "\030\r \001(\010\",\n\rParamMsgProto\022\014\n\004name\030\001 \001(\t\022\r\n",
+      "\005value\030\002 \001(\t\"\212\002\n\027KeyboardEventMsgInProto" +
       "\022X\n\004type\030\001 \001(\0162J.org.webswing.server.mod" +
       "el.proto.KeyboardEventMsgInProto.KeyEven" +
       "tTypeProto\022\021\n\tcharacter\030\002 \001(\021\022\017\n\007keycode" +
@@ -35795,8 +35961,8 @@ public final class Webswing {
       "oto\022\014\n\010keypress\020\000\022\013\n\007keydown\020\001\022\t\n\005keyup\020" +
       "\002\"\320\002\n\024MouseEventMsgInProto\022W\n\004type\030\001 \001(\016" +
       "2I.org.webswing.server.model.proto.Mouse" +
-      "EventMsgInProto.MouseEventTypeProto\022\t\n\001x" +
-      "\030\002 \001(\021\022\t\n\001y\030\003 \001(\021\022\022\n\nwheelDelta\030\004 \001(\021\022\016\n",
+      "EventMsgInProto.MouseEventTypeProto\022\t\n\001x",
+      "\030\002 \001(\021\022\t\n\001y\030\003 \001(\021\022\022\n\nwheelDelta\030\004 \001(\021\022\016\n" +
       "\006button\030\005 \001(\021\022\014\n\004ctrl\030\006 \001(\010\022\013\n\003alt\030\007 \001(\010" +
       "\022\r\n\005shift\030\010 \001(\010\022\014\n\004meta\030\t \001(\010\022\r\n\005winId\030\n" +
       " \001(\t\"^\n\023MouseEventTypeProto\022\r\n\tmousemove" +
@@ -35805,8 +35971,8 @@ public final class Webswing {
       "roto\022X\n\004type\030\001 \001(\0162J.org.webswing.server" +
       ".model.proto.CopyEventMsgInProto.CopyEve" +
       "ntMsgTypeProto\022\014\n\004file\030\002 \001(\t\"D\n\025CopyEven" +
-      "tMsgTypeProto\022\010\n\004copy\020\000\022\007\n\003cut\020\001\022\030\n\024getF" +
-      "ileFromClipboard\020\002\"?\n\024PasteEventMsgInPro",
+      "tMsgTypeProto\022\010\n\004copy\020\000\022\007\n\003cut\020\001\022\030\n\024getF",
+      "ileFromClipboard\020\002\"?\n\024PasteEventMsgInPro" +
       "to\022\014\n\004text\030\001 \001(\t\022\014\n\004html\030\002 \001(\t\022\013\n\003img\030\003 " +
       "\001(\t\"\352\001\n\025SimpleEventMsgInProto\022Y\n\004type\030\001 " +
       "\001(\0162K.org.webswing.server.model.proto.Si" +
@@ -35815,8 +35981,8 @@ public final class Webswing {
       "killSwing\020\001\022\014\n\010paintAck\020\002\022\013\n\007repaint\020\003\022\020" +
       "\n\014downloadFile\020\004\022\016\n\ndeleteFile\020\005\022\006\n\002hb\020\006" +
       "\"(\n\027UploadedEventMsgInProto\022\r\n\005files\030\001 \003" +
-      "(\t\"C\n\025UploadEventMsgInProto\022\020\n\010fileName\030" +
-      "\002 \001(\t\022\030\n\020tempFileLocation\030\003 \001(\t\"\226\001\n\031Java",
+      "(\t\"C\n\025UploadEventMsgInProto\022\020\n\010fileName\030",
+      "\002 \001(\t\022\030\n\020tempFileLocation\030\003 \001(\t\"\226\001\n\031Java" +
       "EvalRequestMsgInProto\022\025\n\rcorrelationId\030\001" +
       " \001(\t\022\020\n\010objectId\030\002 \001(\t\022\016\n\006method\030\003 \001(\t\022@" +
       "\n\006params\030\004 \003(\01320.org.webswing.server.mod" +
@@ -35825,8 +35991,8 @@ public final class Webswing {
       "bswing.server.model.proto.PlaybackComman" +
       "dMsgInProto.PlaybackCommandProto\"X\n\024Play" +
       "backCommandProto\022\t\n\005reset\020\000\022\010\n\004play\020\001\022\010\n" +
-      "\004stop\020\002\022\010\n\004step\020\003\022\n\n\006step10\020\004\022\013\n\007step100" +
-      "\020\005\"g\n\025WindowEventMsgInProto\022\n\n\002id\030\001 \001(\t\022",
+      "\004stop\020\002\022\010\n\004step\020\003\022\n\n\006step10\020\004\022\013\n\007step100",
+      "\020\005\"g\n\025WindowEventMsgInProto\022\n\n\002id\030\001 \001(\t\022" +
       "\t\n\001x\030\002 \001(\021\022\t\n\001y\030\003 \001(\021\022\r\n\005width\030\004 \001(\021\022\016\n\006" +
       "height\030\005 \001(\021\022\r\n\005close\030\006 \001(\010\"\353\001\n\025ActionEv" +
       "entMsgInProto\022\022\n\nactionName\030\001 \001(\t\022\014\n\004dat" +
@@ -35835,8 +36001,8 @@ public final class Webswing {
       "server.model.proto.ActionEventMsgInProto" +
       ".ActionEventTypeProto\"*\n\024ActionEventType" +
       "Proto\022\010\n\004init\020\000\022\010\n\004user\020\001\"`\n\026ActionEvent" +
-      "MsgOutProto\022\022\n\nactionName\030\001 \001(\t\022\014\n\004data\030" +
-      "\002 \001(\t\022\022\n\nbinaryData\030\003 \001(\014\022\020\n\010windowId\030\004 ",
+      "MsgOutProto\022\022\n\nactionName\030\001 \001(\t\022\014\n\004data\030",
+      "\002 \001(\t\022\022\n\nbinaryData\030\003 \001(\014\022\020\n\010windowId\030\004 " +
       "\001(\t*\341\001\n\026SimpleEventMsgOutProto\022\035\n\031applic" +
       "ationAlreadyRunning\020\000\022\030\n\024shutDownNotific" +
       "ation\020\001\022\036\n\032tooManyClientsNotification\020\002\022" +
@@ -35860,7 +36026,7 @@ public final class Webswing {
           internal_static_org_webswing_server_model_proto_FocusEventMsgProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_webswing_server_model_proto_FocusEventMsgProto_descriptor,
-              new java.lang.String[] { "Type", "X", "Y", "W", "H", "CaretX", "CaretY", "CaretH", });
+              new java.lang.String[] { "Type", "X", "Y", "W", "H", "CaretX", "CaretY", "CaretH", "WindowId", });
           internal_static_org_webswing_server_model_proto_ApplicationInfoMsgProto_descriptor =
             getDescriptor().getMessageTypes().get(2);
           internal_static_org_webswing_server_model_proto_ApplicationInfoMsgProto_fieldAccessorTable = new

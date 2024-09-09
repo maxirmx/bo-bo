@@ -11,7 +11,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
+import org.apache.commons.cli.DefaultParser;
 import org.webswing.toolkit.util.Logger;
 
 public class ConfigurationImpl extends Configuration {
@@ -37,7 +37,7 @@ public class ConfigurationImpl extends Configuration {
 	public static Configuration parse(String[] args) {
 		ConfigurationImpl cimpl = (ConfigurationImpl) Configuration.getInstance();
 		// create the command line parser
-		CommandLineParser parser = new PosixParser();
+		CommandLineParser parser = new DefaultParser();
 
 		// create the Options
 		Options options = new Options();

@@ -31,11 +31,11 @@
  */
 package ensemble.samples.media.streamingmediaplayer;
 
-import javafx.animation.ParallelTransition;
+// import javafx.animation.ParallelTransition;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
+// import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.value.ChangeListener;
+// import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -49,7 +49,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+// import javafx.scene.layout.Region;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
@@ -61,14 +61,14 @@ public class PlayerPane extends BorderPane {
     private MediaView mediaView;
     private final boolean repeat = false;
     private boolean stopRequested = false;
-    private boolean atEndOfMedia = false;
+    // private boolean atEndOfMedia = false;
     private Duration duration;
     private Slider timeSlider;
     private Label playTime;
     private Slider volumeSlider;
     private HBox mediaTopBar;
     private HBox mediaBottomBar;
-    private ParallelTransition transition = null;
+    // private ParallelTransition transition = null;
 
     @Override
     protected void layoutChildren() {
@@ -147,7 +147,7 @@ public class PlayerPane extends BorderPane {
         mp.setOnEndOfMedia(() -> {
             if (!repeat) {
                 stopRequested = true;
-                atEndOfMedia = true;
+                // atEndOfMedia = true;
             }
         });
         mp.setCycleCount(repeat ? MediaPlayer.INDEFINITE : 1);
@@ -258,7 +258,7 @@ public class PlayerPane extends BorderPane {
                 playTime.setText(formatTime(currentTime, duration));
                 timeSlider.setDisable(duration.isUnknown());
                 if (!timeSlider.isDisabled() && duration.greaterThan(Duration.ZERO) && !timeSlider.isValueChanging()) {
-                    timeSlider.setValue(currentTime.divide(duration).toMillis() * 100.0);
+                    timeSlider.setValue((currentTime.toMillis() / duration.toMillis()) * 100.0);
                 }
                 if (!volumeSlider.isValueChanging()) {
                     volumeSlider.setValue((int) Math.round(mp.getVolume() * 100));
@@ -282,8 +282,8 @@ public class PlayerPane extends BorderPane {
             if (durationHours > 0) {
                 intDuration -= durationHours * 60 * 60;
             }
-            int durationMinutes = intDuration / 60;
-            int durationSeconds = intDuration - durationHours * 60 * 60 - durationMinutes * 60;
+            // int durationMinutes = intDuration / 60;
+            // int durationSeconds = intDuration - durationHours * 60 * 60 - durationMinutes * 60;
 
             if (durationHours > 0) {
                 return String.format("%d:%02d:%02d",

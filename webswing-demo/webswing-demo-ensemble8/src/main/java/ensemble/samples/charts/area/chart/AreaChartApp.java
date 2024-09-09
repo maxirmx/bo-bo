@@ -105,7 +105,7 @@ import javafx.stage.Stage;
  */
 public class AreaChartApp extends Application {
 
-    private AreaChart chart;
+    private AreaChart<Number, Number> chart;
     private NumberAxis xAxis;
     private NumberAxis yAxis;
 
@@ -114,33 +114,33 @@ public class AreaChartApp extends Application {
         xAxis.setLabel("X Values");
         yAxis = new NumberAxis();
         yAxis.setLabel("Y Values");
-        ObservableList<AreaChart.Series> areaChartData = FXCollections.observableArrayList(
-                new AreaChart.Series("Series 1",FXCollections.observableArrayList(
-                    new AreaChart.Data(0,4),
-                    new AreaChart.Data(2,5),
-                    new AreaChart.Data(4,4),
-                    new AreaChart.Data(6,2),
-                    new AreaChart.Data(8,6),
-                    new AreaChart.Data(10,8)
-                )),
-                new AreaChart.Series("Series 2", FXCollections.observableArrayList(
-                    new AreaChart.Data(0,8),
-                    new AreaChart.Data(2,2),
-                    new AreaChart.Data(4,9),
-                    new AreaChart.Data(6,7),
-                    new AreaChart.Data(8,5),
-                    new AreaChart.Data(10,7)
-                )),
-                new AreaChart.Series("Series 3", FXCollections.observableArrayList(
-                    new AreaChart.Data(0,2),
-                    new AreaChart.Data(2,5),
-                    new AreaChart.Data(4,8),
-                    new AreaChart.Data(6,6),
-                    new AreaChart.Data(8,9),
-                    new AreaChart.Data(10,7)
-                ))
+        ObservableList<AreaChart.Series<Number, Number>> areaChartData = FXCollections.observableArrayList(
+            new AreaChart.Series<Number, Number>("Series 1",FXCollections.observableArrayList(
+                new AreaChart.Data<Number, Number>(0,4),
+                new AreaChart.Data<Number, Number>(2,5),
+                new AreaChart.Data<Number, Number>(4,4),
+                new AreaChart.Data<Number, Number>(6,2),
+                new AreaChart.Data<Number, Number>(8,6),
+                new AreaChart.Data<Number, Number>(10,8)
+            )),
+            new AreaChart.Series<Number, Number>("Series 2", FXCollections.observableArrayList(
+                new AreaChart.Data<Number, Number>(0,8),
+                new AreaChart.Data<Number, Number>(2,2),
+                new AreaChart.Data<Number, Number>(4,9),
+                new AreaChart.Data<Number, Number>(6,7),
+                new AreaChart.Data<Number, Number>(8,5),
+                new AreaChart.Data<Number, Number>(10,7)
+            )),
+            new AreaChart.Series<Number, Number>("Series 3", FXCollections.observableArrayList(
+                new AreaChart.Data<Number, Number>(0,2),
+                new AreaChart.Data<Number, Number>(2,5),
+                new AreaChart.Data<Number, Number>(4,8),
+                new AreaChart.Data<Number, Number>(6,6),
+                new AreaChart.Data<Number, Number>(8,9),
+                new AreaChart.Data<Number, Number>(10,7)
+            ))
         );
-        chart = new AreaChart(xAxis, yAxis, areaChartData);
+        chart = new AreaChart<Number, Number>(xAxis, yAxis, areaChartData);
         return chart;
     }
 

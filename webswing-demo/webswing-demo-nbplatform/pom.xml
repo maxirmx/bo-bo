@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>webswing-demo</artifactId>
 		<groupId>org.webswing</groupId>
-		<version>2.4.4-SNAPSHOT</version>
+		<version>101.0.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<dependencies>
@@ -53,6 +53,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.4.2</version>
 				<configuration>
 					<archive>
 						<manifest>

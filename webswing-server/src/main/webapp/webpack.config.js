@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
@@ -32,6 +33,9 @@ module.exports = {
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
       title: 'Webswing'
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_OPTIONS': JSON.stringify('--openssl-legacy-provider')
     })
   ],
   module: {

@@ -17,7 +17,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.bcel.Constants;
+// import org.apache.bcel.Const;
 import org.apache.bcel.classfile.Constant;
 import org.apache.bcel.classfile.ConstantClass;
 import org.apache.bcel.classfile.JavaClass;
@@ -30,7 +30,7 @@ import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.INSTANCEOF;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionConstants;
+// import org.apache.bcel.generic.InstructionConst;
 import org.apache.bcel.generic.InstructionFactory;
 import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionList;
@@ -341,7 +341,7 @@ public class SwingClassloader extends URLClassLoader {
 				MethodGen mg;
 
 				if (m == null) {
-					mg = new MethodGen(Constants.ACC_PUBLIC, // access flags
+					mg = new MethodGen(org.apache.bcel.Const.ACC_PUBLIC, // access flags
 							returnType, // return type
 							signatureTypes, ClassLoaderUtil.createArgNames(signatureTypes.length),// arg types
 							methodName, cg.getClassName(), // method, class
@@ -359,9 +359,9 @@ public class SwingClassloader extends URLClassLoader {
 					overridenArgs[i] = i == 0 ? new ObjectType(classReplacementMapping.containsValue(cg.getClassName()) ? classReplacementMapping.inverse().get(cg.getClassName()) : cg.getClassName()) : signatureTypes[i - 1];
 					il.append(new ALOAD(i));
 				}
-				il.append(f.createInvoke(overridenClassName, overridenMethodName, returnType, overridenArgs, Constants.INVOKESTATIC));
+				il.append(f.createInvoke(overridenClassName, overridenMethodName, returnType, overridenArgs, org.apache.bcel.Const.INVOKESTATIC));
 				if (!returnType.equals(Type.VOID)) {
-					il.append(InstructionConstants.RETURN);
+					il.append(InstructionFactory.createReturn(returnType));
 				}
 
 				mg.setMaxStack();

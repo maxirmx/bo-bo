@@ -4,7 +4,7 @@
     <parent>
         <artifactId>webswing</artifactId>
         <groupId>org.webswing</groupId>
-        <version>2.4.4-SNAPSHOT</version>
+        <version>101.0.0</version>
         <relativePath>..</relativePath>
     </parent>
     <dependencies>
@@ -21,9 +21,6 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <compilerArguments>
-                        <bootclasspath>${basedir}/../lib/rt1.8.0_25.jar</bootclasspath>
-                    </compilerArguments>
                 </configuration>
             </plugin>
         </plugins>
@@ -45,7 +42,7 @@
                                 <configuration>
                                     <target>
                                         <copy todir="${basedir}/../webswing-server/webswing-server-war/target/${webswing-war-name}/WEB-INF/swing-boot">
-                                            <fileset dir="${build.directory}" includes="*.jar"/>
+                                            <fileset dir="${project.build.directory}" includes="*.jar"/>
                                         </copy>
                                     </target>
                                 </configuration>

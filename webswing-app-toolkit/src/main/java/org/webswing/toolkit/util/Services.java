@@ -27,7 +27,7 @@ public class Services {
 
 	public static ImageService getImageService() {
 		if (imageService == null) {
-			Logger.fatal("ImageService has not been initialize. Exiting...");
+			Logger.fatal("ImageService has not been initialized. Exiting...");
 			System.exit(1);
 		}
 		return imageService;
@@ -35,7 +35,7 @@ public class Services {
 
 	public static PdfService getPdfService() {
 		if (pdfService == null) {
-			Logger.fatal("PdfService has not been initialize. Exiting...");
+			Logger.fatal("PdfService has not been initialized. Exiting...");
 			System.exit(1);
 		}
 		return pdfService;
@@ -43,7 +43,7 @@ public class Services {
 
 	public static ServerConnectionService getConnectionService() {
 		if (serverService == null) {
-			Logger.fatal("Connection service has not been initialize. Exiting...");
+			Logger.fatal("Connection service has not been initialized. Exiting...");
 			System.exit(1);
 		}
 		return serverService;
@@ -51,7 +51,7 @@ public class Services {
 
 	public static SwingClassLoaderFactoryService getClassLoaderService() {
 		if (classloaderService == null) {
-			Logger.fatal("Classloader service has not been initialize. Exiting...");
+			Logger.fatal("Classloader service has not been initialized. Exiting...");
 			System.exit(1);
 		}
 		return classloaderService;
@@ -59,7 +59,7 @@ public class Services {
 
 	public static DirectDrawService getDirectDrawService() {
 		if (directDrawService == null) {
-			Logger.fatal("DirectDraw service has not been initialize. Exiting...");
+			Logger.fatal("DirectDraw service has not been initialized. Exiting...");
 			System.exit(1);
 		}
 		return directDrawService;
@@ -67,7 +67,7 @@ public class Services {
 
 	public static JsLinkService getJsLinkService() {
 		if (jsLinkService == null) {
-			Logger.fatal("JsLinkService service has not been initialize. Exiting...");
+			Logger.fatal("JsLinkService service has not been initialized. Exiting...");
 			System.exit(1);
 		}
 		return jsLinkService;

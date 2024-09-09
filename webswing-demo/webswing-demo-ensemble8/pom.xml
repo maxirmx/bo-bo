@@ -75,9 +75,9 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
-					<compilerArguments>
+					<!--<compilerArguments>
 						<bootclasspath>${basedir}/../../lib/rt1.8.0_25.jar</bootclasspath>
-					</compilerArguments>
+					</compilerArguments>-->
 				</configuration>
 			</plugin>
 		</plugins>

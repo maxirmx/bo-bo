@@ -1,8 +1,11 @@
-package netscape.javascript;
+package jdk.jsobject;
 
 import java.applet.Applet;
 
 import org.webswing.toolkit.jslink.WebJSObject;
+
+import jdk.jsobject.JSException;
+import jdk.jsobject.JSObject;
 
 public abstract class JSObject {
 	public abstract Object call(String paramString, Object[] paramArrayOfObject) throws JSException;

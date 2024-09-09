@@ -14,8 +14,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
-import netscape.javascript.JSException;
-import netscape.javascript.JSObject;
+import jdk.jsobject.JSObject;
 
 import org.webswing.Constants;
 import org.webswing.model.jslink.JSObjectMsg;
@@ -25,6 +24,8 @@ import org.webswing.toolkit.util.DeamonThreadFactory;
 import org.webswing.toolkit.util.JsLinkUtil;
 import org.webswing.toolkit.util.Services;
 import org.webswing.toolkit.util.WeakValueHashMap;
+
+import jdk.jsobject.JSException;
 
 public class WebJSObject extends JSObject {
 

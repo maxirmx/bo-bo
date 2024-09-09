@@ -17,3 +17,6 @@ webswing-directdraw/webswing-directdraw-server/.externalToolBuilders/
 webswing-server/.externalToolBuilders/
 webswing.log
 documentation/site/
+
+.vscode/
+effective-pom.xml

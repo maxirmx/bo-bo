@@ -4,7 +4,7 @@ import java.applet.Applet;
 
 import org.webswing.toolkit.jslink.WebJSObject;
 
-import jdk.jsobject.JSException;
+// import jdk.jsobject.JSException;
 import jdk.jsobject.JSObject;
 
 public abstract class JSObject {

@@ -13,6 +13,8 @@ import org.webswing.toolkit.util.Util;
 import sun.awt.CausedFocusEvent;
 import sun.awt.SunToolkit;
 
+import sun.awt.AWTAccessor;
+
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -129,7 +131,7 @@ public class WebKeyboardFocusManagerPeer implements KeyboardFocusManagerPeer {
 
 		Component c = WindowManager.getInstance().getActiveWindow().getFocusOwner();
 		CausedFocusEvent focusEvent;
-		if ((c != null) && (c.getPeer() == null)) {
+		if ((c != null) && (AWTAccessor.getComponentAccessor().getPeer(c) == null)) {
 			c = null;
 		}
 		if (c != null) {

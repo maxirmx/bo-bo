@@ -12,6 +12,8 @@ import org.webswing.toolkit.util.Services;
 import org.webswing.toolkit.util.Util;
 import sun.awt.CausedFocusEvent;
 
+import sun.awt.AWTAccessor;
+
 import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -221,7 +223,7 @@ public class WindowManager {
 			positionWin = zorder.getVisibleWindowOnPosition(x, y);
 		}
 		if (positionWin != null) {
-			result = ((WebComponentPeer) positionWin.getPeer()).getHwComponentAt(x, y);
+			result = ((WebComponentPeer)AWTAccessor.getComponentAccessor().getPeer(positionWin)).getHwComponentAt(x, y);
 		}
 		return result;
 	}

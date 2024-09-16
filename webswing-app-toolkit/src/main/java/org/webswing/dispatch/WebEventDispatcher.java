@@ -55,7 +55,7 @@ import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Services;
 import org.webswing.toolkit.util.Util;
 
-import netscape.javascript.JSObject;
+import jdk.jsobject.JSObject;
 import sun.awt.CausedFocusEvent;
 import sun.awt.UngrabEvent;
 

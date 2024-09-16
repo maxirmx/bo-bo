@@ -9,11 +9,11 @@ import java.util.List;
 
 import org.webswing.Constants;
 
+
 import sun.awt.shell.ShellFolder;
 import sun.awt.shell.ShellFolder.Invoker;
 import sun.awt.shell.Win32ShellFolderManager2;
 
-@SuppressWarnings("restriction")
 public class WebShellFolderManager extends Win32ShellFolderManager2 {
 
 	private boolean windows;
@@ -63,7 +63,7 @@ public class WebShellFolderManager extends Win32ShellFolderManager2 {
 	}
 
 	@Override
-	public ShellFolder createShellFolder(File paramFile) throws FileNotFoundException {
+	public ShellFolder createShellFolder(File paramFile) throws FileNotFoundException {	
 		try {
 			if (paramFile.getCanonicalPath().startsWith(root.getCanonicalPath())) {
 				if (windows) {
@@ -149,7 +149,7 @@ public class WebShellFolderManager extends Win32ShellFolderManager2 {
 	}
 
 	@SuppressWarnings("rawtypes")
-//	@Override
+	@Override
 	public void sortFiles(List paramList) {
 		if (!windows) {
 			try {

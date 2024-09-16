@@ -10,6 +10,8 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.peer.PanelPeer;
 
+import sun.awt.AWTAccessor;
+
 import javax.swing.SwingUtilities;
 
 import org.webswing.common.GraphicsWrapper;
@@ -37,8 +39,8 @@ public class WebPanelPeer extends WebContainerPeer implements PanelPeer {
 	WebWindowPeer getParentWindowPeer() {
 		Panel target = (Panel) getTarget();
 		Window w = SwingUtilities.windowForComponent(target);
-		if (w != null && w.getPeer() != null) {
-			return (WebWindowPeer) w.getPeer();
+		if (w != null && AWTAccessor.getComponentAccessor().getPeer(w) != null) {
+			return (WebWindowPeer) AWTAccessor.getComponentAccessor().getPeer(w);
 		}
 		return null;
 	}

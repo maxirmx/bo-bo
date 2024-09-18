@@ -1,8 +1,9 @@
-package netscape.javascript;
-
-import java.applet.Applet;
+package jdk.jsobject;
 
 import org.webswing.toolkit.jslink.WebJSObject;
+
+// import jdk.jsobject.JSException;
+import jdk.jsobject.JSObject;
 
 public abstract class JSObject {
 	public abstract Object call(String paramString, Object[] paramArrayOfObject) throws JSException;
@@ -19,7 +20,4 @@ public abstract class JSObject {
 
 	public abstract void setSlot(int paramInt, Object paramObject) throws JSException;
 
-	public static JSObject getWindow(Applet paramApplet) throws JSException {
-		return new WebJSObject(null);
-	}
 }

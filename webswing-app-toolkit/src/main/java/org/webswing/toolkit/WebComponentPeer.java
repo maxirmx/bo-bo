@@ -23,6 +23,7 @@ import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ComponentEvent;
+import java.awt.event.FocusEvent.Cause;
 import java.awt.event.PaintEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -39,7 +40,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.webswing.applet.WebAppletContext;
+import java.awt.event.FocusEvent.Cause;
+
 import org.webswing.common.GraphicsWrapper;
 import org.webswing.common.WindowActionType;
 import org.webswing.dispatch.WebEventDispatcher;
@@ -54,7 +56,6 @@ import org.webswing.toolkit.util.Services;
 import org.webswing.toolkit.util.Util;
 
 import sun.awt.AWTAccessor;
-import sun.awt.CausedFocusEvent.Cause;
 import sun.awt.PaintEventDispatcher;
 import sun.awt.RepaintArea;
 import sun.awt.image.OffScreenImage;
@@ -551,13 +552,10 @@ public class WebComponentPeer implements ComponentPeer {
 		Util.getWebToolkit().getPaintDispatcher().notifyCursorUpdate(c,overridenCursor,this.getGuid());
 	}
 
+	@Override
 	public boolean requestFocus(Component paramComponent, boolean temporary, boolean focusedWindowChangeAllowed, long time, Cause paramCause) {
 		if (target instanceof Window) {
 			return Util.getWebToolkit().getWindowManager().activateWindow((Window) target, paramComponent, 0, 0, temporary, focusedWindowChangeAllowed, paramCause);
-		} else if (target instanceof Applet) {
-			Applet applet = (Applet) target;
-			Window window = ((WebAppletContext) applet.getAppletContext()).getContainer();
-			return Util.getWebToolkit().getWindowManager().activateWindow(window, paramComponent, 0, 0, temporary, focusedWindowChangeAllowed, paramCause);
 		} else {
 			return false;
 		}
@@ -693,4 +691,5 @@ public class WebComponentPeer implements ComponentPeer {
 	public void setCurrentCursor(String currentCursor) {
 		this.currentCursor = currentCursor;
 	}
+
 }

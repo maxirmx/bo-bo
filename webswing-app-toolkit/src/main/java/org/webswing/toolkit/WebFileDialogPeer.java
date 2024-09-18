@@ -6,7 +6,8 @@ import java.awt.peer.FileDialogPeer;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
-
+import java.awt.Component;
+import java.awt.event.FocusEvent.Cause;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -15,7 +16,6 @@ public class WebFileDialogPeer extends WebWindowPeer implements FileDialogPeer {
 
 	private FileDialog dialog;
 
-	@SuppressWarnings("deprecation")
 	private JFileChooser fc = new JFileChooser() {
 		private static final long serialVersionUID = 1L;
 
@@ -23,13 +23,13 @@ public class WebFileDialogPeer extends WebWindowPeer implements FileDialogPeer {
 			super.approveSelection();
 			dialog.setFile(fc.getSelectedFile().getName());
 			dialog.setDirectory(fc.getCurrentDirectory().getPath());
-			dialog.hide();
+			dialog.setVisible(false);
 		};
 
 		public void cancelSelection() {
 			super.cancelSelection();
 			dialog.setFile(null);
-			dialog.hide();
+			dialog.setVisible(false);
 		};
 	};
 
@@ -84,5 +84,12 @@ public class WebFileDialogPeer extends WebWindowPeer implements FileDialogPeer {
 	}
 
 	public void hide() {
+	}
+
+	@Override
+	public boolean requestFocus(Component lightweightChild, boolean temporary, boolean focusedWindowChangeAllowed,
+			long time, Cause cause) {
+	
+		return false;
 	}
 }

@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>webswing</artifactId>
 		<groupId>org.webswing</groupId>
-		<version>101.0.0</version>
+		<version>102.0.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>webswing-assembly</artifactId>
@@ -96,7 +96,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
+                    <source>11</source>
                     <target>1.8</target>
                 </configuration>
             </plugin>

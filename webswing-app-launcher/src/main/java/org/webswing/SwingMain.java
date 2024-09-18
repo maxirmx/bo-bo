@@ -1,7 +1,6 @@
 package org.webswing;
 
-import com.sun.javafx.application.PlatformImpl;
-import org.webswing.applet.AppletContainer;
+import javafx.application.Platform;
 import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Services;
 
@@ -22,10 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.webswing.applet.AppletContainer;
-import org.webswing.toolkit.util.Logger;
-import org.webswing.toolkit.util.Services;
-
 public class SwingMain {
 
 	public static ClassLoader swingLibClassLoader;
@@ -41,11 +36,8 @@ public class SwingMain {
 			ClassLoader wrapper = new URLClassLoader(urls, SwingMain.class.getClassLoader());
 			swingLibClassLoader = Services.getClassLoaderService().createSwingClassLoader(urls, wrapper);
 
-			if (isApplet()) {
-				startApplet();
-			} else {
-				startSwingApp(args);
-			}
+
+			startSwingApp(args);
 
 		} catch (Exception e) {
 			Logger.fatal("SwingMain:main", e);
@@ -63,19 +55,6 @@ public class SwingMain {
 		main.invoke(null, argsArray);
 	}
 
-	private static void startApplet() throws Exception {
-		Class<?> appletClazz = swingLibClassLoader.loadClass(System.getProperty(Constants.SWING_START_SYS_PROP_APPLET_CLASS));
-		Map<String, String> props = resolveProps();
-		setupContextClassLoader(swingLibClassLoader);
-		initializeJavaFX();
-		if (Applet.class.isAssignableFrom(appletClazz)) {
-			AppletContainer ac = new AppletContainer(appletClazz, props);
-			ac.start();
-		} else {
-			Logger.error("Error in SwingMain: " + appletClazz.getCanonicalName() + " class is not a subclass of Applet");
-		}
-	}
-
 	public static void initializeJavaFX() throws InvocationTargetException, InterruptedException {
 		if (Constants.SWING_START_SYS_PROP_JFX_TOOLKIT_WEB.equals(System.getProperty(Constants.SWING_START_SYS_PROP_JFX_TOOLKIT))) {
 			//start swing dispatch thread
@@ -86,7 +65,7 @@ public class SwingMain {
 				}
 			});
 			//start JavaFx platform
-			PlatformImpl.startup(new Runnable() {
+			Platform.startup(new Runnable() {
 				@Override
 				public void run() {
 					//nothing to do here
@@ -184,7 +163,4 @@ public class SwingMain {
 		return name.matches("^" + pathSeg.replaceAll("\\.", "\\\\.").replaceAll("\\[", "\\\\[").replaceAll("\\]", "\\\\]").replaceAll("\\?", ".").replaceAll("\\*", ".*") + "$");
 	}
 
-	private static boolean isApplet() {
-		return System.getProperty(Constants.SWING_START_SYS_PROP_APPLET_CLASS) != null;
-	}
 }

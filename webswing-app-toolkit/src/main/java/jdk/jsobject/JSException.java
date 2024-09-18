@@ -1,4 +1,4 @@
-package netscape.javascript;
+package jdk.jsobject;
 
 public class JSException extends RuntimeException {
 

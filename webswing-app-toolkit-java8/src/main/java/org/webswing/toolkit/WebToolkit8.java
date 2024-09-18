@@ -3,6 +3,7 @@ package org.webswing.toolkit;
 import java.awt.EventQueue;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
+
 import java.awt.peer.FramePeer;
 import java.awt.peer.KeyboardFocusManagerPeer;
 
@@ -13,7 +14,6 @@ import sun.awt.datatransfer.DataTransferer;
 import sun.awt.image.SurfaceManager;
 import sun.java2d.SurfaceData;
 
-@SuppressWarnings("restriction")
 public class WebToolkit8 extends WebToolkit {
 
     private KeyboardFocusManagerPeer kfmp;
@@ -62,8 +62,13 @@ public class WebToolkit8 extends WebToolkit {
 	@Override
 	public FramePeer createLightweightFrame(LightweightFrame arg0)
 			throws HeadlessException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
+
+    @Override
+    public boolean isTaskbarSupported() {
+       return false;
+    }
 
 }

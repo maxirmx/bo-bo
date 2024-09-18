@@ -7,8 +7,6 @@ import java.util.UUID;
 
 import javax.naming.OperationNotSupportedException;
 
-import netscape.javascript.JSException;
-
 import org.webswing.model.jslink.JSObjectMsg;
 import org.webswing.model.jslink.JavaEvalRequestMsgIn;
 import org.webswing.model.jslink.JsEvalRequestMsgOut;
@@ -17,6 +15,8 @@ import org.webswing.model.jslink.JsParamMsg;
 import org.webswing.model.jslink.JsResultMsg;
 import org.webswing.model.s2c.AppFrameMsgOut;
 import org.webswing.toolkit.jslink.WebJSObject;
+
+import jdk.jsobject.JSException;
 
 public class JsLinkUtil {
 

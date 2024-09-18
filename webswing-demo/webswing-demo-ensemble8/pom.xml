@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>webswing-demo</artifactId>
 		<groupId>org.webswing</groupId>
-		<version>101.0.0</version>
+		<version>102.0.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<dependencies>
@@ -73,8 +73,8 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>11</source>
+					<target>11</target>
 					<!--<compilerArguments>
 						<bootclasspath>${basedir}/../../lib/rt1.8.0_25.jar</bootclasspath>
 					</compilerArguments>-->

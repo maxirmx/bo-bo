@@ -38,6 +38,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.util.Hashtable;
 
 /**
  * JSlider Demo
@@ -168,7 +169,9 @@ public class SliderDemo extends JPanel {
 		s.setPaintLabels(true);
 		s.setSnapToTicks(true);
 
-		s.getLabelTable().put(new Integer(11), new JLabel(Integer.toString(11), JLabel.CENTER));
+		Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
+		labelTable.put(Integer.valueOf(11), new JLabel(Integer.toString(11), JLabel.CENTER));
+		s.setLabelTable(labelTable);
 		s.setLabelTable(s.getLabelTable());
 
 		s.getAccessibleContext().setAccessibleName(resourceManager.getString("SliderDemo.minorticks"));

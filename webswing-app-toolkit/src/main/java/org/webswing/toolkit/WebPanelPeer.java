@@ -9,6 +9,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.peer.PanelPeer;
+import java.awt.event.FocusEvent.Cause;
+import sun.awt.AWTAccessor;
 
 import javax.swing.SwingUtilities;
 
@@ -33,12 +35,11 @@ public class WebPanelPeer extends WebContainerPeer implements PanelPeer {
 		return insets;
 	}
 
-	@SuppressWarnings("deprecation")
 	WebWindowPeer getParentWindowPeer() {
 		Panel target = (Panel) getTarget();
 		Window w = SwingUtilities.windowForComponent(target);
-		if (w != null && w.getPeer() != null) {
-			return (WebWindowPeer) w.getPeer();
+		if (w != null && AWTAccessor.getComponentAccessor().getPeer(w) != null) {
+			return (WebWindowPeer) AWTAccessor.getComponentAccessor().getPeer(w);
 		}
 		return null;
 	}
@@ -69,4 +70,5 @@ public class WebPanelPeer extends WebContainerPeer implements PanelPeer {
 	protected void notifyWindowBoundsChanged(Rectangle rectangle) {
 		//do nothing here
 	}
+
 }

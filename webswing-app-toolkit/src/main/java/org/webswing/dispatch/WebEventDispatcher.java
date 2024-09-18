@@ -50,13 +50,14 @@ import org.webswing.toolkit.WebWindowPeer;
 import org.webswing.toolkit.extra.DndEventHandler;
 import org.webswing.toolkit.extra.WindowManager;
 import org.webswing.toolkit.jslink.WebJSObject;
+import org.webswing.toolkit.port.FocusEventCause;
+import org.webswing.toolkit.port.FocusEventCause.FocusCause;
 import org.webswing.toolkit.util.DeamonThreadFactory;
 import org.webswing.toolkit.util.Logger;
 import org.webswing.toolkit.util.Services;
 import org.webswing.toolkit.util.Util;
 
-import netscape.javascript.JSObject;
-import sun.awt.CausedFocusEvent;
+import jdk.jsobject.JSObject;
 import sun.awt.UngrabEvent;
 
 @SuppressWarnings("restriction")
@@ -264,7 +265,7 @@ public class WebEventDispatcher {
 			int buttons = Util.getMouseButtonsAWTFlag(event.getButton());
 			if (buttons != 0 && event.getType() == MouseEventType.mousedown) {
 				Window w = (Window) (c instanceof Window ? c : SwingUtilities.windowForComponent(c));
-				WindowManager.getInstance().activateWindow(w, null, x, y, false, true, CausedFocusEvent.Cause.MOUSE_EVENT);
+				WindowManager.getInstance().activateWindow(w, null, x, y, false, true, FocusCause.MOUSE_EVENT);
 				WindowManager.getInstance().flashTopModalDialog(w);
 			}
 			switch (event.getType()) {

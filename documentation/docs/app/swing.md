@@ -199,7 +199,7 @@ Here is our application configuration:
 {
     "name" : "SwingSet3",
     "jreExecutable": "startSwingSet3.sh ${user}",
-    "javaVersion": "1.8",
+    "javaVersion": "11",
     "mainClass" : "com.sun.swingset3.SwingSet3",
     "classPathEntries" : [ "SwingSet3.jar", "lib/*.jar" ],
     "vmArgs" : "-Xmx128m",

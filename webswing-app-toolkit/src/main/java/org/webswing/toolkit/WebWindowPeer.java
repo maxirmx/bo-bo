@@ -10,8 +10,8 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.peer.WindowPeer;
+import java.awt.event.FocusEvent.Cause;
 
-import javax.swing.SwingUtilities;
 
 import org.webswing.toolkit.extra.WindowManager;
 import org.webswing.toolkit.util.Util;
@@ -124,4 +124,9 @@ public class WebWindowPeer extends WebContainerPeer implements WindowPeer {
 		return Util.discoverFileChooser(this) != null;
 	}
 
+	@Override
+	public boolean requestFocus(Component lightweightChild, boolean temporary, boolean focusedWindowChangeAllowed,
+			long time, Cause cause) {
+		return false;
+	}
 }

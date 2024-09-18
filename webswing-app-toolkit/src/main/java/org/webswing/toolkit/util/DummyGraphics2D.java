@@ -362,7 +362,6 @@ public class DummyGraphics2D extends Graphics2D {
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public FontMetrics getFontMetrics(Font f) {
 		return Toolkit.getDefaultToolkit().getFontMetrics(f);
 	}

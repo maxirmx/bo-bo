@@ -8,8 +8,7 @@ import java.util.concurrent.ExecutionException;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import netscape.javascript.JSObject;
-
+import jdk.jsobject.JSObject;
 
 import org.junit.Before;
 import org.webswing.Constants;

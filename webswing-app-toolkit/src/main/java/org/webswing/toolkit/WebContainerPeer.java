@@ -7,7 +7,8 @@ import java.awt.peer.ContainerPeer;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JWindow;
-
+import java.awt.event.FocusEvent.Cause;
+import java.awt.Component;
 import org.webswing.toolkit.util.Services;
 
 public class WebContainerPeer extends WebComponentPeer implements ContainerPeer {
@@ -55,4 +56,9 @@ public class WebContainerPeer extends WebComponentPeer implements ContainerPeer 
         return getInsets();
     }
 
+    @Override
+	public boolean requestFocus(Component lightweightChild, boolean temporary, boolean focusedWindowChangeAllowed,
+			long time, Cause cause) {
+        return false;
+    }
 }

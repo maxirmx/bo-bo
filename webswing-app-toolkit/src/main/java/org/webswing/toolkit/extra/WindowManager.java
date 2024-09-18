@@ -8,9 +8,10 @@ import org.webswing.toolkit.WebComponentPeer;
 import org.webswing.toolkit.WebDialogPeer;
 import org.webswing.toolkit.WebKeyboardFocusManagerPeer;
 import org.webswing.toolkit.WebToolkit;
+import org.webswing.toolkit.port.FocusEventCause;
+import org.webswing.toolkit.port.FocusEventCause.FocusCause;
 import org.webswing.toolkit.util.Services;
 import org.webswing.toolkit.util.Util;
-import sun.awt.CausedFocusEvent;
 
 import sun.awt.AWTAccessor;
 
@@ -108,7 +109,7 @@ public class WindowManager {
 		activateWindow(w, 0, 0);
 	}
 
-	public boolean activateWindow(Window w, Component newFocusOwner, int x, int y, boolean tmp, boolean focusedWindowChangeAllowed, CausedFocusEvent.Cause cause) {
+	public boolean activateWindow(Window w, Component newFocusOwner, int x, int y, boolean tmp, boolean focusedWindowChangeAllowed, Enum<?> cause) {
 		boolean success = false;
 		boolean newWindow = false;
 		if (!zorder.contains(w)) {
@@ -202,7 +203,7 @@ public class WindowManager {
 
     public void activateWindow(final Window w, final int x, final int y)
     {
-        activateWindow(w, null, x, y, false, true, CausedFocusEvent.Cause.NATIVE_SYSTEM);
+        activateWindow(w, null, x, y, false, true, FocusCause.NATIVE_SYSTEM);
     }
 
 	public Window getVisibleWindowOnPosition(int x, int y) {
@@ -213,7 +214,6 @@ public class WindowManager {
 		return positionWin;
 	}
 
-	@SuppressWarnings("deprecation")
 	public Component getVisibleComponentOnPosition(int x, int y, String winId) {
 		Component result = null;
 		Window positionWin;

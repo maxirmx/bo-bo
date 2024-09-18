@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import javax.script.ScriptException;
 
-import netscape.javascript.JSObject;
+import jdk.jsobject.JSObject;
 
 import org.junit.Test;
 import org.webswing.model.c2s.KeyboardEventMsgIn;

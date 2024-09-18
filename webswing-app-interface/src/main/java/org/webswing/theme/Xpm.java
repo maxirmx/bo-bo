@@ -1699,13 +1699,13 @@ public class Xpm
 			
 
 		if(charsperpixel==1){
-			colorlookup.put(new Integer(' '),
-					new Integer(0x00000000));
+			colorlookup.put(Integer.valueOf(' '),
+					Integer.valueOf(0x00000000));
 		} else {
 			int tmpchar=(' ' &0xff) <<8;
 			tmpchar |=  (' '&0xff);
-			colorlookup.put(new Integer((tmpchar&0xffff)),
-					new Integer(0x00000000));
+			colorlookup.put(Integer.valueOf((tmpchar&0xffff)),
+					Integer.valueOf(0x00000000));
 			
 		}
 
@@ -1742,7 +1742,7 @@ public class Xpm
 			}
 
 			if(charsperpixel==1){
-				colref=new Integer(xpm.charAt(parse++));
+				colref=Integer.valueOf(xpm.charAt(parse++));
 			} else{
 				int tmpchar=xpm.charAt(parse++);
 				tmpchar = (tmpchar&0xff)<<8;
@@ -1755,12 +1755,12 @@ public class Xpm
 					(tmpchar&0xffff));
 				}
 
-				colref=new Integer(tmpchar&0xffff);
+				colref=Integer.valueOf(tmpchar&0xffff);
 			}
 			
 		
 
-			rgb = new Integer(NameToRGB(colorname));
+			rgb = Integer.valueOf(NameToRGB(colorname));
 
 			if(debugflag){
 			debug("Color num parsed for \"" +colorname+"\"("+
@@ -1813,7 +1813,7 @@ public class Xpm
 					tmpchar |= xpm.charAt(pix) & 0xff;
 
 				}
-				pixchar=new Integer(tmpchar&0xffff);
+				pixchar=Integer.valueOf(tmpchar&0xffff);
 
 				
 				pixval = (Integer)colorlookup.get(pixchar);

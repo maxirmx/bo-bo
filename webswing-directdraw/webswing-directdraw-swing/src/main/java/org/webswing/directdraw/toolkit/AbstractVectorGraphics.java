@@ -770,9 +770,12 @@ public abstract class AbstractVectorGraphics extends Graphics2D {
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public FontMetrics getFontMetrics(Font f) {
-		return Toolkit.getDefaultToolkit().getFontMetrics(f);
+		BufferedImage dummyImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = dummyImage.createGraphics();
+		FontMetrics fm = g2d.getFontMetrics(f);
+		g2d.dispose();
+		return fm;
 	}
 
 	/* 8.4. rendering hints */

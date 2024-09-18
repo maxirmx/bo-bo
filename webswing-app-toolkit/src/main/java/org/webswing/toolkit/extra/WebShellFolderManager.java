@@ -12,9 +12,8 @@ import org.webswing.Constants;
 
 import sun.awt.shell.ShellFolder;
 import sun.awt.shell.ShellFolder.Invoker;
-import sun.awt.shell.Win32ShellFolderManager2;
 
-public class WebShellFolderManager extends Win32ShellFolderManager2 {
+public class WebShellFolderManager {
 
 	private boolean windows;
 	private Object defaultManager;
@@ -32,17 +31,27 @@ public class WebShellFolderManager extends Win32ShellFolderManager2 {
 		windows = System.getProperty("os.name", "").startsWith("Windows");
 
 		try {
-			Class<?> managerClass = ClassLoader.getSystemClassLoader().loadClass("sun.awt.shell.ShellFolderManager");
-			Constructor<?> c = managerClass.getDeclaredConstructor();
-			c.setAccessible(true);
-			defaultManager = c.newInstance();
+			if (windows)
+			{
+				Class<?> managerClass = ClassLoader.getSystemClassLoader().loadClass("sun.awt.shell.Win32ShellFolderManager2");
+				Constructor<?> c = managerClass.getDeclaredConstructor();
+				c.setAccessible(true);
+				defaultManager = c.newInstance();
+
+			}
+			else
+			{
+				Class<?> managerClass = ClassLoader.getSystemClassLoader().loadClass("sun.awt.shell.ShellFolderManager");
+				Constructor<?> c = managerClass.getDeclaredConstructor();
+				c.setAccessible(true);
+				defaultManager = c.newInstance();
+			}
 		} catch (Exception e) {
 			System.err.println("Error while instantiating default shell folder manager. " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
 
-	@Override
 	public Object get(String paramString) {
 		if (paramString.equals("fileChooserDefaultFolder")) {
 			return root;
@@ -57,18 +66,22 @@ public class WebShellFolderManager extends Win32ShellFolderManager2 {
 			return new File[] { root };
 		}
 		if (paramString.startsWith("fileChooserIcon ") || paramString.startsWith("optionPaneIcon ") || paramString.startsWith("shell32Icon ")) {
-			return super.get(paramString);
+			try {
+				Method m = defaultManager.getClass().getDeclaredMethod("get", File.class);
+				m.setAccessible(true);
+				return (ShellFolder) m.invoke(defaultManager, paramString);
+			} catch (Exception e) {
+				System.err.println("Failed to invoke get(fileChooserIcon ...) method on default shell folder manager: " + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
 		}
 		return null;
 	}
 
-	@Override
 	public ShellFolder createShellFolder(File paramFile) throws FileNotFoundException {	
 		try {
 			if (paramFile.getCanonicalPath().startsWith(root.getCanonicalPath())) {
-				if (windows) {
-					return super.createShellFolder(paramFile);
-				} else {
 					try {
 						Method m = defaultManager.getClass().getDeclaredMethod("createShellFolder", File.class);
 						m.setAccessible(true);
@@ -78,7 +91,6 @@ public class WebShellFolderManager extends Win32ShellFolderManager2 {
 						e.printStackTrace();
 						return null;
 					}
-				}
 			} else {
 				return null;
 			}
@@ -88,12 +100,9 @@ public class WebShellFolderManager extends Win32ShellFolderManager2 {
 		}
 	}
 
-	@Override
 	protected Invoker createInvoker() {
-		if (windows) {
-			return super.createInvoker();
-		} else {
-			try {
+
+		try {
 				Method m = defaultManager.getClass().getDeclaredMethod("createInvoker");
 				m.setAccessible(true);
 				return (Invoker) m.invoke(defaultManager);
@@ -102,14 +111,9 @@ public class WebShellFolderManager extends Win32ShellFolderManager2 {
 				e.printStackTrace();
 				return null;
 			}
-		}
 	}
 
-	@Override
 	public boolean isComputerNode(File paramFile) {
-		if (windows) {
-			return super.isComputerNode(paramFile);
-		} else {
 			try {
 				Method m = defaultManager.getClass().getDeclaredMethod("isComputerNode", File.class);
 				m.setAccessible(true);
@@ -119,10 +123,8 @@ public class WebShellFolderManager extends Win32ShellFolderManager2 {
 				e.printStackTrace();
 				return false;
 			}
-		}
 	}
 
-	@Override
 	public boolean isFileSystemRoot(File paramFile) {
 		try {
 			if (root.getCanonicalPath().equals(paramFile.getCanonicalPath())) {
@@ -131,9 +133,6 @@ public class WebShellFolderManager extends Win32ShellFolderManager2 {
 				return false;
 			}
 		} catch (IOException e1) {
-			if (windows) {
-				return super.isFileSystemRoot(paramFile);
-			} else {
 				try {
 					Method m = defaultManager.getClass().getDeclaredMethod("isFileSystemRoot", File.class);
 					m.setAccessible(true);
@@ -143,13 +142,11 @@ public class WebShellFolderManager extends Win32ShellFolderManager2 {
 					e.printStackTrace();
 					return false;
 				}
-			}
 		}
 
 	}
 
 	@SuppressWarnings("rawtypes")
-	@Override
 	public void sortFiles(List paramList) {
 		if (!windows) {
 			try {

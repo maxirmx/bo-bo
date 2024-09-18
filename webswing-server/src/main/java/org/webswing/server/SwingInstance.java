@@ -33,13 +33,8 @@ import org.webswing.server.util.ServerUtil;
 import org.webswing.server.util.StatUtils;
 import org.webswing.server.util.exec.SwingProcess;
 import org.webswing.toolkit.WebToolkit;
-//TODO: to uncomment this after Webtoolkit 6 and 7 can compile
-//import org.webswing.toolkit.WebToolkit6;
-//import org.webswing.toolkit.WebToolkit7;
 import org.webswing.toolkit.WebToolkit8;
 import org.webswing.toolkit.api.WebswingApi;
-//import org.webswing.toolkit.ge.WebGraphicsEnvironment6;
-//import org.webswing.toolkit.ge.WebGraphicsEnvironment7;
 import org.webswing.toolkit.ge.WebGraphicsEnvironment8;
 
 import main.Main;

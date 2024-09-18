@@ -12,7 +12,8 @@ import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.awt.peer.DialogPeer;
 import java.util.List;
-
+import java.awt.event.FocusEvent.Cause;
+import java.awt.Component; 
 
 public class WebDialogPeer extends WebWindowPeer implements DialogPeer {
 
@@ -80,6 +81,13 @@ public class WebDialogPeer extends WebWindowPeer implements DialogPeer {
                 Util.getWebToolkit().getPaintDispatcher().notifyWindowAreaRepainted(getGuid(), new Rectangle(0, 0, w, h));
             }
         });
+    }
+
+    @Override
+	public boolean requestFocus(Component lightweightChild, boolean temporary, boolean focusedWindowChangeAllowed,
+			long time, Cause cause) {
+ 
+        return false;
     }
 
 }

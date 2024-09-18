@@ -102,12 +102,6 @@ public class WebApplication extends Application {
 	}
 
 	@Override
-	public Window createWindow(long parent) {
-		//called from applet, not supported
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public View createView() {
 		return new WebFxView();
 	}
@@ -143,9 +137,14 @@ public class WebApplication extends Application {
 	}
 
 	@Override
-	public Pixels createPixels(int width, int height, IntBuffer data, float scale) {
-		return new WebPixels(width, height, data, scale);
-	}
+    public Pixels createPixels(int width, int height, ByteBuffer data, float scaleX, float scaleY) {
+        return new WebPixels(width, height, data, scaleX, scaleY);
+    }	
+
+	@Override
+    public Pixels createPixels(int width, int height, IntBuffer data, float scaleX, float scaleY) {
+        return new WebPixels(width, height, data, scaleX, scaleY);
+    }	
 
 	@Override
 	protected int staticPixels_getNativeFormat() {
@@ -153,7 +152,7 @@ public class WebApplication extends Application {
 	}
 
 	@Override
-	public Robot createRobot() {
+	public GlassRobot createRobot() {
 		return null;
 	}
 

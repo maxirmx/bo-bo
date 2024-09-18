@@ -5,12 +5,14 @@ import java.awt.peer.KeyboardFocusManagerPeer;
 import java.lang.reflect.Method;
 
 import org.webswing.model.s2c.FocusEventMsg;
+import java.lang.reflect.Constructor; // Import Constructor
 import org.webswing.toolkit.api.component.HtmlPanel;
 import org.webswing.toolkit.extra.WindowManager;
+import org.webswing.toolkit.port.FocusEventCause;
+import org.webswing.toolkit.port.FocusEventCause.FocusCause;
 import org.webswing.toolkit.util.Logger;
 
 import org.webswing.toolkit.util.Util;
-import sun.awt.CausedFocusEvent;
 import sun.awt.SunToolkit;
 
 import sun.awt.AWTAccessor;
@@ -111,9 +113,10 @@ public class WebKeyboardFocusManagerPeer implements KeyboardFocusManagerPeer {
 
 	}
 
-	public static int shouldNativelyFocusHeavyweight(Window heavyweight, Component descendant, boolean temporary, boolean focusedWindowChangeAllowed, long time, CausedFocusEvent.Cause cause) {
+
+	public static int shouldNativelyFocusHeavyweight(Window heavyweight, Component descendant, boolean temporary, boolean focusedWindowChangeAllowed, long time, Enum<?> cause) {
 		try {
-			Method m2 = KeyboardFocusManager.class.getDeclaredMethod("shouldNativelyFocusHeavyweight", Component.class, Component.class, Boolean.TYPE, Boolean.TYPE, Long.TYPE, CausedFocusEvent.Cause.class);
+			Method m2 = KeyboardFocusManager.class.getDeclaredMethod("shouldNativelyFocusHeavyweight", Component.class, Component.class, Boolean.TYPE, Boolean.TYPE, Long.TYPE, Enum.class);
 			m2.setAccessible(true);
 			Integer result2 = (Integer) m2.invoke(null, heavyweight, descendant, temporary, focusedWindowChangeAllowed, time, cause);
 			return result2;
@@ -123,26 +126,37 @@ public class WebKeyboardFocusManagerPeer implements KeyboardFocusManagerPeer {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	public static boolean deliverFocus(Component heavyweight, Component descendant, boolean temporary, boolean focusedWindowChangeAllowed, long time, CausedFocusEvent.Cause cause) {
+	public static boolean deliverFocus(Component heavyweight, Component descendant, boolean temporary, boolean focusedWindowChangeAllowed, long time, Enum<?> cause) {
 		if (heavyweight == null) {
 			heavyweight = descendant;
 		}
 
 		Component c = WindowManager.getInstance().getActiveWindow().getFocusOwner();
-		CausedFocusEvent focusEvent;
 		if ((c != null) && (AWTAccessor.getComponentAccessor().getPeer(c) == null)) {
 			c = null;
 		}
-		if (c != null) {
-			focusEvent = new CausedFocusEvent(c, CausedFocusEvent.FOCUS_LOST, false, heavyweight, cause);
 
-			SunToolkit.postEvent(SunToolkit.targetToAppContext(c), focusEvent);
+
+		try {
+            // Obtain the Class object for CausedFocusEvent
+            Class<?> clazz = Class.forName("java.awt.event.FocusEvent$CausedFocusEvent");
+            
+            // Access the constructor with parameters (Assuming it has one)
+            Constructor<?> constructor = clazz.getDeclaredConstructor(clazz, int.class);
+            
+            // Make the constructor accessible if it's not public
+            constructor.setAccessible(true);
+            
+			if (c != null) {
+				Object causedFocusEvent = constructor.newInstance(c, FocusCause.FOCUS_LOST, false, heavyweight, cause);
+			    SunToolkit.postEvent(SunToolkit.targetToAppContext(c), (AWTEvent)causedFocusEvent);
+		    }
+			Object causedFocusEvent = constructor.newInstance(heavyweight, FocusCause.FOCUS_GAINED, false, c, cause);
+			SunToolkit.postEvent(SunToolkit.targetToAppContext(heavyweight), (AWTEvent)causedFocusEvent);          
 		}
-
-		focusEvent = new CausedFocusEvent(heavyweight, CausedFocusEvent.FOCUS_GAINED, false, c, cause);
-
-		SunToolkit.postEvent(SunToolkit.targetToAppContext(heavyweight), focusEvent);
+		catch (Exception e) {
+			Logger.debug("Failed to invoke processSynchronousLightweightTransfer on KeyboardFocusManager.", e);
+		}		
 		return true;
 	}
 

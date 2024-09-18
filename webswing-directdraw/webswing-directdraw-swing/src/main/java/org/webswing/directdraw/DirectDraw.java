@@ -58,6 +58,9 @@ public class DirectDraw {
 			}
 			return true;
 		}else{
+			//System.err.println("Font not found: "+font);
+			//System.err.println("Font family: "+font.getFamily());
+			//System.err.println(DirectDrawUtils.webFonts.toString());			
 			//use native rendering for logical fonts even if not set up in font config
 			if(DirectDrawUtils.webFonts.containsKey(font.getFamily())){
 				return true;

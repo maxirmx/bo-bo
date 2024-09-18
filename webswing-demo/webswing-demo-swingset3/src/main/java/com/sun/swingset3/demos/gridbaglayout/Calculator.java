@@ -348,7 +348,7 @@ public class Calculator extends JComponent {
 
     private static Double stringToValue(String value) {
         try {
-            return new Double(value.replace(DECIMAL_SEPARATOR, '.'));
+            return Double.valueOf(value.replace(DECIMAL_SEPARATOR, '.'));
         } catch (NumberFormatException e) {
             // Continue convertion
         }
@@ -356,7 +356,7 @@ public class Calculator extends JComponent {
         if (value.endsWith(String.valueOf(DECIMAL_SEPARATOR))) {
             try {
                 // Try convert uncompleted value
-                return new Double(value.substring(0, value.length() - 1));
+                return Double.valueOf(value.substring(0, value.length() - 1));
             } catch (NumberFormatException e) {
                 // Continue convertion
             }

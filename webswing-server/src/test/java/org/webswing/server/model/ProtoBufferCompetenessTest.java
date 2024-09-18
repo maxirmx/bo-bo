@@ -39,7 +39,7 @@ import org.webswing.server.model.proto.Webswing.SimpleEventMsgInProto;
 import org.webswing.server.model.proto.Webswing.SimpleEventMsgInProto.SimpleEventTypeProto;
 import org.webswing.server.util.ProtoMapper;
 
-import sun.net.www.protocol.file.FileURLConnection;
+import java.net.URLConnection;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -347,7 +347,7 @@ public class ProtoBufferCompetenessTest {
 
 					if (connection instanceof JarURLConnection) {
 						checkJarFile((JarURLConnection) connection, pckgname, classes);
-					} else if (connection instanceof FileURLConnection) {
+					} else if ("file".equals(url.getProtocol())) {
 						try {
 							checkDirectory(new File(URLDecoder.decode(url.getPath(), "UTF-8")), pckgname, classes);
 						} catch (final UnsupportedEncodingException ex) {

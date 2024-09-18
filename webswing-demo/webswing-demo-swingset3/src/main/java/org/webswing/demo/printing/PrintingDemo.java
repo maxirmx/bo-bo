@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -15,23 +14,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.webswing.demo.dnd.DragPictureDemo;
-
 import com.sun.swingset3.DemoProperties;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperPrintManager;
-import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
-import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
 import net.sf.jasperreports.view.JasperViewer;
 
 @DemoProperties(value = "Printing", category = "Webswing", description = "Demonstrates printing abilities of websinwg", sourceFiles = { "org/webswing/demo/printing/PaginationExample.java", "org/webswing/demo/printing/PrintableExample.java", "org/webswing/demo/printing/PrintJobExample.java" })
 public class PrintingDemo extends JPanel {
 	private static final long serialVersionUID = 8550928872207603286L;
-	protected JComboBox orientation = new JComboBox(new String[] { "Portrait", "Landscape" });
+	protected JComboBox<String> orientation = new JComboBox<>(new String[] { "Portrait", "Landscape" });
 
 	public PrintingDemo() {
 		super(new BorderLayout());

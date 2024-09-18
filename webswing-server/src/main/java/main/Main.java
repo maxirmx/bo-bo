@@ -38,7 +38,7 @@ public class Main {
 		List<URL> urls = new ArrayList<URL>();
 		if (client) {
 			// initialize jmx agent
-			sun.management.Agent.startAgent();
+			//sun.management.Agent.startAgent();
 
 			populateClasspathFromDir("WEB-INF/swing-lib", urls);
 			initializeExtLibServices(urls);

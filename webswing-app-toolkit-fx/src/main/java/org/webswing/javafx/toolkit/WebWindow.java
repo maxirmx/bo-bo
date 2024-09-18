@@ -117,10 +117,10 @@ public class WebWindow extends Window {
 		return (WebFxView) getView();
 	}
 
-	@Override
-	protected long _createChildWindow(long parent) {
-		return _createWindow(parent, 1, Window.TITLED);
-	}
+//	@Override
+//	protected long _createChildWindow(long parent) {
+//		return _createWindow(parent, 1, Window.TITLED);
+//	}
 
 	@Override
 	protected boolean _close(long ptr) {
@@ -162,15 +162,15 @@ public class WebWindow extends Window {
 		return false;
 	}
 
-	@Override
-	protected int _getEmbeddedX(long ptr) {
-		return getContentBounds().x;
-	}
+//	@Override
+//	protected int _getEmbeddedX(long ptr) {
+//		return getContentBounds().x;
+//	}
 
-	@Override
-	protected int _getEmbeddedY(long ptr) {
-		return getContentBounds().y;
-	}
+//	@Override
+//	protected int _getEmbeddedY(long ptr) {
+//		return getContentBounds().y;
+//	}
 
 	@Override
 	protected void _setBounds(long ptr, int x, int y, boolean xSet, boolean ySet, int w, int h, int cw, int ch, float xGravity, float yGravity) {
@@ -348,6 +348,11 @@ public class WebWindow extends Window {
 
 	@Override
 	protected void _releaseInput(long ptr) {
+
+	}
+
+	@Override 
+	protected void _updateViewSize(long ptr) {
 
 	}
 

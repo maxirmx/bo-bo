@@ -59,7 +59,7 @@ public class JHistoryTextField extends JTextField {
         }
     };
 
-    private final JList list = new JList(new DefaultListModel());
+    private final JList<String> list = new JList<>(new DefaultListModel<String>());
 
     private String userText;
 

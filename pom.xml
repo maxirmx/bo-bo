@@ -192,9 +192,16 @@
 						<arg>--add-exports=java.desktop/sun.awt.dnd=ALL-UNNAMED</arg>
 						<arg>--add-exports=java.desktop/sun.awt.im=ALL-UNNAMED</arg>
 						<arg>--add-exports=java.desktop/sun.awt.image=ALL-UNNAMED</arg>
+						<arg>--add-exports=java.desktop/sun.font=ALL-UNNAMED</arg> 
 						<arg>--add-exports=java.desktop/sun.java2d=ALL-UNNAMED</arg>   
-						 <arg>--add-exports=java.desktop/sun.java2d.pipe=ALL-UNNAMED</arg>     
-						<arg>--add-exports=java.desktop/sun.print=ALL-UNNAMED</arg>       
+						<arg>--add-exports=java.desktop/sun.java2d.loops=ALL-UNNAMED</arg>
+					    <arg>--add-exports=java.desktop/sun.java2d.pipe=ALL-UNNAMED</arg>  
+						<arg>--add-exports=java.base/sun.nio.cs=ALL-UNNAMED</arg> 
+						<arg>--add-exports=java.base/sun.security.util=ALL-UNNAMED</arg>
+						<arg>--add-exports=java.desktop/sun.print=ALL-UNNAMED</arg>
+						<arg>--add-exports=javafx.graphics/com.sun.glass.events=ALL-UNNAMED</arg>
+						<arg>--add-exports=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED</arg>
+						<arg>--add-exports=javafx.graphics/com.sun.glass.ui.delegate=ALL-UNNAMED</arg>
                 	</compilerArgs>					
 				</configuration>
 			</plugin>

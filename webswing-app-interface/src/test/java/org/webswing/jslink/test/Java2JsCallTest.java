@@ -1,8 +1,8 @@
 package org.webswing.jslink.test;
 
 import static org.junit.Assert.*;
-import netscape.javascript.JSException;
-import netscape.javascript.JSObject;
+import jdk.jsobject.JSException;
+import jdk.jsobject.JSObject;
 
 import org.junit.Test;
 

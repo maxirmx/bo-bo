@@ -77,7 +77,7 @@ public class Demo {
         return convertToDemoName(simpleName);
     }
     
-    public static String deriveNameFromClassName(Class demoClass) {
+    public static String deriveNameFromClassName(Class<?> demoClass) {
         String className = demoClass.getSimpleName();
         return convertToDemoName(className);
     }
@@ -243,7 +243,7 @@ public class Demo {
     public Component createDemoComponent() {
         Component component = null;
         try {
-            component = (Component)demoClass.newInstance();
+            component = (Component)demoClass.getDeclaredConstructor().newInstance();
             setDemoComponent(component);
         } catch (Exception e) {
             System.err.println(e);

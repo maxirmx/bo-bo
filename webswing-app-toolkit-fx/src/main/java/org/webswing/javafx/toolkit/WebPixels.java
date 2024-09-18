@@ -14,8 +14,12 @@ public class WebPixels extends Pixels {
 		super(width, height, data);
 	}
 
-	public WebPixels(int width, int height, IntBuffer data, float scale) {
-		super(width, height, data, scale);
+	public WebPixels(int width, int height, IntBuffer data, float scaleX, float scaleY) {
+		super(width, height, data, scaleX, scaleY);
+	}
+
+	public WebPixels(int width, int height, ByteBuffer data, float scaleX, float scaleY) {
+		super(width, height, data, scaleX, scaleY);
 	}
 
 	@Override
